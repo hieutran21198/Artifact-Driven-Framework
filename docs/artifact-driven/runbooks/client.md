@@ -33,7 +33,10 @@ Sample: [book on the mobile app](../../software-knowledge/artifacts/book/mobile.
    key, its JSON type and whether it may be null, or a value with a special
    meaning. Cite a rule ID when a need follows a rule; do not restate it. A
    need that holds only when a rule applies says so: "`fee` is a number when
-   BK-n applies, else null".
+   BK-n applies, else null". A need that no response carries, such as help
+   copy that states a rule's value or a check the client makes on its own,
+   goes in a subsection named by the rule ID it depends on (`### BK-4`), so
+   that a change to the rule reaches it.
 5. Write no screens, code locations or other evidence ([knowledge, not
    evidence](../knowledge.md#knowledge-not-evidence)). Report the evidence to
    the coordinator for the issue.

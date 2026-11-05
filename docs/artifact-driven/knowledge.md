@@ -125,7 +125,7 @@ answer a question that a page below leaves open.
 | `specification.md` | Model, rules and lifecycle; no container or flow |
 | `openapi.yaml` | The HTTP contract of the artifact's own endpoints |
 | `backend.md` | The domain contract: the `Writer` and `Reader` interfaces and their operations; no packages, types or tables |
-| `<client>.md`, one per client in the [configuration](../../scripts/README.md#configuration) | What that client needs from the artifact's responses, by `operationId`; only when it uses the artifact |
+| `<client>.md`, one per client in the [configuration](../../scripts/README.md#configuration) | What that client needs from the artifact, by `operationId`, by payload schema, or by rule ID for a need no response carries; only when it uses the artifact |
 
 An artifact is never split per container. Client pages cite rule IDs and
 `operationId`s; they never restate rules. Which client calls which operation,

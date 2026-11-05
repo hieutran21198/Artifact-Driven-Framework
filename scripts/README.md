@@ -111,9 +111,22 @@ names counts as weaker:
 python3 scripts/impact.py --fragile
 ```
 
-A worker trigger declared under `x-triggers` counts as an operation, and a
-client page heading that names a payload schema cites that schema. A scenario
-that names no operation, trigger or rule is invisible to it.
+`--coverage [tests folder]` gives, for each goal, the share of the scenarios
+and rules it relies on that a test names by ID (D3 of Done), and lists the
+ones no test names. Without a folder it uses the `tests` setting.
+`--questions` lists, for each goal, the open questions that cite an ID or an
+operation the goal relies on; a goal with open questions is not ready to
+build:
+
+```sh
+python3 scripts/impact.py --coverage tests
+python3 scripts/impact.py --questions
+```
+
+A worker trigger declared under `x-triggers` counts as an operation, a client
+page heading that names a payload schema cites that schema, and a heading that
+names a rule ID (`### BK-4`) cites that rule. A scenario that names no
+operation, trigger or rule is invisible to it.
 
 ## Knowledge site
 

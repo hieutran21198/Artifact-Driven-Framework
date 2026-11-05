@@ -21,4 +21,9 @@ What the mobile app needs from the responses of this artifact, by
 - The response is the book itself, with `status` `on_loan` and `due_at` set
   (BK-4).
 
+### BK-4
+
+- The app's help text states the loan period. It is the default of
+  `loan_days`; a change to that default is a change to this text.
+
 Return to [Book](README.md).

@@ -5,6 +5,8 @@ Usage:
     python3 scripts/impact.py --down <ID | operationId | page>    # what it relies on
     python3 scripts/impact.py --stats [goal | ID | operationId]   # size and blast radius
     python3 scripts/impact.py --fragile [tests folder]            # the 20 most fragile nodes
+    python3 scripts/impact.py --coverage [tests folder]           # IDs each goal relies on that tests name
+    python3 scripts/impact.py --questions                         # open questions that hold each goal
 """
 
 from collections import defaultdict
@@ -48,7 +50,7 @@ def read_markdown(graph, path):
     page = rel(path)
     section = page
     for line in path.read_text(encoding="utf-8").splitlines():
-        heading = re.match(r"^### `?(\w+)`?$", line)
+        heading = re.match(r"^### `?([\w-]+)`?$", line)
         if line.startswith("#"):
             section = f"{page}#{heading.group(1)}" if heading else page
         row = ID_ROW.match(line)
@@ -109,6 +111,8 @@ def build():
         heading = unit.rsplit("#", 1)[1] if "#" in unit and graph.file[unit].endswith(".md") else None
         if heading in schemas:
             cited.add(schemas[heading])
+        if heading and ID.fullmatch(heading):
+            cited.add(heading)
         for target, kind, name in REF.findall(body):
             base = graph.file[unit] if not target else rel((KNOWLEDGE / graph.file[unit]).parent.joinpath(target).resolve())
             cited.add(f"{base}#{kind}/{name}")
@@ -293,9 +297,95 @@ def fragile(graph, folder, limit=20):
     return 0
 
 
+def goal_keys(graph):
+    return sorted({u.rsplit("-", 1)[0] for u in graph.file if u.startswith("G-") and ID.fullmatch(u)})
+
+
+def goal_units(graph, goal):
+    start = {u for u in graph.file if u.startswith(goal + "-") and ID.fullmatch(u)}
+    units, _ = relies_on(graph, start)
+    return start | units
+
+
+def withdrawn(graph, unit):
+    return any(re.match(r"^\| \S+ \| *Withdrawn\b", line) for line in graph.text.get(unit, ()))
+
+
+def natural(unit):
+    return [int(p) if p.isdigit() else p for p in re.split(r"(\d+)", unit)]
+
+
+def coverage(graph, folder):
+    """For each goal, the scenarios and rules it relies on that a test names."""
+    if not folder or not folder.is_dir():
+        print(f"Not a folder: {folder}", file=sys.stderr)
+        return 1
+    tests = tested_ids(folder)
+    kinds = ("Flow scenarios", "Artifact rules")
+    print("Test coverage by ID: the scenarios and rules each goal relies on that a test names.")
+    total = defaultdict(lambda: [0, 0])
+    for goal in goal_keys(graph):
+        ids = {u for u in goal_units(graph, goal) if kind(u) in kinds and not withdrawn(graph, u)}
+        parts, missing = [], []
+        for k in kinds:
+            mine = sorted((u for u in ids if kind(u) == k), key=natural)
+            done = [u for u in mine if tests.get(u)]
+            parts.append(f"{k.split()[1]} {len(done)}/{len(mine)}")
+            missing += [u for u in mine if not tests.get(u)]
+        tested = sum(1 for u in ids if tests.get(u))
+        percent = round(100 * tested / len(ids)) if ids else 0
+        print(f"  {goal:12} {percent:3}%  " + "  ".join(parts))
+        if missing:
+            print(f"               untested: {', '.join(missing)}")
+    every = {u for u in graph.file if kind(u) in kinds and not withdrawn(graph, u)}
+    for u in every:
+        total[kind(u)][0] += 1 if tests.get(u) else 0
+        total[kind(u)][1] += 1
+    print("  all          " + "  ".join(f"{k.split()[1]} {total[k][0]}/{total[k][1]}" for k in kinds))
+    return 0
+
+
+def open_questions():
+    """Each open question: the page it is on, its text and the IDs and names it cites."""
+    found = []
+    for path in sorted(KNOWLEDGE.rglob("*.md")):
+        text = path.read_text(encoding="utf-8")
+        if "## Open questions" not in text:
+            continue
+        section = text.split("## Open questions", 1)[1].split("\n## ", 1)[0].split("\nReturn to ", 1)[0]
+        for item in re.split(r"\n(?=- )", section.strip()):
+            if item.startswith("- "):
+                body = " ".join(item[2:].split())
+                found.append((rel(path), body, set(ID.findall(body)) | set(TICKED.findall(body))))
+    return found
+
+
+def questions(graph):
+    """For each goal, the open questions that touch what it relies on."""
+    found = open_questions()
+    print("Open questions that hold each goal: a question counts when it cites an ID or")
+    print("operation the goal relies on.")
+    for goal in goal_keys(graph):
+        units = goal_units(graph, goal)
+        mine = [(page, body) for page, body, cites in found if cites & units]
+        print(f"  {goal:12} {len(mine)}")
+        for page, body in mine:
+            print(f"               {page}: {body[:90]}{'…' if len(body) > 90 else ''}")
+    loose = [(page, body) for page, body, cites in found if not cites & set(graph.file)]
+    if loose:
+        print("  Questions that cite nothing in the knowledge:")
+        for page, body in loose:
+            print(f"               {page}: {body[:90]}")
+    return 0
+
+
 def main(argv):
+    folder = (argv[1] if len(argv) > 1 else None) or TESTS["folder"]
+    if argv[:1] == ["--coverage"]:
+        return coverage(build(), (ROOT / folder) if folder else None)
+    if argv[:1] == ["--questions"]:
+        return questions(build())
     if argv[:1] == ["--fragile"]:
-        folder = argv[1] if len(argv) > 1 else TESTS["folder"]
         return fragile(build(), (ROOT / folder) if folder else None)
     if argv[:1] == ["--stats"]:
         return stats(build(), argv[1] if len(argv) > 1 else None)
