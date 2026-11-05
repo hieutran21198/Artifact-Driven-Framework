@@ -1,0 +1,255 @@
+"""Show what in the software knowledge depends on an ID, an operation or a field.
+
+Usage:
+    python3 scripts/impact.py <ID | operationId | field>          # what is affected
+    python3 scripts/impact.py --down <ID | operationId | page>    # what it relies on
+    python3 scripts/impact.py --stats [goal | ID | operationId]   # size and blast radius
+"""
+
+from collections import defaultdict
+import re
+import sys
+
+from project import CLIENTS, KNOWLEDGE, ROOT
+
+ID = re.compile(r"\b[A-Z]{1,6}(?:-[A-Z]{1,8})?-\d+\b")
+ID_ROW = re.compile(r"^\| (" + ID.pattern + r") \|")
+TICKED = re.compile(r"`([A-Za-z_][A-Za-z0-9_]*)`")
+LINK = re.compile(r"\]\(([^)#\s]+\.md)(?:#[^)\s]*)?\)")
+REF = re.compile(r"\$ref: '([^'#]*)#/components/([A-Za-z]+)/([A-Za-z0-9_]+)'")
+OPERATION_ID = re.compile(r"^\s+operationId: (\w+)")
+LAYER = {"goals": 1, "flows": 2, "artifacts": 3}
+CLIENT_PAGES = tuple(f"/{name}.md" for name in CLIENTS)
+
+
+class Graph:
+    def __init__(self):
+        self.text = defaultdict(list)    # unit -> lines
+        self.file = {}                   # unit -> file
+        self.fields = defaultdict(set)   # unit -> schema property names
+        self.links = defaultdict(set)    # file -> files it links downward
+        self.edges = defaultdict(set)    # unit -> units it cites
+
+    def add(self, unit, path, line):
+        self.file.setdefault(unit, path)
+        self.text[unit].append(line)
+
+
+def rel(path):
+    return path.relative_to(KNOWLEDGE).as_posix()
+
+
+def layer(path):
+    return LAYER.get(rel(path).split("/")[0], 0)
+
+
+def read_markdown(graph, path):
+    page = rel(path)
+    section = page
+    for line in path.read_text(encoding="utf-8").splitlines():
+        heading = re.match(r"^### `?(\w+)`?$", line)
+        if line.startswith("#"):
+            section = f"{page}#{heading.group(1)}" if heading else page
+        row = ID_ROW.match(line)
+        graph.add(row.group(1) if row else section, page, line)
+        for target in LINK.findall(line):
+            linked = (path.parent / target).resolve()
+            if KNOWLEDGE in linked.parents and 0 < layer(path) < layer(linked):
+                graph.links[page].add(rel(linked))
+
+
+def read_contract(graph, path):
+    page = rel(path)
+    unit, kind = page, None
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if re.match(r"^  /", line):
+            unit = page
+        if line.startswith("components:"):
+            unit, kind = page, None
+        component = re.match(r"^  (\w+):$", line)
+        if component and kind != "paths":
+            kind = component.group(1)
+        if line.startswith("paths:"):
+            kind = "paths"
+        named = re.match(r"^    ([A-Za-z0-9_]+):$", line)
+        if named and kind not in (None, "paths"):
+            unit = f"{page}#{kind}/{named.group(1)}"
+        operation = OPERATION_ID.match(line)
+        if operation:
+            unit = operation.group(1)
+        prop = re.match(r"^\s{8,}([a-z][a-z0-9_]*):", line)
+        if prop and kind == "schemas":
+            graph.fields[unit].add(prop.group(1))
+        graph.add(unit, page, line)
+
+
+def build():
+    graph = Graph()
+    for path in sorted(KNOWLEDGE.rglob("*")):
+        if path.suffix == ".md":
+            read_markdown(graph, path)
+        elif path.suffix == ".yaml":
+            read_contract(graph, path)
+    operations = {u for u in graph.file if "#" not in u and "/" not in u and not ID.fullmatch(u)}
+    for unit, lines in graph.text.items():
+        body = "\n".join(lines)
+        cited = set(ID.findall(body))
+        if graph.file[unit].endswith(".md"):
+            cited |= set(TICKED.findall(body)) & operations
+        if unit.endswith(tuple(f"#{op}" for op in operations)):
+            cited.add(unit.rsplit("#", 1)[1])
+        for target, kind, name in REF.findall(body):
+            base = graph.file[unit] if not target else rel((KNOWLEDGE / graph.file[unit]).parent.joinpath(target).resolve())
+            cited.add(f"{base}#{kind}/{name}")
+        graph.edges[unit] = {c for c in cited if c != unit and c in graph.file}
+    return graph
+
+
+def walk(edges, start):
+    seen, todo = set(start), list(start)
+    while todo:
+        for nxt in edges.get(todo.pop(), ()):
+            if nxt not in seen:
+                seen.add(nxt)
+                todo.append(nxt)
+    return seen
+
+
+def starts(graph, term):
+    if term in graph.file:
+        return {term}
+    prefixed = {u for u in graph.file if u.startswith(term + "-") and ID.fullmatch(u)}
+    if prefixed:
+        return prefixed
+    by_page = {u for u, f in graph.file.items() if f == term}
+    if by_page:
+        return by_page
+    tick = f"`{term}`"
+    return {u for u, lines in graph.text.items() if term in graph.fields[u] or any(tick in l for l in lines)}
+
+
+def kind(unit):
+    if unit.startswith("SYS-"):
+        return "Requirements"
+    if unit.startswith("G-"):
+        return "Goal criteria"
+    if unit.startswith("F-"):
+        return "Flow scenarios"
+    if ID.fullmatch(unit):
+        return "Artifact rules"
+    if "#schemas/" in unit or "#responses/" in unit:
+        return "Contract schemas"
+    if "#" not in unit and not unit.endswith((".md", ".yaml")):
+        return "Operations"
+    if "#" in unit and unit.split("#")[0].endswith(CLIENT_PAGES):
+        return "Client needs"
+    return None
+
+
+def report(graph, units, pages):
+    groups = defaultdict(set)
+    for unit in units:
+        if kind(unit):
+            groups[kind(unit)].add(unit.split("#")[0] + "#" + unit.split("#")[1].split("/")[-1] if "#" in unit else unit)
+    order = ["Requirements", "Goal criteria", "Flow scenarios", "Artifact rules", "Operations", "Contract schemas", "Client needs"]
+    for name in order:
+        if groups[name]:
+            print(f"{name}: {', '.join(sorted(groups[name]))}")
+    print(f"Pages: {', '.join(sorted(pages))}")
+
+
+def relies_on(graph, start):
+    start = start | {u for u, cited in graph.edges.items() if u.startswith("F-") and cited & start}
+    units = walk(graph.edges, start)
+    return units, walk(graph.links, {graph.file[u] for u in units})
+
+
+def affected(graph, start):
+    reverse = defaultdict(set)
+    for unit, cited in graph.edges.items():
+        for c in cited:
+            reverse[c].add(unit)
+    units = walk(reverse, start)
+    units |= {g for u in units if u.startswith("F-") for g in graph.edges[u] if g.startswith("G-")}
+    back = defaultdict(set)
+    for page, linked in graph.links.items():
+        for l in linked:
+            back[l].add(page)
+    return units, walk(back, {graph.file[u] for u in units})
+
+
+def with_client_needs(graph, units):
+    """Add the client needs on any operation the units reach."""
+    return units | {u for u in graph.file if kind(u) == "Client needs" and graph.edges[u] & units}
+
+
+def counts(graph, units, pages):
+    flows = {graph.file[u] for u in units if u.startswith("F-")}
+    artifacts = {p.split("/")[1] for p in pages if p.startswith("artifacts/")}
+    clients = {u.split("#")[0] for u in units if kind(u) == "Client needs"}
+    by_kind = defaultdict(int)
+    for u in units:
+        by_kind[kind(u)] += 1
+    return {
+        "criteria": by_kind["Goal criteria"], "flows": len(flows),
+        "scenarios": by_kind["Flow scenarios"], "rules": by_kind["Artifact rules"],
+        "operations": by_kind["Operations"], "artifacts": len(artifacts),
+        "client pages": len(clients),
+    }
+
+
+def line(name, numbers):
+    return f"{name:28} " + "  ".join(f"{k} {v}" for k, v in numbers.items())
+
+
+def stats(graph, term):
+    if term:
+        start = starts(graph, term)
+        if not start:
+            print(f"Nothing in the knowledge cites {term}.", file=sys.stderr)
+            return 1
+        units, pages = relies_on(graph, start)
+        print(line("relies on", counts(graph, with_client_needs(graph, units), pages)))
+        units, pages = affected(graph, start)
+        print(line("affected by a change", counts(graph, with_client_needs(graph, units), pages)))
+        return 0
+    goals = sorted({u.rsplit("-", 1)[0] for u in graph.file if u.startswith("G-") and ID.fullmatch(u)})
+    print("Size of each goal (what it relies on):")
+    for goal in goals:
+        start = {u for u in graph.file if u.startswith(goal + "-") and ID.fullmatch(u)}
+        units, pages = relies_on(graph, start)
+        print("  " + line(goal, counts(graph, with_client_needs(graph, units), pages)))
+    print("Blast radius of each rule and operation (what a change affects):")
+    nodes = [u for u in graph.file if kind(u) in ("Requirements", "Artifact rules", "Operations")]
+    rows = []
+    for node in nodes:
+        units, pages = affected(graph, {node})
+        units = with_client_needs(graph, units)
+        rows.append((node, counts(graph, units, pages)))
+    rows.sort(key=lambda r: (-r[1]["scenarios"], -r[1]["operations"], r[0]))
+    for node, numbers in rows:
+        numbers.pop("criteria"), numbers.pop("rules")
+        print("  " + line(node, numbers))
+    return 0
+
+
+def main(argv):
+    if argv[:1] == ["--stats"]:
+        return stats(build(), argv[1] if len(argv) > 1 else None)
+    down = "--down" in argv
+    terms = [a for a in argv if a != "--down"]
+    if len(terms) != 1:
+        print(__doc__, file=sys.stderr)
+        return 2
+    graph = build()
+    start = starts(graph, terms[0])
+    if not start:
+        print(f"Nothing in the knowledge cites {terms[0]}.", file=sys.stderr)
+        return 1
+    units, pages = (relies_on if down else affected)(graph, start)
+    report(graph, units, pages)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

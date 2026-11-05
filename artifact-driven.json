@@ -1,0 +1,13 @@
+{
+  "knowledge": "docs/software-knowledge",
+  "skip": [".git", "node_modules", "build"],
+  "clients": {
+    "web": "Web",
+    "mobile": "Mobile app"
+  },
+  "routes": null,
+  "site": {
+    "title": "Library lending knowledge",
+    "output": "build/site/index.html"
+  }
+}

@@ -1,0 +1,75 @@
+openapi: 3.0.3
+info:
+  title: Shared components
+  version: 0.1.0
+  description: >
+    Components every contract uses: the error shape and authentication.
+    Artifact and flow contracts reference them; this file has no paths.
+servers:
+  - url: http://localhost:8080
+    description: Local backend
+paths: {}
+components:
+  securitySchemes:
+    staffBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Staff token from the staff sign-in.
+    memberBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Member token from the member sign-in.
+  schemas:
+    Error:
+      type: object
+      required: [code, type, message]
+      properties:
+        code:
+          type: integer
+          description: HTTP status code.
+          example: 422
+        type:
+          type: string
+          example: Unprocessable Entity
+        message:
+          type: string
+          example: invalid status transition
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+  responses:
+    BadRequest:
+      description: The request is not valid, for example a body that does not parse.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: The token is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: The token is valid, but its user may not do this.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: The resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    UnprocessableEntity:
+      description: A business rule refused the request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

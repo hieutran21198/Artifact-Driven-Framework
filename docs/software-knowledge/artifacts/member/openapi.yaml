@@ -1,0 +1,64 @@
+openapi: 3.0.3
+info:
+  title: Member artifact
+  version: 0.1.0
+  description: >
+    Contract of the member artifact. Written before the code (contract first);
+    the backend implements it and the clients call it.
+servers:
+  - url: http://localhost:8080
+    description: Local backend
+security:
+  - memberBearer: []
+paths:
+  /v1/me:
+    get:
+      operationId: getMyMember
+      summary: Read the signed-in member and whether they may borrow (MBR-2, MBR-3, MBR-4, MBR-5).
+      responses:
+        '200':
+          description: The member.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberResponse'
+        '401':
+          $ref: '../../system/openapi.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: '../../system/openapi.yaml#/components/responses/NotFound'
+components:
+  securitySchemes:
+    memberBearer:
+      $ref: '../../system/openapi.yaml#/components/securitySchemes/memberBearer'
+  schemas:
+    Member:
+      type: object
+      required: [id, name, status, loan_count, loan_limit, can_borrow]
+      properties:
+        id:
+          type: integer
+          example: 7
+        name:
+          type: string
+          description: Not empty after trimming spaces (MBR-1).
+          example: Sam Lee
+        status:
+          type: string
+          enum: [active, suspended]
+        loan_count:
+          type: integer
+          description: Books on loan or overdue to the member (MBR-2).
+          example: 1
+        loan_limit:
+          type: integer
+          description: The loan limit (MBR-2).
+          example: 3
+        can_borrow:
+          type: boolean
+          description: False when MBR-2, MBR-3 or MBR-4 refuses a loan.
+    MemberResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/Member'

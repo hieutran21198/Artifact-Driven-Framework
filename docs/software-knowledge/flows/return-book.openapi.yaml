@@ -1,0 +1,52 @@
+openapi: 3.0.3
+info:
+  title: Return a book flow
+  version: 0.1.0
+  description: >
+    Contract of the Return a book flow: the return endpoint, and the email the
+    overdue worker sends.
+servers:
+  - url: http://localhost:8080
+    description: Local backend
+security:
+  - memberBearer: []
+paths:
+  /v1/books/{id}/return:
+    post:
+      operationId: returnBook
+      summary: End the loan of a book the signed-in member holds (F-RETURN-1, F-RETURN-2, F-RETURN-4, F-RETURN-6).
+      parameters:
+        - $ref: '../artifacts/book/openapi.yaml#/components/parameters/BookID'
+      responses:
+        '200':
+          description: The book, available again (F-RETURN-1).
+          content:
+            application/json:
+              schema:
+                $ref: '../artifacts/book/openapi.yaml#/components/schemas/BookResponse'
+        '401':
+          $ref: '../system/openapi.yaml#/components/responses/Unauthorized'
+        '403':
+          $ref: '../system/openapi.yaml#/components/responses/Forbidden'
+        '404':
+          $ref: '../system/openapi.yaml#/components/responses/NotFound'
+        '422':
+          $ref: '../system/openapi.yaml#/components/responses/UnprocessableEntity'
+components:
+  securitySchemes:
+    memberBearer:
+      $ref: '../system/openapi.yaml#/components/securitySchemes/memberBearer'
+  schemas:
+    OverdueEmail:
+      type: object
+      description: The email the overdue worker sends to the member (F-RETURN-3). Not an HTTP response.
+      required: [book_title, due_at]
+      properties:
+        book_title:
+          type: string
+          example: A Field Guide to Birds
+        due_at:
+          type: string
+          format: date-time
+          description: The due time that passed (BK-4, SYS-3).
+          example: '2030-01-15T18:00:00Z'
