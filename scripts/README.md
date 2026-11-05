@@ -16,6 +16,7 @@ that file. Every key is optional.
 | `skip` | Folder names whose Markdown the docs check skips, such as checked-out client or service code | `.git`, `node_modules`, `build` |
 | `clients` | The client pages an artifact may have: file name without `.md`, mapped to the name the site shows | none |
 | `routes` | Where the site finds the backend routes for API coverage: `folders` (relative to the root), `glob`, and `pattern`, a regular expression with the named groups `method` and `path` | none: the site leaves API coverage out |
+| `tests` | Where the tests live: `folder` (relative to the root) and `glob`, the test files under it | none, `**/*_test.*` |
 | `site` | `title` of the site and `output`, the file it writes | `Software knowledge`, `build/site/index.html` |
 
 A `routes` setting for a backend that documents its handlers with
@@ -55,10 +56,24 @@ python3 scripts/check_docs.py
 ```
 
 It checks every Markdown file outside the `skip` folders for broken relative
-links and missing heading anchors, every knowledge ID cited in the knowledge
-folder for a definition, and that every flow scenario names an `operationId`
-from a contract or a worker trigger. It lists the problems and exits with
-status 1 when it finds any.
+links and missing heading anchors. In the knowledge folder it checks that
+every cited ID is defined, once, and not withdrawn; that every scenario that is
+not withdrawn names an `operationId` or a trigger under `x-triggers`; and that
+every operation and trigger is named by a scenario. It lists the problems and
+exits with status 1 when it finds any.
+
+## Test check
+
+Run [check_tests.py](check_tests.py) on the checkout of a code change:
+
+```sh
+python3 scripts/check_tests.py [tests folder]
+```
+
+It reads the test files that the `tests` setting names, or those under the
+folder given, and reports a test that names a knowledge ID the knowledge does
+not define, or a withdrawn one. It looks only at IDs whose prefix the
+knowledge uses. Without a folder or a `tests` setting it exits with status 2.
 
 ## Impact
 
@@ -85,8 +100,20 @@ pages it relies on) and the blast radius of each requirement, rule and
 operation (the flows, scenarios, operations and client pages a change to it
 affects), largest first. With an argument it prints both counts for that goal
 (such as `G-BORROW`), ID or operation. A rule with no scenario shows 0
-scenarios: a gap in the flows. A scenario that names no operation or rule is
-invisible to it.
+scenarios: a gap in the flows.
+
+`--fragile [tests folder]` ranks the 20 nodes a change would break most and
+that are proved least: requirements, rules, operations and schemas, by reach
+times weakness. With a tests folder, or the `tests` setting, a rule no test
+names counts as weaker:
+
+```sh
+python3 scripts/impact.py --fragile
+```
+
+A worker trigger declared under `x-triggers` counts as an operation, and a
+client page heading that names a payload schema cites that schema. A scenario
+that names no operation, trigger or rule is invisible to it.
 
 ## Knowledge site
 

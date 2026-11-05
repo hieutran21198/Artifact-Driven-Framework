@@ -51,7 +51,7 @@ components:
           example: 1
         loan_limit:
           type: integer
-          description: The loan limit (MBR-2).
+          description: The loan limit of the member's home region (MBR-2).
           example: 3
         can_borrow:
           type: boolean

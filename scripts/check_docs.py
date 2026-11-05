@@ -10,6 +10,7 @@ LINK = re.compile(r"\]\(([^)#\s]*)(?:#([^)\s]*))?\)")
 HEADING = re.compile(r"^#+ (.*)$", re.MULTILINE)
 ID = re.compile(r"\b[A-Z]{1,6}(?:-[A-Z]{1,8})?-\d+\b")
 ID_DEFINITION = re.compile(r"^\| (" + ID.pattern + r") \|", re.MULTILINE)
+ID_ROW = re.compile(r"^\| (" + ID.pattern + r") \| *(Withdrawn\b)?")
 
 
 def slug(heading):
@@ -39,28 +40,67 @@ def check_links():
     return problems
 
 
+def knowledge_ids():
+    """The defined knowledge IDs, with the file of each, and the withdrawn ones."""
+    defined, withdrawn = {}, set()
+    for path in sorted(KNOWLEDGE.rglob("*")):
+        if path.suffix in {".md", ".yaml"}:
+            for line in path.read_text(encoding="utf-8").splitlines():
+                row = ID_ROW.match(line)
+                if row:
+                    defined.setdefault(row.group(1), path.relative_to(ROOT))
+                    if row.group(2):
+                        withdrawn.add(row.group(1))
+    return defined, withdrawn
+
+
 def check_ids():
-    defined, cited = set(), {}
-    for path in KNOWLEDGE.rglob("*"):
+    defined, withdrawn, cited, problems = {}, set(), [], []
+    for path in sorted(KNOWLEDGE.rglob("*")):
         if path.suffix not in {".md", ".yaml"}:
             continue
-        text = path.read_text(encoding="utf-8")
-        defined.update(ID_DEFINITION.findall(text))
-        for found in ID.findall(text):
-            cited.setdefault(found, path.relative_to(ROOT))
-    return [f"{where}: {found} is cited but not defined" for found, where in sorted(cited.items()) if found not in defined]
+        where = path.relative_to(ROOT)
+        for line in path.read_text(encoding="utf-8").splitlines():
+            row = ID_ROW.match(line)
+            if row:
+                if row.group(1) in defined:
+                    problems.append(f"{where}: {row.group(1)} is defined twice, also in {defined[row.group(1)]}")
+                defined.setdefault(row.group(1), where)
+                if row.group(2):
+                    withdrawn.add(row.group(1))
+                    continue
+            own = row.group(1) if row else None
+            cited.extend((found, where) for found in ID.findall(line) if found != own)
+    for found, where in cited:
+        if found not in defined:
+            problems.append(f"{where}: {found} is cited but not defined")
+        elif found in withdrawn:
+            problems.append(f"{where}: {found} is withdrawn and still cited")
+    return sorted(set(problems))
+
+
+def triggers(text):
+    """The names declared under the root key x-triggers of a contract."""
+    block = re.search(r"^x-triggers:\n((?:[ \t]+.*\n?|\n)*)", text, re.MULTILINE)
+    return set(re.findall(r"^  (\w+):", block.group(1), re.MULTILINE)) if block else set()
 
 
 def check_scenarios():
     operations = set()
     for path in KNOWLEDGE.rglob("*.yaml"):
-        operations.update(re.findall(r"operationId: (\w+)", path.read_text(encoding="utf-8")))
-    problems = []
-    for path in (KNOWLEDGE / "flows").glob("*.md"):
+        text = path.read_text(encoding="utf-8")
+        operations.update(re.findall(r"operationId: (\w+)", text))
+        operations.update(triggers(text))
+    problems, used = [], set()
+    for path in sorted((KNOWLEDGE / "flows").glob("*.md")):
         for row in re.findall(r"^\| (F-[A-Z]+-\d+) \|(.*)$", path.read_text(encoding="utf-8"), re.MULTILINE):
+            if row[1].lstrip().startswith("Withdrawn"):
+                continue
             named = set(re.findall(r"`(\w+)`", row[1])) & operations
-            if not named and "worker" not in row[1].lower():
+            used |= named
+            if not named:
                 problems.append(f"{path.relative_to(ROOT)}: {row[0]} names no operation")
+    problems += [f"{name} is named by no scenario" for name in sorted(operations - used)]
     return problems
 
 
@@ -70,7 +110,7 @@ def main():
         print(problem, file=sys.stderr)
     if problems:
         return 1
-    print("Docs check passed: links, anchors, knowledge IDs and scenario operations.")
+    print("Docs check passed: links, anchors, knowledge IDs, and scenarios and the operations or triggers they name.")
     return 0
 
 

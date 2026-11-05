@@ -14,7 +14,8 @@ Sample: [system](../../software-knowledge/system/README.md).
 ## Steps
 
 1. Add a requirement with the next free `SYS-<n>` ID. Never reuse or
-   renumber an ID; mark a dropped requirement as withdrawn.
+   renumber an ID; mark a dropped requirement as withdrawn
+   ([the life of an ID](../knowledge.md#the-life-of-an-id)).
 2. A requirement names what must hold for every goal, flow and artifact. It
    names groups and principles, not fields; the contract owns the fields.
 3. Update the context diagram when an actor, a container or an external

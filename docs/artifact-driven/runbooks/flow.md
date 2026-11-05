@@ -7,7 +7,8 @@ Sample: [Borrow a book](../../software-knowledge/flows/borrow-book.md).
 ## Files
 
 1. `flows/<flow>.md` in the knowledge folder
-2. `flows/<flow>.openapi.yaml`, when the flow owns an endpoint
+2. `flows/<flow>.openapi.yaml`, when the flow owns an endpoint, sends a
+   payload that is not an HTTP response, or is started by a trigger
    ([contract](contract.md))
 3. `flows/README.md`
 4. The goals that use the flow, and the knowledge map
@@ -15,25 +16,35 @@ Sample: [Borrow a book](../../software-knowledge/flows/borrow-book.md).
 ## Steps
 
 1. Write the header: the goal it serves, the artifacts it crosses, its
-   contract, its trigger and its outcome.
+   contract, its trigger and its outcome. A flow a worker runs names its
+   trigger in backticks, as the contract declares it (`overdueCheck`), and for
+   a schedule its time and time zone.
 2. Write the steps in order. Say who acts in each step (an actor, a client,
    the backend, or a worker on a schedule or a trigger), which artifact it
    uses, and which steps run in one transaction. Where a client calls the
    backend, name the call by intent first ("the client asks for the book");
    the contract gives it an `operationId` ([contract](contract.md)), and the
-   step then names it. Cite artifact rules by ID; do not restate them.
+   step then names it. Cite artifact rules by ID; do not restate them. A step
+   states no condition of its own: a region, a role or a limit is a rule,
+   cited by ID. Calls to external systems come after the transaction; say what
+   happens when they fail. For a worker or a webhook, say what happens when
+   the same trigger arrives twice (SYS-8). A scheduled worker's scenarios
+   cover a run with nothing to do, a failed send, and a run that repeats.
 3. Draw a `sequenceDiagram`: clients and the backend as participants, artifacts
    as participants inside the backend, `rect` around the transaction, `alt` for
    each failure.
 4. Write the scenarios as a table with IDs `F-<FLOW>-<n>`: given, when, then,
    and the goal criteria and artifact rules each one covers. The When names
-   the `operationId` the scenario calls, or the trigger of a worker, so that
+   the `operationId` the scenario calls, or the trigger that starts a worker,
+   in backticks, so that
    [impact](../../../scripts/README.md#impact) can trace it. Every goal
    criterion the flow serves needs at least one scenario. When changing a
    flow, add new IDs and keep old ones; mark a dropped scenario as withdrawn
-   instead of deleting it.
-5. List behavior the flow does not define under "Not covered yet". Write
-   behavior only, never status or plans.
+   instead of deleting it ([the life of an ID](../knowledge.md#the-life-of-an-id)).
+   Removing one operation from a scenario that names others keeps the ID; a
+   scenario left with no operation is withdrawn.
+5. List behavior the flow does not define under `## Open questions`
+   ([open questions](../knowledge.md#open-questions)).
 6. If a step needs a rule an artifact does not have, add it first:
    [artifact rule](artifact-rule.md).
 

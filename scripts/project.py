@@ -13,6 +13,7 @@ DEFAULTS = {
     "skip": [".git", "node_modules", "build"],
     "clients": {},
     "routes": None,
+    "tests": {"folder": None, "glob": "**/*_test.*"},
     "site": {"title": "Software knowledge", "output": "build/site/index.html"},
 }
 
@@ -28,9 +29,11 @@ ROOT = find_root()
 _file = ROOT / NAME
 CONFIG = {**DEFAULTS, **(json.loads(_file.read_text(encoding="utf-8")) if _file.is_file() else {})}
 CONFIG["site"] = {**DEFAULTS["site"], **(CONFIG.get("site") or {})}
+CONFIG["tests"] = {**DEFAULTS["tests"], **(CONFIG.get("tests") or {})}
 
 KNOWLEDGE = ROOT / CONFIG["knowledge"]
 SKIP = set(CONFIG["skip"])
 CLIENTS = dict(CONFIG["clients"])
 ROUTES = CONFIG["routes"]
 SITE = CONFIG["site"]
+TESTS = CONFIG["tests"]

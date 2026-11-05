@@ -15,8 +15,11 @@ Sample: [book specification](../../software-knowledge/artifacts/book/specificati
 
 1. Add the rule to the rules table with the next free ID, using the prefix in
    the artifact's README. Never reuse or renumber an ID; mark a dropped rule as
-   withdrawn.
-2. Name the error the rule returns, if any.
+   withdrawn ([the life of an ID](../knowledge.md#the-life-of-an-id)).
+2. Name the error the rule returns, if any. Write a value the rule depends
+   on, a table of regions when it differs by region, and whether a change
+   applies to existing records
+   ([rules with values](../knowledge.md#rules-with-values)).
 3. Update the `classDiagram` when a behavior is added or removed, and the
    `stateDiagram-v2` when the lifecycle changes.
 4. Keep the page free of containers and flows: no screens, no endpoints, no

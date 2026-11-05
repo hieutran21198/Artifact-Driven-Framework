@@ -18,7 +18,9 @@ Sample: [Borrow a book](../../software-knowledge/goals/borrow-a-book.md).
    requirement by its `SYS` ID.
 3. Write the success criteria as a table with IDs `G-<GOAL>-<n>`. Each one is
    something a person can check is true. When changing a goal, add new IDs and
-   keep old ones; mark a dropped criterion as withdrawn instead of deleting it.
+   keep old ones; mark a dropped criterion as withdrawn instead of deleting it
+   ([the life of an ID](../knowledge.md#the-life-of-an-id)). The goal key
+   follows the same page.
 4. List the flows that reach the goal and draw them as a `flowchart`. A flow
    that does not exist yet is the next runbook: [flow](flow.md).
 5. Add the goal to the goals index and to the knowledge map.

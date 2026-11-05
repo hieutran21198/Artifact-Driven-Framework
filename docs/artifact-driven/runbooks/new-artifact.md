@@ -26,7 +26,10 @@ Sample: [book artifact](../../software-knowledge/artifacts/book/README.md).
    ([contract](contract.md)), and client pages for the clients that use it
    ([client](client.md)).
 6. When code already exists, start from what it does today. Mark anything not
-   yet confirmed as an open question in the page instead of guessing.
+   yet confirmed as an open question in the page instead of guessing, and
+   settle each conflict with the intended behavior as
+   [knowledge and running code](../knowledge.md#knowledge-and-running-code)
+   says.
 
 Then [check the docs](check.md).
 

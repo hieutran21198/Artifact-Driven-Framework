@@ -39,11 +39,21 @@ flowchart LR
 | Web | The browser client for members and staff |
 | Mobile app | The client for members |
 
+## Supported client versions
+
+The oldest version of each client that SYS-4 and SYS-6
+([requirements](requirements.md#released-client-versions)) still protect.
+
+| Client | Oldest supported version |
+| --- | --- |
+| Web | The deployed build only |
+| Mobile app | 2.0 |
+
 ## External systems
 
 | System | Used for |
 | --- | --- |
-| Scheduler | Runs a backend worker at a set time |
+| Scheduler | Runs a backend worker at a set time, such as the daily overdue check |
 | Email service | Sends messages to members |
 
 Return to [system](README.md).

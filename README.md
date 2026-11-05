@@ -22,15 +22,15 @@ rule affects, and what a goal relies on.
 
 - [Documentation](docs/README.md)
   - [Artifact Driven](docs/artifact-driven/README.md): the knowledge rules,
-    the workflow, the team of agents, the definition of done (D1 to D6) and
+    the workflow, the team of agents, the definition of done (D1 to D7) and
     the runbooks.
   - [Software knowledge](docs/software-knowledge/README.md): the reference
     pass, a small library lending service written from system down to client
     needs. Every rule of the framework shows in it.
   - [Diagrams](docs/diagrams/README.md): which Mermaid diagrams to draw and
     how.
-- [Scripts](scripts/README.md): the structure and docs checks, the impact
-  analysis and the bilingual knowledge site, set up by
+- [Scripts](scripts/README.md): the structure, docs and test checks, the
+  impact analysis and the bilingual knowledge site, set up by
   [artifact-driven.json](artifact-driven.json).
 - [Agent resources](.agents/README.md): one agent per role and the skills
   they use. Claude Code reads them through [.claude](.claude/README.md).
@@ -46,6 +46,7 @@ python3 scripts/check_structure.py
 python3 scripts/check_docs.py
 python3 scripts/impact.py --stats
 python3 scripts/impact.py BK-3
+python3 scripts/impact.py --fragile
 python3 scripts/site.py
 ```
 
@@ -60,8 +61,8 @@ python3 scripts/site.py
    path.
 2. **Configure** [artifact-driven.json](artifact-driven.json): the knowledge
    folder, the folders the docs check skips (such as checked-out client or
-   service code), the clients that get client pages, where the site finds
-   backend routes, and the site title. [Scripts](scripts/README.md#configuration)
+   service code), the clients that get client pages, where the tests live,
+   where the site finds backend routes, and the site title. [Scripts](scripts/README.md#configuration)
    describes each key.
 3. **Replace the reference pass.** Write the project's own system pages
    first: context, requirements, glossary and the shared contract parts. Keep
@@ -79,7 +80,9 @@ python3 scripts/site.py
 6. **Work by the workflow.** Every change starts as an issue and goes through
    knowledge, contract, code and review as [Workflow](docs/artifact-driven/workflow.md)
    and [Team](docs/artifact-driven/team.md) say. The one person in the loop
-   approves the pull requests.
+   approves: knowledge by merging its branch
+   ([approval of knowledge](docs/artifact-driven/README.md#approval-of-knowledge)),
+   code by approving its pull request.
 
 ## Requirements
 

@@ -23,11 +23,17 @@ Sample: [book on the mobile app](../../software-knowledge/artifacts/book/mobile.
 2. For a new feature, write the needs from the flow and the contract, before
    the client code exists. The page is then the brief for the app team.
 3. For a client that already runs, read its code on the branch it releases
-   from to learn what it depends on. Do not commit to client repositories.
+   from to learn what it depends on. When the change removes or changes
+   something, also read the release of the oldest supported version
+   ([supported client versions](../../software-knowledge/system/context.md#supported-client-versions))
+   and write its needs too. Do not commit to client repositories.
 4. Under `## Needs`, write what the client expects: first what every response
-   item needs, then one subsection per `operationId` for anything extra. A
-   need is a key that must be present or non-null, or a value with a special
-   meaning. Cite a rule ID when a need follows a rule; do not restate it.
+   item needs, then one subsection per `operationId`, or per payload schema the
+   client receives (a push, a deep link), for anything extra. A need names a
+   key, its JSON type and whether it may be null, or a value with a special
+   meaning. Cite a rule ID when a need follows a rule; do not restate it. A
+   need that holds only when a rule applies says so: "`fee` is a number when
+   BK-n applies, else null".
 5. Write no screens, code locations or other evidence ([knowledge, not
    evidence](../knowledge.md#knowledge-not-evidence)). Report the evidence to
    the coordinator for the issue.

@@ -17,7 +17,7 @@ author of the change it reviews.
 | Implementer | Code and tests from approved knowledge | The project's code skill | Code, on its own branch |
 | Defect investigator | Evidence for a reported defect and the ID it breaks | `defect-triage` | Nothing; reports |
 | Reviewer | Knowledge, contract, code and tests agree; [Done](done.md) holds | `software-knowledge` | Nothing; reports |
-| Approver (a person) | Approves the knowledge and the code pull requests | — | Approvals |
+| Approver (a person) | Approves knowledge by merging its branch, and code by approving its pull request | — | Merges into the knowledge default branch; approvals |
 
 ## Flow
 
@@ -31,7 +31,7 @@ flowchart TB
     designer -- operationIds --> writer
     designer --> analysts[Client analysts, one per client]
     analysts --> review_k[Reviewer: knowledge]
-    review_k --> approve_k{{Approver: knowledge pull request}}
+    review_k --> approve_k{{Approver: merges the knowledge branch}}
     approve_k --> implementer[Implementer]
     implementer --> review_c[Reviewer: code against knowledge]
     review_c --> approve_c{{Approver: code pull request}}
@@ -48,9 +48,13 @@ flowchart TB
 
 ## Handoffs
 
-- A role skips its step when the change does not need it: no endpoint, no
-  contract designer; no client affected, no client analyst.
+- A role skips its step when the change does not need it: no endpoint,
+  payload or trigger, no contract designer; no client receives a response or
+  a payload, no client analyst.
 - Client analysts run in parallel, one per client.
+- Each issue has one coordinator and one branch. When several issues are in
+  progress, the approver orders the merges
+  ([parallel branches](workflow.md#parallel-branches)).
 - Each role reports to the coordinator: what changed, the IDs, the check
   results and the open questions. The next role starts from that report and
   the merged or proposed pages, not from memory.
@@ -61,8 +65,9 @@ flowchart TB
 
 ## Limits
 
-- Only the coordinator commits, pushes, opens pull requests, merges or deploys,
-  and only when the approver asks.
+- Only the coordinator commits, pushes, opens pull requests, merges code pull
+  requests or deploys, and only when the approver asks. Only the approver
+  merges a knowledge branch into the default branch.
 - Nobody commits to the client repositories.
 - The defect investigator and the reviewer change nothing.
 

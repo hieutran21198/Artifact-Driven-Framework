@@ -8,7 +8,8 @@ Use before a release reaches production, to give the client the report that
 1. Find the commit that runs in production and the release candidate. List
    the issues and pull requests between them.
 2. From those pull requests, collect the IDs their tests prove and the goals
-   those IDs serve.
+   those IDs serve. List apart the pull requests that change production data
+   or prove no ID, so the client sees them too.
 3. For each goal, run [impact](../../../scripts/README.md#impact) downward
    (`python3 scripts/impact.py --down <goal criterion ID>`) to list the
    requirements, flows, rules, operations and contracts the goal relies on.

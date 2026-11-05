@@ -66,10 +66,12 @@ sequenceDiagram
 | F-BORROW-6 | A withdrawn book | The member calls `borrowBook` | The loan is refused | G-BORROW-6, BK-7 |
 | F-BORROW-7 | A book on loan to another member | The member calls `getBook` | The response shows the book on loan and names no borrower | SYS-5, BK-9 |
 | F-BORROW-8 | A member with an overdue loan | The member calls `getMyMember` | `can_borrow` is false, so the client can say why before the member tries | G-BORROW-6, MBR-4 |
+| F-BORROW-9 | No book yet | Staff call `createBook` with a title | The book is available, and a member can borrow it | G-BORROW-1, BK-1, BK-2 |
+| F-BORROW-10 | A book on loan | Staff call `withdrawBook` | The withdrawal is refused and the loan goes on | G-BORROW-2, BK-7 |
 
-## Not covered yet
+## Open questions
 
-- A member cannot reserve a book that is on loan. Reservations need an
-  artifact of their own first.
+- Whether a member may reserve a book that is on loan, and who gets it when
+  it comes back (G-BORROW-2, F-BORROW-2).
 
 Return to [flows](README.md).

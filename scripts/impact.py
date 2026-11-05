@@ -4,13 +4,14 @@ Usage:
     python3 scripts/impact.py <ID | operationId | field>          # what is affected
     python3 scripts/impact.py --down <ID | operationId | page>    # what it relies on
     python3 scripts/impact.py --stats [goal | ID | operationId]   # size and blast radius
+    python3 scripts/impact.py --fragile [tests folder]            # the 20 most fragile nodes
 """
 
 from collections import defaultdict
 import re
 import sys
 
-from project import CLIENTS, KNOWLEDGE, ROOT
+from project import CLIENTS, KNOWLEDGE, ROOT, TESTS
 
 ID = re.compile(r"\b[A-Z]{1,6}(?:-[A-Z]{1,8})?-\d+\b")
 ID_ROW = re.compile(r"^\| (" + ID.pattern + r") \|")
@@ -66,13 +67,19 @@ def read_contract(graph, path):
             unit = page
         if line.startswith("components:"):
             unit, kind = page, None
-        component = re.match(r"^  (\w+):$", line)
-        if component and kind != "paths":
-            kind = component.group(1)
+        if re.match(r"^\S", line):
+            unit, kind = page, None
         if line.startswith("paths:"):
             kind = "paths"
+        if line.startswith("x-triggers:"):
+            kind = "x-triggers"
+        component = re.match(r"^  (\w+):$", line)
+        if component and kind == "x-triggers":
+            unit = component.group(1)
+        elif component and kind != "paths":
+            kind = component.group(1)
         named = re.match(r"^    ([A-Za-z0-9_]+):$", line)
-        if named and kind not in (None, "paths"):
+        if named and kind not in (None, "paths", "x-triggers"):
             unit = f"{page}#{kind}/{named.group(1)}"
         operation = OPERATION_ID.match(line)
         if operation:
@@ -91,6 +98,7 @@ def build():
         elif path.suffix == ".yaml":
             read_contract(graph, path)
     operations = {u for u in graph.file if "#" not in u and "/" not in u and not ID.fullmatch(u)}
+    schemas = {u.rsplit("/", 1)[1]: u for u in graph.file if "#schemas/" in u}
     for unit, lines in graph.text.items():
         body = "\n".join(lines)
         cited = set(ID.findall(body))
@@ -98,6 +106,9 @@ def build():
             cited |= set(TICKED.findall(body)) & operations
         if unit.endswith(tuple(f"#{op}" for op in operations)):
             cited.add(unit.rsplit("#", 1)[1])
+        heading = unit.rsplit("#", 1)[1] if "#" in unit and graph.file[unit].endswith(".md") else None
+        if heading in schemas:
+            cited.add(schemas[heading])
         for target, kind, name in REF.findall(body):
             base = graph.file[unit] if not target else rel((KNOWLEDGE / graph.file[unit]).parent.joinpath(target).resolve())
             cited.add(f"{base}#{kind}/{name}")
@@ -233,7 +244,59 @@ def stats(graph, term):
     return 0
 
 
+def test_files(folder):
+    """The test files under a folder, as the tests setting names them."""
+    return sorted(p for p in folder.glob(TESTS["glob"]) if p.is_file())
+
+
+def tested_ids(folder):
+    """How many test files name each knowledge ID."""
+    found = defaultdict(int)
+    for path in test_files(folder):
+        for name in set(ID.findall(path.read_text(encoding="utf-8", errors="ignore"))):
+            found[name] += 1
+    return found
+
+
+def fragile(graph, folder, limit=20):
+    """Rank requirements, rules, operations and schemas by how much a change
+    would break and how weakly it is proved."""
+    tests = tested_ids(folder) if folder else {}
+    if folder and not folder.is_dir():
+        print(f"Not a folder: {folder}", file=sys.stderr)
+        return 1
+    open_questions = set()
+    for path in KNOWLEDGE.rglob("*.md"):
+        text = path.read_text(encoding="utf-8")
+        if "## Open questions" in text:
+            section = text.split("## Open questions", 1)[1]
+            open_questions |= set(ID.findall(section)) | set(TICKED.findall(section))
+    rows = []
+    for node in graph.file:
+        if kind(node) not in ("Requirements", "Artifact rules", "Operations", "Contract schemas"):
+            continue
+        units, pages = affected(graph, {node})
+        numbers = counts(graph, with_client_needs(graph, units), pages)
+        reach = numbers["scenarios"] + numbers["criteria"] + 2 * numbers["operations"] + 3 * numbers["client pages"]
+        is_id = bool(ID.fullmatch(node))
+        direct = sum(1 for unit, cited in graph.edges.items() if unit.startswith("F-") and node in cited)
+        weak = (is_id and direct == 0) + (is_id and bool(folder) and tests.get(node, 0) == 0)
+        score = reach * (1 + weak) + (8 if node in open_questions else 0)
+        rows.append((score, node, numbers, direct, tests.get(node, 0) if is_id and folder else "-", node in open_questions))
+    rows.sort(key=lambda r: (-r[0], r[1]))
+    print("The most fragile nodes: reach times weakness. Reach counts scenarios and criteria,")
+    print("operations twice and client pages three times; weakness adds 1 for a rule with no")
+    print("scenario citing it and 1 for a rule no test names.")
+    for i, (score, node, numbers, direct, named, question) in enumerate(rows[:limit], 1):
+        print(f"{i:3}  {score:4}  {node.split('#')[-1]:28} scenarios {numbers['scenarios']}  operations {numbers['operations']}"
+              f"  client pages {numbers['client pages']}  cited by {direct}  tests {named}" + ("  open question" if question else ""))
+    return 0
+
+
 def main(argv):
+    if argv[:1] == ["--fragile"]:
+        folder = argv[1] if len(argv) > 1 else TESTS["folder"]
+        return fragile(build(), (ROOT / folder) if folder else None)
     if argv[:1] == ["--stats"]:
         return stats(build(), argv[1] if len(argv) > 1 else None)
     down = "--down" in argv
