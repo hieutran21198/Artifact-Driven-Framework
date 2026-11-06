@@ -1,5 +1,19 @@
+# Local environment and editor files
+.env
+.env.*
+!.env.example
+.direnv/
+.devenv*
 .DS_Store
+*.swp
+*.swo
+
+# Python check caches
 __pycache__/
 *.py[cod]
+
+# Claude Code worktrees
 .claude/worktrees/
+
+# Generated output
 build/

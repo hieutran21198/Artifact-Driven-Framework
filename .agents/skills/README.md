@@ -8,8 +8,9 @@ permissions. The [team](../agents/README.md) says which agent uses which skill.
   flows, artifact rules, contracts and client pages, then check the docs.
 - [Defect triage](defect-triage/README.md): evidence first, then the knowledge
   ID a defect breaks.
+- [Backend service](backend-service/README.md): Go endpoints, domain behavior,
+  persistence, transactions and provider integration, from approved knowledge.
 
-A project adds its own code skill for the implementer. Each directory contains
-a canonical `SKILL.md` and a navigation README.
+Each directory contains a canonical `SKILL.md` and a navigation README.
 
 Return to [agent resources](../README.md).

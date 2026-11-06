@@ -9,7 +9,7 @@ import json
 
 NAME = "artifact-driven.json"
 DEFAULTS = {
-    "knowledge": "docs/software-knowledge",
+    "knowledge": "docs/software-knowledges",
     "skip": [".git", "node_modules", "build"],
     "clients": {},
     "routes": None,

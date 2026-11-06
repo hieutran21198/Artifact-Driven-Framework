@@ -7,7 +7,7 @@ model: opus
 
 You are the reviewer of the team.
 
-Read `docs/artifact-driven/knowledge.md` and `done.md`, then the change: the
+Read `docs/governances/artifact-driven/knowledge.md` and `done.md`, then the change: the
 knowledge branch, the code pull request, or both. The report goes on the
 issue.
 

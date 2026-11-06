@@ -12,19 +12,20 @@ that file. Every key is optional.
 
 | Key | Holds | Default |
 | --- | --- | --- |
-| `knowledge` | The knowledge folder, relative to the root | `docs/software-knowledge` |
+| `knowledge` | The knowledge folder, relative to the root | `docs/software-knowledges` |
 | `skip` | Folder names whose Markdown the docs check skips, such as checked-out client or service code | `.git`, `node_modules`, `build` |
 | `clients` | The client pages an artifact may have: file name without `.md`, mapped to the name the site shows | none |
-| `routes` | Where the site finds the backend routes for API coverage: `folders` (relative to the root), `glob`, and `pattern`, a regular expression with the named groups `method` and `path` | none: the site leaves API coverage out |
+| `routes` | Where the site finds the backend routes for API coverage: `folders` (relative to the root), `glob`, and `pattern`, a regular expression with the named groups `method` and `path` | none: the site leaves API coverage out, as it does while none of the folders exists |
 | `tests` | Where the tests live: `folder` (relative to the root) and `glob`, the test files under it | none, `**/*_test.*` |
 | `site` | `title` of the site and `output`, the file it writes | `Software knowledge`, `build/site/index.html` |
 
-A `routes` setting for a backend that documents its handlers with
-`swagger:operation` comments looks like this:
+The template's [artifact-driven.json](../artifact-driven.json) points `tests`
+and `routes` at the backend submodule in `services/backend`, for a Go backend
+that documents its handlers with `swagger:operation` comments:
 
 ```json
 "routes": {
-  "folders": ["src/api"],
+  "folders": ["services/backend/internal/adapter/http"],
   "glob": "**/*.go",
   "pattern": "swagger:operation (?P<method>GET|POST|PUT|PATCH|DELETE) (?P<path>\\S+)"
 }
@@ -135,7 +136,7 @@ its metrics:
 
 ```sh
 python3 scripts/site.py
-python3 scripts/site.py --routes src/api
+python3 scripts/site.py --routes services/backend/internal/adapter/http
 ```
 
 It writes the `site.output` file, which should be ignored by Git. The page
@@ -148,4 +149,4 @@ Vietnamese. [site.html](site.html) is its template. It reuses `impact.py` and
 loads nothing from the network. Each `--routes` folder replaces the folders of
 the `routes` setting; the `glob` and `pattern` still come from it.
 
-Return to the [repository contents](../README.md).
+Return to the [project contents](../README.md).

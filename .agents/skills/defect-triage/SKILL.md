@@ -5,7 +5,7 @@ description: Triage a reported defect - gather evidence before any fix, find the
 
 # Defect triage
 
-Follow [Handle a reported defect](../../../docs/artifact-driven/runbooks/defect.md). This skill adds how to gather
+Follow [Handle a reported defect](../../../docs/governances/artifact-driven/runbooks/defect.md). This skill adds how to gather
 evidence safely.
 
 ## Evidence first

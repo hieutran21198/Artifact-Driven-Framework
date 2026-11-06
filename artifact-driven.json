@@ -1,11 +1,19 @@
 {
-  "knowledge": "docs/software-knowledge",
-  "skip": [".git", "node_modules", "build"],
+  "knowledge": "docs/software-knowledges",
+  "skip": [".git", "apps", "services", "node_modules", "build"],
   "clients": {
     "web": "Web",
     "mobile": "Mobile app"
   },
-  "routes": null,
+  "tests": {
+    "folder": "services/backend",
+    "glob": "**/*_test.go"
+  },
+  "routes": {
+    "folders": ["services/backend/internal/adapter/http"],
+    "glob": "**/*.go",
+    "pattern": "swagger:operation (?P<method>GET|POST|PUT|PATCH|DELETE) (?P<path>\\S+)"
+  },
   "site": {
     "title": "Library lending knowledge",
     "output": "build/site/index.html"

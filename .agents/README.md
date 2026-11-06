@@ -9,4 +9,4 @@ Claude Code reads them through [`.claude`](../.claude/README.md).
 
 Read the [project instructions](../AGENTS.md) before using these resources.
 
-Return to the [repository contents](../README.md).
+Return to the [project contents](../README.md).

@@ -1,11 +1,15 @@
 # Documentation
 
-- [Artifact Driven](artifact-driven/README.md): how knowledge leads the code,
-  the workflow, the team, the definition of done and the runbooks.
-- [Software knowledge](software-knowledge/README.md): the established
-  knowledge, from system to artifacts. In this framework it holds the
-  reference pass only.
-- [Diagrams](diagrams/README.md): which diagrams the documentation carries and
-  how to draw them.
+- [Architecture](architecture/README.md): the target structure of the backend:
+  entities, commands and queries, repositories and the domain map.
+- [Software knowledge](software-knowledges/README.md): what the software does,
+  in four layers: system, goals, flows and artifacts.
+- [Governances](governances/README.md): Artifact Driven, how knowledge leads the
+  code from an issue to done.
+- [Infrastructure](infrastructure/README.md): where the software runs and how it
+  gets there.
+- [Coding standards](coding-standards/README.md): repository conventions and
+  the General, Go, writing and diagram standards.
+- [Principles](principles/README.md): principles that guide decisions.
 
-Return to the [repository contents](../README.md).
+Return to the [project contents](../README.md).

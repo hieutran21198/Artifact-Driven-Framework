@@ -103,8 +103,9 @@ def knowledge(graph):
 
 
 def backend_routes(operations, folders):
-    """List the routes the routes setting finds in the code, or None without one."""
-    if not ROUTES:
+    """List the routes the routes setting finds in the code, or None without one
+    or when none of its folders exists yet."""
+    if not ROUTES or not any((ROOT / folder).is_dir() for folder in folders):
         return None
     pattern = re.compile(ROUTES["pattern"])
     known = {(o["method"], re.sub(r"\{[^}]*\}", "{}", o["path"])): o["id"] for o in operations}
