@@ -15,8 +15,9 @@ Sample: [Borrow a book](../../../software-knowledges/flows/borrow-book.md).
 
 ## Steps
 
-1. Write the header: the goal it serves, the artifacts it crosses, its
-   contract, its trigger and its outcome. A flow a worker runs names its
+1. Write the header: the artifacts it crosses, its contract, its trigger and
+   its outcome. The header names no goal: the goal names the flow. A flow a
+   worker runs names its
    trigger in backticks, as the contract declares it (`overdueCheck`), and for
    a schedule its time and time zone.
 2. Write the steps in order. Say who acts in each step (an actor, a client,
@@ -34,12 +35,13 @@ Sample: [Borrow a book](../../../software-knowledges/flows/borrow-book.md).
    as participants inside the backend, `rect` around the transaction, `alt` for
    each failure.
 4. Write the scenarios as a table with IDs `F-<FLOW>-<n>`: given, when, then,
-   and the goal criteria and artifact rules each one covers. The When names
+   and the artifact rules and system requirements each one covers. The When names
    the `operationId` the scenario calls, or the trigger that starts a worker,
    in backticks, so that
    [impact](../../../../scripts/README.md#impact) can trace it. Every goal
-   criterion the flow serves needs at least one scenario. When changing a
-   flow, add new IDs and keep old ones; mark a dropped scenario as withdrawn
+   criterion the flow serves needs at least one scenario: add the scenario's
+   ID to the Proven by column of that criterion on the goal page. When
+   changing a flow, add new IDs and keep old ones; mark a dropped scenario as withdrawn
    instead of deleting it ([the life of an ID](../knowledge.md#the-life-of-an-id)).
    Removing one operation from a scenario that names others keeps the ID; a
    scenario left with no operation is withdrawn.

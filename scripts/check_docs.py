@@ -104,13 +104,26 @@ def check_scenarios():
     return problems
 
 
+def check_direction():
+    """A layer cites only the layers below it: a flow names no goal criterion,
+    an artifact names no goal criterion or flow scenario."""
+    upward = {"flows": re.compile(r"\bG-[A-Z]+-\d+\b"), "artifacts": re.compile(r"\b[GF]-[A-Z]+-\d+\b")}
+    problems = []
+    for folder, pattern in upward.items():
+        for path in sorted((KNOWLEDGE / folder).rglob("*")):
+            if path.suffix in (".md", ".yaml"):
+                for name in sorted(set(pattern.findall(path.read_text(encoding="utf-8")))):
+                    problems.append(f"{path.relative_to(ROOT)}: cites {name}, a layer above")
+    return problems
+
+
 def main():
-    problems = check_links() + check_ids() + check_scenarios()
+    problems = check_links() + check_ids() + check_scenarios() + check_direction()
     for problem in problems:
         print(problem, file=sys.stderr)
     if problems:
         return 1
-    print("Docs check passed: links, anchors, knowledge IDs, and scenarios and the operations or triggers they name.")
+    print("Docs check passed: links, anchors, knowledge IDs, citation direction, and scenarios and the operations or triggers they name.")
     return 0
 
 

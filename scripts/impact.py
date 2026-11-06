@@ -174,7 +174,6 @@ def report(graph, units, pages):
 
 
 def relies_on(graph, start):
-    start = start | {u for u, cited in graph.edges.items() if u.startswith("F-") and cited & start}
     units = walk(graph.edges, start)
     return units, walk(graph.links, {graph.file[u] for u in units})
 
@@ -185,7 +184,6 @@ def affected(graph, start):
         for c in cited:
             reverse[c].add(unit)
     units = walk(reverse, start)
-    units |= {g for u in units if u.startswith("F-") for g in graph.edges[u] if g.startswith("G-")}
     back = defaultdict(set)
     for page, linked in graph.links.items():
         for l in linked:

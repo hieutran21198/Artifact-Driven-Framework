@@ -17,8 +17,9 @@ Sample: [Borrow a book](../../../software-knowledges/goals/borrow-a-book.md).
    [context](../../../software-knowledges/system/context.md) and any system
    requirement by its `SYS` ID.
 3. Write the success criteria as a table with IDs `G-<GOAL>-<n>`. Each one is
-   something a person can check is true. When changing a goal, add new IDs and
-   keep old ones; mark a dropped criterion as withdrawn instead of deleting it
+   something a person can check is true. Its Proven by column names the flow
+   scenarios that prove it; it stays empty until the flow is written. When
+   changing a goal, add new IDs and keep old ones; mark a dropped criterion as withdrawn instead of deleting it
    ([the life of an ID](../knowledge.md#the-life-of-an-id)). The goal key
    follows the same page.
 4. List the flows that reach the goal and draw them as a `flowchart`. A flow

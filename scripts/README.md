@@ -60,8 +60,10 @@ It checks every Markdown file outside the `skip` folders for broken relative
 links and missing heading anchors. In the knowledge folder it checks that
 every cited ID is defined, once, and not withdrawn; that every scenario that is
 not withdrawn names an `operationId` or a trigger under `x-triggers`; and that
-every operation and trigger is named by a scenario. It lists the problems and
-exits with status 1 when it finds any.
+every operation and trigger is named by a scenario. It also checks the
+citation direction: a flow names no goal criterion, and an artifact names no
+goal criterion or flow scenario. It lists the problems and exits with status 1
+when it finds any.
 
 ## Test check
 

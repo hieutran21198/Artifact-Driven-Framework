@@ -54,7 +54,8 @@ def knowledge(graph):
     goals, flows, rules = [], [], []
     for path, text in pages("goals"):
         page = impact.rel(path)
-        criteria = [{"id": i, "text": plain(c[0])} for i, c in read_rows(text)]
+        criteria = [{"id": i, "text": plain(c[0]), "proven": impact.ID.findall(c[1]) if len(c) > 1 else []}
+                    for i, c in read_rows(text)]
         goals.append({
             "key": criteria[0]["id"].rsplit("-", 1)[0] if criteria else page,
             "title": (TITLE.search(text) or [None, page])[1],

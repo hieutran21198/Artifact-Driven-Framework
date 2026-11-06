@@ -2,7 +2,6 @@
 
 Reference flow. It shows how a flow is written.
 
-- Serves: [Borrow a book](../goals/borrow-a-book.md).
 - Crosses: [book](../artifacts/book/README.md) and
   [member](../artifacts/member/README.md).
 - Contract: `borrowBook` in [borrow-book.openapi.yaml](borrow-book.openapi.yaml),
@@ -58,20 +57,20 @@ sequenceDiagram
 
 | ID | Given | When | Then | Covers |
 | --- | --- | --- | --- | --- |
-| F-BORROW-1 | An available book and an active member under the loan limit | The member calls `borrowBook` | The book is on loan to the member and the response carries its due time | G-BORROW-1, BK-3, BK-4, SYS-3 |
-| F-BORROW-2 | A book on loan to another member | The member calls `borrowBook` | The loan is refused and the book stays with the other member | G-BORROW-2, G-BORROW-6, BK-3 |
-| F-BORROW-3 | A member who holds as many books as the loan limit | The member calls `borrowBook` | The loan is refused and the book stays available | G-BORROW-3, G-BORROW-6, MBR-2 |
-| F-BORROW-4 | A suspended member | The member calls `borrowBook` | The loan is refused | G-BORROW-6, MBR-3 |
-| F-BORROW-5 | A member with an overdue loan | The member calls `borrowBook` | The loan is refused | G-BORROW-6, MBR-4 |
-| F-BORROW-6 | A withdrawn book | The member calls `borrowBook` | The loan is refused | G-BORROW-6, BK-7 |
+| F-BORROW-1 | An available book and an active member under the loan limit | The member calls `borrowBook` | The book is on loan to the member and the response carries its due time | BK-3, BK-4, SYS-3 |
+| F-BORROW-2 | A book on loan to another member | The member calls `borrowBook` | The loan is refused and the book stays with the other member | BK-3 |
+| F-BORROW-3 | A member who holds as many books as the loan limit | The member calls `borrowBook` | The loan is refused and the book stays available | MBR-2 |
+| F-BORROW-4 | A suspended member | The member calls `borrowBook` | The loan is refused | MBR-3 |
+| F-BORROW-5 | A member with an overdue loan | The member calls `borrowBook` | The loan is refused | MBR-4 |
+| F-BORROW-6 | A withdrawn book | The member calls `borrowBook` | The loan is refused | BK-7 |
 | F-BORROW-7 | A book on loan to another member | The member calls `getBook` | The response shows the book on loan and names no borrower | SYS-5, BK-9 |
-| F-BORROW-8 | A member with an overdue loan | The member calls `getMyMember` | `can_borrow` is false, so the client can say why before the member tries | G-BORROW-6, MBR-4 |
-| F-BORROW-9 | No book yet | Staff call `createBook` with a title | The book is available, and a member can borrow it | G-BORROW-1, BK-1, BK-2 |
-| F-BORROW-10 | A book on loan | Staff call `withdrawBook` | The withdrawal is refused and the loan goes on | G-BORROW-2, BK-7 |
+| F-BORROW-8 | A member with an overdue loan | The member calls `getMyMember` | `can_borrow` is false, so the client can say why before the member tries | MBR-4 |
+| F-BORROW-9 | No book yet | Staff call `createBook` with a title | The book is available, and a member can borrow it | BK-1, BK-2 |
+| F-BORROW-10 | A book on loan | Staff call `withdrawBook` | The withdrawal is refused and the loan goes on | BK-7 |
 
 ## Open questions
 
 - Whether a member may reserve a book that is on loan, and who gets it when
-  it comes back (G-BORROW-2, F-BORROW-2).
+  it comes back (F-BORROW-2).
 
 Return to [flows](README.md).

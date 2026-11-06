@@ -109,7 +109,7 @@ en:{
 "withKnowledge":"Routes with knowledge","withoutKnowledge":"Routes without knowledge",
 "kind":["Goal / requirement","Scenario","Rule","Operation","Client page"],
 "flows":"Flows","scenarios":"Scenarios","operations":"Operations","clientPages":"Client pages","criterion":"Criterion","none":"none","None":"None","item":"Item",
-"gap.rules":"Rules no scenario covers","gap.criteria":"Goal criteria no scenario covers","gap.ops":"Operations no scenario calls","gap.sys":"Requirements nothing cites",
+"gap.rules":"Rules no scenario covers","gap.criteria":"Goal criteria no scenario proves","gap.ops":"Operations no scenario calls","gap.sys":"Requirements nothing cites",
 "affected":"Affected by a change","reliesOn":"Relies on","showAll":"Show all","selectNode":"Select a node to read it.",
 "flow":"Flow","given":"Given","when":"When","then":"Then","covers":"Covers","endpoint":"Endpoint","summary":"Summary","needs":n=>`${n} needs`,
 "changeAffects":"A change affects","itReliesOn":"It relies on","counts":(s,o,c)=>`${s} scenarios, ${o} operations${c===undefined?"":`, ${c} client pages`}`,
@@ -151,7 +151,7 @@ vi:{
 "withKnowledge":"Route đã có knowledge","withoutKnowledge":"Route chưa có knowledge",
 "kind":["Goal / requirement","Scenario","Rule","Operation","Trang app"],
 "flows":"Flow","scenarios":"Scenario","operations":"Operation","clientPages":"Trang app","criterion":"Criterion","none":"chưa có","None":"Không có","item":"Mục",
-"gap.rules":"Rule chưa scenario nào phủ","gap.criteria":"Criterion chưa scenario nào phủ","gap.ops":"Operation chưa scenario nào gọi","gap.sys":"Requirement chưa ai trích",
+"gap.rules":"Rule chưa scenario nào phủ","gap.criteria":"Criterion chưa scenario nào chứng minh","gap.ops":"Operation chưa scenario nào gọi","gap.sys":"Requirement chưa ai trích",
 "affected":"Bị ảnh hưởng khi đổi","reliesOn":"Dựa vào","showAll":"Xem tất cả","selectNode":"Chọn một node để đọc nội dung.",
 "flow":"Flow","given":"Given","when":"When","then":"Then","covers":"Phủ","endpoint":"Endpoint","summary":"Tóm tắt","needs":n=>`${n} nhu cầu`,
 "changeAffects":"Đổi nó ảnh hưởng tới","itReliesOn":"Nó dựa vào","counts":(s,o,c)=>`${s} scenario, ${o} operation${c===undefined?"":`, ${c} trang app`}`,
@@ -213,7 +213,7 @@ function renderResults(){
  +`<details open><summary>${T("inThis")} (${routes.length})</summary><table>${routes.map(r=>`<tr><td>${r.method}</td><td><code>${esc(r.path)}</code></td><td>${pill(r.covered)}</td></tr>`).join("")}</table></details>`
  +`<details><summary>${T("withoutKnowledge")} (${ROUTES.length-covered})</summary><table>${ROUTES.filter(r=>!r.covered).map(r=>`<tr><td>${r.method}</td><td><code>${esc(r.path)}</code></td></tr>`).join("")}</table></details>`;
  $("goal-cards").innerHTML=goals.map(g=>{const z=DATA.size[g.key]||{};
-  const crit=g.criteria.map(c=>{const by=scen.filter(x=>x.covers.includes(c.id));return `<tr><td>${pill(c.id)}</td><td>${esc(c.text)}</td><td class="num">${by.length?by.length:`<span class="pill gap">${T("none")}</span>`}</td></tr>`;}).join("");
+  const crit=g.criteria.map(c=>{const by=c.proven;return `<tr><td>${pill(c.id)}</td><td>${esc(c.text)}</td><td class="num">${by.length?by.length:`<span class="pill gap">${T("none")}</span>`}</td></tr>`;}).join("");
   return `<div class="card"><h3>${esc(g.title)} <span class="muted">${esc(g.key)}</span></h3>
   <div class="grid" style="grid-template-columns:repeat(4,minmax(0,1fr));margin:10px 0">${[["flows",z.flows],["scenarios",z.scenarios],["operations",z.operations],["clientPages",z["client pages"]]].map(([k,v])=>`<div class="metric"><div class="k">${T(k)}</div><div class="v" style="font-size:20px">${v??0}</div></div>`).join("")}</div>
   <table><tr><th>${T("criterion")}</th><th></th><th class="num">${T("scenarios")}</th></tr>${crit}</table>
@@ -222,7 +222,7 @@ function renderResults(){
  $("radius-table").innerHTML=`<tr><th>${T("item")}</th><th class="num">${T("flows")}</th><th class="num">${T("scenarios")}</th><th class="num">${T("operations")}</th><th class="num">${T("clientPages")}</th></tr>`+radius.map(([id,r])=>`<tr><td>${pill(id)}</td><td class="num">${r.flows}</td><td class="num">${r.scenarios}</td><td class="num">${r.operations}</td><td class="num">${r["client pages"]}</td></tr>`).join("");
  const gaps=[
   ["gap.rules",rules.filter(r=>!covers.has(r.id)).map(r=>r.id)],
-  ["gap.criteria",goals.flatMap(g=>g.criteria).filter(c=>!covers.has(c.id)).map(c=>c.id)],
+  ["gap.criteria",goals.flatMap(g=>g.criteria).filter(c=>!c.proven.length).map(c=>c.id)],
   ["gap.ops",ops.filter(o=>!named.has(o.id)).map(o=>o.id)],
   ["gap.sys",DATA.requirements.filter(r=>S.has(r.id)&&!(DATA.radius[r.id]&&(DATA.radius[r.id].scenarios||DATA.radius[r.id].operations))).map(r=>r.id)]];
  $("gap-cards").innerHTML=gaps.map(([t,ids])=>`<div class="card"><h3>${T(t)} <span class="muted">${ids.length}</span></h3><div style="margin-top:8px">${ids.length?ids.map(pill).join(""):`<span class="muted">${T("None")}</span>`}</div></div>`).join("");
@@ -235,12 +235,12 @@ function examplePath(){
  const opsIn=x=>DATA.operations.filter(o=>new RegExp("\\b"+o.id+"\\b").test(x.when));
  const appOf=id=>Object.keys(col).find(n=>col[n]===4&&out[n].includes(id));
  let best=null;
- for(const x of scen){const rule=x.covers.find(c=>!c.startsWith("G-"));const op=opsIn(x).find(o=>appOf(o.id));
+ for(const x of scen){const rule=x.covers[0];const op=opsIn(x).find(o=>appOf(o.id));
   const sys=rule&&(out[rule]||[]).find(c=>c.startsWith("SYS-"));const score=(rule?1:0)+(op?1:0)+(sys?1:0);
   if(!best||score>best.score)best={x,rule,op,sys,score};}
  if(!best)return null;const {x,rule,op}=best;
  const sys=best.sys||(op&&out[op.id].find(c=>c.startsWith("SYS-")))||DATA.requirements[0]?.id;
- const goal=DATA.goals.find(g=>x.covers.some(c=>c.startsWith(g.key+"-")))||DATA.goals[0];
+ const goal=DATA.goals.find(g=>g.criteria.some(c=>c.proven.includes(x.id)))||DATA.goals[0];
  return [sys,goal&&`${goal.title} (${goal.key})`,`${x.flow} · ${x.id}`,[rule,op&&op.id].filter(Boolean).join(" · "),op?appOf(op.id):""];}
 const HREF=["#gaps","#goals","#explorer","#radius","#clients"];
 function drawMap(){const svg=$("map");[...svg.querySelectorAll("g,rect,text")].forEach(e=>e.remove());
@@ -259,7 +259,6 @@ document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>{lang=b.datase
 const walk=(s,adj)=>{const seen=new Set(s),q=[...s];while(q.length)for(const n of adj[q.pop()]||[])if(!seen.has(n)){seen.add(n);q.push(n);}return seen;};
 function slice(){if(!analysis)return new Set();
  const start=new Set(Object.keys(col).filter(n=>[...analysis].some(k=>n.startsWith(k+"-"))));
- start.forEach(c=>inn[c].forEach(f=>{if(f.startsWith("F-"))start.add(f);}));
  const s=walk(start,out);Object.keys(col).filter(n=>col[n]===4&&out[n].some(x=>s.has(x))).forEach(n=>s.add(n));return s;}
 let els={},edges=[];
 function draw(){const vis=slice(),svg=$("g");svg.innerHTML="";els={};edges=[];selected=null;const cnt=[0,0,0,0,0],pos={};
@@ -278,8 +277,7 @@ function info(n){const s=scen.find(x=>x.id===n);if(s)return `<dl><dt>${T("flow")
  const r=DATA.rules.find(x=>x.id===n)||DATA.requirements.find(x=>x.id===n)||DATA.goals.flatMap(g=>g.criteria).find(x=>x.id===n);if(r)return `<p>${esc(r.text)}</p>`;
  const o=DATA.operations.find(x=>x.id===n);if(o)return `<dl><dt>${T("endpoint")}</dt><dd><code>${o.method} ${esc(o.path)}</code></dd><dt>${T("summary")}</dt><dd>${esc(o.summary||"")}</dd></dl>`;
  const c=DATA.clients["artifacts/"+n+".md"];if(c)return `<dl>${Object.entries(c).map(([k,v])=>`<dt>${k==="Every item"?T("everyItem"):esc(k)}</dt><dd>${T("needs")(v.length)}</dd>`).join("")}</dl>`;return "";}
-function select(n){if(!els[n])return;selected=n;const up=walk([n],inn);[...up].forEach(u=>{if(u.startsWith("F-"))out[u].forEach(g=>{if(g.startsWith("G-"))up.add(g);});});
- const st=new Set([n]);if(n.startsWith("G-"))inn[n].forEach(f=>{if(f.startsWith("F-"))st.add(f);});const down=walk(st,out);
+function select(n){if(!els[n])return;selected=n;const up=walk([n],inn),down=walk([n],out);
  Object.entries(els).forEach(([k,e])=>{e.classList.toggle("dim",!(up.has(k)||down.has(k)));e.classList.toggle("sel",k===n);});
  edges.forEach(({a,b,p})=>{p.classList.remove("up","down","off");if(up.has(a)&&(up.has(b)||b===n)&&a!==n)p.classList.add("up");else if(down.has(a)&&down.has(b))p.classList.add("down");else p.classList.add("off");});
  const k=set=>({sc:[...set].filter(x=>x.startsWith("F-")).length,op:[...set].filter(x=>col[x]===3).length,cl:[...set].filter(x=>col[x]===4).length});const u=k(up),d=k(down);

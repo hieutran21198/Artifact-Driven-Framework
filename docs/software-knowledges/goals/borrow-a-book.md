@@ -12,14 +12,14 @@ turn and the library knows where each book is.
 
 ## Success criteria
 
-| ID | Criterion |
-| --- | --- |
-| G-BORROW-1 | A member in good standing borrows an available book and sees when it is due. |
-| G-BORROW-2 | A book is on loan to one member at a time. |
-| G-BORROW-3 | A member never holds more books than the loan limit. |
-| G-BORROW-4 | A returned book can be borrowed again. |
-| G-BORROW-5 | A loan not returned by its due time shows as overdue. |
-| G-BORROW-6 | A loan that is refused changes nothing. |
+| ID | Criterion | Proven by |
+| --- | --- | --- |
+| G-BORROW-1 | A member in good standing borrows an available book and sees when it is due. | F-BORROW-1, F-BORROW-9 |
+| G-BORROW-2 | A book is on loan to one member at a time. | F-BORROW-2, F-BORROW-10, F-RETURN-6 |
+| G-BORROW-3 | A member never holds more books than the loan limit. | F-BORROW-3 |
+| G-BORROW-4 | A returned book can be borrowed again. | F-RETURN-1, F-RETURN-4 |
+| G-BORROW-5 | A loan not returned by its due time shows as overdue. | F-RETURN-3, F-RETURN-5, F-RETURN-8 |
+| G-BORROW-6 | A loan that is refused changes nothing. | F-BORROW-2, F-BORROW-3, F-BORROW-4, F-BORROW-5, F-BORROW-6, F-BORROW-8 |
 
 ## Flows
 

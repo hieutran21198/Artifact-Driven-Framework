@@ -2,7 +2,6 @@
 
 Reference flow with a worker. It shows a flow that a schedule starts.
 
-- Serves: [Borrow a book](../goals/borrow-a-book.md).
 - Crosses: [book](../artifacts/book/README.md) and
   [member](../artifacts/member/README.md).
 - Contract: `returnBook`, the trigger `overdueCheck` and the overdue email
@@ -76,19 +75,19 @@ sequenceDiagram
 
 | ID | Given | When | Then | Covers |
 | --- | --- | --- | --- | --- |
-| F-RETURN-1 | A book on loan | The member calls `returnBook` | The book is available | G-BORROW-4, BK-5 |
+| F-RETURN-1 | A book on loan | The member calls `returnBook` | The book is available | BK-5 |
 | F-RETURN-2 | An available book | The member calls `returnBook` | The return is refused | BK-5 |
-| F-RETURN-3 | A book on loan past its due time | `overdueCheck` fires | The book is overdue and the member gets the overdue email | G-BORROW-5, BK-6, SYS-5 |
-| F-RETURN-4 | An overdue book | The member calls `returnBook`, then `borrowBook` on another book | The first book is available and the second loan goes through | G-BORROW-4, BK-5, MBR-4 |
-| F-RETURN-5 | An overdue book | The member calls `getBook` | The status is overdue and the due time is the one that passed | G-BORROW-5, BK-6 |
-| F-RETURN-6 | A book on loan to another member | The member calls `returnBook` | The return is refused and the loan goes on | G-BORROW-2, BK-10 |
+| F-RETURN-3 | A book on loan past its due time | `overdueCheck` fires | The book is overdue and the member gets the overdue email | BK-6, SYS-5 |
+| F-RETURN-4 | An overdue book | The member calls `returnBook`, then `borrowBook` on another book | The first book is available and the second loan goes through | BK-5, MBR-4 |
+| F-RETURN-5 | An overdue book | The member calls `getBook` | The status is overdue and the due time is the one that passed | BK-6 |
+| F-RETURN-6 | A book on loan to another member | The member calls `returnBook` | The return is refused and the loan goes on | BK-10 |
 | F-RETURN-7 | No loan past its due time | `overdueCheck` fires | Nothing changes and no email is sent | BK-6 |
-| F-RETURN-8 | A book on loan past its due time, and an email service that fails | `overdueCheck` fires, then fires again the next day with the service back | The book is overdue after the first run; the member gets one overdue email, after the second run | G-BORROW-5, BK-6 |
+| F-RETURN-8 | A book on loan past its due time, and an email service that fails | `overdueCheck` fires, then fires again the next day with the service back | The book is overdue after the first run; the member gets one overdue email, after the second run | BK-6 |
 | F-RETURN-9 | A book that the last run marked overdue and emailed about | `overdueCheck` fires again with the same `run_at` | Nothing changes and no second email is sent | BK-6, SYS-8 |
 
 ## Open questions
 
 - Whether a member who returns a book late pays a fine, and how much
-  (G-BORROW-5, F-RETURN-4).
+  (F-RETURN-4).
 
 Return to [flows](README.md).

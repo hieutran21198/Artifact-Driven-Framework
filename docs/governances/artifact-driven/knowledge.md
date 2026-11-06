@@ -28,7 +28,10 @@ keeps the same requirements under its own IDs.
 - System is shared: every layer may cite it.
 - Among goals, flows and artifacts, a layer cites only the layers below it: a
   goal cites flows, a flow cites artifacts. An artifact never mentions a flow or
-  a goal.
+  a goal, and a flow never mentions a goal.
+- A goal criterion names the flow scenarios that prove it, in the Proven by
+  column of its row. A scenario names only the artifact rules and system
+  requirements it covers.
 - Each fact has one owner. Other pages cite it by ID and never restate it.
 - A contract description cites the rule ID behind a value; it never states a
   rule that has no ID.
