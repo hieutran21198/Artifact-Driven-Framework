@@ -7,10 +7,13 @@ running and testing it. Fill in one row per service; the directory name is
 the service name in the [domain map](../docs/architecture/domain-map.md) and in
 [artifact-driven.json](../artifact-driven.json).
 
-| Directory | Repository | Owner | Serves | Stack |
-| --- | --- | --- | --- | --- |
-| `lending/` | — | — | The reference pass: `book`, `member` | Go |
-| `notification/` | — | — | The reference pass: `notice` | Go |
+| Directory | Repository | Owner | Stack |
+| --- | --- | --- | --- |
+| `lending/` | — | — | Go |
+| `notification/` | — | — | Go |
+
+The [domain map](../docs/architecture/domain-map.md) says which service serves
+each domain.
 
 Clone each service after cloning the workspace:
 

@@ -13,9 +13,8 @@ from collections import defaultdict
 import re
 import sys
 
-from project import CLIENTS, KNOWLEDGE, ROOT, TEST_GLOB, TESTS
+from project import CLIENTS, ID, KNOWLEDGE, ROOT, TEST_GLOB, TESTS
 
-ID = re.compile(r"\b[A-Z]{1,6}(?:-[A-Z]{1,8})?-\d+\b")
 ID_ROW = re.compile(r"^\| (" + ID.pattern + r") \|")
 TICKED = re.compile(r"`([A-Za-z_][A-Za-z0-9_]*)`")
 LINK = re.compile(r"\]\(([^)#\s]+\.md)(?:#[^)\s]*)?\)")

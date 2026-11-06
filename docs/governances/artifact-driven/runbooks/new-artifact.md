@@ -18,7 +18,7 @@ Sample: [book artifact](../../../software-knowledges/artifacts/book/README.md).
    architecture change first.
 2. Pick a rule prefix of two to four capital letters that no other artifact
    uses, and write it in the README with one line on what the artifact owns
-   and the service that serves it, as the domain map says.
+   and a link to the domain map for the service that serves it.
 3. Write `specification.md`: model, rules with IDs, lifecycle
    ([artifact rule](artifact-rule.md)).
 4. Write `service.md`: the domain contract the serving service provides,

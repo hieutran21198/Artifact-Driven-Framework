@@ -8,7 +8,6 @@ artifact to a new one, or when a goal, a flow or an artifact splits in two.
 1. The page that owns the fact now, and the page that will own it
 2. Every page that [impact](../../../../scripts/README.md#impact) lists for each
    moved ID
-3. The knowledge map and the indexes
 
 ## Steps
 
@@ -37,8 +36,9 @@ The artifact keeps its rules and IDs; the service that serves it changes. It
 is an architecture change first: the owners of both services, the gateway
 owner and the product owner agree on the issue.
 
-1. Change the service in the [domain map](../../../architecture/domain-map.md),
-   the artifact's README, [context](../../../software-knowledges/system/context.md),
+1. Change the service in the [domain map](../../../architecture/domain-map.md).
+   For a new service, also add it to
+   [context](../../../software-knowledges/system/context.md),
    [services](../../../../services/README.md) and the `services` of
    [artifact-driven.json](../../../../artifact-driven.json). The owner of the
    new service now keeps the artifact.

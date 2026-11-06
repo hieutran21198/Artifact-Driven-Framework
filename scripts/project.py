@@ -6,6 +6,7 @@ that holds artifact-driven.json. Without one, it is the parent of scripts/.
 
 from pathlib import Path
 import json
+import re
 
 NAME = "artifact-driven.json"
 DEFAULTS = {
@@ -17,6 +18,9 @@ DEFAULTS = {
     "site": {"title": "Software knowledge", "output": "build/site/index.html"},
 }
 TEST_GLOB = "**/*_test.*"
+# A knowledge ID, such as SYS-4, G-SELL-2 or INV-3. Names of standards that
+# look like one, such as UTF-8 or RFC-3339, are not IDs.
+ID = re.compile(r"\b(?!(?:UTF|ISO|RFC|SHA|TLS|HTTP|IEEE)-)[A-Z]{1,6}(?:-[A-Z]{1,8})?-\d+\b")
 
 
 def find_root():

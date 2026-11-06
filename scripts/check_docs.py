@@ -4,11 +4,10 @@ from pathlib import Path
 import re
 import sys
 
-from project import KNOWLEDGE, ROOT, SKIP
+from project import ID, KNOWLEDGE, ROOT, SKIP
 
 LINK = re.compile(r"\]\(([^)#\s]*)(?:#([^)\s]*))?\)")
 HEADING = re.compile(r"^#+ (.*)$", re.MULTILINE)
-ID = re.compile(r"\b[A-Z]{1,6}(?:-[A-Z]{1,8})?-\d+\b")
 ID_DEFINITION = re.compile(r"^\| (" + ID.pattern + r") \|", re.MULTILINE)
 ID_ROW = re.compile(r"^\| (" + ID.pattern + r") \| *(Withdrawn\b)?")
 

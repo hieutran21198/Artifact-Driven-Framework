@@ -7,8 +7,6 @@ Sample: [Borrow a book](../../../software-knowledges/goals/borrow-a-book.md).
 ## Files
 
 1. `goals/<goal>.md` in the knowledge folder
-2. `goals/README.md`
-3. `system/knowledge-map.md`
 
 ## Steps
 
@@ -24,7 +22,6 @@ Sample: [Borrow a book](../../../software-knowledges/goals/borrow-a-book.md).
    follows the same page.
 4. List the flows that reach the goal and draw them as a `flowchart`. A flow
    that does not exist yet is the next runbook: [flow](flow.md).
-5. Add the goal to the goals index and to the knowledge map.
 
 Then [check the docs](check.md).
 
