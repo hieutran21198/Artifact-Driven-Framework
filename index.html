@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Artifact Driven</title>
+<meta name="description" content="Artifact Driven: write and agree the knowledge first, then build the code that proves it. A workspace template for AI agent teams with one human approver.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single reading column with wide "plates" for the layer chain, the team and the tree; layers are nested frames, like the knowledge itself. */
+:root{
+  --paper:#f5f6f3; --sheet:#ffffff; --ink:#18212b; --muted:#5b6670; --rule:#d9ddd8;
+  --accent:#0b6e69; --accent-soft:#dcefeb; --up:#c2511f; --up-soft:#f8e4d8; --down:#2f7d3b; --down-soft:#e0f0dd;
+  --l0:#e9ecf6; --l0i:#2c3a7a; --l1:#e4f1ec; --l1i:#14513d; --l2:#f3e7ee; --l2i:#6c2348; --l3:#f1eee4; --l3i:#4d4320; --l4:#f6e9e2; --l4i:#6e2c12;
+  --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --body:"IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --measure:66ch;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#12171c; --sheet:#1a2027; --ink:#e7ebe8; --muted:#9aa4ac; --rule:#2c343c;
+  --accent:#5cc3b9; --accent-soft:#163a37; --up:#f0956a; --up-soft:#45220f; --down:#7ccf86; --down-soft:#173a1d;
+  --l0:#222a4a; --l0i:#c9d0f5; --l1:#173a2f; --l1i:#a9e2cc; --l2:#3d1d2e; --l2i:#f1c2d8; --l3:#34301d; --l3i:#e6dcb3; --l4:#3e2216; --l4i:#f4c6b0;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#12171c; --sheet:#1a2027; --ink:#e7ebe8; --muted:#9aa4ac; --rule:#2c343c;
+  --accent:#5cc3b9; --accent-soft:#163a37; --up:#f0956a; --up-soft:#45220f; --down:#7ccf86; --down-soft:#173a1d;
+  --l0:#222a4a; --l0i:#c9d0f5; --l1:#173a2f; --l1i:#a9e2cc; --l2:#3d1d2e; --l2i:#f1c2d8; --l3:#34301d; --l3i:#e6dcb3; --l4:#3e2216; --l4i:#f4c6b0;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1060px;margin:0 auto;padding-block:40px 72px;display:grid;gap:72px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
+h1{font-size:clamp(44px,8vw,84px);font-weight:700;letter-spacing:-.02em}
+h2{font-size:clamp(28px,4vw,38px);font-weight:700;letter-spacing:-.01em}
+h3{font-size:19px;font-weight:500}
+p{margin:0;max-width:var(--measure)}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+code,.mono{font-family:var(--mono);font-size:.88em}
+.eyebrow{font:500 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.lede{font-size:19px;color:var(--muted)}
+section{display:grid;gap:20px;min-width:0}
+.head{display:grid;gap:10px}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:40px;align-items:center}
+.hero .copy{display:grid;gap:22px}
+.actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;font:600 15px/1 var(--body);padding:12px 18px;border-radius:8px;text-decoration:none;border:1px solid var(--accent)}
+.btn.primary{background:var(--accent);color:var(--sheet)}
+.btn.ghost{color:var(--accent);background:transparent}
+@media (max-width:860px){.hero{grid-template-columns:minmax(0,1fr)}}
+
+/* nested layer chain */
+.chain{display:grid;gap:10px}
+.chain .note{font-size:13px;color:var(--muted)}
+.layers{position:relative}
+.layer{display:block;cursor:pointer;border:1px solid transparent;border-radius:14px;padding:12px 14px 14px;background:var(--c);color:var(--ci);font:inherit;transition:opacity .2s,outline-color .2s;outline:2px solid transparent;outline-offset:-2px}
+.layer .row{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.layer .name{font:600 14px/1.3 var(--body)}
+.layer .id{font:500 13px/1.3 var(--mono)}
+.layer .what{display:block;font-size:13px;opacity:.85;margin-top:2px}
+.layer>.inner{margin-top:12px}
+.layer.sel{outline-color:var(--ink)}
+.layer.up{outline-color:var(--up)}
+.layer.down{outline-color:var(--down)}
+.layers.picked .layer:not(.sel):not(.up):not(.down)>.row{opacity:.35}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px;border:2px solid var(--k)}
+@media (prefers-reduced-motion:reduce){.layer{transition:none}}
+
+/* tables */
+.scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:12px;background:var(--sheet)}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font:500 12px/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--paper)}
+td code{white-space:nowrap}
+.pill{display:inline-block;font:500 12.5px/1.5 var(--mono);padding:1px 8px;border-radius:999px;background:var(--c);color:var(--ci);white-space:nowrap}
+
+/* rules list */
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.rule{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:16px 18px;display:grid;gap:6px;align-content:start}
+.rule p{font-size:15px;color:var(--muted)}
+
+/* team */
+.team{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media (max-width:760px){.team{grid-template-columns:minmax(0,1fr)}}
+.roles{display:grid;gap:8px}
+.role{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;padding:10px 0;border-bottom:1px solid var(--rule);font-size:15px}
+.role:last-child{border-bottom:0}
+.role b{font-weight:600}
+.role span{color:var(--muted)}
+.role.human b{color:var(--up)}
+@media (max-width:480px){.role{grid-template-columns:minmax(0,1fr);gap:2px}}
+.pipe{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:18px;display:grid;gap:8px;align-content:start}
+.stage{display:flex;gap:10px;align-items:flex-start}
+.stage .dot{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:600 12px/1 var(--mono);background:var(--accent-soft);color:var(--accent)}
+.stage.gate .dot{background:var(--up-soft);color:var(--up)}
+.stage div{min-width:0}
+.stage b{display:block;font-weight:600;font-size:15px}
+.stage span{font-size:14px;color:var(--muted)}
+
+/* steps */
+ol.steps{list-style:none;margin:0;padding:0;display:grid;gap:14px;counter-reset:s}
+ol.steps>li{counter-increment:s;display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;align-items:start}
+ol.steps>li::before{content:counter(s);font:700 22px/1 var(--display);color:var(--accent);padding-top:3px}
+ol.steps h3{margin-bottom:4px}
+ol.steps p{color:var(--muted);font-size:15px}
+
+/* code */
+.cmd{position:relative;margin-top:8px;background:var(--sheet);border:1px solid var(--rule);border-radius:10px;min-width:0}
+.cmd pre{margin:0;padding:12px 84px 12px 14px;overflow-x:auto;font:400 13.5px/1.6 var(--mono)}
+.copy-btn{position:absolute;top:8px;right:8px;font:500 12px/1 var(--body);padding:6px 10px;border-radius:6px;border:1px solid var(--rule);background:var(--paper);color:var(--ink);cursor:pointer}
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.tool{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:16px 18px;display:grid;gap:6px;align-content:start;min-width:0}
+.tool p{font-size:15px;color:var(--muted)}
+
+/* tree */
+.tree{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;overflow-x:auto}
+.tree pre{margin:0;padding:18px;font:400 13.5px/1.7 var(--mono)}
+.tree .c{color:var(--muted)}
+
+footer{border-top:1px solid var(--rule);padding-top:20px;font-size:14px;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<main>
+
+<header class="hero">
+  <div class="copy">
+    <span class="eyebrow">A workspace template for AI agent teams</span>
+    <h1>Artifact Driven</h1>
+    <p class="lede">Write the knowledge first and agree on it. Then build the code that proves it. Every rule, scenario and contract has an ID, every page cites only the layer below it, and a script can tell you what a change will touch before you make it.</p>
+    <p>AI agents do the writing, the contracts, the code and the review. One person approves.</p>
+    <div class="actions">
+      <a class="btn primary" href="#start">Start a project</a>
+      <a class="btn ghost" href="#layers">Read the rules</a>
+    </div>
+  </div>
+
+  <div class="chain" aria-label="One citation path through the knowledge">
+    <div class="legend"><span style="--k:var(--up)">Affected by a change</span><span style="--k:var(--down)">Relies on</span></div>
+    <div class="layers" id="layers-chain">
+<div class="layer" role="button" tabindex="0" data-i="0" style="--c:var(--l0);--ci:var(--l0i)"><span class="row"><span class="name">System</span><span class="id">SYS-7</span></span><span class="what">A rule that differs by region gives a value for each region.</span>
+<div class="inner"><div class="layer" role="button" tabindex="0" data-i="1" style="--c:var(--l1);--ci:var(--l1i)"><span class="row"><span class="name">Goal</span><span class="id">G-BORROW-3</span></span><span class="what">A member never holds more books than the loan limit.</span>
+<div class="inner"><div class="layer" role="button" tabindex="0" data-i="2" style="--c:var(--l2);--ci:var(--l2i)"><span class="row"><span class="name">Flow scenario</span><span class="id">F-BORROW-3</span></span><span class="what">At the limit, <code>borrowBook</code> is refused.</span>
+<div class="inner"><div class="layer" role="button" tabindex="0" data-i="3" style="--c:var(--l3);--ci:var(--l3i)"><span class="row"><span class="name">Artifact rule</span><span class="id">MBR-2</span></span><span class="what">The loan limit of the member's region.</span>
+<div class="inner"><div class="layer" role="button" tabindex="0" data-i="4" style="--c:var(--l4);--ci:var(--l4i)"><span class="row"><span class="name">Client need</span><span class="id">member/web.md</span></span><span class="what"><code>getMyMember</code>: <code>loan_limit</code> is an integer, never null.</span></div></div></div></div></div></div></div></div></div>
+    </div>
+    <p class="note" id="chain-note">One path through the reference pass, a small library lending service. Pick a layer to see what impact.py traces from it.</p>
+  </div>
+</header>
+
+<section id="layers">
+  <div class="head">
+    <span class="eyebrow">Knowledge</span>
+    <h2>Four layers, and every citation points down</h2>
+    <p class="lede">The system is shared by everything. Below it, a goal cites flows and a flow cites artifacts. An artifact never mentions a flow or a goal, so a change can be traced in both directions.</p>
+  </div>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Layer</th><th>Holds</th><th>ID</th><th>Proved by</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill" style="--c:var(--l0);--ci:var(--l0i)">System</span></td><td>Purpose, actors, containers, system-wide requirements, glossary, shared contract parts</td><td><code>SYS-4</code></td><td>Everything below it</td></tr>
+        <tr><td><span class="pill" style="--c:var(--l1);--ci:var(--l1i)">Goal</span></td><td>A business outcome: the need, the actor and the success criteria. No behavior.</td><td><code>G-BORROW-2</code></td><td>End-to-end tests</td></tr>
+        <tr><td><span class="pill" style="--c:var(--l2);--ci:var(--l2i)">Flow</span></td><td>Behavior across artifacts: trigger, steps, the transaction, failures. Scenarios as given, when, then, each naming an operation or a trigger.</td><td><code>F-BORROW-3</code></td><td>Command and unit of work tests</td></tr>
+        <tr><td><span class="pill" style="--c:var(--l3);--ci:var(--l3i)">Artifact</span></td><td>One domain: model, rules, lifecycle, the OpenAPI contract, and what each client needs from its responses</td><td><code>BK-5</code></td><td>Domain unit tests</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="rules">
+    <div class="rule"><h3>One owner per fact</h3><p>Other pages cite the ID and never restate the rule. A contract description cites the rule behind a value.</p></div>
+    <div class="rule"><h3>Knowledge, not evidence</h3><p>No code locations, logs, counts or dates in the knowledge. Evidence goes on the issue, with personal data masked.</p></div>
+    <div class="rule"><h3>IDs live forever</h3><p>An ID is fixed when its branch merges. A dropped fact keeps its row as <code>Withdrawn.</code> and nothing cites it again.</p></div>
+    <div class="rule"><h3>Contracts first</h3><p>OpenAPI is agreed before the code: endpoints, payloads such as emails and pushes, and worker triggers under <code>x-triggers</code>.</p></div>
+    <div class="rule"><h3>Clients say what they need</h3><p>Each client page lists, by operation, the keys and values a released app parses, so a backend change cannot break it unseen.</p></div>
+    <div class="rule"><h3>Open questions name IDs</h3><p>Undecided behavior is written as a question citing the IDs it touches. A goal with open questions is not ready to build.</p></div>
+  </div>
+</section>
+
+<section id="team">
+  <div class="head">
+    <span class="eyebrow">Team</span>
+    <h2>Agents do the work, one person approves</h2>
+    <p class="lede">Each role is an agent definition with its own tools and skill. The reviewer is never the author. Only the approver merges knowledge.</p>
+  </div>
+  <div class="team">
+    <div class="roles">
+      <div class="role"><b>Coordinator</b><span>Takes the issue, hands each step to its role, asks the approver for decisions.</span></div>
+      <div class="role"><b>Knowledge writer</b><span>Goals, flows and artifact rules.</span></div>
+      <div class="role"><b>Contract designer</b><span>OpenAPI contracts, payloads and triggers, before the code.</span></div>
+      <div class="role"><b>Client analyst</b><span>One per client: what it needs from each response.</span></div>
+      <div class="role"><b>Backend implementer</b><span>Go code and tests named after the IDs they prove.</span></div>
+      <div class="role"><b>Defect investigator</b><span>Evidence first, then the ID a defect breaks. Changes nothing.</span></div>
+      <div class="role"><b>Reviewer</b><span>Knowledge, contract, code and tests agree. Changes nothing.</span></div>
+      <div class="role human"><b>Approver</b><span>The one person. Merges the knowledge branch and approves the code.</span></div>
+    </div>
+    <div class="pipe" aria-label="Workflow">
+      <div class="stage"><span class="dot">1</span><div><b>Issue</b><span>States the need and links the knowledge it touches.</span></div></div>
+      <div class="stage"><span class="dot">2</span><div><b>Knowledge</b><span>Goal, then flows, then rules and contracts, on a branch named after the issue.</span></div></div>
+      <div class="stage gate"><span class="dot">✓</span><div><b>Approver merges the knowledge</b><span>The review report and the checks go on the issue.</span></div></div>
+      <div class="stage"><span class="dot">3</span><div><b>Code</b><span>Implements only approved knowledge. A gap goes back to the writer.</span></div></div>
+      <div class="stage gate"><span class="dot">✓</span><div><b>Approver approves the pull request</b><span>It links the issue and the knowledge merge commit.</span></div></div>
+      <div class="stage"><span class="dot">4</span><div><b>Merge and deploy</b><span>Only when the approver asks.</span></div></div>
+      <div class="stage"><span class="dot">5</span><div><b>Close</b><span>When every item of Done holds.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="done">
+  <div class="head">
+    <span class="eyebrow">Definition of done</span>
+    <h2>Seven items, all visible on the issue</h2>
+  </div>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>ID</th><th>Item</th><th>Holds when</th></tr></thead>
+      <tbody>
+        <tr><td><code>D1</code></td><td>Knowledge</td><td>The goal, flows, artifacts and contracts the change touches are written and merged.</td></tr>
+        <tr><td><code>D2</code></td><td>Consistency</td><td>Knowledge, contract, code and tests agree. Every cited ID exists, in the docs and in the tests.</td></tr>
+        <tr><td><code>D3</code></td><td>Tests</td><td>Each changed rule and scenario has a passing test that names its ID.</td></tr>
+        <tr><td><code>D4</code></td><td>Checks</td><td>The docs checks, the OpenAPI lint and the code checks pass.</td></tr>
+        <tr><td><code>D5</code></td><td>Review</td><td>A reviewer who is not the author reported, and the approver approved.</td></tr>
+        <tr><td><code>D6</code></td><td>Delivery</td><td>Deployed and checked there: a worker by firing its trigger, a data fix by a zero count.</td></tr>
+        <tr><td><code>D7</code></td><td>Configuration</td><td>Secrets and parameters exist in each target environment, listed by name, never by value.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="tools">
+  <div class="head">
+    <span class="eyebrow">Tools</span>
+    <h2>Python scripts that read the citations</h2>
+    <p class="lede">Standard library only. They read <code>artifact-driven.json</code> for the knowledge folder, the clients, the tests and the backend routes.</p>
+  </div>
+  <div class="tools">
+    <div class="tool"><h3>Check the docs</h3><p>Broken links and anchors, IDs cited but not defined, defined twice or withdrawn, and scenarios with no operation.</p>
+      <div class="cmd"><pre>python3 scripts/check_docs.py</pre><button class="copy-btn" type="button">Copy</button></div></div>
+    <div class="tool"><h3>Impact</h3><p>What a rule, operation or response field affects, or what a goal relies on, by following the citations.</p>
+      <div class="cmd"><pre>python3 scripts/impact.py MBR-2
+python3 scripts/impact.py --down G-BORROW-1</pre><button class="copy-btn" type="button">Copy</button></div></div>
+    <div class="tool"><h3>Size, fragility, coverage</h3><p>Goal size and blast radius, the most fragile nodes, test coverage by ID and the open questions that hold each goal.</p>
+      <div class="cmd"><pre>python3 scripts/impact.py --stats
+python3 scripts/impact.py --questions</pre><button class="copy-btn" type="button">Copy</button></div></div>
+    <div class="tool"><h3>Tests name real IDs</h3><p>Reports a backend test that names an ID the knowledge does not define, or a withdrawn one.</p>
+      <div class="cmd"><pre>python3 scripts/check_tests.py</pre><button class="copy-btn" type="button">Copy</button></div></div>
+    <div class="tool"><h3>Knowledge site</h3><p>One offline HTML page in English or Vietnamese: pick goals, see their scenarios, gaps, blast radius and API coverage.</p>
+      <div class="cmd"><pre>python3 scripts/site.py</pre><button class="copy-btn" type="button">Copy</button></div></div>
+    <div class="tool"><h3>Structure</h3><p>Every directory has a README, so the repository reads like a book.</p>
+      <div class="cmd"><pre>python3 scripts/check_structure.py</pre><button class="copy-btn" type="button">Copy</button></div></div>
+  </div>
+</section>
+
+<section id="start">
+  <div class="head">
+    <span class="eyebrow">Start a project</span>
+    <h2>Copy the template, add your repositories, write the first goal</h2>
+  </div>
+  <ol class="steps">
+    <li><div><h3>Copy the template</h3><p>Start a fresh repository from it, without its history. Rename the README and the site title.</p>
+      <div class="cmd"><pre>cp -R artifact-driven my-project-workspace
+cd my-project-workspace
+rm -rf .git build
+git init</pre><button class="copy-btn" type="button">Copy</button></div></div></li>
+    <li><div><h3>Add the backend and the clients as submodules</h3><p>List the clients in <code>artifact-driven.json</code> with the same names as their folders, so each artifact gets a <code>&lt;client&gt;.md</code> page.</p>
+      <div class="cmd"><pre>git submodule add &lt;backend repository URL&gt; services/backend
+git submodule add &lt;client repository URL&gt; apps/&lt;client&gt;</pre><button class="copy-btn" type="button">Copy</button></div></div></li>
+    <li><div><h3>Describe the system</h3><p>Context, actors and containers, system requirements, glossary, supported client versions and the shared contract parts. Fill in the domain map, the infrastructure pages and the deploy table.</p></div></li>
+    <li><div><h3>Write the first goal</h3><p>Follow the runbooks: the goal, its flows, the artifacts they cross, their contracts and client pages. Run the checks after each step.</p></div></li>
+    <li><div><h3>Remove the reference pass</h3><p>When the first real goal exists, delete the library example and point the runbook samples at your own pages.</p></div></li>
+    <li><div><h3>Work by the workflow</h3><p>Every change starts as an issue. The agents write, review and implement; you approve.</p></div></li>
+  </ol>
+</section>
+
+<section id="contents">
+  <div class="head">
+    <span class="eyebrow">What is in the box</span>
+    <h2>The workspace layout</h2>
+  </div>
+  <div class="tree"><pre>.
+├── AGENTS.md, CLAUDE.md, CONTRIBUTING.md   <span class="c"># agent instructions and how to change things</span>
+├── artifact-driven.json                    <span class="c"># knowledge folder, clients, tests, routes, site</span>
+├── .agents/agents, .agents/skills          <span class="c"># one agent per role; knowledge, triage, backend skills</span>
+├── apps/                                   <span class="c"># client apps, as submodules</span>
+├── services/                               <span class="c"># the Go backend, as a submodule</span>
+├── docs/
+│   ├── architecture/                       <span class="c"># domain, app, adapter; commands, queries, unit of work</span>
+│   ├── coding-standards/                   <span class="c"># general, Go, plain English, diagrams</span>
+│   ├── governances/artifact-driven/        <span class="c"># knowledge, workflow, team, done, 13 runbooks</span>
+│   ├── infrastructure/  principles/kiss/
+│   └── software-knowledges/                <span class="c"># system, goals, flows, artifacts</span>
+└── scripts/                                <span class="c"># checks, impact, knowledge site</span></pre></div>
+</section>
+
+<footer>
+  <span>Artifact Driven. Knowledge leads the code.</span>
+  <span>Runs on Python 3.9+ and Git. Contracts lint with Redocly.</span>
+</footer>
+
+</main>
+
+<script>
+(function(){
+  const chain=document.getElementById("layers-chain");
+  const nodes=[...chain.querySelectorAll(".layer")];
+  const note=document.getElementById("chain-note");
+  const base=note.textContent;
+  // What impact.py reports for each node, restricted to this path: [affected by a change, relies on].
+  const ids=["SYS-7","G-BORROW-3","F-BORROW-3","MBR-2","member/web.md"];
+  const trace=[[[1,2,3,4],[]],[[2],[2,3,0]],[[1],[3,0]],[[1,2,4],[0]],[[],[3,0]]];
+  const list=a=>a.length?a.map(j=>ids[j]).join(", "):"nothing on this path";
+  function pick(i){
+    chain.classList.add("picked");
+    const [up,down]=trace[i];
+    nodes.forEach(n=>{const j=+n.dataset.i;n.classList.toggle("sel",j===i);n.classList.toggle("up",up.includes(j));n.classList.toggle("down",down.includes(j));});
+    note.textContent=`A change to ${ids[i]} affects ${list(up)}. It relies on ${list(down)}.`;
+  }
+  function toggle(n){const i=+n.dataset.i;if(n.classList.contains("sel")){chain.classList.remove("picked");nodes.forEach(x=>x.classList.remove("sel","up","down"));note.textContent=base;}else pick(i);}
+  nodes.forEach(n=>{n.addEventListener("click",e=>{e.stopPropagation();toggle(n);});n.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();e.stopPropagation();toggle(n);}});});
+  document.querySelectorAll(".copy-btn").forEach(b=>b.addEventListener("click",()=>{
+    const pre=b.parentElement.querySelector("pre");const text=pre.textContent;
+    const done=()=>{b.textContent="Copied";setTimeout(()=>b.textContent="Copy",1500);};
+    const select=()=>{const r=document.createRange();r.selectNodeContents(pre);const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Selected";setTimeout(()=>b.textContent="Copy",1500);};
+    try{navigator.clipboard.writeText(text).then(done,select);}catch(e){select();}
+  }));
+})();
+</script>
+</body>
+</html>
