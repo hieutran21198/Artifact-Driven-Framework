@@ -25,6 +25,7 @@ from project import CLIENTS, KNOWLEDGE, ROOT, SERVICES, SITE
 TEMPLATE = Path(__file__).with_name("site.html")
 ROW = re.compile(r"^\| (" + impact.ID.pattern + r") \|(.*)\|\s*$")
 TITLE = re.compile(r"^# (?:Goal|Flow): (.+)$", re.MULTILINE)
+MERMAID = re.compile(r"^```mermaid\n(.*?)^```", re.MULTILINE | re.DOTALL)
 COLUMN = {"Requirements": 0, "Goal criteria": 0, "Flow scenarios": 1, "Artifact rules": 2, "Operations": 3, "Client needs": 4}
 
 
@@ -102,6 +103,18 @@ def knowledge(graph):
             if needs:
                 clients[page][section].extend(needs)
     return requirements, goals, flows, rules, operations, {p: dict(s) for p, s in clients.items()}
+
+
+def diagrams():
+    found = []
+    for path in sorted(KNOWLEDGE.rglob("*.md")):
+        text = path.read_text(encoding="utf-8")
+        title = re.search(r"^# (.+)$", text, re.MULTILINE)
+        for block in MERMAID.finditer(text):
+            section = re.findall(r"^## (.+)$", text[:block.start()], re.MULTILINE)
+            found.append({"page": impact.rel(path), "title": title[1] if title else impact.rel(path),
+                          "section": section[-1] if section else "", "code": block[1]})
+    return found
 
 
 def service_routes(operations, services):
@@ -207,7 +220,7 @@ def main(argv):
         "built": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "requirements": requirements, "goals": goals, "flows": flows, "rules": rules,
         "operations": operations, "clients": clients, "routes": service_routes(operations, services),
-        "graph": display_graph(graph), "size": size, "radius": radius,
+        "graph": display_graph(graph), "diagrams": diagrams(), "size": size, "radius": radius,
     }
     html = TEMPLATE.read_text(encoding="utf-8").replace("/*DATA*/null", json.dumps(data, ensure_ascii=False))
     output.parent.mkdir(parents=True, exist_ok=True)
