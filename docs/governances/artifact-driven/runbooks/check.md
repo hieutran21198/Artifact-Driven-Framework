@@ -10,6 +10,9 @@ python3 scripts/check_docs.py
 git diff --check
 ```
 
+Also run these three in CI on each pull request into the default branch: agents
+write most changes, and a check that someone must remember to run is skipped.
+
 Before a code change is merged, check the IDs its tests name. With no folder
 the check reads the tests of every cloned part; pass the folder of the
 change's worktree to check only that one:

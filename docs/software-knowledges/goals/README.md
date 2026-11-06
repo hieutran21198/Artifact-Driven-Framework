@@ -3,7 +3,8 @@
 A goal is a business outcome that a set of flows achieves. It holds the need
 and the success criteria; flows and artifacts hold the behavior.
 
-- [Borrow a book](borrow-a-book.md): reference goal. A member borrows a book
-  and returns it in time.
+
+The folder lists them; the [knowledge site](../../../scripts/README.md#knowledge-site)
+shows how they link.
 
 Return to [software knowledge](../README.md).

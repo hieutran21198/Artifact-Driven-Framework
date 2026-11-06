@@ -10,8 +10,7 @@ Sample: [Borrow a book](../../../software-knowledges/flows/borrow-book.md).
 2. `flows/<flow>.openapi.yaml`, when the flow owns an endpoint, sends a
    payload that is not an HTTP response, or is started by a trigger
    ([contract](contract.md))
-3. `flows/README.md`
-4. The goals that use the flow, and the knowledge map
+3. The goals that use the flow
 
 ## Steps
 

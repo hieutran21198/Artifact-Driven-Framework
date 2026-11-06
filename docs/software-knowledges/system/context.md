@@ -43,10 +43,10 @@ Each service serves the artifacts the
 database. The owner of each service is in
 [services](../../../services/README.md).
 
-| Service | Holds | Serves |
-| --- | --- | --- |
-| `lending` | The API for books and members, and the overdue worker | [book](../artifacts/book/README.md), [member](../artifacts/member/README.md) |
-| `notification` | Sends each message to a member once, by email | [notice](../artifacts/notice/README.md) |
+| Service | Holds |
+| --- | --- |
+| `lending` | The API and the overdue worker |
+| `notification` | Sends each message to a member once, by email |
 
 The API gateway routes each client call to the service that serves its
 operation. Calls between services do not go through it.

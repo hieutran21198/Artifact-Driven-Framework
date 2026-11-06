@@ -27,8 +27,9 @@ keeps the same requirements under its own IDs.
 
 The knowledge holds for one service or for many.
 
-- Each artifact is served by exactly one service, named in the artifact's
-  README. A service may serve several artifacts. The owner of that service
+- Each artifact is served by exactly one service, named in the
+  [domain map](../../architecture/domain-map.md) and nowhere else; the
+  artifact's README links it. A service may serve several artifacts. The owner of that service
   keeps the artifact ([team](team.md#parts-and-owners)).
 - [Context](../../software-knowledges/system/context.md) lists the services,
   the clients and what stands between them, such as an API gateway.
@@ -144,7 +145,7 @@ answer a question that a page below leaves open.
 
 | File | Holds |
 | --- | --- |
-| `README.md` | What the artifact owns, its rule prefix, the service that serves it, and links |
+| `README.md` | What the artifact owns, its rule prefix, a link to the domain map for the service that serves it, and links |
 | `specification.md` | Model, rules and lifecycle; no service, client or flow |
 | `openapi.yaml` | The HTTP contract of the artifact's own endpoints, internal ones included |
 | `service.md` | The domain contract the serving service provides: the `Writer` and `Reader` interfaces and their operations; no packages, types or tables |
@@ -203,7 +204,7 @@ never draws the inside of a lower layer.
 
 | Layer | Diagram |
 | --- | --- |
-| System | Context: actors, clients, services, gateway, external systems. Knowledge map: goals, flows, artifacts. |
+| System | Context: actors, clients, services, gateway, external systems. Nobody draws how goals, flows and artifacts link: the [knowledge site](../../../scripts/README.md#knowledge-site) shows it from the links. |
 | Goal | The flows that reach the goal, as a `flowchart`. |
 | Flow | A `sequenceDiagram` with each service it crosses as a participant, `rect` for each transaction inside one service, and `alt` for failures. A `flowchart` when it branches a lot. |
 | Artifact | A `classDiagram` of entities and their behavior methods, without fields. A `stateDiagram-v2` when an entity has a lifecycle. |
