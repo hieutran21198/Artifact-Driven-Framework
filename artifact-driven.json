@@ -23,7 +23,7 @@
       "tests": {"folder": "services/notification", "glob": "**/*_test.go"}
     }
   },
-  "e2e": {"folder": "e2e/suite", "glob": "**/*"},
+  "e2e": {"folder": "e2e/suite", "glob": "**/*.spec.*"},
   "site": {
     "title": "Library lending knowledge",
     "output": "build/site/index.html"

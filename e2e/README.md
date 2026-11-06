@@ -14,6 +14,7 @@ git clone <repository URL> e2e/suite
 ```
 
 The `e2e` setting of [artifact-driven.json](../artifact-driven.json) points
-the test check and the test coverage at them.
+the test check and the test coverage at them; set its `glob` to the suite's
+test files, such as `**/*.spec.*`.
 
 Return to the [project contents](../README.md).

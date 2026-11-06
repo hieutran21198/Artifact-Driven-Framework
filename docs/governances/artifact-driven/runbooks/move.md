@@ -34,8 +34,8 @@ report is read at its knowledge tag.
 ## An artifact moves to another service
 
 The artifact keeps its rules and IDs; the service that serves it changes. It
-is an architecture change first: the owners of both services and the product
-owner agree on the issue.
+is an architecture change first: the owners of both services, the gateway
+owner and the product owner agree on the issue.
 
 1. Change the service in the [domain map](../../../architecture/domain-map.md),
    the artifact's README, [context](../../../software-knowledges/system/context.md),
@@ -48,8 +48,10 @@ owner agree on the issue.
    when the call fails, and its scenarios ([flow](flow.md)).
 3. Keep the operations and their shapes (SYS-4, SYS-6). The gateway routes them
    to the new service; a call that becomes internal gets `x-internal: true`.
-4. Moving the stored data is a [data fix](data-fix.md) on its own issue, run
-   before the gateway routes to the new service.
+4. Moving the stored data is a migration on its own issue: back up the rows,
+   make it safe to run twice, and check the count after it runs. Stop writes
+   to the artifact in the old service, or copy again, before the gateway
+   routes to the new service.
 
 Then [check the docs](check.md).
 

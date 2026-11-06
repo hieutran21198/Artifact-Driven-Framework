@@ -17,7 +17,8 @@ use the `book` domain of the
   retried or compensated when it fails, and safe to receive twice.
 - Commands and queries take separate paths (light CQRS): a command changes
   state through the domain, a query only reads. Both use the same database and
-  the same transactions. There is no separate read store and no events.
+  the same transactions. There is no separate read store, and no events inside
+  a service.
 - Handlers return transfer objects, never database models.
 - External systems, such as payment providers, storage, email and push, sit
   behind interfaces, so they can be faked in tests and their failures handled
@@ -56,6 +57,7 @@ internal/
 | `adapter/db/unitofwork` | The transaction and the writers bound to it | `adapter/db/repo`, `app/command`, domain, the database library |
 | `adapter/<vendor>` | One external system behind an interface | Domain, the vendor SDK |
 | `adapter/<service>` | Calls to another service's operations, behind an interface, from that service's contract | Domain, the HTTP client |
+| `adapter/<broker>` | Publishing messages to a queue or a topic, behind an interface, from the publishing flow's contract | Domain, the broker SDK |
 
 The same rules as a diagram; an arrow means "imports":
 
