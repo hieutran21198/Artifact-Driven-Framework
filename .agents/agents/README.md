@@ -10,8 +10,8 @@ has no file here.
 | --- | --- | --- |
 | [knowledge-writer](knowledge-writer.md) | Read, Grep, Glob, Edit, Write, Bash | Default |
 | [contract-designer](contract-designer.md) | Read, Grep, Glob, Edit, Write, Bash | Default |
-| [client-analyst](client-analyst.md) | Read, Grep, Glob, Write | `sonnet` |
-| [backend-implementer](backend-implementer.md) | Read, Grep, Glob, Edit, Write, Bash | Default |
+| [client-writer](client-writer.md) | Read, Grep, Glob, Write | `sonnet` |
+| [implementer](implementer.md) | Read, Grep, Glob, Edit, Write, Bash | Default |
 | [defect-investigator](defect-investigator.md) | Read, Grep, Glob, Bash | `opus` |
 | [reviewer](reviewer.md) | Read, Grep, Glob, Bash | `opus` |
 

@@ -17,3 +17,7 @@ __pycache__/
 
 # Generated output
 build/
+
+# Services and clients, cloned beside the knowledge
+/services/*/
+/apps/*/

@@ -4,9 +4,10 @@ Usage:
     python3 scripts/site.py [output] [--routes DIR]...
 
 output defaults to site.output in artifact-driven.json. The API coverage reads
-backend routes from the code as the routes setting says; each --routes DIR,
-relative to the repository root, replaces its folders. With no routes setting,
-the page leaves API coverage out.
+the routes of each service from its code, as the service's routes setting
+says. Each --routes DIR, relative to the repository root, replaces every
+service's folders with one set read by the first service's pattern. With no
+routes setting, the page leaves API coverage out.
 """
 
 from collections import defaultdict
@@ -19,7 +20,7 @@ import subprocess
 import sys
 
 import impact
-from project import CLIENTS, KNOWLEDGE, ROOT, ROUTES, SITE
+from project import CLIENTS, KNOWLEDGE, ROOT, SERVICES, SITE
 
 TEMPLATE = Path(__file__).with_name("site.html")
 ROW = re.compile(r"^\| (" + impact.ID.pattern + r") \|(.*)\|\s*$")
@@ -103,22 +104,29 @@ def knowledge(graph):
     return requirements, goals, flows, rules, operations, {p: dict(s) for p, s in clients.items()}
 
 
-def backend_routes(operations, folders):
-    """List the routes the routes setting finds in the code, or None without one
-    or when none of its folders exists yet."""
-    if not ROUTES or not any((ROOT / folder).is_dir() for folder in folders):
+def service_routes(operations, services):
+    """List the routes each service's routes setting finds in its code, or None
+    when no service has a routes setting whose folders exist yet. With more
+    than one service, a route's space starts with its service name."""
+    present = {name: r for name, r in services.items()
+               if r and any((ROOT / folder).is_dir() for folder in r.get("folders", []))}
+    if not present:
         return None
-    pattern = re.compile(ROUTES["pattern"])
     known = {(o["method"], re.sub(r"\{[^}]*\}", "{}", o["path"])): o["id"] for o in operations}
     routes = []
-    files = sorted({p for folder in folders if (ROOT / folder).is_dir()
-                    for p in (ROOT / folder).glob(ROUTES.get("glob", "**/*")) if p.is_file()})
-    for path in files:
-        for found in pattern.finditer(path.read_text(encoding="utf-8", errors="replace")):
-            method, route = found.group("method").upper(), found.group("path")
-            key = (method, re.sub(r"\{[^}]*\}", "{}", route))
-            space = "/" + route.strip("/").split("/")[0]
-            routes.append({"method": method, "path": route, "space": space, "covered": known.get(key)})
+    for name, setting in present.items():
+        pattern = re.compile(setting["pattern"])
+        files = sorted({p for folder in setting.get("folders", []) if (ROOT / folder).is_dir()
+                        for p in (ROOT / folder).glob(setting.get("glob", "**/*")) if p.is_file()})
+        for path in files:
+            for found in pattern.finditer(path.read_text(encoding="utf-8", errors="replace")):
+                method, route = found.group("method").upper(), found.group("path")
+                key = (method, re.sub(r"\{[^}]*\}", "{}", route))
+                space = "/" + route.strip("/").split("/")[0]
+                if len(services) > 1:
+                    space = f"{name} {space}"
+                routes.append({"method": method, "path": route, "space": space, "service": name,
+                               "covered": known.get(key)})
     return routes
 
 
@@ -179,10 +187,17 @@ def main(argv):
     parser.add_argument("--routes", action="append", metavar="DIR",
                         help="folder to read routes from, relative to the repository root; repeatable")
     args = parser.parse_args(argv)
-    output, folders = args.output, args.routes or (ROUTES or {}).get("folders", [])
-    for folder in args.routes or []:
-        if not (ROOT / folder).is_dir():
-            print(f"Skipped {folder}: not a folder", file=sys.stderr)
+    output = args.output
+    services = {name: s["routes"] for name, s in SERVICES.items()}
+    if args.routes:
+        for folder in args.routes:
+            if not (ROOT / folder).is_dir():
+                print(f"Skipped {folder}: not a folder", file=sys.stderr)
+        first = next((r for r in services.values() if r), None)
+        if not first:
+            print("--routes needs a service with a routes setting in artifact-driven.json", file=sys.stderr)
+            return 2
+        services = {"routes": {**first, "folders": args.routes}}
     graph = impact.build()
     requirements, goals, flows, rules, operations, clients = knowledge(graph)
     size, radius = metrics(graph)
@@ -191,7 +206,7 @@ def main(argv):
         "commit": commit(),
         "built": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "requirements": requirements, "goals": goals, "flows": flows, "rules": rules,
-        "operations": operations, "clients": clients, "routes": backend_routes(operations, folders),
+        "operations": operations, "clients": clients, "routes": service_routes(operations, services),
         "graph": display_graph(graph), "size": size, "radius": radius,
     }
     html = TEMPLATE.read_text(encoding="utf-8").replace("/*DATA*/null", json.dumps(data, ensure_ascii=False))

@@ -1,10 +1,10 @@
-# Book in the backend
+# Book in the lending service
 
-What the backend provides for this artifact.
+What the `lending` service, which serves this artifact, provides for it.
 
 ## HTTP contract
 
-The [contract](openapi.yaml) comes first; the backend implements it.
+The [contract](openapi.yaml) comes first; the `lending` service implements it.
 
 ## Domain contract
 

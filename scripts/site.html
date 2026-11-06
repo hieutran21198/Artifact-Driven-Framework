@@ -90,22 +90,22 @@ en:{
 "guide.parts":"The parts","guide.numbers":"The numbers",
 "guide.partsTable":`<tr><td><span class="pill p0">SYS-n</span></td><td><b>Requirement.</b> A rule for the whole system, such as "a JSON response is always a root object".</td></tr>
 <tr><td><span class="pill p0">G-…-n</span></td><td><b>Goal and its criteria.</b> A business outcome, such as "Borrow a book", and the checks that say it is reached.</td></tr>
-<tr><td><span class="pill p1">F-…-n</span></td><td><b>Flow and its scenarios.</b> How the outcome happens across apps and the backend. Each scenario is one testable case: given, when, then. Testers and the client test by these.</td></tr>
+<tr><td><span class="pill p1">F-…-n</span></td><td><b>Flow and its scenarios.</b> How the outcome happens across apps and services. Each scenario is one testable case: given, when, then. Testers and the client test by these.</td></tr>
 <tr><td><span class="pill p2">PREFIX-n</span></td><td><b>Rule.</b> A business rule of one domain, true whatever screen uses it.</td></tr>
 <tr><td><span class="pill p3">operation</span></td><td><b>Operation.</b> One API call in the agreed contract (OpenAPI). It is written before the code.</td></tr>
-<tr><td><span class="pill p4">app/page</span></td><td><b>Client needs.</b> What one app needs the responses to keep, so that a backend change does not break a released app.</td></tr>`,
-"guide.numbersTable":`<tr><td><b>API coverage</b></td><td>Backend routes that have a contract and scenarios behind them. A route without them is behavior nobody has written down yet.</td></tr>
+<tr><td><span class="pill p4">app/page</span></td><td><b>Client needs.</b> What one app needs the responses to keep, so that a service change does not break a released app.</td></tr>`,
+"guide.numbersTable":`<tr><td><b>API coverage</b></td><td>Service routes that have a contract and scenarios behind them. A route without them is behavior nobody has written down yet.</td></tr>
 <tr><td><b>Size of a goal</b></td><td>The flows, scenarios, operations and client pages a goal relies on. A bigger goal needs more testing when it changes.</td></tr>
 <tr><td><b>Blast radius</b></td><td>How far a change to one requirement, rule or operation reaches: the scenarios to test again and the apps to tell.</td></tr>
 <tr><td><b>Gaps</b></td><td>Rules or criteria that no scenario tests, operations no scenario calls, and requirements nothing cites. Each one is work left to do.</td></tr>
 <tr><td><b>Colors</b></td><td>In the explorer, <span style="color:var(--up)">orange</span> is what a change affects and <span style="color:var(--down)">green</span> is what a part relies on.</td></tr>`,
-"coverage.sub":"Backend routes that have an agreed contract and flows behind them, by namespace. A route without knowledge is behavior nobody has written down yet.",
+"coverage.sub":"Service routes that have an agreed contract and flows behind them, by service and namespace. A route without knowledge is behavior nobody has written down yet.",
 "goals.sub":"Each goal is a business outcome. Size counts what the goal relies on: the bigger it is, the more there is to test when it changes.",
 "explorer.sub":"The graph of the analyzed goals. Click any node: orange is what a change to it affects, green is what it relies on.",
 "radius.sub":"How far a change to each requirement, rule or operation reaches. High numbers mark shared parts that need the widest testing.",
 "gaps.sub":"Places where the knowledge is not yet complete.",
-"clients.sub":"What each app needs the responses to keep, so that a backend change does not break it. The needs are written in English, as in the source.",
-"m.goals":["Goals","business outcomes"],"m.flows":["Flows","behaviors across domains"],"m.scenarios":["Scenarios","testable cases"],"m.rules":["Rules","domain rules"],"m.operations":["Operations","API operations with a contract"],"m.coverage":["API coverage",(c,t)=>`${c} of ${t} backend routes`],
+"clients.sub":"What each app needs the responses to keep, so that a service change does not break it. The needs are written in English, as in the source.",
+"m.goals":["Goals","business outcomes"],"m.flows":["Flows","behaviors across domains"],"m.scenarios":["Scenarios","testable cases"],"m.rules":["Rules","domain rules"],"m.operations":["Operations","API operations with a contract"],"m.coverage":["API coverage",(c,t)=>`${c} of ${t} service routes`],
 "withKnowledge":"Routes with knowledge","withoutKnowledge":"Routes without knowledge",
 "kind":["Goal / requirement","Scenario","Rule","Operation","Client page"],
 "flows":"Flows","scenarios":"Scenarios","operations":"Operations","clientPages":"Client pages","criterion":"Criterion","none":"none","None":"None","item":"Item",
@@ -120,7 +120,7 @@ en:{
 "nav.analyze":"Analyze","analyze.sub":"Pick the goals a sprint or a release works on, up to three, then analyze. Every section below is then counted for those goals only. Pick all goals for the whole project.",
 "drop":n=>n?`${n} goal${n>1?"s":""} picked`:"Pick goals","allGoals":"All goals (whole project)","run":"Analyze","runNote":"Pick at least one goal.","maxNote":"Up to three goals; pick all goals for the whole project.",
 "summary.title":"Analysis","summary.sub":g=>`For: ${g}`,
-"m.clientPages":["Client pages","app pages that rely on them"],"m.inAnalysis":["Routes in this analysis",(c,t)=>`of ${t} backend routes in the project`],
+"m.clientPages":["Client pages","app pages that rely on them"],"m.inAnalysis":["Routes in this analysis",(c,t)=>`of ${t} service routes in the project`],
 "inThis":"Routes in this analysis","projectNote":"Coverage of the whole project; the routes this analysis covers are listed below."
 },
 vi:{
@@ -132,22 +132,22 @@ vi:{
 "guide.parts":"Các thành phần","guide.numbers":"Các chỉ số",
 "guide.partsTable":`<tr><td><span class="pill p0">SYS-n</span></td><td><b>Requirement (yêu cầu hệ thống).</b> Luật áp dụng cho toàn hệ thống, ví dụ "response JSON luôn là một object gốc".</td></tr>
 <tr><td><span class="pill p0">G-…-n</span></td><td><b>Goal và criteria.</b> Một kết quả nghiệp vụ, ví dụ "Mượn sách", và các tiêu chí để biết đã đạt được.</td></tr>
-<tr><td><span class="pill p1">F-…-n</span></td><td><b>Flow và scenario.</b> Cách kết quả diễn ra qua các app và backend. Mỗi scenario là một ca test: given, when, then. Tester và client test theo các scenario này.</td></tr>
+<tr><td><span class="pill p1">F-…-n</span></td><td><b>Flow và scenario.</b> Cách kết quả diễn ra qua các app và service. Mỗi scenario là một ca test: given, when, then. Tester và client test theo các scenario này.</td></tr>
 <tr><td><span class="pill p2">PREFIX-n</span></td><td><b>Rule (luật nghiệp vụ).</b> Luật của một domain, đúng bất kể màn hình nào dùng nó.</td></tr>
 <tr><td><span class="pill p3">operation</span></td><td><b>Operation.</b> Một lời gọi API trong contract đã thống nhất (OpenAPI), được viết trước khi có code.</td></tr>
-<tr><td><span class="pill p4">app/page</span></td><td><b>Nhu cầu của app.</b> Những gì một app cần response giữ nguyên, để thay đổi ở backend không làm vỡ bản app đã phát hành.</td></tr>`,
-"guide.numbersTable":`<tr><td><b>Độ phủ API</b></td><td>Số route backend đã có contract và scenario đứng sau. Route chưa có nghĩa là hành vi đó chưa ai viết ra.</td></tr>
+<tr><td><span class="pill p4">app/page</span></td><td><b>Nhu cầu của app.</b> Những gì một app cần response giữ nguyên, để thay đổi ở service không làm vỡ bản app đã phát hành.</td></tr>`,
+"guide.numbersTable":`<tr><td><b>Độ phủ API</b></td><td>Số route của các service đã có contract và scenario đứng sau. Route chưa có nghĩa là hành vi đó chưa ai viết ra.</td></tr>
 <tr><td><b>Độ lớn của goal</b></td><td>Số flow, scenario, operation và trang app mà một goal dựa vào. Goal càng lớn thì khi thay đổi càng phải test nhiều.</td></tr>
 <tr><td><b>Blast radius</b></td><td>Một thay đổi ở requirement, rule hay operation lan tới đâu: các scenario phải test lại và các app phải báo.</td></tr>
 <tr><td><b>Lỗ hổng</b></td><td>Rule hay criterion chưa scenario nào test, operation chưa scenario nào gọi, và requirement chưa ai trích. Mỗi mục là việc còn phải làm.</td></tr>
 <tr><td><b>Màu sắc</b></td><td>Trong phần tra cứu, <span style="color:var(--up)">màu cam</span> là những gì bị ảnh hưởng khi đổi, <span style="color:var(--down)">màu xanh</span> là những gì thành phần đó dựa vào.</td></tr>`,
-"coverage.sub":"Các route backend đã có contract và flow đứng sau, theo namespace. Route chưa có knowledge là hành vi chưa ai viết ra.",
+"coverage.sub":"Các route của service đã có contract và flow đứng sau, theo service và namespace. Route chưa có knowledge là hành vi chưa ai viết ra.",
 "goals.sub":"Mỗi goal là một kết quả nghiệp vụ. Độ lớn đếm những gì goal dựa vào: càng lớn thì khi thay đổi càng phải test nhiều.",
 "explorer.sub":"Đồ thị của các goal đang phân tích. Bấm vào node bất kỳ: màu cam là những gì bị ảnh hưởng khi đổi nó, màu xanh là những gì nó dựa vào.",
 "radius.sub":"Thay đổi ở từng requirement, rule hay operation lan xa tới đâu. Số càng cao là phần dùng chung, cần test rộng nhất.",
 "gaps.sub":"Những chỗ knowledge chưa đầy đủ.",
-"clients.sub":"Những gì từng app cần response giữ nguyên, để thay đổi ở backend không làm vỡ app. Nội dung nhu cầu giữ tiếng Anh như bản gốc.",
-"m.goals":["Goal","kết quả nghiệp vụ"],"m.flows":["Flow","hành vi qua nhiều domain"],"m.scenarios":["Scenario","ca test"],"m.rules":["Rule","luật nghiệp vụ"],"m.operations":["Operation","operation API có contract"],"m.coverage":["Độ phủ API",(c,t)=>`${c} trên ${t} route backend`],
+"clients.sub":"Những gì từng app cần response giữ nguyên, để thay đổi ở service không làm vỡ app. Nội dung nhu cầu giữ tiếng Anh như bản gốc.",
+"m.goals":["Goal","kết quả nghiệp vụ"],"m.flows":["Flow","hành vi qua nhiều domain"],"m.scenarios":["Scenario","ca test"],"m.rules":["Rule","luật nghiệp vụ"],"m.operations":["Operation","operation API có contract"],"m.coverage":["Độ phủ API",(c,t)=>`${c} trên ${t} route service`],
 "withKnowledge":"Route đã có knowledge","withoutKnowledge":"Route chưa có knowledge",
 "kind":["Goal / requirement","Scenario","Rule","Operation","Trang app"],
 "flows":"Flow","scenarios":"Scenario","operations":"Operation","clientPages":"Trang app","criterion":"Criterion","none":"chưa có","None":"Không có","item":"Mục",
@@ -162,7 +162,7 @@ vi:{
 "nav.analyze":"Phân tích","analyze.sub":"Chọn các goal mà một sprint hay một release làm, tối đa ba, rồi bấm phân tích. Mọi mục bên dưới khi đó chỉ tính cho các goal đó. Chọn tất cả goal để xem toàn project.",
 "drop":n=>n?`Đã chọn ${n} goal`:"Chọn goal","allGoals":"Tất cả goal (toàn project)","run":"Phân tích","runNote":"Chọn ít nhất một goal.","maxNote":"Tối đa ba goal; chọn tất cả goal để xem toàn project.",
 "summary.title":"Kết quả phân tích","summary.sub":g=>`Cho: ${g}`,
-"m.clientPages":["Trang app","trang app dựa vào chúng"],"m.inAnalysis":["Route trong phân tích",(c,t)=>`trên ${t} route backend của project`],
+"m.clientPages":["Trang app","trang app dựa vào chúng"],"m.inAnalysis":["Route trong phân tích",(c,t)=>`trên ${t} route service của project`],
 "inThis":"Route trong phân tích này","projectNote":"Độ phủ của toàn project; các route mà phân tích này phủ được liệt kê bên dưới."
 }};
 let lang="en";try{const s=localStorage.getItem("lang");if(s in I18N)lang=s;}catch(e){}

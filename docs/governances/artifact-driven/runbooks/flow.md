@@ -1,6 +1,6 @@
 # Add or change a flow
 
-Use when behavior crosses artifacts or containers.
+Use when behavior crosses artifacts, services or clients.
 
 Sample: [Borrow a book](../../../software-knowledges/flows/borrow-book.md).
 
@@ -21,19 +21,21 @@ Sample: [Borrow a book](../../../software-knowledges/flows/borrow-book.md).
    trigger in backticks, as the contract declares it (`overdueCheck`), and for
    a schedule its time and time zone.
 2. Write the steps in order. Say who acts in each step (an actor, a client,
-   the backend, or a worker on a schedule or a trigger), which artifact it
-   uses, and which steps run in one transaction. Where a client calls the
-   backend, name the call by intent first ("the client asks for the book");
+   a service, or a worker of a service on a schedule or a trigger), which
+   artifact it uses, and which steps run in one transaction. A transaction
+   stays inside one service. Where a client or a service calls a service,
+   name the call by intent first ("the client asks for the book");
    the contract gives it an `operationId` ([contract](contract.md)), and the
    step then names it. Cite artifact rules by ID; do not restate them. A step
    states no condition of its own: a region, a role or a limit is a rule,
-   cited by ID. Calls to external systems come after the transaction; say what
-   happens when they fail. For a worker or a webhook, say what happens when
+   cited by ID. Calls to other services and to external systems come after
+   the transaction; say what happens when they fail, and how the same call
+   twice gives the same result. For a worker or a webhook, say what happens when
    the same trigger arrives twice (SYS-8). A scheduled worker's scenarios
    cover a run with nothing to do, a failed send, and a run that repeats.
-3. Draw a `sequenceDiagram`: clients and the backend as participants, artifacts
-   as participants inside the backend, `rect` around the transaction, `alt` for
-   each failure.
+3. Draw a `sequenceDiagram`: clients and each service as participants,
+   artifacts as participants inside the service that serves them, `rect`
+   around each transaction, `alt` for each failure.
 4. Write the scenarios as a table with IDs `F-<FLOW>-<n>`: given, when, then,
    and the artifact rules and system requirements each one covers. The When names
    the `operationId` the scenario calls, or the trigger that starts a worker,

@@ -13,7 +13,7 @@ from collections import defaultdict
 import re
 import sys
 
-from project import CLIENTS, KNOWLEDGE, ROOT, TESTS
+from project import CLIENTS, KNOWLEDGE, ROOT, TEST_GLOB, TESTS
 
 ID = re.compile(r"\b[A-Z]{1,6}(?:-[A-Z]{1,8})?-\d+\b")
 ID_ROW = re.compile(r"^\| (" + ID.pattern + r") \|")
@@ -246,27 +246,32 @@ def stats(graph, term):
     return 0
 
 
-def test_files(folder):
-    """The test files under a folder, as the tests setting names them."""
-    return sorted(p for p in folder.glob(TESTS["glob"]) if p.is_file())
+def test_folders(name=None):
+    """The (folder, glob) pairs to read tests from: the given folder, or the
+    tests of every service and client in the configuration that exist."""
+    if name:
+        return [(ROOT / name, TEST_GLOB)]
+    return [(ROOT / t["folder"], t["glob"]) for _, t in TESTS if (ROOT / t["folder"]).is_dir()]
 
 
-def tested_ids(folder):
+def test_files(folders):
+    """The test files under the folders."""
+    return sorted({p for folder, glob in folders for p in folder.glob(glob) if p.is_file()})
+
+
+def tested_ids(folders):
     """How many test files name each knowledge ID."""
     found = defaultdict(int)
-    for path in test_files(folder):
+    for path in test_files(folders):
         for name in set(ID.findall(path.read_text(encoding="utf-8", errors="ignore"))):
             found[name] += 1
     return found
 
 
-def fragile(graph, folder, limit=20):
+def fragile(graph, folders, limit=20):
     """Rank requirements, rules, operations and schemas by how much a change
     would break and how weakly it is proved."""
-    tests = tested_ids(folder) if folder else {}
-    if folder and not folder.is_dir():
-        print(f"Not a folder: {folder}", file=sys.stderr)
-        return 1
+    tests = tested_ids(folders) if folders else {}
     open_questions = set()
     for path in KNOWLEDGE.rglob("*.md"):
         text = path.read_text(encoding="utf-8")
@@ -282,9 +287,9 @@ def fragile(graph, folder, limit=20):
         reach = numbers["scenarios"] + numbers["criteria"] + 2 * numbers["operations"] + 3 * numbers["client pages"]
         is_id = bool(ID.fullmatch(node))
         direct = sum(1 for unit, cited in graph.edges.items() if unit.startswith("F-") and node in cited)
-        weak = (is_id and direct == 0) + (is_id and bool(folder) and tests.get(node, 0) == 0)
+        weak = (is_id and direct == 0) + (is_id and bool(folders) and tests.get(node, 0) == 0)
         score = reach * (1 + weak) + (8 if node in open_questions else 0)
-        rows.append((score, node, numbers, direct, tests.get(node, 0) if is_id and folder else "-", node in open_questions))
+        rows.append((score, node, numbers, direct, tests.get(node, 0) if is_id and folders else "-", node in open_questions))
     rows.sort(key=lambda r: (-r[0], r[1]))
     print("The most fragile nodes: reach times weakness. Reach counts scenarios and criteria,")
     print("operations twice and client pages three times; weakness adds 1 for a rule with no")
@@ -313,12 +318,12 @@ def natural(unit):
     return [int(p) if p.isdigit() else p for p in re.split(r"(\d+)", unit)]
 
 
-def coverage(graph, folder):
+def coverage(graph, folders):
     """For each goal, the scenarios and rules it relies on that a test names."""
-    if not folder or not folder.is_dir():
-        print(f"Not a folder: {folder}", file=sys.stderr)
+    if not folders:
+        print("No tests folder: pass one, or clone a part whose tests artifact-driven.json names.", file=sys.stderr)
         return 1
-    tests = tested_ids(folder)
+    tests = tested_ids(folders)
     kinds = ("Flow scenarios", "Artifact rules")
     print("Test coverage by ID: the scenarios and rules each goal relies on that a test names.")
     total = defaultdict(lambda: [0, 0])
@@ -378,13 +383,16 @@ def questions(graph):
 
 
 def main(argv):
-    folder = (argv[1] if len(argv) > 1 else None) or TESTS["folder"]
+    name = argv[1] if len(argv) > 1 and argv[:1] in (["--coverage"], ["--fragile"]) else None
+    if name and not (ROOT / name).is_dir():
+        print(f"Not a folder: {ROOT / name}", file=sys.stderr)
+        return 1
     if argv[:1] == ["--coverage"]:
-        return coverage(build(), (ROOT / folder) if folder else None)
+        return coverage(build(), test_folders(name))
     if argv[:1] == ["--questions"]:
         return questions(build())
     if argv[:1] == ["--fragile"]:
-        return fragile(build(), (ROOT / folder) if folder else None)
+        return fragile(build(), test_folders(name))
     if argv[:1] == ["--stats"]:
         return stats(build(), argv[1] if len(argv) > 1 else None)
     down = "--down" in argv

@@ -10,14 +10,15 @@ flowchart LR
     flow_return([Flow: Return a book])
     book[Artifact: book]
     member[Artifact: member]
+    notice[Artifact: notice]
 
     goal_borrow --> flow_borrow & flow_return
     flow_borrow --- book & member
-    flow_return --- book & member
+    flow_return --- book & member & notice
 ```
 
 | Goal | Flows | Artifacts |
 | --- | --- | --- |
-| [Borrow a book](../goals/borrow-a-book.md) | [Borrow a book](../flows/borrow-book.md), [Return a book](../flows/return-book.md) | [book](../artifacts/book/README.md), [member](../artifacts/member/README.md) |
+| [Borrow a book](../goals/borrow-a-book.md) | [Borrow a book](../flows/borrow-book.md), [Return a book](../flows/return-book.md) | [book](../artifacts/book/README.md), [member](../artifacts/member/README.md), [notice](../artifacts/notice/README.md) |
 
 Return to [system](README.md).

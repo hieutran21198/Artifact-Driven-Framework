@@ -19,7 +19,8 @@ Samples: [book contract](../../../software-knowledges/artifacts/book/openapi.yam
 
 ## Steps
 
-1. Start from the flow steps that call the backend. Add one path per call
+1. Start from the flow steps that call a service, from a client or from
+   another service. Add one path per call
    with an `operationId` in camelCase and a summary that cites the IDs it
    serves: artifact rules in an artifact contract, flow scenarios in a flow
    contract. Report the `operationId`s; the knowledge writer names them in
@@ -53,7 +54,7 @@ Samples: [book contract](../../../software-knowledges/artifacts/book/openapi.yam
    [remove an operation](remove.md) allows its removal. A breaking change has
    its own issue, a sub-issue of the one that needs it.
 7. When a response shape changes, check the client pages that list needs for
-   the `operationId`, and brief the app team ([client](client.md)).
+   the `operationId`, and tell their owners on the issue ([client](client.md)).
 8. Lint the changed files:
 
    ```sh

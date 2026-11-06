@@ -1,6 +1,6 @@
 # Documentation
 
-- [Architecture](architecture/README.md): the target structure of the backend:
+- [Architecture](architecture/README.md): the reference structure of a service:
   entities, commands and queries, repositories and the domain map.
 - [Software knowledge](software-knowledges/README.md): what the software does,
   in four layers: system, goals, flows and artifacts.

@@ -5,14 +5,23 @@
     "web": "Web",
     "mobile": "Mobile app"
   },
-  "tests": {
-    "folder": "services/backend",
-    "glob": "**/*_test.go"
-  },
-  "routes": {
-    "folders": ["services/backend/internal/adapter/http"],
-    "glob": "**/*.go",
-    "pattern": "swagger:operation (?P<method>GET|POST|PUT|PATCH|DELETE) (?P<path>\\S+)"
+  "services": {
+    "lending": {
+      "routes": {
+        "folders": ["services/lending/internal/adapter/http"],
+        "glob": "**/*.go",
+        "pattern": "swagger:operation (?P<method>GET|POST|PUT|PATCH|DELETE) (?P<path>\\S+)"
+      },
+      "tests": {"folder": "services/lending", "glob": "**/*_test.go"}
+    },
+    "notification": {
+      "routes": {
+        "folders": ["services/notification/internal/adapter/http"],
+        "glob": "**/*.go",
+        "pattern": "swagger:operation (?P<method>GET|POST|PUT|PATCH|DELETE) (?P<path>\\S+)"
+      },
+      "tests": {"folder": "services/notification", "glob": "**/*_test.go"}
+    }
   },
   "site": {
     "title": "Library lending knowledge",

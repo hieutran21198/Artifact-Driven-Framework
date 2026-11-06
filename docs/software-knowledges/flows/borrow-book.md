@@ -11,43 +11,45 @@ Reference flow. It shows how a flow is written.
 
 ## Steps
 
-1. The client asks for the book (`getBook`) and shows whether it is available.
-2. The member confirms. The client asks the backend to lend the book to the
-   signed-in member (`borrowBook`).
-3. In one transaction, the backend:
+1. The client asks the `lending` service for the book (`getBook`) and shows
+   whether it is available.
+2. The member confirms. The client asks the `lending` service to lend the book
+   to the signed-in member (`borrowBook`).
+3. In one transaction, the `lending` service:
    1. loads the member from `member` and checks that they may borrow, under
       MBR-2, MBR-3 and MBR-4;
    2. loads the book from `book`, under BK-8;
    3. lends the book to the member, under BK-3 and BK-4;
    4. stores the book.
-4. The backend answers with the book, which now carries its due time.
+4. The `lending` service answers with the book, which now carries its due
+   time.
 
 ```mermaid
 sequenceDiagram
     actor Member
     participant Client as Web or mobile app
-    participant Backend
+    participant Lending as lending service
     participant M as member
     participant B as book
 
     Member->>Client: Borrow this book
-    Client->>Backend: borrowBook
+    Client->>Lending: borrowBook
     rect rgb(235, 242, 250)
-        note over Backend,B: One transaction
-        Backend->>M: FindByID(member)
-        Backend->>M: CanBorrow
+        note over Lending,B: One transaction
+        Lending->>M: FindByID(member)
+        Lending->>M: CanBorrow
         alt member may not borrow
-            M-->>Backend: ErrLoanLimit, ErrSuspended or ErrHasOverdue
-            Backend-->>Client: Refused, nothing changed
+            M-->>Lending: ErrLoanLimit, ErrSuspended or ErrHasOverdue
+            Lending-->>Client: Refused, nothing changed
         else member may borrow
-            Backend->>B: FindByID(book)
-            Backend->>B: Lend(member)
+            Lending->>B: FindByID(book)
+            Lending->>B: Lend(member)
             alt book is not available
-                B-->>Backend: ErrInvalidTransition (BK-3)
-                Backend-->>Client: Refused, nothing changed
+                B-->>Lending: ErrInvalidTransition (BK-3)
+                Lending-->>Client: Refused, nothing changed
             else book is available
-                Backend->>B: Update(book)
-                Backend-->>Client: On loan, with due time
+                Lending->>B: Update(book)
+                Lending-->>Client: On loan, with due time
             end
         end
     end

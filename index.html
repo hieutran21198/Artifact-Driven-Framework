@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Artifact Driven</title>
-<meta name="description" content="Artifact Driven: write and agree the knowledge first, then build the code that proves it. A workspace template for AI agent teams with human approvers.">
+<meta name="description" content="Artifact Driven: write and agree the knowledge first, then build the code that proves it. A workspace template for a whole team, people and AI agents, where each person owns their part.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -168,7 +168,7 @@ footer{border-top:1px solid var(--rule);padding-top:20px;font-size:14px;color:va
     <span class="eyebrow">A workspace template for AI agent teams</span>
     <h1>Artifact Driven</h1>
     <p class="lede">Write the knowledge first and agree on it. Then build the code that proves it. Every rule, scenario and contract has an ID, every page cites only the layer below it, and a script can tell you what a change will touch before you make it.</p>
-    <p>AI agents do the writing, the contracts, the code and the review. People approve: one person or a whole team.</p>
+    <p>The whole team builds it, and each person owns their part: a service, a client, the knowledge. People and AI agents do the work; the owner of each part approves its share. It holds for one backend or many services.</p>
     <div class="actions">
       <a class="btn primary" href="#start">Start a project</a>
       <a class="btn ghost" href="#layers">Read the rules</a>
@@ -198,7 +198,7 @@ footer{border-top:1px solid var(--rule);padding-top:20px;font-size:14px;color:va
     <table>
       <thead><tr><th>Layer</th><th>Holds</th><th>ID</th><th>Proved by</th></tr></thead>
       <tbody>
-        <tr><td><span class="pill" style="--c:var(--l0);--ci:var(--l0i)">System</span></td><td>Purpose, actors, containers, system-wide requirements, glossary, shared contract parts</td><td><code>SYS-4</code></td><td>Everything below it</td></tr>
+        <tr><td><span class="pill" style="--c:var(--l0);--ci:var(--l0i)">System</span></td><td>Purpose, actors, services, clients, system-wide requirements, glossary, shared contract parts</td><td><code>SYS-4</code></td><td>Everything below it</td></tr>
         <tr><td><span class="pill" style="--c:var(--l1);--ci:var(--l1i)">Goal</span></td><td>A business outcome: the need, the actor and the success criteria. No behavior.</td><td><code>G-BORROW-2</code></td><td>End-to-end tests</td></tr>
         <tr><td><span class="pill" style="--c:var(--l2);--ci:var(--l2i)">Flow</span></td><td>Behavior across artifacts: trigger, steps, the transaction, failures. Scenarios as given, when, then, each naming an operation or a trigger.</td><td><code>F-BORROW-3</code></td><td>Command and unit of work tests</td></tr>
         <tr><td><span class="pill" style="--c:var(--l3);--ci:var(--l3i)">Artifact</span></td><td>One domain: model, rules, lifecycle, the OpenAPI contract, and what each client needs from its responses</td><td><code>BK-5</code></td><td>Domain unit tests</td></tr>
@@ -210,7 +210,7 @@ footer{border-top:1px solid var(--rule);padding-top:20px;font-size:14px;color:va
     <div class="rule"><h3>Knowledge, not evidence</h3><p>No code locations, logs, counts or dates in the knowledge. Evidence goes on the issue, with personal data masked.</p></div>
     <div class="rule"><h3>IDs live forever</h3><p>An ID is fixed when its branch merges. A dropped fact keeps its row as <code>Withdrawn.</code> and nothing cites it again.</p></div>
     <div class="rule"><h3>Contracts first</h3><p>OpenAPI is agreed before the code: endpoints, payloads such as emails and pushes, and worker triggers under <code>x-triggers</code>.</p></div>
-    <div class="rule"><h3>Clients say what they need</h3><p>Each client page lists, by operation, the keys and values a released app parses, so a backend change cannot break it unseen.</p></div>
+    <div class="rule"><h3>Clients say what they need</h3><p>Each client page lists, by operation, the keys and values a released app parses, so a change to a service cannot break it unseen.</p></div>
     <div class="rule"><h3>Open questions name IDs</h3><p>Undecided behavior is written as a question citing the IDs it touches. A goal with open questions is not ready to build.</p></div>
   </div>
 </section>
@@ -219,26 +219,26 @@ footer{border-top:1px solid var(--rule);padding-top:20px;font-size:14px;color:va
   <div class="head">
     <span class="eyebrow">Team</span>
     <h2>Agents do the work, people approve</h2>
-    <p class="lede">Each role is an agent definition with its own tools and skill. The reviewer is never the author. Only the approver merges knowledge.</p>
+    <p class="lede">A role is a person or an agent definition with its own tools and skill. The reviewer is never the author. The owner of each part approves its share.</p>
   </div>
   <div class="team">
     <div class="roles">
-      <div class="role"><b>Coordinator</b><span>Takes the issue, hands each step to its role, asks the approver for decisions.</span></div>
+      <div class="role"><b>Coordinator</b><span>Takes the issue, hands each step to its role, asks the owners for decisions.</span></div>
       <div class="role"><b>Knowledge writer</b><span>Goals, flows and artifact rules.</span></div>
       <div class="role"><b>Contract designer</b><span>OpenAPI contracts, payloads and triggers, before the code.</span></div>
-      <div class="role"><b>Client analyst</b><span>One per client: what it needs from each response.</span></div>
-      <div class="role"><b>Backend implementer</b><span>Go code and tests named after the IDs they prove.</span></div>
+      <div class="role"><b>Client writer</b><span>One per client: what it needs from each response. The client's owner writes or reviews it.</span></div>
+      <div class="role"><b>Implementer</b><span>One per part, a service or a client: code and tests named after the IDs they prove.</span></div>
       <div class="role"><b>Defect investigator</b><span>Evidence first, then the ID a defect breaks. Changes nothing.</span></div>
       <div class="role"><b>Reviewer</b><span>Knowledge, contract, code and tests agree. Changes nothing.</span></div>
-      <div class="role human"><b>Approver</b><span>A person on the team. Merges the knowledge branch and approves the code.</span></div>
+      <div class="role human"><b>Owners</b><span>The owner of each part the change touches. Merges the knowledge branch and approves the code of that part.</span></div>
     </div>
     <div class="pipe" aria-label="Workflow">
       <div class="stage"><span class="dot">1</span><div><b>Issue</b><span>States the need and links the knowledge it touches.</span></div></div>
       <div class="stage"><span class="dot">2</span><div><b>Knowledge</b><span>Goal, then flows, then rules and contracts, on a branch named after the issue.</span></div></div>
-      <div class="stage gate"><span class="dot">✓</span><div><b>Approver merges the knowledge</b><span>The review report and the checks go on the issue.</span></div></div>
+      <div class="stage gate"><span class="dot">✓</span><div><b>Owners merge the knowledge</b><span>The review report and the checks go on the issue.</span></div></div>
       <div class="stage"><span class="dot">3</span><div><b>Code</b><span>Implements only approved knowledge. A gap goes back to the writer.</span></div></div>
-      <div class="stage gate"><span class="dot">✓</span><div><b>Approver approves the pull request</b><span>It links the issue and the knowledge merge commit.</span></div></div>
-      <div class="stage"><span class="dot">4</span><div><b>Merge and deploy</b><span>Only when the approver asks.</span></div></div>
+      <div class="stage gate"><span class="dot">✓</span><div><b>Owners approve each pull request</b><span>It links the issue and the knowledge merge commit.</span></div></div>
+      <div class="stage"><span class="dot">4</span><div><b>Merge, deploy and release</b><span>Only when the owner of each part asks.</span></div></div>
       <div class="stage"><span class="dot">5</span><div><b>Close</b><span>When every item of Done holds.</span></div></div>
     </div>
   </div>
@@ -257,9 +257,10 @@ footer{border-top:1px solid var(--rule);padding-top:20px;font-size:14px;color:va
         <tr><td><code>D2</code></td><td>Consistency</td><td>Knowledge, contract, code and tests agree. Every cited ID exists, in the docs and in the tests.</td></tr>
         <tr><td><code>D3</code></td><td>Tests</td><td>Each changed rule and scenario has a passing test that names its ID.</td></tr>
         <tr><td><code>D4</code></td><td>Checks</td><td>The docs checks, the OpenAPI lint and the code checks pass.</td></tr>
-        <tr><td><code>D5</code></td><td>Review</td><td>A reviewer who is not the author reported, and the approver approved.</td></tr>
-        <tr><td><code>D6</code></td><td>Delivery</td><td>Deployed and checked there: a worker by firing its trigger, a data fix by a zero count.</td></tr>
+        <tr><td><code>D5</code></td><td>Review</td><td>A reviewer who is not the author reported, and the owner of each part approved its share.</td></tr>
+        <tr><td><code>D6</code></td><td>Services</td><td>Each service deployed and checked there: a worker by firing its trigger, a call to another service with both deployed, a data fix by a zero count.</td></tr>
         <tr><td><code>D7</code></td><td>Configuration</td><td>Secrets and parameters exist in each target environment, listed by name, never by value.</td></tr>
+        <tr><td><code>D8</code></td><td>Clients</td><td>Each client meets the needs on its client pages, handles the listed errors, and is released after the services it needs.</td></tr>
       </tbody>
     </table>
   </div>
@@ -279,7 +280,7 @@ footer{border-top:1px solid var(--rule);padding-top:20px;font-size:14px;color:va
       <figcaption>Our reading of each project's public documentation in 2026. 1 means the method leaves it to you; 5 means it is the core of the method.</figcaption>
     </figure>
     <div class="picks">
-      <div class="pick" style="--k:var(--s1)"><h3>Choose Artifact Driven when</h3><p>The system lives for years and most work changes rules that already exist. One backend serves several clients, and each must know what a change does to its responses. You want a script, not a model, to say that a rule is cited, covered and tested.</p></div>
+      <div class="pick" style="--k:var(--s1)"><h3>Choose Artifact Driven when</h3><p>The system lives for years and most work changes rules that already exist. One backend or many services serve several clients, and each must know what a change does to its responses. You want a script, not a model, to say that a rule is cited, covered and tested.</p></div>
       <div class="pick" style="--k:var(--s2)"><h3>Choose BMAD when</h3><p>You start from an idea and need the discovery: brainstorming, research, a PRD, an architecture and stories, from agents that work like an agile team.</p></div>
       <div class="pick" style="--k:var(--s3)"><h3>Choose Spec Kit when</h3><p>You want to go from a feature description to a spec, a plan and tasks in minutes, in one repository, with the coding agent you already use.</p></div>
       <p class="muted" style="font-size:14px;color:var(--muted)">They are not exclusive. A PRD from BMAD or a spec from Spec Kit is a good source for the first goal here.</p>
@@ -305,7 +306,7 @@ footer{border-top:1px solid var(--rule);padding-top:20px;font-size:14px;color:va
   <div class="head">
     <span class="eyebrow">Tools</span>
     <h2>Python scripts that read the citations</h2>
-    <p class="lede">Standard library only. They read <code>artifact-driven.json</code> for the knowledge folder, the clients, the tests and the backend routes.</p>
+    <p class="lede">Standard library only. They read <code>artifact-driven.json</code> for the knowledge folder, the clients, and the routes and tests of each service.</p>
   </div>
   <div class="tools">
     <div class="tool"><h3>Check the docs</h3><p>Broken links and anchors, IDs cited but not defined, defined twice or withdrawn, and scenarios with no operation.</p>
@@ -316,7 +317,7 @@ python3 scripts/impact.py --down G-BORROW-1</pre><button class="copy-btn" type="
     <div class="tool"><h3>Size, fragility, coverage</h3><p>Goal size and blast radius, the most fragile nodes, test coverage by ID and the open questions that hold each goal.</p>
       <div class="cmd"><pre>python3 scripts/impact.py --stats
 python3 scripts/impact.py --questions</pre><button class="copy-btn" type="button">Copy</button></div></div>
-    <div class="tool"><h3>Tests name real IDs</h3><p>Reports a backend test that names an ID the knowledge does not define, or a withdrawn one.</p>
+    <div class="tool"><h3>Tests name real IDs</h3><p>Reports a test, in any service or client, that names an ID the knowledge does not define, or a withdrawn one.</p>
       <div class="cmd"><pre>python3 scripts/check_tests.py</pre><button class="copy-btn" type="button">Copy</button></div></div>
     <div class="tool"><h3>Knowledge site</h3><p>One offline HTML page in English or Vietnamese: pick goals, see their scenarios, gaps, blast radius and API coverage.</p>
       <div class="cmd"><pre>python3 scripts/site.py</pre><button class="copy-btn" type="button">Copy</button></div></div>
@@ -336,13 +337,13 @@ python3 scripts/impact.py --questions</pre><button class="copy-btn" type="button
 cd my-project-workspace
 rm -rf .git build
 git init</pre><button class="copy-btn" type="button">Copy</button></div></div></li>
-    <li><div><h3>Add the backend and the clients as submodules</h3><p>List the clients in <code>artifact-driven.json</code> with the same names as their folders, so each artifact gets a <code>&lt;client&gt;.md</code> page.</p>
-      <div class="cmd"><pre>git submodule add &lt;backend repository URL&gt; services/backend
-git submodule add &lt;client repository URL&gt; apps/&lt;client&gt;</pre><button class="copy-btn" type="button">Copy</button></div></div></li>
-    <li><div><h3>Describe the system</h3><p>Context, actors and containers, system requirements, glossary, supported client versions and the shared contract parts. Fill in the domain map, the infrastructure pages and the deploy table.</p></div></li>
+    <li><div><h3>Clone the services and the clients</h3><p>One or many of each, with the owner of each. List them in <code>artifact-driven.json</code> with the same names as their folders, so each artifact gets a <code>&lt;client&gt;.md</code> page and each service its routes and tests.</p>
+      <div class="cmd"><pre>git clone &lt;service repository URL&gt; services/&lt;service&gt;
+git clone -b &lt;branch&gt; &lt;client repository URL&gt; apps/&lt;client&gt;</pre><button class="copy-btn" type="button">Copy</button></div></div></li>
+    <li><div><h3>Describe the system</h3><p>Context, actors, services and clients, system requirements, glossary, supported client versions and the shared contract parts. Fill in the domain map, the infrastructure pages and the deploy table.</p></div></li>
     <li><div><h3>Write the first goal</h3><p>Follow the runbooks: the goal, its flows, the artifacts they cross, their contracts and client pages. Run the checks after each step.</p></div></li>
     <li><div><h3>Remove the reference pass</h3><p>When the first real goal exists, delete the library example and point the runbook samples at your own pages.</p></div></li>
-    <li><div><h3>Work by the workflow</h3><p>Every change starts as an issue. The agents write, review and implement; you approve.</p></div></li>
+    <li><div><h3>Work by the workflow</h3><p>Every change starts as an issue. People and agents write, review and implement; the owner of each part approves its share.</p></div></li>
   </ol>
 </section>
 
@@ -354,9 +355,9 @@ git submodule add &lt;client repository URL&gt; apps/&lt;client&gt;</pre><button
   <div class="tree"><pre>.
 ├── AGENTS.md, CLAUDE.md, CONTRIBUTING.md   <span class="c"># agent instructions and how to change things</span>
 ├── artifact-driven.json                    <span class="c"># knowledge folder, clients, tests, routes, site</span>
-├── .agents/agents, .agents/skills          <span class="c"># one agent per role; knowledge, triage, backend skills</span>
-├── apps/                                   <span class="c"># client apps, as submodules</span>
-├── services/                               <span class="c"># the Go backend, as a submodule</span>
+├── .agents/agents, .agents/skills          <span class="c"># one agent per role; knowledge, triage, service skills</span>
+├── apps/                                   <span class="c"># client apps, as ignored clones</span>
+├── services/                               <span class="c"># the services, one or many, as ignored clones</span>
 ├── docs/
 │   ├── architecture/                       <span class="c"># domain, app, adapter; commands, queries, unit of work</span>
 │   ├── coding-standards/                   <span class="c"># general, Go, plain English, diagrams</span>

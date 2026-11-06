@@ -1,7 +1,7 @@
 # Book specification
 
 The behavior of a book in the collection and of its loan. It holds no
-knowledge of any container or flow.
+knowledge of any service, client or flow.
 
 ## Model
 

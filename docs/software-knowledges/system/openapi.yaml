@@ -7,7 +7,7 @@ info:
     Artifact and flow contracts reference them; this file has no paths.
 servers:
   - url: http://localhost:8080
-    description: Local backend
+    description: Local API gateway
 paths: {}
 components:
   securitySchemes:
@@ -21,6 +21,11 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: Member token from the member sign-in.
+    serviceBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Service token that one service presents to another; no client holds one.
   schemas:
     Error:
       type: object

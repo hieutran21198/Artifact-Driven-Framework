@@ -11,5 +11,7 @@ Each term is defined once, here. Other pages use it without restating it.
 | Region | One area the library serves, with its own branches: North or South. A member's home region is the region of the branch they joined. |
 | Loan limit | The most books one member may hold on loan at once. |
 | Withdrawn book | A book taken out of the collection for good. |
+| Service | One deployable part of the product with its own database, which serves the artifacts the domain map gives it. |
+| Notice | One message to one member, sent once. |
 
 Return to [system](README.md).

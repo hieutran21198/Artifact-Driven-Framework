@@ -25,7 +25,7 @@ artifact to a new one, or when a goal, a flow or an artifact splits in two.
 5. Open an issue for the tests that name an old ID. They are renamed in the
    same release as the move.
 6. The reviewer checks that each withdrawn ID's meaning is carried, unchanged,
-   by its new ID. D3 to D7 of [Done](../done.md) do not apply unless tests are
+   by its new ID. D3 to D8 of [Done](../done.md) do not apply unless tests are
    renamed.
 
 Past issues, pull requests and release reports keep the old IDs. A release

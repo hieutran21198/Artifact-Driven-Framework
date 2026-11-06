@@ -13,21 +13,33 @@ that file. Every key is optional.
 | Key | Holds | Default |
 | --- | --- | --- |
 | `knowledge` | The knowledge folder, relative to the root | `docs/software-knowledges` |
-| `skip` | Folder names whose Markdown the docs check skips, such as checked-out client or service code | `.git`, `node_modules`, `build` |
-| `clients` | The client pages an artifact may have: file name without `.md`, mapped to the name the site shows | none |
-| `routes` | Where the site finds the backend routes for API coverage: `folders` (relative to the root), `glob`, and `pattern`, a regular expression with the named groups `method` and `path` | none: the site leaves API coverage out, as it does while none of the folders exists |
-| `tests` | Where the tests live: `folder` (relative to the root) and `glob`, the test files under it | none, `**/*_test.*` |
+| `skip` | Folder names whose Markdown the docs check skips, such as cloned service or client code | `.git`, `node_modules`, `build` |
+| `clients` | The client pages an artifact may have: file name without `.md`, mapped to the name the site shows, or to an object with `name` and `tests` | none |
+| `services` | The services, by name as in the domain map: each with `routes` and `tests` | none |
 | `site` | `title` of the site and `output`, the file it writes | `Software knowledge`, `build/site/index.html` |
 
-The template's [artifact-driven.json](../artifact-driven.json) points `tests`
-and `routes` at the backend submodule in `services/backend`, for a Go backend
+A service's `routes` says where the site finds its routes for API coverage:
+`folders` (relative to the root), `glob`, and `pattern`, a regular expression
+with the named groups `method` and `path`. Without one, or while none of its
+folders exists, the site leaves that service out of API coverage. The `tests`
+of a service or a client say where its tests live: `folder` (relative to the
+root) and `glob`, by default `**/*_test.*`. The test check and the test
+coverage read the tests of every part whose folder exists.
+
+The template's [artifact-driven.json](../artifact-driven.json) has the two
+services of the reference pass, `lending` and `notification`, each a Go service
 that documents its handlers with `swagger:operation` comments:
 
 ```json
-"routes": {
-  "folders": ["services/backend/internal/adapter/http"],
-  "glob": "**/*.go",
-  "pattern": "swagger:operation (?P<method>GET|POST|PUT|PATCH|DELETE) (?P<path>\\S+)"
+"services": {
+  "lending": {
+    "routes": {
+      "folders": ["services/lending/internal/adapter/http"],
+      "glob": "**/*.go",
+      "pattern": "swagger:operation (?P<method>GET|POST|PUT|PATCH|DELETE) (?P<path>\\S+)"
+    },
+    "tests": {"folder": "services/lending", "glob": "**/*_test.go"}
+  }
 }
 ```
 
@@ -41,8 +53,9 @@ python3 scripts/check_structure.py
 
 The check needs Git. It checks each directory represented by tracked or
 untracked, non-ignored files, including intermediate directories and the
-repository root. Each needs `README.md`. Ignored generated directories, Git
-internals and the contents of submodules are outside the check.
+repository root. Each needs `README.md`. Ignored directories, such as
+generated output and the cloned services and clients, and Git internals are
+outside the check.
 
 The command prints missing READMEs and exits with status 1 when it finds any.
 It exits with status 0 on success and status 2 if Git cannot supply the file list.
@@ -73,10 +86,11 @@ Run [check_tests.py](check_tests.py) on the checkout of a code change:
 python3 scripts/check_tests.py [tests folder]
 ```
 
-It reads the test files that the `tests` setting names, or those under the
-folder given, and reports a test that names a knowledge ID the knowledge does
-not define, or a withdrawn one. It looks only at IDs whose prefix the
-knowledge uses. Without a folder or a `tests` setting it exits with status 2.
+It reads the test files of every service and client whose `tests` folder
+exists, or those under the folder given, and reports a test that names a
+knowledge ID the knowledge does not define, or a withdrawn one. It looks only
+at IDs whose prefix the knowledge uses. With no tests to read it says so and
+passes.
 
 ## Impact
 
@@ -107,8 +121,8 @@ scenarios: a gap in the flows.
 
 `--fragile [tests folder]` ranks the 20 nodes a change would break most and
 that are proved least: requirements, rules, operations and schemas, by reach
-times weakness. With a tests folder, or the `tests` setting, a rule no test
-names counts as weaker:
+times weakness. With a tests folder, or the `tests` of the cloned parts, a rule
+no test names counts as weaker:
 
 ```sh
 python3 scripts/impact.py --fragile
@@ -116,7 +130,7 @@ python3 scripts/impact.py --fragile
 
 `--coverage [tests folder]` gives, for each goal, the share of the scenarios
 and rules it relies on that a test names by ID (D3 of Done), and lists the
-ones no test names. Without a folder it uses the `tests` setting.
+ones no test names. Without a folder it reads the tests of every cloned part.
 `--questions` lists, for each goal, the open questions that cite an ID or an
 operation the goal relies on; a goal with open questions is not ready to
 build:
@@ -138,17 +152,19 @@ its metrics:
 
 ```sh
 python3 scripts/site.py
-python3 scripts/site.py --routes services/backend/internal/adapter/http
+python3 scripts/site.py --routes services/lending/internal/adapter/http
 ```
 
 It writes the `site.output` file, which should be ignored by Git. The page
 shows the overview of the whole project and a guide to reading it. Pick up to
 three goals, or all goals, and analyze: the page then shows, for those goals
-only, the counts, the API coverage (when `routes` is set), each goal with its
+only, the counts, the API coverage of each service (when it has `routes`),
+each goal with its
 criteria and scenarios, an impact explorer, the blast radius table, the gaps,
 and what each client needs from the responses. It reads in English or
 Vietnamese. [site.html](site.html) is its template. It reuses `impact.py` and
-loads nothing from the network. Each `--routes` folder replaces the folders of
-the `routes` setting; the `glob` and `pattern` still come from it.
+loads nothing from the network. The `--routes` folders replace the folders of
+every service; the `glob` and `pattern` come from the first service that has
+`routes`.
 
 Return to the [project contents](../README.md).

@@ -1,9 +1,0 @@
-# Submodules of this workspace. `git submodule add` writes the entries, for example:
-#
-# [submodule "services/backend"]
-# 	path = services/backend
-# 	url = <repository URL>
-# [submodule "apps/web"]
-# 	path = apps/web
-# 	url = <repository URL>
-# 	branch = <working branch>

@@ -1,14 +1,17 @@
 # Repository conventions
 
-These conventions apply to this workspace. The language standards apply to the
-backend, in the structure the [architecture](../architecture/README.md) describes.
+These conventions apply to this workspace. The language standards apply to
+the code of each part that uses the language: a service in the structure the
+[architecture](../architecture/README.md) describes, or a client. Each client
+or service without a standard here follows the one in its own repository, and
+the team adds it here when two parts share it.
 
 ## Standards
 
-General owns the shared rule conventions used by the Go standard.
+General owns the shared rule conventions used by every language standard.
 
 - [General](general/README.md): cross-language rules, levels, IDs and exceptions.
-- [Go](golang/README.md): Go code in the backend; requires General.
+- [Go](golang/README.md): Go code in the services; requires General.
 - [ASD-STE-100 principles](asd-ste-100/README.md): clear English technical
   writing that preserves meaning. It does not certify formal ASD-STE100
   compliance.
@@ -19,8 +22,8 @@ General owns the shared rule conventions used by the Go standard.
 
 - Use lowercase kebab-case for new directory names.
 - Put a file named `README.md` in every directory, including intermediate
-  directories. Generated, ignored directories, Git internals and the contents of
-  submodules are excluded.
+  directories. Generated, ignored directories, Git internals and the cloned
+  services and clients are excluded.
 - Explain the directory's purpose, current contents and relevant commands in
   its README.
 - Link each child directory's README from its parent README. Include a link

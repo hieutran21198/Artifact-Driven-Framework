@@ -1,7 +1,7 @@
 # Check the docs
 
 Use before a docs branch goes to review, and again on the merge result before
-the approver merges it. Run from the repository root. Post the results on the
+the owners merge it. Run from the repository root. Post the results on the
 issue.
 
 ```sh

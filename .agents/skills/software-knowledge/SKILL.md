@@ -14,7 +14,7 @@ runbooks. This skill picks the runbook and does not restate either.
 | The change | Runbook |
 | --- | --- |
 | A business need or its success criteria | [goal](../../../docs/governances/artifact-driven/runbooks/goal.md) |
-| Behavior that crosses artifacts or containers | [flow](../../../docs/governances/artifact-driven/runbooks/flow.md) |
+| Behavior that crosses artifacts, services or clients | [flow](../../../docs/governances/artifact-driven/runbooks/flow.md) |
 | A rule, the model or the lifecycle of one domain | [artifact rule](../../../docs/governances/artifact-driven/runbooks/artifact-rule.md) |
 | An endpoint | [contract](../../../docs/governances/artifact-driven/runbooks/contract.md) |
 | What a client needs from an artifact's responses | [client](../../../docs/governances/artifact-driven/runbooks/client.md) |

@@ -2,7 +2,8 @@
 
 Knowledge that belongs to the whole system, not to one goal.
 
-- [Context](context.md): purpose, actors, containers and external systems.
+- [Context](context.md): purpose, actors, services, clients and external
+  systems.
 - [Requirements](requirements.md): requirements every goal follows.
 - [Glossary](glossary.md): the shared business terms.
 - [Knowledge map](knowledge-map.md): how goals, flows and artifacts connect.

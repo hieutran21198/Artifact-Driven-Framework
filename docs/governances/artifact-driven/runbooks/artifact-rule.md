@@ -22,7 +22,7 @@ Sample: [book specification](../../../software-knowledges/artifacts/book/specifi
    ([rules with values](../knowledge.md#rules-with-values)).
 3. Update the `classDiagram` when a behavior is added or removed, and the
    `stateDiagram-v2` when the lifecycle changes.
-4. Keep the page free of containers and flows: no screens, no endpoints, no
+4. Keep the page free of services, clients and flows: no screens, no endpoints, no
    "during checkout".
 5. Run [impact](../../../../scripts/README.md#impact) on the rule's ID (`python3 scripts/impact.py <ID>`) and update
    every scenario, operation and client page it lists.

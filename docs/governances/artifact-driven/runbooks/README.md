@@ -7,12 +7,12 @@ artifacts) as a sample.
 
 | Runbook | Use it when |
 | --- | --- |
-| [Change the system](system.md) | A system-wide requirement, actor, container or term is new or changes. |
+| [Change the system](system.md) | A system-wide requirement, actor, service, client or term is new or changes. |
 | [Add or change a goal](goal.md) | A business need is new, or its success criteria change. |
-| [Add or change a flow](flow.md) | Behavior crosses artifacts or containers. |
+| [Add or change a flow](flow.md) | Behavior crosses artifacts, services or clients. |
 | [Change an artifact rule](artifact-rule.md) | A rule, the model or the lifecycle of one domain changes. |
 | [Add or change a contract](contract.md) | An endpoint, a payload or a worker trigger is new or changes. |
-| [Remove an operation](remove.md) | An operation, or an old version of it, should leave the backend. |
+| [Remove an operation](remove.md) | An operation, or an old version of it, should leave the service that serves it. |
 | [Describe a client](client.md) | A client starts to need something from an artifact's responses, or stops needing it. |
 | [Start an artifact](new-artifact.md) | A domain gets its first knowledge. |
 | [Move or split knowledge](move.md) | A fact moves to another owner, or a goal, flow or artifact splits in two. |

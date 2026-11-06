@@ -1,6 +1,6 @@
 # Member specification
 
-The behavior of a member. It holds no knowledge of any container or flow.
+The behavior of a member. It holds no knowledge of any service, client or flow.
 
 ## Model
 
