@@ -2,8 +2,8 @@
 
 Who does each step of the [workflow](workflow.md). Every role except the
 approver is an AI agent; the agent definitions are in
-[agent team](../../../.agents/agents/README.md). The approver is the one person in
-the loop. One agent may hold several roles, but the reviewer is never the
+[agent team](../../../.agents/agents/README.md). The approvers are the people in
+the loop: one person or a whole team, and any of them may approve. One agent may hold several roles, but the reviewer is never the
 author of the change it reviews.
 
 ## Roles
@@ -17,7 +17,7 @@ author of the change it reviews.
 | Backend implementer | Code and tests from approved knowledge | `backend-service` | Backend code, on its own branch |
 | Defect investigator | Evidence for a reported defect and the ID it breaks | `defect-triage` | Nothing; reports |
 | Reviewer | Knowledge, contract, code and tests agree; [Done](done.md) holds | `software-knowledge` | Nothing; reports |
-| Approver (a person) | Approves knowledge by merging its branch, and code by approving its pull request | — | Merges into the knowledge default branch; approvals |
+| Approver (a person on the team) | Approves knowledge by merging its branch, and code by approving its pull request | — | Merges into the knowledge default branch; approvals |
 
 ## Flow
 

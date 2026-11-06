@@ -1,7 +1,7 @@
 # Artifact Driven workspace
 
 A workspace template for building software from knowledge, with AI agents
-doing the work and one person approving it. Copy it to start the workspace of
+doing the work and people approving it: one person or a whole team. Copy it to start the workspace of
 a new project. The backend and the client applications stay in their own
 repositories and are added here as Git submodules; this workspace holds the
 knowledge around them: software knowledge, architecture, standards and agent
@@ -99,8 +99,8 @@ python3 scripts/site.py
 6. **Work by the workflow.** Every change starts as an issue and goes through
    knowledge, contract, code and review as
    [Workflow](docs/governances/artifact-driven/workflow.md) and
-   [Team](docs/governances/artifact-driven/team.md) say. The one person in the
-   loop approves: knowledge by merging its branch
+   [Team](docs/governances/artifact-driven/team.md) say. The people in the
+   loop approve: knowledge by merging its branch
    ([approval of knowledge](docs/governances/artifact-driven/README.md#approval-of-knowledge)),
    code by approving its pull request.
 
