@@ -163,9 +163,12 @@ three goals, or all goals, and analyze: the page then shows, for those goals
 only, the counts, the API coverage of each service (when it has `routes`),
 each goal with its
 criteria and scenarios, an impact explorer, the blast radius table, the gaps,
+the system context and the diagrams of those goals and their flows,
 and what each client needs from the responses. It reads in English or
 Vietnamese. [site.html](site.html) is its template. It reuses `impact.py` and
-loads nothing from the network. The `--routes` folders replace the folders of
+needs Python 3 only. The page loads one thing from the network, the Mermaid
+library that draws the diagrams; offline, it shows their source instead.
+The `--routes` folders replace the folders of
 every service; the `glob` and `pattern` come from the first service that has
 `routes`.
 

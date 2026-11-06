@@ -44,13 +44,15 @@ ul.tight{margin:6px 0 0;padding-left:18px;font-size:13px}
 .drop-list label{display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:6px;font-size:14px;cursor:pointer}.drop-list label:hover{background:var(--bg)}.drop-list label.off{opacity:.45;cursor:not-allowed}.drop-list hr{border:0;border-top:1px solid var(--line);margin:4px 0}
 button.primary{border:0;background:var(--accent);color:var(--card);border-radius:8px;padding:8px 18px;font-size:14px;font-weight:600;cursor:pointer}button.primary[disabled]{opacity:.45;cursor:not-allowed}
 #run-note{font-size:13px;align-self:center}
+.diagram{overflow-x:auto}.diagram svg{max-width:100%;height:auto}.diagram pre{font-size:12px;white-space:pre;margin:8px 0 0;color:var(--muted)}
 </style>
+<script async src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js" onload="window.mermaidReady&&mermaidReady()"></script>
 </head>
 <body>
 <main>
 <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><h1 data-i="title"></h1><div class="chips" style="margin:0" role="group" aria-label="Language"><button class="chip" data-lang="en">EN</button><button class="chip" data-lang="vi">VI</button></div></div>
 <div class="sub" id="stamp"></div>
-<nav><a href="#overview" data-i="nav.overview"></a><a href="#guide" data-i="nav.guide"></a><a href="#analyze" data-i="nav.analyze"></a><a href="#coverage" data-i="nav.coverage"></a><a href="#goals" data-i="nav.goals"></a><a href="#explorer" data-i="nav.explorer"></a><a href="#radius" data-i="nav.radius"></a><a href="#gaps" data-i="nav.gaps"></a><a href="#clients" data-i="nav.clients"></a></nav>
+<nav><a href="#overview" data-i="nav.overview"></a><a href="#guide" data-i="nav.guide"></a><a href="#analyze" data-i="nav.analyze"></a><a href="#coverage" data-i="nav.coverage"></a><a href="#goals" data-i="nav.goals"></a><a href="#diagrams" data-i="nav.diagrams"></a><a href="#explorer" data-i="nav.explorer"></a><a href="#radius" data-i="nav.radius"></a><a href="#gaps" data-i="nav.gaps"></a><a href="#clients" data-i="nav.clients"></a></nav>
 
 <section id="overview"><h2 data-i="nav.overview"></h2><p class="sub" data-i="overview.sub"></p><div class="grid" id="metrics"></div></section>
 
@@ -68,6 +70,8 @@ button.primary{border:0;background:var(--accent);color:var(--card);border-radius
 
 <section id="goals"><h2 data-i="nav.goals"></h2><p class="sub" data-i="goals.sub"></p><div class="two" id="goal-cards"></div></section>
 
+<section id="diagrams"><h2 data-i="nav.diagrams"></h2><p class="sub" data-i="diagrams.sub"></p><div id="diagram-cards"></div></section>
+
 <section id="explorer"><h2 data-i="nav.explorer"></h2><p class="sub" data-i="explorer.sub"></p>
 <div class="explorer"><div class="card graph"><div class="legend" id="legend"></div><svg id="g" width="100%"></svg></div><div class="card detail" id="detail"></div></div></section>
 
@@ -84,7 +88,7 @@ const I18N={
 en:{
 "title":DATA.title,
 "stamp":(b,c)=>`Built ${b} from commit ${c}`,
-"nav.overview":"Overview","nav.guide":"How to read this","nav.coverage":"API coverage","nav.goals":"Goals","nav.explorer":"Impact explorer","nav.radius":"Blast radius","nav.gaps":"Gaps","nav.clients":"Client needs",
+"nav.overview":"Overview","nav.diagrams":"Diagrams","diagrams.sub":"The system context, then the diagrams of the chosen goals and of their flows, drawn from the knowledge pages.","diagrams.offline":"The diagram library did not load, so the source is shown. It loads from the network.","nav.guide":"How to read this","nav.coverage":"API coverage","nav.goals":"Goals","nav.explorer":"Impact explorer","nav.radius":"Blast radius","nav.gaps":"Gaps","nav.clients":"Client needs",
 "overview.sub":"What the knowledge describes today: goals, the flows that reach them, the rules they rely on, and the API operations that serve them.",
 "guide.sub":"The knowledge is written top down, from what the business needs to what each app expects. Every part has an ID, and every part cites the parts it relies on, so a change can be traced in both directions.",
 "guide.parts":"The parts","guide.numbers":"The numbers",
@@ -126,7 +130,7 @@ en:{
 vi:{
 "title":DATA.title,
 "stamp":(b,c)=>`Dựng lúc ${b} từ commit ${c}`,
-"nav.overview":"Tổng quan","nav.guide":"Cách đọc","nav.coverage":"Độ phủ API","nav.goals":"Goal","nav.explorer":"Tra phạm vi ảnh hưởng","nav.radius":"Blast radius","nav.gaps":"Lỗ hổng","nav.clients":"Nhu cầu của app",
+"nav.overview":"Tổng quan","nav.diagrams":"Diagram","diagrams.sub":"Context của hệ thống, rồi diagram của các goal đã chọn và của các flow của chúng, vẽ từ các trang knowledge.","diagrams.offline":"Không tải được thư viện vẽ diagram nên hiện mã nguồn. Thư viện tải từ mạng.","nav.guide":"Cách đọc","nav.coverage":"Độ phủ API","nav.goals":"Goal","nav.explorer":"Tra phạm vi ảnh hưởng","nav.radius":"Blast radius","nav.gaps":"Lỗ hổng","nav.clients":"Nhu cầu của app",
 "overview.sub":"Knowledge hiện mô tả những gì: các goal, các flow để đạt goal, các rule mà chúng dựa vào, và các operation API phục vụ chúng.",
 "guide.sub":"Knowledge được viết từ trên xuống, từ nhu cầu nghiệp vụ tới những gì từng app cần. Mỗi thành phần có một ID và trích các thành phần nó dựa vào, nên một thay đổi lần được theo cả hai chiều.",
 "guide.parts":"Các thành phần","guide.numbers":"Các chỉ số",
@@ -229,8 +233,15 @@ function renderResults(){
  $("client-cards").innerHTML=apps.map(n=>{const p="artifacts/"+n+".md",secs=DATA.clients[p]||{},[art,file]=n.split("/");
   const keep=Object.entries(secs).filter(([k])=>k==="Every item"||opIds.has(k));
   return `<div class="card"><h3>${esc(appName[file]||file)} · ${esc(art)}</h3>${keep.map(([k,needs])=>`<details${k==="Every item"?" open":""}><summary>${k==="Every item"?T("everyItem"):esc(k)}</summary><ul class="tight">${needs.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></details>`).join("")}</div>`;}).join("");
+ const pages=new Set(["system/context.md",...goals.flatMap(g=>[g.page,...g.flows])]);
+ drawDiagrams(DATA.diagrams.map((d,i)=>({...d,i})).filter(d=>pages.has(d.page)));
  if(selected&&S.has(selected))select(selected);else $("detail").innerHTML=`<p class="muted">${T("selectNode")}</p>`;
 }
+const LAYER=["system/","goals/","flows/"],svgs={};let shown=[],mermaidOn=false;
+function mermaidReady(){mermaid.initialize({startOnLoad:false,theme:matchMedia("(prefers-color-scheme: dark)").matches?"dark":"default"});mermaidOn=true;if(analysis)drawDiagrams(shown);}
+function drawDiagrams(list){shown=list.sort((a,b)=>LAYER.findIndex(l=>a.page.startsWith(l))-LAYER.findIndex(l=>b.page.startsWith(l))||a.i-b.i);
+ $("diagram-cards").innerHTML=(window.mermaid?"":`<p class="muted" style="font-size:13px">${T("diagrams.offline")}</p>`)+shown.map(d=>`<div class="card diagram" style="margin-bottom:12px"><h3>${esc(d.title)}${d.section?` <span class="muted">· ${esc(d.section)}</span>`:""}</h3><p class="sub" style="margin:2px 0 8px"><code>${esc(d.page)}</code></p><div id="mm${d.i}">${svgs[d.i]||`<pre>${esc(d.code)}</pre>`}</div></div>`).join("");
+ if(mermaidOn)shown.filter(d=>!svgs[d.i]).forEach(d=>mermaid.render("mmsvg"+d.i,d.code).then(r=>{svgs[d.i]=r.svg;const e=$("mm"+d.i);if(e)e.innerHTML=r.svg;}).catch(()=>{}));}
 function examplePath(){
  const opsIn=x=>DATA.operations.filter(o=>new RegExp("\\b"+o.id+"\\b").test(x.when));
  const appOf=id=>Object.keys(col).find(n=>col[n]===4&&out[n].includes(id));
@@ -283,6 +294,7 @@ function select(n){if(!els[n])return;selected=n;const up=walk([n],inn),down=walk
  const k=set=>({sc:[...set].filter(x=>x.startsWith("F-")).length,op:[...set].filter(x=>col[x]===3).length,cl:[...set].filter(x=>col[x]===4).length});const u=k(up),d=k(down);
  $("detail").innerHTML=`<h3>${pill(n)} <span class="muted">${T("kind")[col[n]]}</span></h3>${info(n)}<dl><dt>${T("changeAffects")}</dt><dd>${T("counts")(u.sc,u.op,u.cl)}</dd><dt>${T("itReliesOn")}</dt><dd>${T("counts")(d.sc,d.op)}</dd></dl>`;}
 render();
+if(window.mermaid)mermaidReady();
 </script>
 </body>
 </html>
