@@ -1,6 +1,6 @@
 {
   "knowledge": "docs/software-knowledges",
-  "skip": [".git", "apps", "services", "node_modules", "build"],
+  "skip": [".git", "apps", "services", "e2e", "node_modules", "build"],
   "clients": {
     "web": "Web",
     "mobile": "Mobile app"
@@ -23,6 +23,7 @@
       "tests": {"folder": "services/notification", "glob": "**/*_test.go"}
     }
   },
+  "e2e": {"folder": "e2e/suite", "glob": "**/*"},
   "site": {
     "title": "Library lending knowledge",
     "output": "build/site/index.html"

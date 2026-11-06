@@ -29,8 +29,9 @@ Sample: [Borrow a book](../../../software-knowledges/flows/borrow-book.md).
    step then names it. Cite artifact rules by ID; do not restate them. A step
    states no condition of its own: a region, a role or a limit is a rule,
    cited by ID. Calls to other services and to external systems come after
-   the transaction; say what happens when they fail, and how the same call
-   twice gives the same result. For a worker or a webhook, say what happens when
+   the transaction; say what happens when they fail, what the caller receives
+   then, and how the same call twice gives the same result. Each call to
+   another service gets a scenario where it fails and one where it repeats. For a worker or a webhook, say what happens when
    the same trigger arrives twice (SYS-8). A scheduled worker's scenarios
    cover a run with nothing to do, a failed send, and a run that repeats.
 3. Draw a `sequenceDiagram`: clients and each service as participants,

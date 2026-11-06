@@ -13,8 +13,8 @@ use the `book` domain of the
   other service's operations, through their contract.
 - Inside a service: no module walls or events between domains, and a flow may
   cross several of its domains in one transaction. Between services: no
-  shared transaction; a call after the transaction, retried or compensated
-  when it fails, and safe to receive twice.
+  shared transaction; a call or a published message after the transaction,
+  retried or compensated when it fails, and safe to receive twice.
 - Commands and queries take separate paths (light CQRS): a command changes
   state through the domain, a query only reads. Both use the same database and
   the same transactions. There is no separate read store and no events.

@@ -31,6 +31,26 @@ artifact to a new one, or when a goal, a flow or an artifact splits in two.
 Past issues, pull requests and release reports keep the old IDs. A release
 report is read at its knowledge tag.
 
+## An artifact moves to another service
+
+The artifact keeps its rules and IDs; the service that serves it changes. It
+is an architecture change first: the owners of both services and the product
+owner agree on the issue.
+
+1. Change the service in the [domain map](../../../architecture/domain-map.md),
+   the artifact's README, [context](../../../software-knowledges/system/context.md),
+   [services](../../../../services/README.md) and the `services` of
+   [artifact-driven.json](../../../../artifact-driven.json). The owner of the
+   new service now keeps the artifact.
+2. Run impact on each of its rules and operations. Every flow step that used
+   the artifact inside one transaction with another artifact of the old
+   service now calls the new service after the transaction: write what happens
+   when the call fails, and its scenarios ([flow](flow.md)).
+3. Keep the operations and their shapes (SYS-4, SYS-6). The gateway routes them
+   to the new service; a call that becomes internal gets `x-internal: true`.
+4. Moving the stored data is a [data fix](data-fix.md) on its own issue, run
+   before the gateway routes to the new service.
+
 Then [check the docs](check.md).
 
 Return to [runbooks](README.md).

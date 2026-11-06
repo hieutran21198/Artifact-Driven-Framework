@@ -20,7 +20,7 @@ def main(argv):
         return 1
     folders = test_folders(argv[0] if argv else None)
     if not folders:
-        print("No tests to check: no service or client whose tests artifact-driven.json names is cloned.")
+        print("No tests to check: no service, client or end-to-end tests that artifact-driven.json names are cloned.")
         return 0
     defined, withdrawn = knowledge_ids()
     prefixes = {prefix(i) for i in defined}

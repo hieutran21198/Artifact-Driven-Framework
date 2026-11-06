@@ -13,6 +13,7 @@ DEFAULTS = {
     "skip": [".git", "node_modules", "build"],
     "clients": {},
     "services": {},
+    "e2e": None,
     "site": {"title": "Software knowledge", "output": "build/site/index.html"},
 }
 TEST_GLOB = "**/*_test.*"
@@ -42,6 +43,7 @@ SKIP = set(CONFIG["skip"])
 CLIENTS = {name: (c if isinstance(c, str) else c.get("name", name)) for name, c in CONFIG["clients"].items()}
 SERVICES = {name: {"routes": s.get("routes"), "tests": tests_of(s)} for name, s in CONFIG["services"].items()}
 SITE = CONFIG["site"]
-# Every part with tests: (part name, tests setting).
+# Every part with tests, end-to-end tests included: (part name, tests setting).
 TESTS = [(name, tests_of(s)) for name, s in CONFIG["services"].items() if tests_of(s)] + \
-        [(name, tests_of(c)) for name, c in CONFIG["clients"].items() if tests_of(c)]
+        [(name, tests_of(c)) for name, c in CONFIG["clients"].items() if tests_of(c)] + \
+        ([("e2e", tests_of({"tests": CONFIG["e2e"]}))] if tests_of({"tests": CONFIG["e2e"]}) else [])

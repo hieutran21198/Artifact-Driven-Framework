@@ -247,10 +247,12 @@ def stats(graph, term):
 
 
 def test_folders(name=None):
-    """The (folder, glob) pairs to read tests from: the given folder, or the
-    tests of every service and client in the configuration that exist."""
+    """The (folder, glob) pairs to read tests from: the given folder, with the
+    glob of the part whose tests live there, or the tests of every service and
+    client in the configuration that exist."""
     if name:
-        return [(ROOT / name, TEST_GLOB)]
+        globs = [t["glob"] for _, t in TESTS if (ROOT / name).resolve() == (ROOT / t["folder"]).resolve()]
+        return [(ROOT / name, globs[0] if globs else TEST_GLOB)]
     return [(ROOT / t["folder"], t["glob"]) for _, t in TESTS if (ROOT / t["folder"]).is_dir()]
 
 
@@ -321,11 +323,11 @@ def natural(unit):
 def coverage(graph, folders):
     """For each goal, the scenarios and rules it relies on that a test names."""
     if not folders:
-        print("No tests folder: pass one, or clone a part whose tests artifact-driven.json names.", file=sys.stderr)
+        print("No tests folder: pass one, or clone a part whose tests artifact-driven.json names, such as the end-to-end tests.", file=sys.stderr)
         return 1
     tests = tested_ids(folders)
-    kinds = ("Flow scenarios", "Artifact rules")
-    print("Test coverage by ID: the scenarios and rules each goal relies on that a test names.")
+    kinds = ("Goal criteria", "Flow scenarios", "Artifact rules")
+    print("Test coverage by ID: the criteria, scenarios and rules of each goal that a test names.")
     total = defaultdict(lambda: [0, 0])
     for goal in goal_keys(graph):
         ids = {u for u in goal_units(graph, goal) if kind(u) in kinds and not withdrawn(graph, u)}

@@ -34,16 +34,17 @@ does each step.
 Before a release reaches production, the product owner and the stakeholders
 get a report:
 
-1. **Changes.** The issues and pull requests between the commit that runs in
-   production and the release candidate.
+1. **Changes.** For each part in the release, the issues and pull requests
+   between the commit that runs in production and its release candidate.
 2. **Knowledge.** The full set of knowledge the release touches, from the top:
    the system requirements, then each goal, its flows, and the artifacts and
    contracts they cite. Export it from the knowledge commit that the release
    implements.
 3. **Tests.** The checks each pull request records ([Done](done.md)), by the
    IDs they prove.
-4. **Limits.** What the pull requests record as not covered, and the handoffs
-   still open.
+4. **Limits.** What the pull requests record as not covered, and the parts the
+   release depends on that are not released yet, such as a client in store
+   review.
 
 [Report a release](runbooks/release.md) gives the steps. The report goes on
 the release issue. Tag the knowledge commit with the release name so the
@@ -52,16 +53,16 @@ knowledge of each release can be found again.
 ## Parallel branches
 
 Several issues may be in progress at once, each with one coordinator and one
-knowledge branch. The owners of the knowledge merge one knowledge branch at a
-time, in the order they choose. Before a branch is merged, the coordinator merges the latest
+knowledge branch. The owners of the parts they touch merge one knowledge
+branch at a time, in the order they agree. Before a branch is merged, the coordinator merges the latest
 default branch into it, runs the checks and impact again for every ID and
 operation the branch changes, and asks the reviewer to look again when the
 default branch changed a page the branch also changes.
 
 ## Small changes
 
-A change that touches at most one artifact or one adapter of one service, makes
-no breaking change ([contract](runbooks/contract.md)), removes no operation
+A change that touches at most one artifact or one adapter of one service, or
+one client only, makes no breaking change ([contract](runbooks/contract.md)), removes no operation
 and crosses no flow may put steps 2 and 3 in one round: write the knowledge
 and the code together and review both before merging.
 

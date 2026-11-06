@@ -36,10 +36,12 @@ has a `README.md` that explains its purpose and links to its contents.
 4. [Services](services/README.md): the services, one or many, as separate
    clones.
 5. [Applications](apps/README.md): the client applications, as separate clones.
-6. [Scripts](scripts/README.md): the checks, the impact analysis and the
+6. [End-to-end tests](e2e/README.md): the tests of the goals, as a separate
+   clone.
+7. [Scripts](scripts/README.md): the checks, the impact analysis and the
    knowledge site, set up by [artifact-driven.json](artifact-driven.json).
-7. [Agent resources](.agents/README.md): the agent team and its skills.
-8. [Claude Code](.claude/README.md): links Claude Code reads.
+8. [Agent resources](.agents/README.md): the agent team and its skills.
+9. [Claude Code](.claude/README.md): links Claude Code reads.
 
 The [software knowledge](docs/software-knowledges/README.md) holds a reference
 pass: a small library lending service, written from system down to client
@@ -96,8 +98,10 @@ python3 scripts/site.py
    Run the checks after each step.
 5. **Remove the reference pass** once the first real goal, flow and artifact
    exist: delete the `book`, `member` and `notice` artifacts, the `Borrow a
-   book` goal and its flows, and point the runbooks' samples and the architecture examples at
-   the real pages.
+   book` goal and its flows, and the `lending` and `notification` rows in
+   [services](services/README.md), the domain map, the context and
+   [artifact-driven.json](artifact-driven.json); then point the runbooks'
+   samples and the architecture examples at the real pages.
 6. **Work by the workflow.** Every change starts as an issue and goes through
    knowledge, contract, code and review as
    [Workflow](docs/governances/artifact-driven/workflow.md) and

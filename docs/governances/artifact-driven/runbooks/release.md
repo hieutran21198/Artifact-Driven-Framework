@@ -6,8 +6,8 @@ stakeholders the report that
 
 ## Steps
 
-1. Find the commit that runs in production and the release candidate. List
-   the issues and pull requests between them.
+1. For each part in the release, find the commit that runs in production and
+   its release candidate. List the issues and pull requests between them.
 2. From those pull requests, collect the IDs their tests prove and the goals
    those IDs serve. List apart the pull requests that change production data
    or prove no ID, so the readers see them too.
@@ -15,8 +15,8 @@ stakeholders the report that
    (`python3 scripts/impact.py --down <goal criterion ID>`) to list the
    requirements, flows, rules, operations and contracts the goal relies on.
    That set is the knowledge part of the report.
-4. Collect what the pull requests record as not covered, and the handoffs
-   still open on their issues.
+4. Collect what the pull requests record as not covered, and the parts the
+   release depends on that are not released yet.
 5. Tag the knowledge commit that the release implements with the release
    name.
 6. Post the report on the release issue: changes, knowledge, tests by ID, and

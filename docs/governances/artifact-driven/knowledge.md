@@ -176,11 +176,19 @@ that implements it.
   email or a deep link, is a schema under `components` of the flow that sends
   it. An email or a file names its format (HTML, CSV) and its fields in order
   in the schema description.
-- A trigger that starts a worker, such as a timer or a schedule, is declared
+- A trigger that starts a worker, such as a timer, a schedule or a message
+  another service publishes, is declared
   under `x-triggers` of the flow it starts, by name in camelCase, with its
   schedule or time and its input schema. A scenario names the trigger as it
   names an operation. A change keeps the input that triggers already
   scheduled will deliver (SYS-4).
+- A message a service publishes to a queue or a topic is a schema under
+  `components` of the flow that publishes it, and names its topic in its
+  description. Each flow it starts in another service declares it under
+  `x-triggers`, by the same name. The publisher sends it after its
+  transaction and retries when the send fails; a consumer that receives it
+  twice gets the same result (SYS-8). A change keeps what the consumers read
+  (SYS-4).
 - An endpoint an external system calls, such as a payment webhook, belongs to
   the flow it starts. Its contract copies the request the external system
   documents; it is agreed with that documentation, not designed, and the

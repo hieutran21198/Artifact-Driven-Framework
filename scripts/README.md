@@ -16,6 +16,7 @@ that file. Every key is optional.
 | `skip` | Folder names whose Markdown the docs check skips, such as cloned service or client code | `.git`, `node_modules`, `build` |
 | `clients` | The client pages an artifact may have: file name without `.md`, mapped to the name the site shows, or to an object with `name` and `tests` | none |
 | `services` | The services, by name as in the domain map: each with `routes` and `tests` | none |
+| `e2e` | Where the end-to-end tests live: `folder` and `glob` | none |
 | `site` | `title` of the site and `output`, the file it writes | `Software knowledge`, `build/site/index.html` |
 
 A service's `routes` says where the site finds its routes for API coverage:
@@ -23,8 +24,9 @@ A service's `routes` says where the site finds its routes for API coverage:
 with the named groups `method` and `path`. Without one, or while none of its
 folders exists, the site leaves that service out of API coverage. The `tests`
 of a service or a client say where its tests live: `folder` (relative to the
-root) and `glob`, by default `**/*_test.*`. The test check and the test
-coverage read the tests of every part whose folder exists.
+root) and `glob`, by default `**/*_test.*`; `e2e` has the same two keys. The
+test check and the test coverage read the tests of every part, end-to-end
+tests included, whose folder exists.
 
 The template's [artifact-driven.json](../artifact-driven.json) has the two
 services of the reference pass, `lending` and `notification`, each a Go service
@@ -128,8 +130,8 @@ no test names counts as weaker:
 python3 scripts/impact.py --fragile
 ```
 
-`--coverage [tests folder]` gives, for each goal, the share of the scenarios
-and rules it relies on that a test names by ID (D3 of Done), and lists the
+`--coverage [tests folder]` gives, for each goal, the share of its criteria,
+and of the scenarios and rules it relies on, that a test names by ID (D3 of Done), and lists the
 ones no test names. Without a folder it reads the tests of every cloned part.
 `--questions` lists, for each goal, the open questions that cite an ID or an
 operation the goal relies on; a goal with open questions is not ready to

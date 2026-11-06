@@ -25,6 +25,8 @@ that breaks an approved ID.
    request links the issue and the knowledge merge commit. When the area has no goal or
    flow yet, write a minimal goal and flow first ([goal](goal.md)).
 6. The code fix comes with a test that names the ID and fails before the fix.
+   A client's test names the rule or the scenario that the client page's need
+   cites.
 7. Close the issue only when [Done](../done.md) holds.
 
 Return to [runbooks](README.md).

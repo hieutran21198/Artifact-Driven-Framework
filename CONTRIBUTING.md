@@ -37,6 +37,19 @@ sets its own commit and release-branch conventions here.
 Change only the parts the issue and their owners give you. For a part you
 cannot access, write a handoff to its owner on the issue.
 
+## Owners
+
+The owners of the parts that no service or client README lists
+([parts and owners](docs/governances/artifact-driven/team.md#parts-and-owners)).
+Fill in a person or a group for each:
+
+| Part | Owner |
+| --- | --- |
+| Goals (product owner) | — |
+| End-to-end tests (quality owner), in `e2e/` | — |
+| The API gateway | — |
+| Tie-breaker when owners disagree | — |
+
 ## Deploy and release
 
 Fill in how each part reaches each environment:
@@ -48,8 +61,8 @@ Fill in how each part reaches each environment:
 The [infrastructure](docs/infrastructure/README.md) pages show what a deploy
 runs.
 
-Before a deploy, find the commit that runs in the target environment and list
-the changes between it and the candidate. After a deploy, watch the alarms and
+Before a deploy of a part, find the commit of that part that runs in the
+target environment and list the changes between it and the candidate. After a deploy, watch the alarms and
 the logs.
 
 A hotfix starts from the commit that runs in production, not from the newest

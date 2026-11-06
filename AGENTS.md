@@ -18,8 +18,9 @@ The [architecture](docs/architecture/README.md) is the agreed direction.
   ([parts and owners](docs/governances/artifact-driven/team.md#parts-and-owners)).
   For a part you cannot access, write a handoff to its owner on the issue.
 - Each service is one deployable, split by domain inside it. Do not add module
-  walls or events between the domains of one service, or a second Go module
-  inside a service. Services talk only through their contracts.
+  walls or events between the domains of one service, or a second module
+  inside a service. Services talk only through their contracts: calls and
+  published messages.
 
 ## Principles and writing
 

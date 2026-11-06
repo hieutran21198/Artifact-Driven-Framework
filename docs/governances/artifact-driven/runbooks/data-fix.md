@@ -6,7 +6,7 @@ columns that must agree and do not.
 ## Files
 
 1. The rule the rows break, in its artifact's specification
-2. The migration, in the code repository
+2. The migration, in the repository of the service that holds the data
 
 ## Steps
 

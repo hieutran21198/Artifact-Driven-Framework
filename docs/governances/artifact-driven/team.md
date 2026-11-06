@@ -17,13 +17,20 @@ people on the team, named in the README that lists the part
 | --- | --- | --- |
 | Knowledge: system, goals and flows | The whole team; the product owner decides on goals | The product owner for a goal; the owners of the services a flow crosses for a flow; the whole team for the system |
 | An artifact: specification, contract, service page | The owner of the service that serves it | That owner |
-| A client page | The owner of that client | That owner |
+| A client page | The owner of that client | That owner; the owner of the serving service is told on the issue, because a new need binds the service (SYS-4) |
 | A service: code, tests, deploy | Its owner | Its owner |
 | A client: code, tests, release | Its owner | Its owner |
-| End-to-end tests | The quality owner | The quality owner |
+| Shared contract components (`system/openapi.yaml`) | The owners of the services | Every service owner, because every service follows them |
+| The API gateway: which service serves each operation | Its owner, named in [Contributing](../../../CONTRIBUTING.md#owners) | Its owner, with the owners of the services it routes to |
+| End-to-end tests | The quality owner, named in [Contributing](../../../CONTRIBUTING.md#owners) | The quality owner |
 
 A change that touches several parts needs the approval of each part's owner,
 for that part only.
+
+When owners disagree, the product owner decides what a goal needs, and the
+owner of each part decides how that part does it. When that does not settle
+it, the tie-breaker named in [Contributing](../../../CONTRIBUTING.md#owners)
+decides. The decision and its reasons go on the issue.
 
 ## Roles
 
@@ -36,7 +43,7 @@ for that part only.
 | Implementer | Code and tests of one part from approved knowledge | The skill of the part's stack, such as `backend-service` | The part's code, on its own branch |
 | Defect investigator | Evidence for a reported defect and the ID it breaks | `defect-triage` | Nothing; reports |
 | Reviewer | Knowledge, contract, code and tests agree; [Done](done.md) holds | `software-knowledge` | Nothing; reports |
-| Approver | The owner of each part the change touches: approves knowledge by merging its branch, and code by approving its pull request | — | Merges and approvals |
+| Approvers | The owner of each part the change touches: approves knowledge by merging its branch, and code by approving its pull request | — | Merges and approvals |
 
 ## Flow
 
@@ -67,7 +74,7 @@ flowchart TB
 | 4. Merge, deploy and release | Coordinator, when the owners ask |
 | 5. Close | Coordinator, when [Done](done.md) holds |
 
-## Handoffs
+## Passing work
 
 - A role skips its step when the change does not need it: no endpoint,
   payload or trigger, no contract designer; no client receives a response or
@@ -76,7 +83,7 @@ flowchart TB
 - Client writers run in parallel, one per client. Implementers run in
   parallel, one per part, each in the repository of its part.
 - Each issue has one coordinator and one knowledge branch. When several issues
-  are in progress, the owners of the knowledge order the merges
+  are in progress, the owners of the parts they touch order the merges
   ([parallel branches](workflow.md#parallel-branches)).
 - Each role reports to the coordinator: what changed, the IDs, the check
   results and the open questions. The next role starts from that report and
@@ -90,7 +97,7 @@ flowchart TB
 
 - Only the coordinator commits, pushes, opens pull requests, merges code pull
   requests, deploys or releases, and only when the owner of that part asks.
-  Only the owners of the knowledge merge a knowledge branch.
+  Only the owners of the parts a knowledge branch touches merge it.
 - A role changes only the parts its owner gave it. When the people doing a
   change have no access to a part's repository, they write a handoff to that
   part's owner on the issue, citing the knowledge.
