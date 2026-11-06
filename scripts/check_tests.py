@@ -1,14 +1,13 @@
 """Check that tests name only knowledge IDs that exist and are not withdrawn.
 
 Usage:
-    python3 scripts/check_tests.py [DIR]    # default: tests.folder in artifact-driven.json
+    python3 scripts/check_tests.py [DIR]    # default: the tests of every service and client in artifact-driven.json
 """
 
 import sys
 
 from check_docs import ID, ROOT, knowledge_ids
-from impact import test_files
-from project import TESTS
+from impact import test_files, test_folders
 
 
 def prefix(found):
@@ -16,18 +15,17 @@ def prefix(found):
 
 
 def main(argv):
-    name = argv[0] if argv else TESTS["folder"]
-    if not name:
-        print("No tests folder: pass one, or set tests.folder in artifact-driven.json.", file=sys.stderr)
-        return 2
-    folder = ROOT / name
-    if not folder.is_dir():
-        print(f"Not a folder: {folder}", file=sys.stderr)
+    if argv and not (ROOT / argv[0]).is_dir():
+        print(f"Not a folder: {ROOT / argv[0]}", file=sys.stderr)
         return 1
+    folders = test_folders(argv[0] if argv else None)
+    if not folders:
+        print("No tests to check: no service, client or end-to-end tests that artifact-driven.json names are cloned.")
+        return 0
     defined, withdrawn = knowledge_ids()
     prefixes = {prefix(i) for i in defined}
     problems = set()
-    for path in test_files(folder):
+    for path in test_files(folders):
         for found in ID.findall(path.read_text(encoding="utf-8", errors="ignore")):
             if prefix(found) not in prefixes:
                 continue

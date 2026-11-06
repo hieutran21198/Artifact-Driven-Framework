@@ -1,7 +1,7 @@
 # Repositories and unit of work
 
 How commands and queries reach the database. The examples use the `book`
-domain of the [reference pass](../software-knowledges/artifacts/book/backend.md).
+domain of the [reference pass](../software-knowledges/artifacts/book/service.md).
 
 ## Naming
 

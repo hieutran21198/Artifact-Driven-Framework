@@ -12,10 +12,11 @@ DEFAULTS = {
     "knowledge": "docs/software-knowledges",
     "skip": [".git", "node_modules", "build"],
     "clients": {},
-    "routes": None,
-    "tests": {"folder": None, "glob": "**/*_test.*"},
+    "services": {},
+    "e2e": None,
     "site": {"title": "Software knowledge", "output": "build/site/index.html"},
 }
+TEST_GLOB = "**/*_test.*"
 
 
 def find_root():
@@ -25,15 +26,24 @@ def find_root():
     return Path(__file__).resolve().parent.parent
 
 
+def tests_of(part):
+    """The tests setting of a service or a client, with the default glob."""
+    tests = part.get("tests") if isinstance(part, dict) else None
+    return {"glob": TEST_GLOB, **tests} if tests and tests.get("folder") else None
+
+
 ROOT = find_root()
 _file = ROOT / NAME
 CONFIG = {**DEFAULTS, **(json.loads(_file.read_text(encoding="utf-8")) if _file.is_file() else {})}
 CONFIG["site"] = {**DEFAULTS["site"], **(CONFIG.get("site") or {})}
-CONFIG["tests"] = {**DEFAULTS["tests"], **(CONFIG.get("tests") or {})}
 
 KNOWLEDGE = ROOT / CONFIG["knowledge"]
 SKIP = set(CONFIG["skip"])
-CLIENTS = dict(CONFIG["clients"])
-ROUTES = CONFIG["routes"]
+# A client is a display name, or an object with a name and its tests.
+CLIENTS = {name: (c if isinstance(c, str) else c.get("name", name)) for name, c in CONFIG["clients"].items()}
+SERVICES = {name: {"routes": s.get("routes"), "tests": tests_of(s)} for name, s in CONFIG["services"].items()}
 SITE = CONFIG["site"]
-TESTS = CONFIG["tests"]
+# Every part with tests, end-to-end tests included: (part name, tests setting).
+TESTS = [(name, tests_of(s)) for name, s in CONFIG["services"].items() if tests_of(s)] + \
+        [(name, tests_of(c)) for name, c in CONFIG["clients"].items() if tests_of(c)] + \
+        ([("e2e", tests_of({"tests": CONFIG["e2e"]}))] if tests_of({"tests": CONFIG["e2e"]}) else [])

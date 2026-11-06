@@ -1,6 +1,6 @@
 ---
 name: contract-designer
-description: Writes and changes OpenAPI contracts (contract first) for artifacts and flows, and lints them. Use whenever an endpoint, a push or email payload, or a worker trigger is added or changed, before the backend implements it.
+description: Writes and changes OpenAPI contracts (contract first) for artifacts and flows, and lints them. Use whenever an endpoint, a push or email payload, or a worker trigger is added or changed, before the service that serves it implements it.
 tools: Read, Grep, Glob, Edit, Write, Bash
 ---
 

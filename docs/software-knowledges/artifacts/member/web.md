@@ -1,7 +1,7 @@
 # Member on the web
 
 What the web client needs from the responses of this artifact, by
-`operationId` from the [contract](openapi.yaml). A backend change keeps these
+`operationId` from the [contract](openapi.yaml). A change to the serving service keeps these
 (SYS-4). Which step calls which operation is in the flow.
 
 ## Needs

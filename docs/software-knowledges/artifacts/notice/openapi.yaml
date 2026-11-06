@@ -1,0 +1,78 @@
+openapi: 3.0.3
+info:
+  title: Notice artifact
+  version: 0.1.0
+  description: >
+    Contract of the notice artifact. Written before the code (contract first);
+    the notification service implements it, and other services call it. No
+    client calls it.
+servers:
+  - url: http://localhost:8081
+    description: Local notification service
+security:
+  - serviceBearer: []
+paths:
+  /internal/v1/notices:
+    post:
+      operationId: sendNotice
+      summary: Send a notice to a member once per key (NTC-1, NTC-2).
+      x-internal: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendNoticeRequest'
+      responses:
+        '200':
+          description: The notice, sent, or pending when the send failed and a later request with the same key may try again (NTC-1).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NoticeResponse'
+        '401':
+          $ref: '../../system/openapi.yaml#/components/responses/Unauthorized'
+        '422':
+          $ref: '../../system/openapi.yaml#/components/responses/UnprocessableEntity'
+components:
+  securitySchemes:
+    serviceBearer:
+      $ref: '../../system/openapi.yaml#/components/securitySchemes/serviceBearer'
+  schemas:
+    SendNoticeRequest:
+      type: object
+      required: [key, member_id, template, fields]
+      properties:
+        key:
+          type: string
+          description: Chosen by the calling service; the same key sends at most once (NTC-1).
+          example: overdue-12-2030-01-15T18:00:00Z
+        member_id:
+          type: integer
+          description: The one member the notice goes to (NTC-2).
+          example: 7
+        template:
+          type: string
+          description: The name of the payload schema the notice carries, from the flow that sends it.
+          example: OverdueEmail
+        fields:
+          type: object
+          additionalProperties: true
+          description: The fields of the template, and nothing else (NTC-2, SYS-5).
+    Notice:
+      type: object
+      required: [key, status]
+      properties:
+        key:
+          type: string
+          example: overdue-12-2030-01-15T18:00:00Z
+        status:
+          type: string
+          enum: [pending, sent]
+          example: sent
+    NoticeResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/Notice'

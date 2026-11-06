@@ -15,11 +15,13 @@ Samples: [book contract](../../../software-knowledges/artifacts/book/openapi.yam
 | Is called by an external system, such as a webhook | `flows/<flow>.openapi.yaml` of the flow it starts |
 | A push, email or deep link a flow sends | `components/schemas` of that flow's contract |
 | A timer or schedule that starts a worker | `x-triggers` of the flow it starts, with its input under `components/schemas` |
+| A message a service publishes to a queue or a topic | `components/schemas` of the flow that publishes it, and `x-triggers` of each flow it starts in another service |
 | Shared parts: errors, authentication | `system/openapi.yaml` |
 
 ## Steps
 
-1. Start from the flow steps that call the backend. Add one path per call
+1. Start from the flow steps that call a service, from a client or from
+   another service. Add one path per call
    with an `operationId` in camelCase and a summary that cites the IDs it
    serves: artifact rules in an artifact contract, flow scenarios in a flow
    contract. Report the `operationId`s; the knowledge writer names them in
@@ -30,11 +32,12 @@ Samples: [book contract](../../../software-knowledges/artifacts/book/openapi.yam
    object, the naming case and the time format, and the requirement on what
    each response and payload may carry to whom (SYS-5 in the reference pass).
 4. Before changing an existing operation or a response field, run [impact](../../../../scripts/README.md#impact) on
-   it (`python3 scripts/impact.py <operationId|field>`) to see the scenarios
-   and the client pages that depend on it.
+   it (`python3 scripts/impact.py <operationId|field>`) to see the scenarios,
+   the client pages and the steps of other services that depend on it.
 5. For a change to an existing endpoint, keep what supported client versions
-   rely on (SYS-4, SYS-6). A change is breaking when it:
-   - removes a key a client page needs, changes a type or the meaning of a
+   and the calling services rely on (SYS-4, SYS-6). A change is breaking when
+   it:
+   - removes a key a client page or a calling service's flow step needs, changes a type or the meaning of a
      value, or adds an enum value a client decodes strictly;
    - adds a required request key, removes an accepted value, or tightens the
      validation of a key a released client sends;
@@ -53,7 +56,9 @@ Samples: [book contract](../../../software-knowledges/artifacts/book/openapi.yam
    [remove an operation](remove.md) allows its removal. A breaking change has
    its own issue, a sub-issue of the one that needs it.
 7. When a response shape changes, check the client pages that list needs for
-   the `operationId`, and brief the app team ([client](client.md)).
+   the `operationId` and the flow steps of other services that call it, and
+   tell the owners of those clients and services on the issue
+   ([client](client.md)).
 8. Lint the changed files:
 
    ```sh

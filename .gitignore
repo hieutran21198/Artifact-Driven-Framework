@@ -17,3 +17,8 @@ __pycache__/
 
 # Generated output
 build/
+
+# Services, clients and end-to-end tests, cloned beside the knowledge
+/services/*/
+/apps/*/
+/e2e/*/

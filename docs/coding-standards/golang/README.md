@@ -1,6 +1,6 @@
 # Go
 
-The Go coding standard for the backend.
+The Go coding standard for the services written in Go.
 
 Read the [general coding standard](../general/README.md) first. It defines the
 rule levels, the rule IDs, the precedence and the exception forms, and it holds
@@ -14,18 +14,18 @@ chosen, cited and changed.
 ## Scope and assumptions
 
 The scope is the same as the [General scope](../general/README.md#scope): Go
-code in the structure of the backend module that the architecture describes.
+code in the structure of each service module that the architecture describes.
 Generated code, `testdata/` and third-party code in `vendor/` are excluded.
 Mark generated files with the standard header and do not edit them by hand.
 
-The backend pins its Go release in `go.mod`. Reassess compatibility before
-upgrading.
+Each service pins its Go release in its `go.mod`. Reassess compatibility
+before upgrading.
 
 ## Toolchain and modules (GO-1xx)
 
 | ID | Level | Rule |
 | --- | --- | --- |
-| GO-101 | MUST | The backend is one module. Do not add a second module or a `go.work` file. |
+| GO-101 | MUST | Each service is one module. Do not add a second module or a `go.work` file inside a service. |
 | GO-102 | MUST | Each module's `go` directive names the pinned toolchain release. |
 | GO-104 | MUST NOT | Use `init()` for behavior with side effects. Wire dependencies in `main` or in a constructor. |
 | GO-105 | MUST | Keep module files tidy. `go mod tidy` leaves no diff. |
@@ -253,8 +253,8 @@ requirement. GO-1002 and GO-1003 state the Go forms.
 
 ## Gates
 
-Run these checks from the backend module root. They describe the target gates;
-the backend CI does not run all of them yet. GEN-1001 to GEN-1003 govern merge, local/CI
+Run these checks from the root of each service module. They describe the target gates;
+a service CI may not run all of them yet. GEN-1001 to GEN-1003 govern merge, local/CI
 parity and deliberate skips. Pin compatible tool versions before use.
 
 | Gate | Method | Relevant rules |
@@ -267,7 +267,7 @@ parity and deliberate skips. Pin compatible tool versions before use.
 | Modules | In a disposable working copy, `go mod tidy` leaves no diff | GO-105 |
 | Build | `go build ./...` | Compilation |
 
-The backend may compose these checks into a `task` command. Verify what each tool checks and record gaps;
+A service may compose these checks into a `task` command. Verify what each tool checks and record gaps;
 a passing tool does not prove every rule or human review is satisfied.
 
 ## Exceptions register

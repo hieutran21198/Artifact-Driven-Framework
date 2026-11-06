@@ -4,10 +4,10 @@ info:
   version: 0.1.0
   description: >
     Contract of the book artifact. Written before the code (contract first);
-    the backend implements it and the clients call it.
+    the service that serves it implements it, and the clients call it.
 servers:
   - url: http://localhost:8080
-    description: Local backend
+    description: Local API gateway
 paths:
   /staff/v1/books:
     post:

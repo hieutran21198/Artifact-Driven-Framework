@@ -1,17 +1,20 @@
 # Context
 
-The library lending service lets members borrow books from a library and
-return them, and lets staff look after the collection.
+The library lending product lets members borrow books from a library and
+return them, and lets staff look after the collection. It is two services
+behind an API gateway, and two clients.
 
 ```mermaid
 flowchart LR
     member([Member])
     staff([Staff])
 
-    subgraph service [Library lending service]
+    subgraph product [Library lending]
         web[Web]
         mobile[Mobile app]
-        backend[Backend API and workers]
+        gateway[API gateway]
+        lending[lending service]
+        notification[notification service]
     end
 
     scheduler[(Scheduler)]
@@ -19,9 +22,11 @@ flowchart LR
 
     member --> web & mobile
     staff --> web
-    web & mobile --> backend
-    scheduler -- "runs the overdue worker" --> backend
-    backend --> email
+    web & mobile --> gateway
+    gateway -- "book and member operations" --> lending
+    scheduler -- "runs the overdue worker" --> lending
+    lending -- "sendNotice" --> notification
+    notification --> email
 ```
 
 ## Actors
@@ -31,11 +36,25 @@ flowchart LR
 | Member | Web, mobile app: find, borrow and return books |
 | Staff | Web: add and withdraw books |
 
-## Containers
+## Services
 
-| Container | Holds |
+Each service serves the artifacts the
+[domain map](../../architecture/domain-map.md) gives it, and has its own
+database. The owner of each service is in
+[services](../../../services/README.md).
+
+| Service | Holds | Serves |
+| --- | --- | --- |
+| `lending` | The API for books and members, and the overdue worker | [book](../artifacts/book/README.md), [member](../artifacts/member/README.md) |
+| `notification` | Sends each message to a member once, by email | [notice](../artifacts/notice/README.md) |
+
+The API gateway routes each client call to the service that serves its
+operation. Calls between services do not go through it.
+
+## Clients
+
+| Client | Holds |
 | --- | --- |
-| Backend | The API and the workers |
 | Web | The browser client for members and staff |
 | Mobile app | The client for members |
 
@@ -53,7 +72,7 @@ The oldest version of each client that SYS-4 and SYS-6
 
 | System | Used for |
 | --- | --- |
-| Scheduler | Runs a backend worker at a set time, such as the daily overdue check |
-| Email service | Sends messages to members |
+| Scheduler | Runs a worker of a service at a set time, such as the daily overdue check |
+| Email service | Sends the emails of the `notification` service |
 
 Return to [system](README.md).

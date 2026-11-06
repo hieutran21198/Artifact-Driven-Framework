@@ -17,7 +17,7 @@ issue.
   OpenAPI contract; existing response shapes are kept; knowledge holds no
   evidence (no code locations, observed data or dates); every scenario names
   its operation; every page that `python3 scripts/impact.py` lists for a
-  changed ID, operation or field is updated; D1 to D7.
+  changed ID, operation or field is updated; D1 to D8.
 
 Report each finding with the file, the line and the rule it breaks, then a
 verdict: ready, or the list of what blocks it.

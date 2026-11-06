@@ -20,6 +20,7 @@ turn and the library knows where each book is.
 | G-BORROW-4 | A returned book can be borrowed again. | F-RETURN-1, F-RETURN-4 |
 | G-BORROW-5 | A loan not returned by its due time shows as overdue. | F-RETURN-3, F-RETURN-5, F-RETURN-8 |
 | G-BORROW-6 | A loan that is refused changes nothing. | F-BORROW-2, F-BORROW-3, F-BORROW-4, F-BORROW-5, F-BORROW-6, F-BORROW-8 |
+| G-BORROW-7 | A member whose loan becomes overdue is told once, by email. | F-RETURN-3, F-RETURN-8, F-RETURN-9, F-RETURN-10, F-RETURN-11 |
 
 ## Flows
 

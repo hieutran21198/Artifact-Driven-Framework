@@ -1,18 +1,19 @@
 ---
 name: backend-service
-description: Build and extend the Go backend through its domain, use case and adapter structure. Use for endpoints, domain behavior, transactions, migrations and provider integration. Does not authorize commits to client repositories or deployment.
+description: Build and extend a Go service through its domain, use case and adapter structure. Use for endpoints, domain behavior, transactions, migrations, calls to other services and provider integration. Does not authorize changes to other parts or deployment.
 ---
 
 # Backend service
 
-Implement backend behavior through the project's established architecture.
+Implement the behavior of one Go service through the project's established
+architecture.
 Resolve project paths against the current worktree root. Project contracts and
 selected standards remain authoritative; this skill supplies an implementation
 procedure, not a second architecture or rule catalog.
 
 ## Establish the boundary
 
-Read `AGENTS.md`, the backend's own instructions (its `AGENTS.md` or `CLAUDE.md`
+Read `AGENTS.md`, the service's own instructions (its `AGENTS.md` or `CLAUDE.md`
 under `services/`, when it has them), the
 [architecture](../../../docs/architecture/README.md) and the scope of the issue
 before editing. Follow the
@@ -26,8 +27,9 @@ issue links, and the OpenAPI contract of every endpoint you touch, in
 hold, stop and report the gap instead of inventing it. Name each test after the
 rule or scenario ID it proves, such as `BK-5` or `F-BORROW-3`.
 
-Check how the clients call the endpoint (request shape, response decoding,
-version) before changing it; the client pages of the artifact say where.
+Check how the clients and other services call the endpoint (request shape,
+response decoding, version) before changing it; the client pages of the
+artifact and the flows say where.
 
 Read the [coding standards entry point](../../../docs/coding-standards/README.md)
 and the [General](../../../docs/coding-standards/general/README.md) and

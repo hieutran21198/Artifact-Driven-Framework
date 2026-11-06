@@ -1,18 +1,18 @@
 # General
 
-The coding standard for backend code, across languages.
+The coding standard for the code of every part, across languages.
 
 ## Scope
 
-The scope is code in the structure of the backend that the
-[architecture](../../architecture/README.md) describes: `internal/domain`,
-`internal/app` and `internal/adapter`. Code that predates that structure is
+The scope is the code of each service in the structure that the
+[architecture](../../architecture/README.md) describes (`internal/domain`,
+`internal/app` and `internal/adapter`), and the code of each client. Code that predates that structure is
 excluded until it moves into it. Generated code, third-party code and repository tooling are excluded.
 A language standard adds rules for its language mechanisms.
 
 ## Rule conventions
 
-These conventions apply to the General and Go rule sets. A language
+These conventions apply to General and every language rule set. A language
 standard adds a mechanism and cites the general rule instead of copying it.
 Use the selected standards during implementation and review. Cite the rule ID
 when reporting a violation; the canonical text stays in its owning standard.

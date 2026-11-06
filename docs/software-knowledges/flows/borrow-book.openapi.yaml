@@ -7,7 +7,7 @@ info:
     member artifacts, so the flow owns it; it reuses the artifact schemas.
 servers:
   - url: http://localhost:8080
-    description: Local backend
+    description: Local API gateway
 security:
   - memberBearer: []
 paths:

@@ -3,20 +3,24 @@
 ## Start with the governing sources
 
 Read the [repository README](README.md), [contributing guide](CONTRIBUTING.md)
-and the README of each directory you change. For backend code, also read the
-backend's own agent instructions under [services](services/README.md). Before
-changing an endpoint, read how the [client applications](apps/README.md) call
-it. Inspect nearby code and existing checks before choosing a design. Reload
+and the README of each directory you change. For the code of a service or a
+client, also read its own agent instructions under
+[services](services/README.md) or [applications](apps/README.md). Before
+changing an endpoint, read the client pages of its artifact, and how the
+[client applications](apps/README.md) and other services call it. Inspect nearby code and existing checks before choosing a design. Reload
 affected instructions after context loss or source changes.
 
 The [architecture](docs/architecture/README.md) is the agreed direction.
 
 ## Scope
 
-- Backend only. Do not commit to the client repositories under `apps/`. Client
-  changes go out as written handoffs.
-- One deployable, split by domain inside it. Do not add bounded contexts,
-  module walls, events between domains or a second Go module.
+- Change only the parts the issue and their owners give you
+  ([parts and owners](docs/governances/artifact-driven/team.md#parts-and-owners)).
+  For a part you cannot access, write a handoff to its owner on the issue.
+- Each service is one deployable, split by domain inside it. Do not add module
+  walls or events between the domains of one service, or a second module
+  inside a service. Services talk only through their contracts: calls and
+  published messages.
 
 ## Principles and writing
 
@@ -42,16 +46,16 @@ or weaken a gate.
 
 Follow the [repository conventions](docs/coding-standards/README.md). For code,
 read the [General](docs/coding-standards/general/README.md) and
-[Go](docs/coding-standards/golang/README.md) standards before implementation and
-review. Cite rule IDs instead of copying their text.
+language standard of the part, such as
+[Go](docs/coding-standards/golang/README.md), before implementation and review. Cite rule IDs instead of copying their text.
 
 Work as the [team](docs/governances/artifact-driven/team.md): the main session is
 the coordinator and hands each step to its agent in
 [.agents/agents](.agents/agents/README.md). The skills are
 [software-knowledge](.agents/skills/software-knowledge/SKILL.md) for knowledge
 and contracts, [defect-triage](.agents/skills/defect-triage/SKILL.md) for
-reported defects, and [backend-service](.agents/skills/backend-service/SKILL.md)
-for backend code.
+reported defects, and the skill of each part's stack, such as
+[backend-service](.agents/skills/backend-service/SKILL.md) for a Go service.
 
 ## Change and verify
 

@@ -1,17 +1,24 @@
 # Architecture
 
-The target structure of the backend. A project keeps these rules or changes
-them in a reviewed change; the examples use the `book` domain of the
-[reference pass](../software-knowledges/README.md).
+The reference structure of a service. A project may have one service or many;
+each keeps these rules or records its own in a reviewed change. The examples
+use the `book` domain of the
+[reference pass](../software-knowledges/README.md). The
+[domain map](domain-map.md) says which service serves each domain.
 
 ## Direction
 
-- One deployable, split by domain inside it, with one database.
-- No bounded contexts, module walls or events between domains. A flow may
-  cross several domains in one transaction.
+- Each service is one deployable, split by domain inside it, with its own
+  database. A service never reads another service's database; it calls the
+  other service's operations, through their contract.
+- Inside a service: no module walls or events between domains, and a flow may
+  cross several of its domains in one transaction. Between services: no
+  shared transaction; a call or a published message after the transaction,
+  retried or compensated when it fails, and safe to receive twice.
 - Commands and queries take separate paths (light CQRS): a command changes
   state through the domain, a query only reads. Both use the same database and
-  the same transactions. There is no separate read store and no events.
+  the same transactions. There is no separate read store, and no events inside
+  a service.
 - Handlers return transfer objects, never database models.
 - External systems, such as payment providers, storage, email and push, sit
   behind interfaces, so they can be faked in tests and their failures handled
@@ -35,6 +42,7 @@ internal/
       repo/               # implementations of the domain Writer and Reader interfaces
       unitofwork/         # implementation of the command UnitOfWork
     <vendor>/             # one external system each
+    <service>/            # client of another service's operations
 ```
 
 | Package | Holds | May import |
@@ -48,6 +56,8 @@ internal/
 | `adapter/db/repo` | Database models and the repositories | Domain, the database library |
 | `adapter/db/unitofwork` | The transaction and the writers bound to it | `adapter/db/repo`, `app/command`, domain, the database library |
 | `adapter/<vendor>` | One external system behind an interface | Domain, the vendor SDK |
+| `adapter/<service>` | Calls to another service's operations, behind an interface, from that service's contract | Domain, the HTTP client |
+| `adapter/<broker>` | Publishing messages to a queue or a topic, behind an interface, from the publishing flow's contract | Domain, the broker SDK |
 
 The same rules as a diagram; an arrow means "imports":
 
@@ -73,11 +83,13 @@ Rules:
   function call.
 - Database models never leave `adapter/db/repo`. Request transfer objects are
   mapped explicitly and are never turned into column maps by reflection.
-- Provider calls stay outside database transactions.
+- Provider calls and calls to other services stay outside database
+  transactions.
 
-Domains are a way to find code, not a boundary to enforce. If a group of use
-cases later changes together and rarely touches the rest, it can be split out
-then, based on real code.
+Domains are a way to find code, not a boundary to enforce inside a service. If
+a group of use cases later changes together and rarely touches the rest, it
+can move to its own service then, based on real code, with a change to the
+domain map.
 
 ## Contents
 

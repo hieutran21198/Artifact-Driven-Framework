@@ -1,6 +1,6 @@
 # Change the system
 
-Use when a system-wide requirement, an actor, a container, an external system
+Use when a system-wide requirement, an actor, a service, a client, an external system
 or a glossary term is new or changes.
 
 Sample: [system](../../../software-knowledges/system/README.md).
@@ -18,7 +18,7 @@ Sample: [system](../../../software-knowledges/system/README.md).
    ([the life of an ID](../knowledge.md#the-life-of-an-id)).
 2. A requirement names what must hold for every goal, flow and artifact. It
    names groups and principles, not fields; the contract owns the fields.
-3. Update the context diagram when an actor, a container or an external
+3. Update the context diagram when an actor, a service, a client or an external
    system changes.
 4. Run [impact](../../../../scripts/README.md#impact) on each changed `SYS` ID and update every page it lists.
 

@@ -14,18 +14,17 @@ Start with the [repository README](README.md), the
 4. Update the affected READMEs so readers can find the result.
 5. Run the [checks](#check-a-change).
 
-Update a submodule pointer only when a document needs a specific commit of that
-repository.
+## Change a service or a client
 
-## Change the backend
-
-Backend changes are made in the backend submodule under
-[services](services/README.md) and merged in its own repository.
+The change to each part is made in its clone under
+[services](services/README.md) or [applications](apps/README.md), merged in its
+own repository and approved by its owner.
 
 1. Branch from the latest default branch. Use `<type>/<issue>-<short-name>`,
    for example `fix/123-return-overdue-book`.
-2. Before changing an endpoint, read how the [client apps](apps/README.md) call
-   it: request shape, response decoding, error handling and API version.
+2. Before changing an endpoint, read its client pages and how the
+   [clients](apps/README.md) and other services call it: request shape,
+   response decoding, error handling and API version.
 3. Add a test for the changed behavior, named after the knowledge ID it
    proves. Runtime code needs a passing test with seeded data before it is
    committed.
@@ -35,22 +34,35 @@ Backend changes are made in the backend submodule under
 Use a short, single-line commit message that names the issue. The project
 sets its own commit and release-branch conventions here.
 
-Do not commit to the client app repositories. Client changes go out as written
-handoffs.
+Change only the parts the issue and their owners give you. For a part you
+cannot access, write a handoff to its owner on the issue.
 
-## Deploy the backend
+## Owners
 
-Fill in how each environment is deployed:
+The owners of the parts that no service or client README lists
+([parts and owners](docs/governances/artifact-driven/team.md#parts-and-owners)).
+Fill in a person or a group for each:
 
-| Environment | How |
+| Part | Owner |
 | --- | --- |
-| — | — |
+| Goals (product owner) | — |
+| End-to-end tests (quality owner), in `e2e/` | — |
+| The API gateway | — |
+| Tie-breaker when owners disagree | — |
+
+## Deploy and release
+
+Fill in how each part reaches each environment:
+
+| Part | Environment | How |
+| --- | --- | --- |
+| — | — | — |
 
 The [infrastructure](docs/infrastructure/README.md) pages show what a deploy
 runs.
 
-Before a deploy, find the commit that runs in the target environment and list
-the changes between it and the candidate. After a deploy, watch the alarms and
+Before a deploy of a part, find the commit of that part that runs in the
+target environment and list the changes between it and the candidate. After a deploy, watch the alarms and
 the logs.
 
 A hotfix starts from the commit that runs in production, not from the newest
@@ -98,7 +110,8 @@ python3 scripts/check_docs.py
 git diff --check
 ```
 
-For a backend change, check that its tests name only knowledge IDs that exist:
+For a service or client change, check that its tests name only knowledge IDs
+that exist:
 
 ```sh
 python3 scripts/check_tests.py
@@ -119,8 +132,8 @@ python3 scripts/impact.py <ID|operationId|field>
 For staged changes, also run `git diff --cached --check`. Read new, untracked
 files during review because `git diff` does not include them.
 
-For backend changes, run the checks in the backend README and the
-[Go gates](docs/coding-standards/golang/README.md#gates) that apply.
+For a change to a part, run the checks in its README and the gates of its
+language standard, such as the [Go gates](docs/coding-standards/golang/README.md#gates).
 
 Describe the checks you ran and any remaining limits when handing off a change.
 

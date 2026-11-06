@@ -1,7 +1,7 @@
 # Check the docs
 
 Use before a docs branch goes to review, and again on the merge result before
-the approver merges it. Run from the repository root. Post the results on the
+the owners merge it. Run from the repository root. Post the results on the
 issue.
 
 ```sh
@@ -10,11 +10,12 @@ python3 scripts/check_docs.py
 git diff --check
 ```
 
-Before a code change is merged, check the IDs its tests name, on the checkout
-of the change:
+Before a code change is merged, check the IDs its tests name. With no folder
+the check reads the tests of every cloned part; pass the folder of the
+change's worktree to check only that one:
 
 ```sh
-python3 scripts/check_tests.py <tests folder>
+python3 scripts/check_tests.py [tests folder]
 ```
 
 For each changed OpenAPI file:

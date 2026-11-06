@@ -10,10 +10,10 @@ keeps the same requirements under its own IDs.
 
 | Layer | Holds | Code it matches | Tests that prove it |
 | --- | --- | --- | --- |
-| System | Purpose, actors, containers, external systems, system-wide requirements, glossary, shared contract components | — | — |
+| System | Purpose, actors, services, clients, external systems, system-wide requirements, glossary, shared contract components | — | — |
 | Goal | A business outcome: the need, the actor, success criteria and constraints. No behavior. | The product | End-to-end tests, starting at the trigger: a request, a webhook or a worker run |
-| Flow | Behavior that crosses artifacts or containers: trigger, steps, failure branches, the transaction, the outcome | Application commands and queries | Command and unit of work tests |
-| Artifact | One domain: model, rules, lifecycle, contract, and how each container uses it | The domain package | Domain unit tests |
+| Flow | Behavior that crosses artifacts, services or clients: trigger, steps, failure branches, each transaction, the outcome | Application commands and queries, in each service the flow crosses | Command and unit of work tests in each service |
+| Artifact | One domain: model, rules, lifecycle, contract, and what each client needs from it | The domain package of the service that serves it | Domain unit tests |
 
 - Artifacts are the nodes and flows the edges between them. Knowledge that
   touches two or more artifacts belongs to a flow.
@@ -22,6 +22,24 @@ keeps the same requirements under its own IDs.
 - An artifact is one business domain from the
   [domain map](../../architecture/domain-map.md). It is a unit of knowledge
   ownership, not a module wall in the code.
+
+## Services
+
+The knowledge holds for one service or for many.
+
+- Each artifact is served by exactly one service, named in the artifact's
+  README. A service may serve several artifacts. The owner of that service
+  keeps the artifact ([team](team.md#parts-and-owners)).
+- [Context](../../software-knowledges/system/context.md) lists the services,
+  the clients and what stands between them, such as an API gateway.
+- Each step of a flow names the service that runs it.
+- A transaction never spans services. A step that calls another service says
+  what happens when the call fails: the caller retries, compensates, or
+  leaves the work for the next run. The called operation gives the same
+  result when it receives the same call twice (SYS-8 in the reference pass).
+- A call between services has a contract, like a call from a client: its
+  operation is in the contract of the artifact it serves, marked as internal
+  when no client may call it.
 
 ## Citations
 
@@ -88,8 +106,8 @@ written before the code exists.
   measured once is evidence.
 - Never write status or plans into knowledge: no "for now", "not implemented
   yet", "later" or "when the app ships". Those belong on the issue.
-- A client page says what the backend promises in a response, never what the
-  app does with it: "`due_at` is an RFC 3339 time", not "a null hides the
+- A client page says what a service promises in a response, never what the
+  client does with it: "`due_at` is an RFC 3339 time", not "a null hides the
   reminder".
 - Evidence goes to the issue or the pull request that the change belongs to.
   Evidence never holds personal data: mask names, emails, phone numbers,
@@ -107,12 +125,13 @@ version as settled:
 
 1. Write an open question on the page, naming the IDs it touches. The evidence
    goes on the issue.
-2. The coordinator asks the approver to choose on the issue: the running
+2. The coordinator asks the owners of the parts it touches to choose on the
+   issue: the running
    behavior becomes the rule, or the new rule is written and the code change
    gets its own issue, as a breaking change when a supported client relies on
    the behavior (SYS-6).
 3. A branch that adds a criterion or a rule with an open conflict is not
-   merged until the approver has chosen.
+   merged until the owners have chosen.
 
 ## Open questions
 
@@ -125,16 +144,17 @@ answer a question that a page below leaves open.
 
 | File | Holds |
 | --- | --- |
-| `README.md` | What the artifact owns, its rule prefix, and links |
-| `specification.md` | Model, rules and lifecycle; no container or flow |
-| `openapi.yaml` | The HTTP contract of the artifact's own endpoints |
-| `backend.md` | The domain contract: the `Writer` and `Reader` interfaces and their operations; no packages, types or tables |
+| `README.md` | What the artifact owns, its rule prefix, the service that serves it, and links |
+| `specification.md` | Model, rules and lifecycle; no service, client or flow |
+| `openapi.yaml` | The HTTP contract of the artifact's own endpoints, internal ones included |
+| `service.md` | The domain contract the serving service provides: the `Writer` and `Reader` interfaces and their operations; no packages, types or tables |
 | `<client>.md`, one per client in the [configuration](../../../scripts/README.md#configuration) | What that client needs from the artifact, by `operationId`, by payload schema, or by rule ID for a need no response carries; only when it uses the artifact |
 
-An artifact is never split per container. Client pages cite rule IDs and
+An artifact is never split per service or per client. Client pages cite rule IDs and
 `operationId`s; they never restate rules. Which client calls which operation,
 and when, belongs to the flow: each step names its actor and the operation it
-calls. Screens belong to the app team, not to the knowledge. A need on a flow
+calls. Screens belong to the client's owner, in the client's repository, not
+to the knowledge. A need on a flow
 operation goes on the client page of the artifact that owns the response
 schema. A need on a flow payload goes on the client page of the artifact the
 payload is about, under the name of the payload schema.
@@ -147,18 +167,28 @@ that implements it.
 - OpenAPI 3.0.3, in YAML.
 - `system/openapi.yaml` holds the shared components: the error shape and
   authentication.
-- An artifact's `openapi.yaml` holds endpoints of that artifact only.
+- An artifact's `openapi.yaml` holds endpoints of that artifact only; the
+  service that serves the artifact serves them. An endpoint only other
+  services may call carries `x-internal: true`.
 - An endpoint that crosses artifacts belongs to its flow, in
   `flows/<flow>.openapi.yaml`, and reuses artifact schemas with `$ref`.
 - A payload that is not an HTTP response, such as a push notification, an
   email or a deep link, is a schema under `components` of the flow that sends
   it. An email or a file names its format (HTML, CSV) and its fields in order
   in the schema description.
-- A trigger that starts a worker, such as a timer or a schedule, is declared
+- A trigger that starts a worker, such as a timer, a schedule or a message
+  another service publishes, is declared
   under `x-triggers` of the flow it starts, by name in camelCase, with its
   schedule or time and its input schema. A scenario names the trigger as it
   names an operation. A change keeps the input that triggers already
   scheduled will deliver (SYS-4).
+- A message a service publishes to a queue or a topic is a schema under
+  `components` of the flow that publishes it, and names its topic in its
+  description. Each flow it starts in another service declares it under
+  `x-triggers`, by the same name. The publisher sends it after its
+  transaction and retries when the send fails; a consumer that receives it
+  twice gets the same result (SYS-8). A change keeps what the consumers read
+  (SYS-4).
 - An endpoint an external system calls, such as a payment webhook, belongs to
   the flow it starts. Its contract copies the request the external system
   documents; it is agreed with that documentation, not designed, and the
@@ -173,9 +203,9 @@ never draws the inside of a lower layer.
 
 | Layer | Diagram |
 | --- | --- |
-| System | Context: actors, containers, external systems. Knowledge map: goals, flows, artifacts. |
+| System | Context: actors, clients, services, gateway, external systems. Knowledge map: goals, flows, artifacts. |
 | Goal | The flows that reach the goal, as a `flowchart`. |
-| Flow | A `sequenceDiagram`, with `rect` for the transaction and `alt` for failures. A `flowchart` when it branches a lot. |
+| Flow | A `sequenceDiagram` with each service it crosses as a participant, `rect` for each transaction inside one service, and `alt` for failures. A `flowchart` when it branches a lot. |
 | Artifact | A `classDiagram` of entities and their behavior methods, without fields. A `stateDiagram-v2` when an entity has a lifecycle. |
 
 Return to [Artifact Driven](README.md).
