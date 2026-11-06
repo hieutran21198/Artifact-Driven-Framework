@@ -13,6 +13,7 @@
 :root{
   --paper:#f5f6f3; --sheet:#ffffff; --ink:#18212b; --muted:#5b6670; --rule:#d9ddd8;
   --accent:#0b6e69; --accent-soft:#dcefeb; --up:#c2511f; --up-soft:#f8e4d8; --down:#2f7d3b; --down-soft:#e0f0dd;
+  --s1:#008a7c; --s2:#eb6834; --s3:#2a78d6; --fill:.07;
   --l0:#e9ecf6; --l0i:#2c3a7a; --l1:#e4f1ec; --l1i:#14513d; --l2:#f3e7ee; --l2i:#6c2348; --l3:#f1eee4; --l3i:#4d4320; --l4:#f6e9e2; --l4i:#6e2c12;
   --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
   --body:"IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
@@ -22,11 +23,13 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --paper:#12171c; --sheet:#1a2027; --ink:#e7ebe8; --muted:#9aa4ac; --rule:#2c343c;
   --accent:#5cc3b9; --accent-soft:#163a37; --up:#f0956a; --up-soft:#45220f; --down:#7ccf86; --down-soft:#173a1d;
+  --s1:#14a497; --s2:#d95926; --s3:#3987e5; --fill:.12;
   --l0:#222a4a; --l0i:#c9d0f5; --l1:#173a2f; --l1i:#a9e2cc; --l2:#3d1d2e; --l2i:#f1c2d8; --l3:#34301d; --l3i:#e6dcb3; --l4:#3e2216; --l4i:#f4c6b0;
   color-scheme:dark}}
 :root[data-theme="dark"]{
   --paper:#12171c; --sheet:#1a2027; --ink:#e7ebe8; --muted:#9aa4ac; --rule:#2c343c;
   --accent:#5cc3b9; --accent-soft:#163a37; --up:#f0956a; --up-soft:#45220f; --down:#7ccf86; --down-soft:#173a1d;
+  --s1:#14a497; --s2:#d95926; --s3:#3987e5; --fill:.12;
   --l0:#222a4a; --l0i:#c9d0f5; --l1:#173a2f; --l1i:#a9e2cc; --l2:#3d1d2e; --l2i:#f1c2d8; --l3:#34301d; --l3i:#e6dcb3; --l4:#3e2216; --l4i:#f4c6b0;
   color-scheme:dark}
 *{box-sizing:border-box}
@@ -123,6 +126,35 @@ ol.steps p{color:var(--muted);font-size:15px}
 .tree{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;overflow-x:auto}
 .tree pre{margin:0;padding:18px;font:400 13.5px/1.7 var(--mono)}
 .tree .c{color:var(--muted)}
+
+/* comparison */
+.compare{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:860px){.compare{grid-template-columns:minmax(0,1fr)}}
+.radar-card{margin:0;position:relative;background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:16px;display:grid;gap:10px;min-width:0}
+.radar-card figcaption{font-size:13px;color:var(--muted)}
+.series{display:flex;gap:8px;flex-wrap:wrap}
+.series button{display:inline-flex;align-items:center;gap:8px;font:500 14px/1 var(--body);color:var(--ink);background:transparent;border:1px solid var(--rule);border-radius:999px;padding:7px 12px;cursor:pointer}
+.series button[aria-pressed="true"]{border-color:var(--ink)}
+.series svg{flex:none}
+#radar{min-height:300px}
+#radar svg{display:block;width:100%;height:auto;overflow:visible}
+#radar .grid{fill:none;stroke:var(--rule);stroke-width:1}
+#radar .axis-label{fill:var(--muted);font:500 12.5px/1 var(--body)}
+#radar .axis-label.on{fill:var(--ink)}
+#radar .tick{fill:var(--muted);font:400 11px/1 var(--mono)}
+#radar .spoke.on{stroke:var(--muted)}
+#radar .s{transition:opacity .15s}
+#radar.focus .s:not(.hi){opacity:.18}
+.tip{position:absolute;pointer-events:none;background:var(--sheet);color:var(--ink);border:1px solid var(--rule);border-radius:8px;padding:8px 10px;font-size:13px;line-height:1.5;box-shadow:0 4px 16px rgb(0 0 0 / .12);display:none;min-width:150px}
+.tip b{display:block;font-weight:600;margin-bottom:2px}
+.tip span{display:flex;align-items:center;gap:6px;justify-content:space-between}
+.tip span i{font-style:normal;display:inline-flex;align-items:center;gap:6px;color:var(--muted)}
+.picks{display:grid;gap:12px}
+.pick{background:var(--sheet);border:1px solid var(--rule);border-top:3px solid var(--k);border-radius:12px;padding:14px 16px;display:grid;gap:6px}
+.pick p{font-size:15px;color:var(--muted)}
+.cmp{min-width:640px}
+.score{font:600 14px/1 var(--mono);text-align:center;white-space:nowrap}
+@media (prefers-reduced-motion:reduce){#radar .s{transition:none}}
 
 footer{border-top:1px solid var(--rule);padding-top:20px;font-size:14px;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 </style>
@@ -233,6 +265,42 @@ footer{border-top:1px solid var(--rule);padding-top:20px;font-size:14px;color:va
   </div>
 </section>
 
+<section id="why">
+  <div class="head">
+    <span class="eyebrow">Why this one</span>
+    <h2>Beside BMAD and Spec Kit</h2>
+    <p class="lede">All three put a written spec in front of the AI agent. They differ in what the spec is for. BMAD and Spec Kit write documents that lead to the next feature. Artifact Driven keeps one body of knowledge for the whole system and checks it with scripts, so you know what a change breaks before anyone writes code.</p>
+  </div>
+  <div class="compare">
+    <figure class="radar-card">
+      <div class="series" id="radar-series" role="group" aria-label="Highlight a method"></div>
+      <div id="radar" role="img" aria-label="Radar chart of seven qualities, scored 1 to 5. The table below has the same scores."></div>
+      <div class="tip" id="radar-tip"></div>
+      <figcaption>Our reading of each project's public documentation in 2026. 1 means the method leaves it to you; 5 means it is the core of the method.</figcaption>
+    </figure>
+    <div class="picks">
+      <div class="pick" style="--k:var(--s1)"><h3>Choose Artifact Driven when</h3><p>The system lives for years and most work changes rules that already exist. One backend serves several clients, and each must know what a change does to its responses. You want a script, not a model, to say that a rule is cited, covered and tested.</p></div>
+      <div class="pick" style="--k:var(--s2)"><h3>Choose BMAD when</h3><p>You start from an idea and need the discovery: brainstorming, research, a PRD, an architecture and stories, from agents that work like an agile team.</p></div>
+      <div class="pick" style="--k:var(--s3)"><h3>Choose Spec Kit when</h3><p>You want to go from a feature description to a spec, a plan and tasks in minutes, in one repository, with the coding agent you already use.</p></div>
+      <p class="muted" style="font-size:14px;color:var(--muted)">They are not exclusive. A PRD from BMAD or a spec from Spec Kit is a good source for the first goal here.</p>
+    </div>
+  </div>
+  <div class="scroll">
+    <table class="cmp">
+      <thead><tr><th>Quality</th><th>What it means</th><th class="score">Artifact Driven</th><th class="score">BMAD</th><th class="score">Spec Kit</th></tr></thead>
+      <tbody>
+        <tr><td>Living knowledge</td><td>Knowledge is kept by domain and updated in place when behavior changes. BMAD and Spec Kit write documents for each project, epic or feature, and the next feature writes new ones.</td><td class="score">5</td><td class="score">2</td><td class="score">2</td></tr>
+        <tr><td>Traceable IDs</td><td>Every requirement, criterion, scenario and rule has an ID, and tests name it. Spec Kit numbers the requirements and tasks inside one feature spec. BMAD's test architect traces a story's acceptance criteria to tests.</td><td class="score">5</td><td class="score">3</td><td class="score">3</td></tr>
+        <tr><td>Change impact</td><td><code>impact.py</code> lists what a change to a rule, an operation or a response field affects, from the citations. BMAD's test architect profiles the risk of a story with the agent. Spec Kit leaves it to you.</td><td class="score">5</td><td class="score">2</td><td class="score">1</td></tr>
+        <tr><td>Contract first</td><td>OpenAPI contracts are written and linted before the code, and each client says what it needs from a response. Spec Kit's plan step writes contracts for one feature. BMAD's architecture document describes the APIs.</td><td class="score">5</td><td class="score">2</td><td class="score">3</td></tr>
+        <tr><td>Scripted checks</td><td>Plain Python checks links, IDs, citation direction, scenarios and test IDs, and fails the build. BMAD and Spec Kit check with checklists and prompts that the agent runs.</td><td class="score">5</td><td class="score">2</td><td class="score">2</td></tr>
+        <tr><td>Discovery and planning</td><td>BMAD covers brainstorming, research, a PRD, the architecture and stories, with an agent for each. Spec Kit starts from a feature description. Artifact Driven starts from a goal you already know.</td><td class="score">2</td><td class="score">5</td><td class="score">3</td></tr>
+        <tr><td>Quick start</td><td>Spec Kit and BMAD install with one command and add slash commands to your agent. Artifact Driven is a template you copy and fill in.</td><td class="score">2</td><td class="score">4</td><td class="score">5</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
 <section id="tools">
   <div class="head">
     <span class="eyebrow">Tools</span>
@@ -329,6 +397,61 @@ git submodule add &lt;client repository URL&gt; apps/&lt;client&gt;</pre><button
     const select=()=>{const r=document.createRange();r.selectNodeContents(pre);const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Selected";setTimeout(()=>b.textContent="Copy",1500);};
     try{navigator.clipboard.writeText(text).then(done,select);}catch(e){select();}
   }));
+})();
+</script>
+<script>
+(function(){
+  const AXES=["Living knowledge", "Traceable IDs", "Change impact", "Contract first", "Scripted checks", "Discovery and planning", "Quick start"];
+  const SERIES=[
+    {name:"Artifact Driven",k:"--s1",v:[5,5,5,5,5,2,2],shape:"circle",dash:""},
+    {name:"BMAD",k:"--s2",v:[2,3,2,2,2,5,4],shape:"square",dash:"7 4"},
+    {name:"Spec Kit",k:"--s3",v:[2,3,1,3,2,3,5],shape:"diamond",dash:"2 4"}];
+  const NS="http://www.w3.org/2000/svg",box=document.getElementById("radar"),tip=document.getElementById("radar-tip"),fig=box.parentElement;
+  const el=(n,a,p)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;};
+  const marker=(shape,x,y,r,a,p)=>shape==="circle"?el("circle",{cx:x,cy:y,r,...a},p)
+    :shape==="square"?el("rect",{x:x-r*.9,y:y-r*.9,width:r*1.8,height:r*1.8,rx:1.5,...a},p)
+    :el("path",{d:`M${x} ${y-r*1.25}L${x+r*1.25} ${y}L${x} ${y+r*1.25}L${x-r*1.25} ${y}Z`,...a},p);
+  let pinned=null;
+  const legend=document.getElementById("radar-series");
+  SERIES.forEach((s,i)=>{const b=document.createElement("button");b.type="button";b.setAttribute("aria-pressed","false");
+    const sw=el("svg",{width:26,height:12,viewBox:"0 0 26 12","aria-hidden":"true"});el("line",{x1:1,y1:6,x2:25,y2:6,stroke:`var(${s.k})`,"stroke-width":2,"stroke-dasharray":s.dash},sw);marker(s.shape,13,6,4,{fill:`var(${s.k})`},sw);
+    b.appendChild(sw);b.append(s.name);
+    b.addEventListener("mouseenter",()=>focus(i));b.addEventListener("mouseleave",()=>focus(pinned));
+    b.addEventListener("focus",()=>focus(i));b.addEventListener("blur",()=>focus(pinned));
+    b.addEventListener("click",()=>{pinned=pinned===i?null:i;[...legend.children].forEach((x,j)=>x.setAttribute("aria-pressed",String(j===pinned)));focus(pinned);});
+    legend.appendChild(b);});
+  function focus(i){box.classList.toggle("focus",i!==null);box.querySelectorAll(".s").forEach(g=>g.classList.toggle("hi",+g.dataset.i===i));}
+  function draw(){
+    const w=box.clientWidth,narrow=w<440,h=Math.round(Math.min(w,520)*(narrow?.92:.8)),cx=w/2,cy=h/2+4;
+    const R=Math.max(60,Math.min(w/2-(narrow?62:92),h/2-30)),n=AXES.length;
+    const ang=i=>-Math.PI/2+i*2*Math.PI/n,pt=(i,v)=>[cx+Math.cos(ang(i))*R*v/5,cy+Math.sin(ang(i))*R*v/5];
+    box.innerHTML="";const svg=el("svg",{viewBox:`0 0 ${w} ${h}`,width:w,height:h,"aria-hidden":"true"},box);
+    for(let r=1;r<=5;r++)el("polygon",{class:"grid",points:AXES.map((_,i)=>pt(i,r).join(",")).join(" ")},svg);
+    const spokes=AXES.map((_,i)=>{const [x,y]=pt(i,5);return el("line",{class:"grid spoke",x1:cx,y1:cy,x2:x,y2:y},svg);});
+    [1,3,5].forEach(r=>{const [x,y]=pt(0,r);el("text",{class:"tick",x:x+5,y:y+4},svg).textContent=r;});
+    const labels=AXES.map((a,i)=>{const [x,y]=pt(i,5),c=Math.cos(ang(i)),s=Math.sin(ang(i));
+      const t=el("text",{class:"axis-label",x:x+c*12,y:y+s*12+(s>.3?10:s<-.3?-4:4),"text-anchor":Math.abs(c)<.2?"middle":c>0?"start":"end"},svg);
+      const words=a.split(" ");if(words.length>1&&(narrow||a.length>14)){const half=Math.ceil(words.length/2);
+        [words.slice(0,half).join(" "),words.slice(half).join(" ")].forEach((l,k)=>{const sp=el("tspan",{x:t.getAttribute("x"),dy:k?"1.15em":(s<-.3?"-1.15em":s>.3?"0":"-.55em")},t);sp.textContent=l;});}
+      else t.textContent=a;return t;});
+    SERIES.forEach((s,si)=>{const g=el("g",{class:"s","data-i":si},svg);const pts=s.v.map((v,i)=>pt(i,v));
+      el("polygon",{points:pts.map(p=>p.join(",")).join(" "),fill:`var(${s.k})`,"fill-opacity":"var(--fill)",stroke:`var(${s.k})`,"stroke-width":2,"stroke-linejoin":"round","stroke-dasharray":s.dash},g);
+      pts.forEach(([x,y])=>marker(s.shape,x,y,4.5,{fill:`var(${s.k})`,stroke:"var(--sheet)","stroke-width":2},g));});
+    focus(pinned);
+    const step=2*Math.PI/n;
+    AXES.forEach((a,i)=>{const a0=ang(i)-step/2,a1=ang(i)+step/2,RR=R+40;
+      const hit=el("path",{d:`M${cx} ${cy}L${cx+Math.cos(a0)*RR} ${cy+Math.sin(a0)*RR}A${RR} ${RR} 0 0 1 ${cx+Math.cos(a1)*RR} ${cy+Math.sin(a1)*RR}Z`,fill:"transparent"},svg);
+      const show=()=>{spokes.forEach((s,j)=>s.classList.toggle("on",j===i));labels.forEach((l,j)=>l.classList.toggle("on",j===i));
+        tip.innerHTML=`<b>${a}</b>`+SERIES.map(s=>`<span><i><svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"></svg>${s.name}</i>${s.v[i]} / 5</span>`).join("");
+        tip.querySelectorAll("svg").forEach((sv,k)=>marker(SERIES[k].shape,5,5,3.6,{fill:`var(${SERIES[k].k})`},sv));
+        tip.style.display="block";const [x,y]=pt(i,5),fb=fig.getBoundingClientRect(),bb=box.getBoundingClientRect();
+        let left=bb.left-fb.left+x+(Math.cos(ang(i))>=0?14:-tip.offsetWidth-14),top=bb.top-fb.top+y-tip.offsetHeight/2;
+        left=Math.max(8,Math.min(left,fig.clientWidth-tip.offsetWidth-8));top=Math.max(8,Math.min(top,fig.clientHeight-tip.offsetHeight-8));
+        tip.style.left=left+"px";tip.style.top=top+"px";};
+      const hide=()=>{tip.style.display="none";spokes.forEach(s=>s.classList.remove("on"));labels.forEach(l=>l.classList.remove("on"));};
+      hit.addEventListener("pointerenter",show);hit.addEventListener("pointerdown",show);hit.addEventListener("pointerleave",hide);});
+  }
+  draw();let raf,lastW=box.clientWidth;new ResizeObserver(()=>{if(box.clientWidth===lastW)return;lastW=box.clientWidth;cancelAnimationFrame(raf);raf=requestAnimationFrame(draw);}).observe(box);
 })();
 </script>
 </body>
