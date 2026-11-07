@@ -67,9 +67,4 @@ sequenceDiagram
 | F-LEARN-10 | The page file served with no access to another host | The reader opens it, which calls `playStory` | The story plays through all its steps, in the fonts of the system | INTRO-8 |
 | F-LEARN-11 | The story playing at the rule step | The reader points at a rule, which calls `explainBlock` | The rule is explained in plain words, and the story does not move on until the reader points away | INTRO-9, INTRO-5 |
 
-## Open questions
-
-- Which address `openTracker` opens, and which workspace the tracker shows
-  first (INTRO-6).
-
 Return to [flows](README.md).

@@ -1,0 +1,170 @@
+openapi: 3.0.3
+info:
+  title: Tracker artifact
+  version: 0.1.0
+  description: >
+    Contract of the tracker artifact. Written before the code (contract
+    first); the tracker service implements it. It has no HTTP endpoint; the
+    actions of a reader on the page are under x-commands.
+servers:
+  - url: http://localhost
+    description: No server; the page runs in the browser of the reader.
+paths: {}
+x-commands:
+  openWorkspace:
+    caller: The page when it opens, or a reader who picks a workspace, a ref or the ref of a part.
+    description: >
+      Shows the build of the workspace at the ref, building it when it is not
+      kept (TRK-1 to TRK-5, TRK-9).
+    input:
+      $ref: '#/components/schemas/OpenWorkspaceInput'
+    output:
+      $ref: '#/components/schemas/Build'
+  listRefs:
+    caller: A reader who opens the ref field of a repository or of a part.
+    description: Lists the branches and tags of the repository, the default branch first (TRK-1, TRK-4).
+    input:
+      $ref: '#/components/schemas/ListRefsInput'
+    output:
+      $ref: '#/components/schemas/ListRefsOutput'
+  reloadBuild:
+    caller: A reader who presses Reload.
+    description: Reads the ref again and builds it, downloading only the files that changed (TRK-5).
+    input:
+      type: object
+    output:
+      $ref: '#/components/schemas/Build'
+  setToken:
+    caller: A reader who sets or removes the token of an owner.
+    description: Keeps a read-only token for an owner until the tab closes, or removes it (TRK-6).
+    input:
+      $ref: '#/components/schemas/SetTokenInput'
+    output:
+      type: object
+  addFolder:
+    caller: A reader who adds a folder on their computer as a workspace.
+    description: Adds the folder to the workspaces and opens it (TRK-8).
+    input:
+      type: object
+    output:
+      $ref: '#/components/schemas/Build'
+  exportSettings:
+    caller: A reader who presses Export.
+    description: Saves the settings as a JSON file, without tokens (TRK-6, TRK-7).
+    input:
+      type: object
+    output:
+      $ref: '#/components/schemas/Settings'
+  importSettings:
+    caller: A reader who presses Import and picks a JSON file.
+    description: Reads settings from the file, migrating an older version (TRK-7).
+    input:
+      $ref: '#/components/schemas/Settings'
+    output:
+      $ref: '#/components/schemas/ImportSettingsOutput'
+components:
+  schemas:
+    OpenWorkspaceInput:
+      type: object
+      required: [workspace]
+      properties:
+        workspace:
+          type: string
+          description: owner/repo for a repository, or the name of a folder added before.
+          example: hieutran21198/Artifact-Driven-Framework
+        ref:
+          type: string
+          description: A branch, a tag or a commit SHA. The default branch when not given. Not used for a folder (TRK-8).
+          example: main
+        part_refs:
+          type: object
+          description: The ref of the tests repository of each part, by part name (TRK-4).
+          additionalProperties:
+            type: string
+          example: {library-api: feature/renew}
+    Build:
+      type: object
+      required: [workspace, coverage, unread]
+      properties:
+        workspace:
+          type: string
+        ref:
+          type: string
+          description: The ref shown. For a folder, the branch that .git/HEAD names (TRK-8).
+        commit:
+          type: string
+          description: The commit SHA the ref pointed to when it was read (TRK-5).
+        coverage:
+          type: array
+          description: One line for each goal, as measureCoverage prints it (TRK-3).
+          items:
+            type: string
+          example: ['  G-GATE        60%  criteria 1/2  scenarios 2/4  rules 3/4']
+        unread:
+          type: array
+          description: Each part, repository or file that could not be read, with the reason (TRK-4, TRK-9).
+          items:
+            type: string
+          example: ['library-api: no test files to read']
+    ListRefsInput:
+      type: object
+      required: [repository]
+      properties:
+        repository:
+          type: string
+          example: hieutran21198/Artifact-Driven-Framework
+    ListRefsOutput:
+      type: object
+      required: [default_branch, branches, tags]
+      properties:
+        default_branch:
+          type: string
+        branches:
+          type: array
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
+    SetTokenInput:
+      type: object
+      required: [owner]
+      properties:
+        owner:
+          type: string
+          description: A GitHub owner, or * for any owner without a token of its own (TRK-6).
+          example: hieutran21198
+        token:
+          type: string
+          description: A read-only token. Empty removes the token of the owner.
+    Settings:
+      type: object
+      required: [version, workspaces]
+      properties:
+        version:
+          type: integer
+          description: The version of the settings (TRK-7).
+          example: 1
+        workspaces:
+          type: array
+          items:
+            type: object
+            required: [name]
+            properties:
+              name:
+                type: string
+                example: hieutran21198/Artifact-Driven-Framework
+              ref:
+                type: string
+              part_refs:
+                type: object
+                additionalProperties:
+                  type: string
+    ImportSettingsOutput:
+      type: object
+      required: [stored]
+      properties:
+        stored:
+          type: boolean
+          description: False when the file is of a newer version, which is shown with a warning and not stored (TRK-7).

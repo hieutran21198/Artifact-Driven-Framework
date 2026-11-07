@@ -106,4 +106,5 @@ components:
       properties:
         url:
           type: string
-          description: The address of the project tracker that the page opens.
+          description: The address of the project tracker, relative to the page. It names no workspace, so the tracker opens the repository of the framework (TRK-1).
+          example: tracker/
