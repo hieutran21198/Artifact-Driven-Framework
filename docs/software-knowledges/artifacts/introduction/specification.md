@@ -37,7 +37,7 @@ solution architect and the product owner.
 | --- | --- | --- |
 | INTRO-1 | The story has seven steps in this order: goal, flow, rule, artifact, client, scan, change. Each step shows what the step before it showed and adds one layer, with one sentence that says what the new layer is. | — |
 | INTRO-2 | Every goal, flow, knowledge ID, artifact and client that the story shows is one the sample holds, linked as the sample links it. Which rules the story shows as found by the scan is an example, and the scan step says so. | — |
-| INTRO-3 | The scan step shows which rules a test names, as rules found in the product. The page says that a rule found is not proof that the code is right (TST-3). | — |
+| INTRO-3 | The scan step shows which rules a test names, as rules found in the product. The page says how the scan finds a rule - by its ID in a test file, without running the test - and that a rule found is not proof that the code is right (TST-3). | — |
 | INTRO-4 | The change step starts from one rule and shows every flow and client that a change to it affects, and the clients it does not affect. The page states no cost or duration of a change, and no plan or status. | — |
 | INTRO-5 | The story plays by itself, one step after the other, and goes back to the first step after the last. It stops when the reader picks a step. When the reader's system asks for reduced motion, the story does not play and shows the last step. | — |
 | INTRO-6 | Each reader card lists the questions of its reader and links each question to the page that answers it. | — |

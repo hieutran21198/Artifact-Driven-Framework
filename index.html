@@ -126,6 +126,7 @@ pre{margin:0;background:var(--panel);border-radius:14px;padding:18px 20px;overfl
 .notes{display:grid;gap:28px}
 .note{display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:8px 32px;padding-top:24px;border-top:1px solid var(--rule)}
 .note p{color:var(--muted)}
+.note .how{font-size:14px;color:var(--faint);margin-top:6px}
 @media (max-width:620px){.note{grid-template-columns:minmax(0,1fr)}}
 .install{display:flex;gap:12px;align-items:stretch;flex-wrap:wrap}
 .install pre{flex:1 1 320px;min-width:0}
@@ -239,8 +240,8 @@ func TestLendRefusesBookOnLoan(t *testing.T) {
   <section aria-labelledby="mean-h">
     <h2 id="mean-h">Good to know</h2>
     <div class="notes">
-      <div class="note"><h3 data-i="scan">Scan</h3><p>The scan shows which rules are in the product. It does not show that they work.</p></div>
-      <div class="note"><h3 data-i="change">Changes</h3><p>A change shows what it affects, not what it costs.</p></div>
+      <div class="note"><h3 data-i="scan">Scan</h3><div><p>The scan shows which rules are in the product. It does not show that they work.</p><p class="how">How it works: it reads the test files and looks for rule IDs, such as BK-3. It does not run the tests or read the product's code.</p></div></div>
+      <div class="note"><h3 data-i="change">Impact</h3><div><p>Find every part a change affects, in seconds.</p><p class="how">How it works: it follows the links from a rule up to its flows and goal, and across to the apps that use it. It does not estimate cost or time.</p></div></div>
       <div class="note"><h3 data-i="calendar">Plans</h3><p>Plans and progress stay in your task tracker.</p></div>
     </div>
   </section>
