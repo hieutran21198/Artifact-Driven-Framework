@@ -3,456 +3,491 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A simple way to keep software development clear for years, with fast analysis and a quick view of what every change affects. No cost, no overhead.">
 <title>Artifact Driven</title>
-<meta name="description" content="Artifact Driven: write and agree the knowledge first, then build the code that proves it. A workspace template for a whole team, people and AI agents, where each person owns their part.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&display=swap">
 <style>
-/* Layout: a single reading column with wide "plates" for the layer chain, the team and the tree; layers are nested frames, like the knowledge itself. */
+/* Layout: a quiet single column with generous space; the story sits on a soft panel, everything else is plain text. Light only, by choice: a clear white page with pale tints for each layer. */
 :root{
-  --paper:#f5f6f3; --sheet:#ffffff; --ink:#18212b; --muted:#5b6670; --rule:#d9ddd8;
-  --accent:#0b6e69; --accent-soft:#dcefeb; --up:#c2511f; --up-soft:#f8e4d8; --down:#2f7d3b; --down-soft:#e0f0dd;
-  --s1:#008a7c; --s2:#eb6834; --s3:#2a78d6; --fill:.07;
-  --l0:#e9ecf6; --l0i:#2c3a7a; --l1:#e4f1ec; --l1i:#14513d; --l2:#f3e7ee; --l2i:#6c2348; --l3:#f1eee4; --l3i:#4d4320; --l4:#f6e9e2; --l4i:#6e2c12;
-  --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
-  --body:"IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
-  --mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
-  --measure:66ch;
+  --paper:#fbfcfd; --panel:#f1f4f7; --ink:#1f2933; --muted:#5f6b78; --faint:#94a0ab; --rule:#e3e8ed;
+  --accent:#2f6db5; --soft:#d9822b; --ok:#4c9a5b;
+  --l0:#ecebfb; --l0i:#3d3a8a; --l1:#e2f3ec; --l1i:#1f6a4f; --l2:#fbe9ee; --l2i:#8a3352; --l3:#f6f3ec; --l3i:#6b5d3a; --cl:#e4f0fb; --cli:#245b8f;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --measure:60ch;
+  color-scheme:light;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --paper:#12171c; --sheet:#1a2027; --ink:#e7ebe8; --muted:#9aa4ac; --rule:#2c343c;
-  --accent:#5cc3b9; --accent-soft:#163a37; --up:#f0956a; --up-soft:#45220f; --down:#7ccf86; --down-soft:#173a1d;
-  --s1:#14a497; --s2:#d95926; --s3:#3987e5; --fill:.12;
-  --l0:#222a4a; --l0i:#c9d0f5; --l1:#173a2f; --l1i:#a9e2cc; --l2:#3d1d2e; --l2i:#f1c2d8; --l3:#34301d; --l3i:#e6dcb3; --l4:#3e2216; --l4i:#f4c6b0;
-  color-scheme:dark}}
-:root[data-theme="dark"]{
-  --paper:#12171c; --sheet:#1a2027; --ink:#e7ebe8; --muted:#9aa4ac; --rule:#2c343c;
-  --accent:#5cc3b9; --accent-soft:#163a37; --up:#f0956a; --up-soft:#45220f; --down:#7ccf86; --down-soft:#173a1d;
-  --s1:#14a497; --s2:#d95926; --s3:#3987e5; --fill:.12;
-  --l0:#222a4a; --l0i:#c9d0f5; --l1:#173a2f; --l1i:#a9e2cc; --l2:#3d1d2e; --l2i:#f1c2d8; --l3:#34301d; --l3i:#e6dcb3; --l4:#3e2216; --l4i:#f4c6b0;
-  color-scheme:dark}
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-main{max-width:1060px;margin:0 auto;padding-block:40px 72px;display:grid;gap:72px}
-h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
-h1{font-size:clamp(44px,8vw,84px);font-weight:700;letter-spacing:-.02em}
-h2{font-size:clamp(28px,4vw,38px);font-weight:700;letter-spacing:-.01em}
-h3{font-size:19px;font-weight:500}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.75 var(--body);padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+main{max-width:880px;margin:0 auto;padding-block:72px 96px;display:grid;grid-template-columns:minmax(0,1fr);gap:96px}
+h1,h2,h3{font-family:var(--serif);font-weight:400;text-wrap:balance;margin:0;line-height:1.2}
+h1{font-size:clamp(40px,7vw,64px)}
+h2{font-size:clamp(24px,3vw,28px)}
+h3{font-size:19px}
 p{margin:0;max-width:var(--measure)}
-a{color:var(--accent)}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}
 a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
-code,.mono{font-family:var(--mono);font-size:.88em}
-.eyebrow{font:500 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
-.lede{font-size:19px;color:var(--muted)}
-section{display:grid;gap:20px;min-width:0}
-.head{display:grid;gap:10px}
+code{font-family:var(--mono);font-size:.88em}
+.label{font:400 13px/1.4 var(--body);color:var(--faint)}
+.lede{font-size:18px;color:var(--muted)}
+section{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}
+.hero{display:grid;gap:12px}
+.hero .lede{font-size:clamp(18px,2.2vw,21px)}
+.actions{display:flex;gap:24px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.btn{font:500 15px/1 var(--body);padding:12px 20px;border-radius:999px;text-decoration:none;background:var(--ink);color:var(--paper)}
+.link{font-size:15px}
 
-/* hero */
-.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:40px;align-items:center}
-.hero .copy{display:grid;gap:22px}
-.actions{display:flex;gap:12px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:8px;font:600 15px/1 var(--body);padding:12px 18px;border-radius:8px;text-decoration:none;border:1px solid var(--accent)}
-.btn.primary{background:var(--accent);color:var(--sheet)}
-.btn.ghost{color:var(--accent);background:transparent}
-@media (max-width:860px){.hero{grid-template-columns:minmax(0,1fr)}}
+/* story */
+.panel{position:relative;background:var(--panel);border-radius:20px;padding:24px;display:grid;gap:18px;min-width:0}
+.tip{position:absolute;left:0;top:0;z-index:5;max-width:260px;background:var(--ink);color:var(--paper);font-size:14px;line-height:1.5;padding:10px 12px;border-radius:10px;pointer-events:none;opacity:0;transition:opacity .2s}
+.tip.on{opacity:1}
+#stage .it,#stage .box{cursor:default}
+#stage .it:hover{box-shadow:0 0 0 1.5px var(--faint)}
+.steps{display:flex;gap:4px 18px;flex-wrap:wrap;align-items:center}
+.steps button{font:400 14px/1 var(--body);color:var(--faint);background:none;border:0;border-bottom:1px solid transparent;padding:6px 0;cursor:pointer;transition:color .4s,border-color .4s}
+.steps button[aria-current="step"]{color:var(--ink);border-bottom-color:var(--ink)}
+#wrap{position:relative;width:100%;overflow:hidden}
+#stage{position:absolute;left:0;top:0;transform-origin:0 0}
+#stage.instant *{transition:none!important}
+.it{position:absolute;left:0;top:0;border-radius:12px;padding:7px 11px;font-size:13px;line-height:1.35;transition:transform 1.2s cubic-bezier(.45,.05,.25,1),opacity 1s,box-shadow .8s}
+.it b{display:flex;align-items:center;gap:5px;font:400 11px/1.5 var(--body);opacity:.8}
+.ic{width:1.05em;height:1.05em;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.15em}
+.box{display:flex;align-items:flex-start;gap:6px}
+.steps button,.play,.btn,#copy{display:inline-flex;align-items:center;gap:7px}
+.role h3,.note h3{display:flex;align-items:center;gap:10px}
+.role h3 .ic,.note h3 .ic{width:20px;height:20px;color:var(--accent);stroke-width:1.6}
+.goal{background:var(--l0);color:var(--l0i)}
+.flow{background:var(--l1);color:var(--l1i)}
+.rule{background:var(--l2);color:var(--l2i);padding:4px 10px;font-size:12px;line-height:1.3;display:flex;align-items:center}
+.client{background:var(--cl);color:var(--cli)}
+.box{position:absolute;border-radius:16px;background:var(--l3);color:var(--l3i);font:400 12px/1 var(--body);padding:11px 13px;transition:opacity 1s}
+.chk{position:absolute;right:-6px;top:-6px;width:16px;height:16px;border-radius:50%;background:var(--ok);color:var(--paper);font-size:10px;display:flex;align-items:center;justify-content:center;transition:transform .8s ease,opacity .8s}
+#lines path{fill:none;stroke:var(--faint);stroke-width:1;transition:opacity 1s,stroke .8s}
+#lines path.hit{stroke:var(--soft);stroke-width:1.5}
+.it.hit{box-shadow:0 0 0 1.5px var(--soft)}
+#cap{font-size:17px;min-height:3.6em;max-width:none;color:var(--ink)}
+.play{justify-self:start;font:400 14px/1 var(--body);color:var(--muted);background:none;border:0;padding:4px 0;cursor:pointer}
+@media (prefers-reduced-motion:no-preference){
+  @keyframes breathe{50%{box-shadow:0 0 0 5px color-mix(in srgb,var(--soft) 25%,transparent)}}
+  @keyframes run{to{stroke-dashoffset:-20}}
+  .it.src{animation:breathe 2.4s ease-in-out infinite}
+  #lines path.hit{stroke-dasharray:4 6;animation:run 1.6s linear infinite}}
+@media (prefers-reduced-motion:reduce){.it,.box,.chk,#lines path,.steps button{transition:none}}
 
-/* nested layer chain */
-.chain{display:grid;gap:10px}
-.chain .note{font-size:13px;color:var(--muted)}
-.layers{position:relative}
-.layer{display:block;cursor:pointer;border:1px solid transparent;border-radius:14px;padding:12px 14px 14px;background:var(--c);color:var(--ci);font:inherit;transition:opacity .2s,outline-color .2s;outline:2px solid transparent;outline-offset:-2px}
-.layer .row{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
-.layer .name{font:600 14px/1.3 var(--body)}
-.layer .id{font:500 13px/1.3 var(--mono)}
-.layer .what{display:block;font-size:13px;opacity:.85;margin-top:2px}
-.layer>.inner{margin-top:12px}
-.layer.sel{outline-color:var(--ink)}
-.layer.up{outline-color:var(--up)}
-.layer.down{outline-color:var(--down)}
-.layers.picked .layer:not(.sel):not(.up):not(.down)>.row{opacity:.35}
-.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
-.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px;border:2px solid var(--k)}
-@media (prefers-reduced-motion:reduce){.layer{transition:none}}
+.layers{display:grid;gap:12px;list-style:none;margin:0;padding:0;--step:36px}
+.layers li{position:relative;margin-left:calc(var(--d) * var(--step));display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;background:var(--k);color:var(--ki);border-radius:12px;padding:11px 16px;max-width:560px}
+.layers li strong{display:inline-flex;align-items:center;gap:7px;font-weight:500;font-size:15px;min-width:84px}
+.layers li span{font-size:14.5px;line-height:1.5}
+.layers li em{font-style:normal;font-size:13.5px;line-height:1.5;opacity:.65;margin-left:auto}
+.layers li+li::before{content:"";position:absolute;left:calc(var(--step) * -1 + 12px);top:-12px;width:calc(var(--step) - 12px);height:34px;border-left:1.5px solid var(--faint);border-bottom:1.5px solid var(--faint);border-bottom-left-radius:8px}
+@media (max-width:620px){.layers{--step:16px}.layers li{display:grid;gap:2px}.layers li em{margin-left:0}.layers li+li::before{left:calc(var(--step) * -1 + 6px);width:calc(var(--step) - 6px)}}
 
-/* tables */
-.scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:12px;background:var(--sheet)}
-table{width:100%;border-collapse:collapse;font-size:15px}
-th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
-tr:last-child td{border-bottom:0}
-th{font:500 12px/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--paper)}
-td code{white-space:nowrap}
-.pill{display:inline-block;font:500 12.5px/1.5 var(--mono);padding:1px 8px;border-radius:999px;background:var(--c);color:var(--ci);white-space:nowrap}
-
-/* rules list */
-.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-.rule{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:16px 18px;display:grid;gap:6px;align-content:start}
-.rule p{font-size:15px;color:var(--muted)}
-
-/* team */
-.team{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
-@media (max-width:760px){.team{grid-template-columns:minmax(0,1fr)}}
-.roles{display:grid;gap:8px}
-.role{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;padding:10px 0;border-bottom:1px solid var(--rule);font-size:15px}
-.role:last-child{border-bottom:0}
-.role b{font-weight:600}
-.role span{color:var(--muted)}
-.role.human b{color:var(--up)}
-@media (max-width:480px){.role{grid-template-columns:minmax(0,1fr);gap:2px}}
-.pipe{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:18px;display:grid;gap:8px;align-content:start}
-.stage{display:flex;gap:10px;align-items:flex-start}
-.stage .dot{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:600 12px/1 var(--mono);background:var(--accent-soft);color:var(--accent)}
-.stage.gate .dot{background:var(--up-soft);color:var(--up)}
-.stage div{min-width:0}
-.stage b{display:block;font-weight:600;font-size:15px}
-.stage span{font-size:14px;color:var(--muted)}
-
-/* steps */
-ol.steps{list-style:none;margin:0;padding:0;display:grid;gap:14px;counter-reset:s}
-ol.steps>li{counter-increment:s;display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;align-items:start}
-ol.steps>li::before{content:counter(s);font:700 22px/1 var(--display);color:var(--accent);padding-top:3px}
-ol.steps h3{margin-bottom:4px}
-ol.steps p{color:var(--muted);font-size:15px}
-
-/* code */
-.cmd{position:relative;margin-top:8px;background:var(--sheet);border:1px solid var(--rule);border-radius:10px;min-width:0}
-.cmd pre{margin:0;padding:12px 84px 12px 14px;overflow-x:auto;font:400 13.5px/1.6 var(--mono)}
-.copy-btn{position:absolute;top:8px;right:8px;font:500 12px/1 var(--body);padding:6px 10px;border-radius:6px;border:1px solid var(--rule);background:var(--paper);color:var(--ink);cursor:pointer}
-.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
-.tool{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:16px 18px;display:grid;gap:6px;align-content:start;min-width:0}
-.tool p{font-size:15px;color:var(--muted)}
-
-/* tree */
-.tree{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;overflow-x:auto}
-.tree pre{margin:0;padding:18px;font:400 13.5px/1.7 var(--mono)}
-.tree .c{color:var(--muted)}
-
-/* comparison */
-.compare{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;align-items:start}
-@media (max-width:860px){.compare{grid-template-columns:minmax(0,1fr)}}
-.radar-card{margin:0;position:relative;background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:16px;display:grid;gap:10px;min-width:0}
-.radar-card figcaption{font-size:13px;color:var(--muted)}
-.series{display:flex;gap:8px;flex-wrap:wrap}
-.series button{display:inline-flex;align-items:center;gap:8px;font:500 14px/1 var(--body);color:var(--ink);background:transparent;border:1px solid var(--rule);border-radius:999px;padding:7px 12px;cursor:pointer}
-.series button[aria-pressed="true"]{border-color:var(--ink)}
-.series svg{flex:none}
-#radar{min-height:300px}
-#radar svg{display:block;width:100%;height:auto;overflow:visible}
-#radar .grid{fill:none;stroke:var(--rule);stroke-width:1}
-#radar .axis-label{fill:var(--muted);font:500 12.5px/1 var(--body)}
-#radar .axis-label.on{fill:var(--ink)}
-#radar .tick{fill:var(--muted);font:400 11px/1 var(--mono)}
-#radar .spoke.on{stroke:var(--muted)}
-#radar .s{transition:opacity .15s}
-#radar.focus .s:not(.hi){opacity:.18}
-.tip{position:absolute;pointer-events:none;background:var(--sheet);color:var(--ink);border:1px solid var(--rule);border-radius:8px;padding:8px 10px;font-size:13px;line-height:1.5;box-shadow:0 4px 16px rgb(0 0 0 / .12);display:none;min-width:150px}
-.tip b{display:block;font-weight:600;margin-bottom:2px}
-.tip span{display:flex;align-items:center;gap:6px;justify-content:space-between}
-.tip span i{font-style:normal;display:inline-flex;align-items:center;gap:6px;color:var(--muted)}
-.picks{display:grid;gap:12px}
-.pick{background:var(--sheet);border:1px solid var(--rule);border-top:3px solid var(--k);border-radius:12px;padding:14px 16px;display:grid;gap:6px}
-.pick p{font-size:15px;color:var(--muted)}
-.cmp{min-width:640px}
-.score{font:600 14px/1 var(--mono);text-align:center;white-space:nowrap}
-@media (prefers-reduced-motion:reduce){#radar .s{transition:none}}
-
-footer{border-top:1px solid var(--rule);padding-top:20px;font-size:14px;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@media (prefers-reduced-motion:no-preference){
+  @keyframes stepin{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+  @keyframes drawdown{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+  .layers li{animation:stepin .6s cubic-bezier(.3,.1,.2,1) both;animation-delay:calc(var(--d) * 260ms + 250ms)}
+  .layers li+li::before{animation:drawdown .35s ease-out both;animation-delay:calc(var(--d) * 260ms + 120ms)}}
+.howto{list-style:none;margin:0;padding:0;display:grid;gap:22px;counter-reset:s}
+.howto li.dim{opacity:.35}
+.howto li{display:grid;grid-template-columns:34px minmax(0,1fr);gap:4px 16px;counter-increment:s}
+.howto li::before{content:counter(s);grid-row:span 3;width:30px;height:30px;border-radius:50%;background:var(--k);color:var(--ki);font:500 14px/30px var(--body);text-align:center}
+.howto h3{font-family:var(--body);font-size:16px;font-weight:500;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.howto h3 .ic{color:var(--ki)}
+.howto p{color:var(--muted);font-size:15px}
+.howto .eg{font-size:14px;color:var(--faint)}
+.split{position:relative;display:grid;gap:56px;background:var(--panel);border-radius:20px;padding:24px}
+#splitLines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+#splitLines path{fill:none;stroke:var(--ki);stroke-opacity:.5;stroke-width:1.3;transition:opacity .3s,stroke .3s}
+.req{font-family:var(--serif);font-size:clamp(18px,2.2vw,21px);line-height:1.9;max-width:none;position:relative}
+.hl{border-radius:5px;padding:2px 5px;transition:opacity .3s;cursor:default;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.buckets{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;position:relative}
+.bucket{display:grid;gap:6px;align-content:start;transition:opacity .3s}
+.bucket b{display:flex;align-items:center;gap:6px;font-weight:500;font-size:13px;color:var(--ki);padding:6px 9px;border-radius:9px;background:var(--k)}
+.bucket b i{font-style:normal;opacity:.7}
+.bucket span{font-size:13px;line-height:1.35;color:var(--ink);background:var(--paper);border-radius:8px;padding:6px 9px}
+[data-b="1"]{--k:var(--l0);--ki:var(--l0i)} [data-b="2"]{--k:var(--l1);--ki:var(--l1i)} [data-b="3"]{--k:var(--l2);--ki:var(--l2i)}
+[data-b="4"]{--k:var(--l3);--ki:var(--l3i)} [data-b="5"]{--k:var(--cl);--ki:var(--cli)} [data-b="6"]{--k:#e7ebee;--ki:var(--ink)}
+.hl[data-b]{background:var(--k);color:var(--ki)}
+.split .dim{opacity:.25}
+.howto li{transition:opacity .3s}
+@media (max-width:760px){.buckets{grid-template-columns:repeat(2,minmax(0,1fr))}#splitLines{display:none}.split{gap:24px}}
+.tag{font:400 11.5px/1 var(--body);color:var(--muted);border:1px solid var(--rule);border-radius:999px;padding:4px 9px;margin-left:4px;white-space:nowrap}
+.method{display:grid;gap:22px;margin-top:12px}
+.method h3{font-size:22px}
+.nest{background:var(--panel);border-radius:20px;padding:22px;display:grid;gap:16px;justify-items:center;text-align:center}
+.nest>strong{font-family:var(--serif);font-weight:500;font-size:18px}
+.nest .inner{background:var(--paper);border:1px dashed var(--faint);border-radius:14px;padding:14px 22px;display:grid;gap:2px}
+.nest .inner b{font-weight:500}
+.nest .inner span,.nest small{font-size:13.5px;color:var(--muted)}
+.adds{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.adds span{font-size:13.5px;border-radius:999px;padding:5px 12px;background:var(--k);color:var(--ki)}
+.principles{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.principles li{display:grid;gap:6px;align-content:start}
+.principles strong{font-weight:500}
+.principles p{font-size:15px;color:var(--muted)}
+/* questions */
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:40px 32px}
+.role{display:grid;gap:10px;align-content:start}
+.role p{font-size:15px;color:var(--muted)}
+.role ul{margin:4px 0 0;padding:0;list-style:none;display:grid;gap:10px}
+.role li{font-size:15px;line-height:1.5}
+pre{margin:0;background:var(--panel);border-radius:14px;padding:18px 20px;overflow-x:auto;font:14px/1.7 var(--mono);color:var(--ink)}
+#cmd{white-space:pre-wrap;overflow-wrap:anywhere}
+.cmt{color:var(--faint)}
+.notes{display:grid;gap:28px}
+.note{display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:8px 32px;padding-top:24px;border-top:1px solid var(--rule)}
+.note p{color:var(--muted)}
+.note .how{font-size:14px;color:var(--faint);margin-top:6px}
+@media (max-width:620px){.note{grid-template-columns:minmax(0,1fr)}}
+.install{display:flex;gap:12px;align-items:stretch;flex-wrap:wrap}
+.install pre{flex:1 1 320px;min-width:0}
+#copy{font:400 14px/1 var(--body);border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:999px;padding:0 18px;min-height:44px;cursor:pointer;align-self:center}
+footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);padding-top:24px;border-top:1px solid var(--rule)}
 </style>
 </head>
 <body>
-
 <main>
-
-<header class="hero">
-  <div class="copy">
-    <span class="eyebrow">A workspace template for AI agent teams</span>
+  <header class="hero">
     <h1>Artifact Driven</h1>
-    <p class="lede">Write the knowledge first and agree on it. Then build the code that proves it. Every rule, scenario and contract has an ID, every page cites only the layer below it, and a script can tell you what a change will touch before you make it.</p>
-    <p>The whole team builds it, and each person owns their part: a service, a client, the knowledge. People and AI agents do the work; the owner of each part approves its share. It holds for one backend or many services.</p>
+    <p class="lede">A simple way to keep software development clear for years, with fast analysis and a quick view of what every change affects. No cost, no overhead.</p>
     <div class="actions">
-      <a class="btn primary" href="#start">Start a project</a>
-      <a class="btn ghost" href="#layers">Read the rules</a>
+      <a class="btn" href="#install" data-i="terminal">Set it up</a>
+      <a class="link" id="tracker" href="https://github.com/hieutran21198/Artifact-Driven-Framework">Project tracker</a>
     </div>
-  </div>
+  </header>
 
-  <div class="chain" aria-label="One citation path through the knowledge">
-    <div class="legend"><span style="--k:var(--up)">Affected by a change</span><span style="--k:var(--down)">Relies on</span></div>
-    <div class="layers" id="layers-chain">
-<div class="layer" role="button" tabindex="0" data-i="0" style="--c:var(--l0);--ci:var(--l0i)"><span class="row"><span class="name">System</span><span class="id">SYS-7</span></span><span class="what">A rule that differs by region gives a value for each region.</span>
-<div class="inner"><div class="layer" role="button" tabindex="0" data-i="1" style="--c:var(--l1);--ci:var(--l1i)"><span class="row"><span class="name">Goal</span><span class="id">G-BORROW-3</span></span><span class="what">A member never holds more books than the loan limit.</span>
-<div class="inner"><div class="layer" role="button" tabindex="0" data-i="2" style="--c:var(--l2);--ci:var(--l2i)"><span class="row"><span class="name">Flow scenario</span><span class="id">F-BORROW-3</span></span><span class="what">At the limit, <code>borrowBook</code> is refused.</span>
-<div class="inner"><div class="layer" role="button" tabindex="0" data-i="3" style="--c:var(--l3);--ci:var(--l3i)"><span class="row"><span class="name">Artifact rule</span><span class="id">MBR-2</span></span><span class="what">The loan limit of the member's region.</span>
-<div class="inner"><div class="layer" role="button" tabindex="0" data-i="4" style="--c:var(--l4);--ci:var(--l4i)"><span class="row"><span class="name">Client need</span><span class="id">member/web.md</span></span><span class="what"><code>getMyMember</code>: <code>loan_limit</code> is an integer, never null.</span></div></div></div></div></div></div></div></div></div>
+  <section aria-labelledby="structure-h">
+    <h2 id="structure-h">The structure</h2>
+    <ol class="layers">
+      <li style="--d:0;--k:var(--l0);--ki:var(--l0i)"><strong data-i="goal">Goal</strong><span>What someone needs.</span><em>A member borrows a book.</em></li>
+      <li style="--d:1;--k:var(--l1);--ki:var(--l1i)"><strong data-i="flow">Flow</strong><span>How it happens, step by step.</span><em>Borrowing, returning.</em></li>
+      <li style="--d:2;--k:var(--l2);--ki:var(--l2i)"><strong data-i="rule">Rule</strong><span>What must stay true.</span><em>Only a book on the shelf can be lent.</em></li>
+      <li style="--d:3;--k:var(--l3);--ki:var(--l3i)"><strong data-i="artifact">Artifact</strong><span>One topic and its rules.</span><em>Books, members, notices.</em></li>
+      <li style="--d:4;--k:var(--cl);--ki:var(--cli)"><strong data-i="app">App</strong><span>Where people do it.</span><em>Website, phone app.</em></li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="story-h">
+    <div style="display:grid;gap:6px">
+      <h2 id="story-h">Example: borrowing a book</h2>
+      <p class="lede" style="font-size:16px">A library lends books to its members. A member picks a book from the shelf and takes it home. They bring it back within 14 days, and the book goes back on the shelf. If it is late, the library sends them a note.</p>
     </div>
-    <p class="note" id="chain-note">One path through the reference pass, a small library lending service. Pick a layer to see what impact.py traces from it.</p>
-  </div>
-</header>
+    <div class="panel">
+      <div class="steps" id="steps" role="group" aria-label="Steps of the story"></div>
+      <div id="wrap" aria-hidden="true"><div id="stage"><svg id="lines" style="position:absolute;left:0;top:0;overflow:visible"></svg></div></div>
+      <p id="cap" aria-live="polite"></p>
+      <button class="play" id="play" type="button">Pause</button>
+    </div>
+  </section>
 
-<section id="layers">
-  <div class="head">
-    <span class="eyebrow">Knowledge</span>
-    <h2>Four layers, and every citation points down</h2>
-    <p class="lede">The system is shared by everything. Below it, a goal cites flows and a flow cites artifacts. An artifact never mentions a flow or a goal, so a change can be traced in both directions.</p>
-  </div>
-  <div class="scroll">
-    <table>
-      <thead><tr><th>Layer</th><th>Holds</th><th>ID</th><th>Proved by</th></tr></thead>
-      <tbody>
-        <tr><td><span class="pill" style="--c:var(--l0);--ci:var(--l0i)">System</span></td><td>Purpose, actors, services, clients, system-wide requirements, glossary, shared contract parts</td><td><code>SYS-4</code></td><td>Everything below it</td></tr>
-        <tr><td><span class="pill" style="--c:var(--l1);--ci:var(--l1i)">Goal</span></td><td>A business outcome: the need, the actor and the success criteria. No behavior.</td><td><code>G-BORROW-2</code></td><td>End-to-end tests</td></tr>
-        <tr><td><span class="pill" style="--c:var(--l2);--ci:var(--l2i)">Flow</span></td><td>Behavior across artifacts: trigger, steps, the transaction, failures. Scenarios as given, when, then, each naming an operation or a trigger.</td><td><code>F-BORROW-3</code></td><td>Command and unit of work tests</td></tr>
-        <tr><td><span class="pill" style="--c:var(--l3);--ci:var(--l3i)">Artifact</span></td><td>One domain: model, rules, lifecycle, the OpenAPI contract, and what each client needs from its responses</td><td><code>BK-5</code></td><td>Domain unit tests</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="rules">
-    <div class="rule"><h3>One owner per fact</h3><p>Other pages cite the ID and never restate the rule. A contract description cites the rule behind a value.</p></div>
-    <div class="rule"><h3>Knowledge, not evidence</h3><p>No code locations, logs, counts or dates in the knowledge. Evidence goes on the issue, with personal data masked.</p></div>
-    <div class="rule"><h3>IDs live forever</h3><p>An ID is fixed when its branch merges. A dropped fact keeps its row as <code>Withdrawn.</code> and nothing cites it again.</p></div>
-    <div class="rule"><h3>Contracts first</h3><p>OpenAPI is agreed before the code: endpoints, payloads such as emails and pushes, worker triggers under <code>x-triggers</code>, and commands such as a CLI or an action in an app under <code>x-commands</code>.</p></div>
-    <div class="rule"><h3>Clients say what they need</h3><p>Each client page lists, by operation, the keys and values a released app parses, so a change to a service cannot break it unseen.</p></div>
-    <div class="rule"><h3>Open questions name IDs</h3><p>Undecided behavior is written as a question citing the IDs it touches. A goal with open questions is not ready to build.</p></div>
-  </div>
-</section>
+  <section aria-labelledby="howto-h">
+    <h2 id="howto-h">How to break down a requirement</h2>
+    <div class="split" id="split">
+      <svg id="splitLines" aria-hidden="true"></svg>
+      <p class="req"><span class="hl" data-b="1">A member wants to read books at home.</span> <span class="hl" data-b="2">They borrow</span> <span class="hl" data-b="3">up to a few books</span>, <span class="hl" data-b="3">only those on the shelf</span>, <span class="hl" data-b="3">for 14 days</span>. <span class="hl" data-b="2">They bring them back</span>, and <span class="hl" data-b="3">a late book is flagged</span>.</p>
+      <div class="buckets">
+        <div class="bucket" data-b="1"><b data-i="goal"><i>1</i> Goal</b><span>Borrow a book</span></div>
+        <div class="bucket" data-b="2"><b data-i="flow"><i>2</i> Flows</b><span>Borrowing</span><span>Returning</span></div>
+        <div class="bucket" data-b="3"><b data-i="rule"><i>3</i> Rules</b><span>A few books at most</span><span>On the shelf only</span><span>Due in 14 days</span><span>Late is flagged</span></div>
+        <div class="bucket" data-b="4"><b data-i="artifact"><i>4</i> Artifacts</b><span>Members</span><span>Books</span></div>
+        <div class="bucket" data-b="5"><b data-i="app"><i>5</i> Apps</b><span>Website</span><span>Phone app</span></div>
+        <div class="bucket" data-b="6"><b data-i="scan"><i>6</i> Tests</b><span>MBR-2 ✓</span><span>BK-3 ✓</span><span>BK-4 ✓</span><span>BK-6</span></div>
+      </div>
+    </div>
+    <ol class="howto">
+      <li style="--k:var(--l0);--ki:var(--l0i)"><h3 data-i="goal">Write the goal</h3><p>Who needs what, and how you will know it is done.</p><p class="eg">A member can borrow a book and sees when it is due.</p></li>
+      <li style="--k:var(--l1);--ki:var(--l1i)"><h3 data-i="flow">Split it into flows <span class="tag">Specs by example</span></h3><p>Write the steps of each flow as scenarios: what happens, and what happens when something goes wrong.</p><p class="eg">The book is already on loan, so the request is refused.</p></li>
+      <li style="--k:var(--l2);--ki:var(--l2i)"><h3 data-i="rule">Pull out the rules</h3><p>Every "must", "only" or "at most" in a step becomes a rule.</p><p class="eg">Only a book on the shelf can be lent.</p></li>
+      <li style="--k:var(--l3);--ki:var(--l3i)"><h3 data-i="artifact">Group the rules by topic <span class="tag">Strategic DDD</span></h3><p>Each topic is an artifact: one domain, run by one service.</p><p class="eg">Books, members, notices.</p></li>
+      <li style="--k:var(--cl);--ki:var(--cli)"><h3 data-i="app">Note what each app needs <span class="tag">Contract first</span></h3><p>The API calls and fields each app relies on, so a change does not break it.</p><p class="eg">The phone app reads the due date of a book.</p></li>
+      <li style="--k:var(--panel);--ki:var(--ink)"><h3 data-i="scan">Mention the rule in its test</h3><p>Each rule has a short ID. The test that checks it mentions the ID, so the scan can find it.</p><p class="eg">BK-3 is the rule "only a book on the shelf can be lent".</p></li>
+    </ol>
+    <div class="method">
+      <h3>The method behind it</h3>
+      <div class="nest">
+        <strong>Artifact Driven</strong>
+        <div class="inner"><b>Domain-Driven Design</b><span>Domains and their boundaries</span></div>
+        <small>and around it</small>
+        <div class="adds">
+          <span data-b="2">Specs</span><span data-b="2">Flows</span><span data-b="5">Data each app needs</span><span data-b="5">Contracts</span><span data-b="1">Diagrams</span><span data-b="6">Scan</span>
+        </div>
+      </div>
+      <ul class="principles">
+        <li><strong>Domains first</strong><p>Split the product by topic before writing code.</p><span class="tag" style="justify-self:start;margin:0">Strategic DDD</span></li>
+        <li><strong>Contracts first</strong><p>Agree on what each app sends and reads before building it.</p><span class="tag" style="justify-self:start;margin:0">Contract first</span></li>
+        <li><strong>A picture for every layer</strong><p>Each goal, flow and domain has its own diagram.</p><span class="tag" style="justify-self:start;margin:0">Diagrams as docs</span></li>
+      </ul>
+      <p class="lede" style="font-size:16px">Close to Domain-Driven Design, but it also covers specs, flows, the data each app needs, and diagrams.</p>
+    </div>
+  </section>
 
-<section id="team">
-  <div class="head">
-    <span class="eyebrow">Team</span>
-    <h2>Agents do the work, people approve</h2>
-    <p class="lede">A role is a person or an agent definition with its own tools and skill. The reviewer is never the author. The owner of each part approves its share.</p>
-  </div>
-  <div class="team">
+  <section aria-labelledby="roles-h">
+    <h2 id="roles-h">By role</h2>
     <div class="roles">
-      <div class="role"><b>Coordinator</b><span>Takes the issue, hands each step to its role, asks the owners for decisions.</span></div>
-      <div class="role"><b>Knowledge writer</b><span>Goals, flows and artifact rules.</span></div>
-      <div class="role"><b>Contract designer</b><span>OpenAPI contracts, payloads and triggers, before the code.</span></div>
-      <div class="role"><b>Client writer</b><span>One per client: what it needs from each response. The client's owner writes or reviews it.</span></div>
-      <div class="role"><b>Implementer</b><span>One per part, a service or a client: code and tests named after the IDs they prove.</span></div>
-      <div class="role"><b>Defect investigator</b><span>Evidence first, then the ID a defect breaks. Changes nothing.</span></div>
-      <div class="role"><b>Reviewer</b><span>Knowledge, contract, code and tests agree. Changes nothing.</span></div>
-      <div class="role human"><b>Owners</b><span>The owner of each part the change touches. Merges the knowledge branch and approves the code of that part.</span></div>
+      <div class="role">
+        <h3 data-i="briefcase">Stakeholder</h3>
+        <p>You follow a project someone builds for you.</p>
+        <ul>
+          <li><a class="trk" href="#">How much is in the product</a></li>
+          <li><a class="trk" href="#">How each flow works</a></li>
+          <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/scripts/README.md#impact">What a change affects</a></li>
+        </ul>
+      </div>
+      <div class="role">
+        <h3 data-i="grid">Solution architect</h3>
+        <p>You plan how the product is split up.</p>
+        <ul>
+          <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/knowledge.md#layers">Where each rule belongs</a></li>
+          <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/scripts/README.md#impact">What a new goal needs</a></li>
+          <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/scripts/README.md#impact">What a change affects</a></li>
+        </ul>
+      </div>
+      <div class="role">
+        <h3 data-i="flag">Product owner</h3>
+        <p>You decide the goals.</p>
+        <ul>
+          <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/goal.md">How to write a goal</a></li>
+          <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/README.md#approval-of-knowledge">How to approve it</a></li>
+          <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/done.md">When it is done</a></li>
+        </ul>
+      </div>
     </div>
-    <div class="pipe" aria-label="Workflow">
-      <div class="stage"><span class="dot">1</span><div><b>Issue</b><span>States the need and links the knowledge it touches.</span></div></div>
-      <div class="stage"><span class="dot">2</span><div><b>Knowledge</b><span>Goal, then flows, then rules and contracts, on a branch named after the issue.</span></div></div>
-      <div class="stage gate"><span class="dot">✓</span><div><b>Owners merge the knowledge</b><span>The review report and the checks go on the issue.</span></div></div>
-      <div class="stage"><span class="dot">3</span><div><b>Code</b><span>Implements only approved knowledge. A gap goes back to the writer.</span></div></div>
-      <div class="stage gate"><span class="dot">✓</span><div><b>Owners approve each pull request</b><span>It links the issue and the knowledge merge commit.</span></div></div>
-      <div class="stage"><span class="dot">4</span><div><b>Merge, deploy and release</b><span>Only when the owner of each part asks.</span></div></div>
-      <div class="stage"><span class="dot">5</span><div><b>Close</b><span>When every item of Done holds.</span></div></div>
+  </section>
+
+  <section aria-labelledby="build-h">
+    <h2 id="build-h">For developers</h2>
+    <p class="lede" style="font-size:16px">Mention the rule in the test, so the scan finds it.</p>
+<pre><code><span class="cmt">// BK-3: only an available book can be lent.</span>
+func TestLendRefusesBookOnLoan(t *testing.T) {
+	book := onLoanBook()
+	err := book.Lend(member)
+	assert.ErrorIs(t, err, ErrInvalidTransition)
+}</code></pre>
+  </section>
+
+  <section aria-labelledby="mean-h">
+    <h2 id="mean-h">Good to know</h2>
+    <div class="notes">
+      <div class="note"><h3 data-i="scan">Scan</h3><div><p>The scan shows which rules are in the product. It does not show that they work.</p><p class="how">How it works: it reads the test files and looks for rule IDs, such as BK-3. It does not run the tests or read the product's code.</p></div></div>
+      <div class="note"><h3 data-i="change">Impact</h3><div><p>Find every part a change affects, in seconds.</p><p class="how">How it works: it follows the links from a rule up to its flows and goal, and across to the apps that use it. It does not estimate cost or time.</p></div></div>
+      <div class="note"><h3 data-i="calendar">Plans</h3><p>Plans and progress stay in your task tracker.</p></div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="done">
-  <div class="head">
-    <span class="eyebrow">Definition of done</span>
-    <h2>Seven items, all visible on the issue</h2>
-  </div>
-  <div class="scroll">
-    <table>
-      <thead><tr><th>ID</th><th>Item</th><th>Holds when</th></tr></thead>
-      <tbody>
-        <tr><td><code>D1</code></td><td>Knowledge</td><td>The goal, flows, artifacts and contracts the change touches are written and merged.</td></tr>
-        <tr><td><code>D2</code></td><td>Consistency</td><td>Knowledge, contract, code and tests agree. Every cited ID exists, in the docs and in the tests.</td></tr>
-        <tr><td><code>D3</code></td><td>Tests</td><td>Each changed rule and scenario has a passing test that names its ID.</td></tr>
-        <tr><td><code>D4</code></td><td>Checks</td><td>The docs checks, the OpenAPI lint and the code checks pass.</td></tr>
-        <tr><td><code>D5</code></td><td>Review</td><td>A reviewer who is not the author reported, and the owner of each part approved its share.</td></tr>
-        <tr><td><code>D6</code></td><td>Services</td><td>Each service deployed and checked there: a worker by firing its trigger, a call to another service with both deployed, a data fix by a zero count.</td></tr>
-        <tr><td><code>D7</code></td><td>Configuration</td><td>Secrets and parameters exist in each target environment, listed by name, never by value.</td></tr>
-        <tr><td><code>D8</code></td><td>Clients</td><td>Each client meets the needs on its client pages, handles the listed errors, and is released after the services it needs.</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<section id="why">
-  <div class="head">
-    <span class="eyebrow">Why this one</span>
-    <h2>Beside BMAD and Spec Kit</h2>
-    <p class="lede">All three put a written spec in front of the AI agent. They differ in what the spec is for. BMAD and Spec Kit write documents that lead to the next feature. Artifact Driven keeps one body of knowledge for the whole system and checks it with scripts, so you know what a change breaks before anyone writes code.</p>
-  </div>
-  <div class="compare">
-    <figure class="radar-card">
-      <div class="series" id="radar-series" role="group" aria-label="Highlight a method"></div>
-      <div id="radar" role="img" aria-label="Radar chart of seven qualities, scored 1 to 5. The table below has the same scores."></div>
-      <div class="tip" id="radar-tip"></div>
-      <figcaption>Our reading of each project's public documentation in 2026. 1 means the method leaves it to you; 5 means it is the core of the method.</figcaption>
-    </figure>
-    <div class="picks">
-      <div class="pick" style="--k:var(--s1)"><h3>Choose Artifact Driven when</h3><p>The system lives for years and most work changes rules that already exist. One backend or many services serve several clients, and each must know what a change does to its responses. You want a script, not a model, to say that a rule is cited, covered and tested.</p></div>
-      <div class="pick" style="--k:var(--s2)"><h3>Choose BMAD when</h3><p>You start from an idea and need the discovery: brainstorming, research, a PRD, an architecture and stories, from agents that work like an agile team.</p></div>
-      <div class="pick" style="--k:var(--s3)"><h3>Choose Spec Kit when</h3><p>You want to go from a feature description to a spec, a plan and tasks in minutes, in one repository, with the coding agent you already use.</p></div>
-      <p class="muted" style="font-size:14px;color:var(--muted)">They are not exclusive. A PRD from BMAD or a spec from Spec Kit is a good source for the first goal here.</p>
+  <section aria-labelledby="install-h" id="install">
+    <h2 id="install-h">Set it up</h2>
+    <p class="lede" style="font-size:16px">Needs <code>curl</code> and <code>tar</code>.</p>
+    <div class="install">
+      <pre id="cmd">curl -fsSL https://raw.githubusercontent.com/hieutran21198/Artifact-Driven-Framework/main/install.sh \
+  | sh -s -- my-workspace</pre>
+      <button id="copy" type="button" data-i="copy"><span>Copy</span></button>
     </div>
-  </div>
-  <div class="scroll">
-    <table class="cmp">
-      <thead><tr><th>Quality</th><th>What it means</th><th class="score">Artifact Driven</th><th class="score">BMAD</th><th class="score">Spec Kit</th></tr></thead>
-      <tbody>
-        <tr><td>Living knowledge</td><td>Knowledge is kept by domain and updated in place when behavior changes. BMAD and Spec Kit write documents for each project, epic or feature, and the next feature writes new ones.</td><td class="score">5</td><td class="score">2</td><td class="score">2</td></tr>
-        <tr><td>Traceable IDs</td><td>Every requirement, criterion, scenario and rule has an ID, and tests name it. Spec Kit numbers the requirements and tasks inside one feature spec. BMAD's test architect traces a story's acceptance criteria to tests.</td><td class="score">5</td><td class="score">3</td><td class="score">3</td></tr>
-        <tr><td>Change impact</td><td><code>impact.py</code> lists what a change to a rule, an operation or a response field affects, from the citations. BMAD's test architect profiles the risk of a story with the agent. Spec Kit leaves it to you.</td><td class="score">5</td><td class="score">2</td><td class="score">1</td></tr>
-        <tr><td>Contract first</td><td>OpenAPI contracts are written and linted before the code, and each client says what it needs from a response. Spec Kit's plan step writes contracts for one feature. BMAD's architecture document describes the APIs.</td><td class="score">5</td><td class="score">2</td><td class="score">3</td></tr>
-        <tr><td>Scripted checks</td><td>Plain Python checks links, IDs, citation direction, scenarios and test IDs, and fails the build. BMAD and Spec Kit check with checklists and prompts that the agent runs.</td><td class="score">5</td><td class="score">2</td><td class="score">2</td></tr>
-        <tr><td>Discovery and planning</td><td>BMAD covers brainstorming, research, a PRD, the architecture and stories, with an agent for each. Spec Kit starts from a feature description. Artifact Driven starts from a goal you already know.</td><td class="score">2</td><td class="score">5</td><td class="score">3</td></tr>
-        <tr><td>Quick start</td><td>Spec Kit and BMAD install with one command and add slash commands to your agent. Artifact Driven installs a workspace with one command; you fill it in.</td><td class="score">2</td><td class="score">4</td><td class="score">5</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
+  </section>
 
-<section id="tools">
-  <div class="head">
-    <span class="eyebrow">Tools</span>
-    <h2>Python scripts that read the citations</h2>
-    <p class="lede">Standard library only. They read <code>artifact-driven.json</code> for the knowledge folder, the clients, and the routes and tests of each service.</p>
-  </div>
-  <div class="tools">
-    <div class="tool"><h3>Check the docs</h3><p>Broken links and anchors, IDs cited but not defined, defined twice or withdrawn, and scenarios with no operation.</p>
-      <div class="cmd"><pre>python3 scripts/check_docs.py</pre><button class="copy-btn" type="button">Copy</button></div></div>
-    <div class="tool"><h3>Impact</h3><p>What a rule, operation or response field affects, or what a goal relies on, by following the citations.</p>
-      <div class="cmd"><pre>python3 scripts/impact.py MBR-2
-python3 scripts/impact.py --down G-BORROW-1</pre><button class="copy-btn" type="button">Copy</button></div></div>
-    <div class="tool"><h3>Size, fragility, coverage</h3><p>Goal size and blast radius, the most fragile nodes, test coverage by ID and the open questions that hold each goal.</p>
-      <div class="cmd"><pre>python3 scripts/impact.py --stats
-python3 scripts/impact.py --questions</pre><button class="copy-btn" type="button">Copy</button></div></div>
-    <div class="tool"><h3>Tests name real IDs</h3><p>Reports a test, in any service or client, that names an ID the knowledge does not define, or a withdrawn one.</p>
-      <div class="cmd"><pre>python3 scripts/check_tests.py</pre><button class="copy-btn" type="button">Copy</button></div></div>
-    <div class="tool"><h3>Knowledge site</h3><p>One offline HTML page in English or Vietnamese: pick goals, see their scenarios, gaps, blast radius and API coverage.</p>
-      <div class="cmd"><pre>python3 scripts/site.py</pre><button class="copy-btn" type="button">Copy</button></div></div>
-    <div class="tool"><h3>Structure</h3><p>Every directory has a README, so the repository reads like a book.</p>
-      <div class="cmd"><pre>python3 scripts/check_structure.py</pre><button class="copy-btn" type="button">Copy</button></div></div>
-  </div>
-</section>
-
-<section id="start">
-  <div class="head">
-    <span class="eyebrow">Start a project</span>
-    <h2>Install the workspace, add your repositories, write the first goal</h2>
-  </div>
-  <ol class="steps">
-    <li><div><h3>Create the workspace</h3><p>The installer copies the rules, the scripts and the library sample into a new folder. Then start its repository and rename the README and the site title.</p>
-      <div class="cmd"><pre>curl -fsSL https://raw.githubusercontent.com/hieutran21198/Artifact-Driven-Framework/main/install.sh | sh -s -- my-workspace
-cd my-workspace
-git init</pre><button class="copy-btn" type="button">Copy</button></div></div></li>
-    <li><div><h3>Clone the services and the clients</h3><p>One or many of each, with the owner of each. List them in <code>artifact-driven.json</code> with the same names as their folders, so each artifact gets a <code>&lt;client&gt;.md</code> page and each service its routes and tests.</p>
-      <div class="cmd"><pre>git clone &lt;service repository URL&gt; services/&lt;service&gt;
-git clone -b &lt;branch&gt; &lt;client repository URL&gt; apps/&lt;client&gt;</pre><button class="copy-btn" type="button">Copy</button></div></div></li>
-    <li><div><h3>Describe the system</h3><p>Context, actors, services and clients, system requirements, glossary, supported client versions and the shared contract parts. Fill in the domain map, the infrastructure pages and the deploy table.</p></div></li>
-    <li><div><h3>Write the first goal</h3><p>Follow the runbooks: the goal, its flows, the artifacts they cross, their contracts and client pages. Run the checks after each step.</p></div></li>
-    <li><div><h3>Remove the reference pass</h3><p>When the first real goal exists, delete the library example and point the runbook samples at your own pages.</p></div></li>
-    <li><div><h3>Work by the workflow</h3><p>Every change starts as an issue. People and agents write, review and implement; the owner of each part approves its share.</p></div></li>
-  </ol>
-</section>
-
-<section id="contents">
-  <div class="head">
-    <span class="eyebrow">What is in the box</span>
-    <h2>The workspace layout</h2>
-  </div>
-  <div class="tree"><pre>.
-├── AGENTS.md, CLAUDE.md, CONTRIBUTING.md   <span class="c"># agent instructions and how to change things</span>
-├── artifact-driven.json                    <span class="c"># knowledge folder, clients, tests, routes, site</span>
-├── .agents/agents, .agents/skills          <span class="c"># one agent per role; knowledge, triage, service skills</span>
-├── apps/                                   <span class="c"># client apps, as ignored clones</span>
-├── services/                               <span class="c"># the services, one or many, as ignored clones</span>
-├── docs/
-│   ├── architecture/                       <span class="c"># domain, app, adapter; commands, queries, unit of work</span>
-│   ├── coding-standards/                   <span class="c"># general, Go, plain English, diagrams</span>
-│   ├── governances/artifact-driven/        <span class="c"># knowledge, workflow, team, done, 13 runbooks</span>
-│   ├── infrastructure/  principles/kiss/
-│   └── software-knowledges/                <span class="c"># system, goals, flows, artifacts</span>
-└── scripts/                                <span class="c"># checks, impact, knowledge site</span></pre></div>
-</section>
-
-<footer>
-  <span>Artifact Driven. Knowledge leads the code.</span>
-  <span>Runs on Python 3.9+ and Git. Contracts lint with Redocly.</span>
-</footer>
-
+  <footer>
+    <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/README.md">Docs</a>
+    <a href="https://github.com/hieutran21198/Artifact-Driven-Framework">Source</a>
+    <a class="trk" href="#">Project tracker</a>
+  </footer>
 </main>
 
 <script>
-(function(){
-  const chain=document.getElementById("layers-chain");
-  const nodes=[...chain.querySelectorAll(".layer")];
-  const note=document.getElementById("chain-note");
-  const base=note.textContent;
-  // What impact.py reports for each node, restricted to this path: [affected by a change, relies on].
-  const ids=["SYS-7","G-BORROW-3","F-BORROW-3","MBR-2","member/web.md"];
-  const trace=[[[1,2,3,4],[]],[[2],[2,3,0]],[[1],[3,0]],[[1,2,4],[0]],[[],[3,0]]];
-  const list=a=>a.length?a.map(j=>ids[j]).join(", "):"nothing on this path";
-  function pick(i){
-    chain.classList.add("picked");
-    const [up,down]=trace[i];
-    nodes.forEach(n=>{const j=+n.dataset.i;n.classList.toggle("sel",j===i);n.classList.toggle("up",up.includes(j));n.classList.toggle("down",down.includes(j));});
-    note.textContent=`A change to ${ids[i]} affects ${list(up)}. It relies on ${list(down)}.`;
-  }
-  function toggle(n){const i=+n.dataset.i;if(n.classList.contains("sel")){chain.classList.remove("picked");nodes.forEach(x=>x.classList.remove("sel","up","down"));note.textContent=base;}else pick(i);}
-  nodes.forEach(n=>{n.addEventListener("click",e=>{e.stopPropagation();toggle(n);});n.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();e.stopPropagation();toggle(n);}});});
-  document.querySelectorAll(".copy-btn").forEach(b=>b.addEventListener("click",()=>{
-    const pre=b.parentElement.querySelector("pre");const text=pre.textContent;
-    const done=()=>{b.textContent="Copied";setTimeout(()=>b.textContent="Copy",1500);};
-    const select=()=>{const r=document.createRange();r.selectNodeContents(pre);const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Selected";setTimeout(()=>b.textContent="Copy",1500);};
-    try{navigator.clipboard.writeText(text).then(done,select);}catch(e){select();}
-  }));
-})();
-</script>
-<script>
-(function(){
-  const AXES=["Living knowledge", "Traceable IDs", "Change impact", "Contract first", "Scripted checks", "Discovery and planning", "Quick start"];
-  const SERIES=[
-    {name:"Artifact Driven",k:"--s1",v:[5,5,5,5,5,2,2],shape:"circle",dash:""},
-    {name:"BMAD",k:"--s2",v:[2,3,2,2,2,5,4],shape:"square",dash:"7 4"},
-    {name:"Spec Kit",k:"--s3",v:[2,3,1,3,2,3,5],shape:"diamond",dash:"2 4"}];
-  const NS="http://www.w3.org/2000/svg",box=document.getElementById("radar"),tip=document.getElementById("radar-tip"),fig=box.parentElement;
-  const el=(n,a,p)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;};
-  const marker=(shape,x,y,r,a,p)=>shape==="circle"?el("circle",{cx:x,cy:y,r,...a},p)
-    :shape==="square"?el("rect",{x:x-r*.9,y:y-r*.9,width:r*1.8,height:r*1.8,rx:1.5,...a},p)
-    :el("path",{d:`M${x} ${y-r*1.25}L${x+r*1.25} ${y}L${x} ${y+r*1.25}L${x-r*1.25} ${y}Z`,...a},p);
-  let pinned=null;
-  const legend=document.getElementById("radar-series");
-  SERIES.forEach((s,i)=>{const b=document.createElement("button");b.type="button";b.setAttribute("aria-pressed","false");
-    const sw=el("svg",{width:26,height:12,viewBox:"0 0 26 12","aria-hidden":"true"});el("line",{x1:1,y1:6,x2:25,y2:6,stroke:`var(${s.k})`,"stroke-width":2,"stroke-dasharray":s.dash},sw);marker(s.shape,13,6,4,{fill:`var(${s.k})`},sw);
-    b.appendChild(sw);b.append(s.name);
-    b.addEventListener("mouseenter",()=>focus(i));b.addEventListener("mouseleave",()=>focus(pinned));
-    b.addEventListener("focus",()=>focus(i));b.addEventListener("blur",()=>focus(pinned));
-    b.addEventListener("click",()=>{pinned=pinned===i?null:i;[...legend.children].forEach((x,j)=>x.setAttribute("aria-pressed",String(j===pinned)));focus(pinned);});
-    legend.appendChild(b);});
-  function focus(i){box.classList.toggle("focus",i!==null);box.querySelectorAll(".s").forEach(g=>g.classList.toggle("hi",+g.dataset.i===i));}
-  function draw(){
-    const w=box.clientWidth,narrow=w<440,h=Math.round(Math.min(w,520)*(narrow?.92:.8)),cx=w/2,cy=h/2+4;
-    const R=Math.max(60,Math.min(w/2-(narrow?62:92),h/2-30)),n=AXES.length;
-    const ang=i=>-Math.PI/2+i*2*Math.PI/n,pt=(i,v)=>[cx+Math.cos(ang(i))*R*v/5,cy+Math.sin(ang(i))*R*v/5];
-    box.innerHTML="";const svg=el("svg",{viewBox:`0 0 ${w} ${h}`,width:w,height:h,"aria-hidden":"true"},box);
-    for(let r=1;r<=5;r++)el("polygon",{class:"grid",points:AXES.map((_,i)=>pt(i,r).join(",")).join(" ")},svg);
-    const spokes=AXES.map((_,i)=>{const [x,y]=pt(i,5);return el("line",{class:"grid spoke",x1:cx,y1:cy,x2:x,y2:y},svg);});
-    [1,3,5].forEach(r=>{const [x,y]=pt(0,r);el("text",{class:"tick",x:x+5,y:y+4},svg).textContent=r;});
-    const labels=AXES.map((a,i)=>{const [x,y]=pt(i,5),c=Math.cos(ang(i)),s=Math.sin(ang(i));
-      const t=el("text",{class:"axis-label",x:x+c*12,y:y+s*12+(s>.3?10:s<-.3?-4:4),"text-anchor":Math.abs(c)<.2?"middle":c>0?"start":"end"},svg);
-      const words=a.split(" ");if(words.length>1&&(narrow||a.length>14)){const half=Math.ceil(words.length/2);
-        [words.slice(0,half).join(" "),words.slice(half).join(" ")].forEach((l,k)=>{const sp=el("tspan",{x:t.getAttribute("x"),dy:k?"1.15em":(s<-.3?"-1.15em":s>.3?"0":"-.55em")},t);sp.textContent=l;});}
-      else t.textContent=a;return t;});
-    SERIES.forEach((s,si)=>{const g=el("g",{class:"s","data-i":si},svg);const pts=s.v.map((v,i)=>pt(i,v));
-      el("polygon",{points:pts.map(p=>p.join(",")).join(" "),fill:`var(${s.k})`,"fill-opacity":"var(--fill)",stroke:`var(${s.k})`,"stroke-width":2,"stroke-linejoin":"round","stroke-dasharray":s.dash},g);
-      pts.forEach(([x,y])=>marker(s.shape,x,y,4.5,{fill:`var(${s.k})`,stroke:"var(--sheet)","stroke-width":2},g));});
-    focus(pinned);
-    const step=2*Math.PI/n;
-    AXES.forEach((a,i)=>{const a0=ang(i)-step/2,a1=ang(i)+step/2,RR=R+40;
-      const hit=el("path",{d:`M${cx} ${cy}L${cx+Math.cos(a0)*RR} ${cy+Math.sin(a0)*RR}A${RR} ${RR} 0 0 1 ${cx+Math.cos(a1)*RR} ${cy+Math.sin(a1)*RR}Z`,fill:"transparent"},svg);
-      const show=()=>{spokes.forEach((s,j)=>s.classList.toggle("on",j===i));labels.forEach((l,j)=>l.classList.toggle("on",j===i));
-        tip.innerHTML=`<b>${a}</b>`+SERIES.map(s=>`<span><i><svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"></svg>${s.name}</i>${s.v[i]} / 5</span>`).join("");
-        tip.querySelectorAll("svg").forEach((sv,k)=>marker(SERIES[k].shape,5,5,3.6,{fill:`var(${SERIES[k].k})`},sv));
-        tip.style.display="block";const [x,y]=pt(i,5),fb=fig.getBoundingClientRect(),bb=box.getBoundingClientRect();
-        let left=bb.left-fb.left+x+(Math.cos(ang(i))>=0?14:-tip.offsetWidth-14),top=bb.top-fb.top+y-tip.offsetHeight/2;
-        left=Math.max(8,Math.min(left,fig.clientWidth-tip.offsetWidth-8));top=Math.max(8,Math.min(top,fig.clientHeight-tip.offsetHeight-8));
-        tip.style.left=left+"px";tip.style.top=top+"px";};
-      const hide=()=>{tip.style.display="none";spokes.forEach(s=>s.classList.remove("on"));labels.forEach(l=>l.classList.remove("on"));};
-      hit.addEventListener("pointerenter",show);hit.addEventListener("pointerdown",show);hit.addEventListener("pointerleave",hide);});
-  }
-  draw();let raf,lastW=box.clientWidth;new ResizeObserver(()=>{if(box.clientWidth===lastW)return;lastW=box.clientWidth;cancelAnimationFrame(raf);raf=requestAnimationFrame(draw);}).observe(box);
-})();
+const ICON = {
+  goal:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+  flow:'<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>',
+  rule:'<path d="M12 3v18"/><path d="M7 21h10"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/><path d="m2 16 3-8 3 8c-.9.6-1.9 1-3 1s-2.1-.4-3-1Z"/><path d="m16 16 3-8 3 8c-.9.6-1.9 1-3 1s-2.1-.4-3-1Z"/>',
+  artifact:'<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9L9.6 3.9A2 2 0 0 0 7.9 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>',
+  app:'<rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>',
+  phone:'<rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/>',
+  test:'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+  scan:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  change:'<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
+  book:'<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>',
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/>',
+  mail:'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-9 5.7a2 2 0 0 1-2 0L2 7"/>',
+  briefcase:'<rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+  grid:'<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+  flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/>',
+  code:'<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>',
+  terminal:'<path d="m4 17 6-6-6-6"/><path d="M12 19h8"/>',
+  calendar:'<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>',
+  copy:'<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2"/>',
+  play:'<path d="m6 3 14 9-14 9z"/>',
+  pause:'<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',
+  link:'<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>'
+};
+const ic = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
+document.querySelectorAll('[data-i]').forEach(e => e.insertAdjacentHTML('afterbegin', ic(e.dataset.i)));
+const TRACKER = document.getElementById('tracker').href;
+document.querySelectorAll('.trk').forEach(a => a.href = TRACKER);
+
+const STEPS = ['Goal','Flows','Rules','Artifacts','Apps','Scan','A change'];
+const STEP_ICONS = ['goal','flow','rule','artifact','app','scan','change'];
+const CAPS = [
+  'A goal: a member borrows a book and brings it back.',
+  'It splits into two flows: borrowing and returning. A flow is the steps a person goes through.',
+  'Each flow follows a few rules, like "only a book on the shelf can be lent".',
+  'Rules are grouped by what they are about: books, members or notices. Each group is an artifact.',
+  'The website uses books and members. The phone app uses books.',
+  'A scan checks which rules are already in the product. In this example, it finds 4 of the 6.',
+  'Change one rule, and you see everything it affects: both flows and the phone app. The website is not affected.'
+];
+const RULES = [
+  ['On the shelf only','B',1],['Due in 14 days','B',1],['Loan limit','B',1],
+  ['Return frees it','R',1],['Late gets flagged','R',0],['One reader each','R',0]];
+const L = {
+  wide:{W:680,H:500,goal:[220,58,230,170,230,20],fB:[200,52,75,120],fR:[200,52,405,120],chip:[104,44],
+    box:{aM:[20,255,190,140],aB:[225,255,230,140],aN:[470,255,190,140]},
+    s2:[[20,192],[128,192],[236,192],[352,192],[460,192],[568,192]],
+    s3:[[233,295],[343,295],[63,305],[233,343],[343,343],[513,305]],
+    cli:{web:[150,46,60,440],mob:[150,46,290,440]}},
+  narrow:{W:360,H:650,goal:[220,58,70,200,70,10],fB:[165,52,10,100],fR:[165,52,185,100],chip:[104,44],
+    box:{aB:[10,340,340,120],aM:[10,470,165,92],aN:[185,470,165,92]},
+    s2:[[40,172],[40,222],[40,272],[215,172],[215,222],[215,272]],
+    s3:[[24,366],[132,366],[40,504],[240,366],[24,412],[215,504]],
+    cli:{web:[150,46,20,584],mob:[150,46,190,584]}}};
+const EDGES = [['l1','goal',.4,'fB',.5,1],['l2','goal',.6,'fR',.5,1],['l3','fB',.3,'aM',.5,3],['l4','fB',.7,'aB',.3,3],
+  ['l5','fR',.3,'aB',.7,3],['l6','fR',.7,'aN',.5,3],['l7','aM',.5,'web',.35,4],['l8','aB',.25,'web',.7,4],['l9','aB',.6,'mob',.5,4]];
+const HIT = new Set(['r0','goal','fB','fR','aB','mob','l1','l2','l4','l5','l9']);
+
+const stage = document.getElementById('stage'), wrap = document.getElementById('wrap'), svg = document.getElementById('lines');
+const el = (cls, id, html) => { const e = document.createElement('div'); e.className = cls; e.id = id; e.innerHTML = html; stage.appendChild(e); return e; };
+['aM','aB','aN'].forEach(id => el('box', id, {aM:ic('users')+'Members',aB:ic('book')+'Books',aN:ic('mail')+'Notices'}[id]));
+el('it goal', 'goal', `<b>${ic('goal')}Goal</b>Borrow a book`);
+el('it flow', 'fB', `<b>${ic('flow')}Flow</b>Borrowing`);
+el('it flow', 'fR', `<b>${ic('flow')}Flow</b>Returning`);
+RULES.forEach(([d], i) => el('it rule', 'r' + i, `${d}<span class="chk" id="k${i}">✓</span>`));
+el('it client', 'web', `<b>${ic('app')}App</b>Website`);
+el('it client', 'mob', `<b>${ic('phone')}App</b>Phone app`);
+EDGES.forEach(([id]) => { const p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); p.id = id; svg.appendChild(p); });
+
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let lay = null, step = reduce ? 6 : 0, timer = null;
+
+function geom(id) {
+  const g = lay;
+  if (id === 'goal') return [g.goal[4], g.goal[5], g.goal[0], g.goal[1]];
+  if (id === 'fB' || id === 'fR') return [g[id][2], g[id][3], g[id][0], g[id][1]];
+  if (g.box[id]) return g.box[id];
+  const c = g.cli[id]; return [c[2], c[3], c[0], c[1]];
+}
+function layout() {
+  const next = wrap.clientWidth < 560 ? L.narrow : L.wide, jump = next !== lay;
+  lay = next;
+  if (jump) stage.classList.add('instant');
+  const s = wrap.clientWidth / lay.W;
+  stage.style.width = lay.W + 'px'; stage.style.height = lay.H + 'px';
+  stage.style.transform = `scale(${s})`; wrap.style.height = lay.H * s + 'px';
+  svg.setAttribute('width', lay.W); svg.setAttribute('height', lay.H);
+  Object.entries(lay.box).forEach(([id, [x, y, w, h]]) => Object.assign(document.getElementById(id).style, {left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px'}));
+  ['goal','fB','fR','web','mob'].forEach(id => { const [, , w, h] = geom(id); Object.assign(document.getElementById(id).style, {width: w + 'px', height: h + 'px'}); });
+  RULES.forEach((_, i) => Object.assign(document.getElementById('r' + i).style, {width: lay.chip[0] + 'px', height: lay.chip[1] + 'px'}));
+  EDGES.forEach(([id, a, fa, b, fb]) => {
+    const [ax, ay, aw, ah] = geom(a), [bx, by, bw] = geom(b);
+    const x1 = ax + aw * fa, y1 = ay + ah, x2 = bx + bw * fb, y2 = by, m = (y1 + y2) / 2;
+    document.getElementById(id).setAttribute('d', `M${x1} ${y1} C${x1} ${m},${x2} ${m},${x2} ${y2}`);
+  });
+  show(step);
+  if (jump) { stage.offsetWidth; requestAnimationFrame(() => stage.classList.remove('instant')); }
+}
+function put(id, x, y, o) { const e = document.getElementById(id); e.style.transform = `translate(${x}px,${y}px)`; e.style.opacity = o; }
+function show(n) {
+  step = (n + STEPS.length) % STEPS.length;
+  if (typeof hideTip === 'function') hideTip();
+  const s = step, g = lay, hot = s === 6, dim = id => hot && !HIT.has(id);
+  const [gw, , x0, y0, x1, y1] = g.goal;
+  put('goal', s ? x1 : x0, s ? y1 : y0, dim('goal') ? .3 : 1);
+  ['fB','fR'].forEach(id => { const [w, , x, y] = g[id]; put(id, s ? x : x0 + (gw - w) / 2, s ? y : y0 + 3, s ? (dim(id) ? .3 : 1) : 0); });
+  RULES.forEach(([, f, tested], i) => {
+    const flow = g[f === 'B' ? 'fB' : 'fR'], hide = [flow[2] + (flow[0] - g.chip[0]) / 2, flow[3] + 4];
+    const p = s >= 3 ? g.s3[i] : s === 2 ? g.s2[i] : hide;
+    put('r' + i, p[0], p[1], s >= 2 ? (dim('r' + i) ? .3 : 1) : 0);
+    const k = document.getElementById('k' + i), on = s >= 5 && tested;
+    k.style.opacity = on ? 1 : 0; k.style.transform = `scale(${on ? 1 : .4})`;
+  });
+  ['web','mob'].forEach(id => { const [x, y] = geom(id); put(id, x, s >= 4 ? y : y + 24, s >= 4 ? (dim(id) ? .3 : 1) : 0); });
+  ['aM','aB','aN'].forEach(id => document.getElementById(id).style.opacity = s >= 3 ? (dim(id) ? .35 : 1) : 0);
+  EDGES.forEach(([id, , , , , from]) => { const p = document.getElementById(id); p.style.opacity = s >= from ? (dim(id) ? .15 : .8) : 0; p.classList.toggle('hit', hot && HIT.has(id)); });
+  document.querySelectorAll('.it').forEach(e => { e.classList.toggle('hit', hot && HIT.has(e.id)); e.classList.toggle('src', hot && e.id === 'r0'); });
+  document.getElementById('cap').textContent = CAPS[s];
+  [...document.getElementById('steps').children].forEach((b, i) => b.setAttribute('aria-current', i === s ? 'step' : 'false'));
+}
+function playStory(on) {
+  clearInterval(timer); timer = null;
+  if (on) timer = setInterval(() => { if (!hover) show(step + 1); }, 4600);
+  document.getElementById('play').innerHTML = ic(on ? 'pause' : 'play') + (on ? 'Pause' : 'Play');
+}
+function showStep(i) { playStory(false); show(i); }
+STEPS.forEach((n, i) => { const b = document.createElement('button'); b.type = 'button'; b.innerHTML = ic(STEP_ICONS[i]) + n; b.onclick = () => showStep(i); document.getElementById('steps').appendChild(b); });
+document.getElementById('play').onclick = () => playStory(!timer);
+const TIPS = {
+  goal: 'The goal: what a person wants to get done. Here, a member wants to borrow a book and bring it back.',
+  fB: 'Borrowing: the steps from picking a book to taking it home.',
+  fR: 'Returning: the steps from bringing a book back to having it on the shelf again.',
+  r0: 'Only a book on the shelf can be lent. A book someone already has cannot be lent again.',
+  r1: 'A borrowed book is due back 14 days later.',
+  r2: 'A member can hold only a set number of books at once.',
+  r3: 'When a book comes back, it is free for the next person.',
+  r4: 'A book that is not back by its due date is marked late.',
+  r5: 'Each notice goes to one person only.',
+  aB: 'Books: everything about the books, such as whether one is on the shelf and when it is due.',
+  aM: 'Members: everything about the people who borrow, such as how many books they hold.',
+  aN: 'Notices: the messages the library sends, such as a note that a book is late.',
+  web: 'The website shows books and members, so it relies on both groups.',
+  mob: 'The phone app shows books, so it relies only on the Books group.'
+};
+const panel = document.querySelector('.panel'), tip = document.createElement('div');
+tip.className = 'tip'; tip.setAttribute('role', 'tooltip'); panel.appendChild(tip);
+let hover = null;
+function explainBlock(e) {
+  const t = e.target.closest('.it,.box');
+  if (!t || !stage.contains(t) || t.style.opacity === '0') return hideTip();
+  hover = t;
+  let text = TIPS[t.id];
+  if (t.id[0] === 'r' && step >= 5) text += RULES[+t.id.slice(1)][2] ? ' The scan found it in the product.' : ' The scan did not find it in the product.';
+  tip.textContent = text; tip.classList.add('on');
+  const p = panel.getBoundingClientRect(), r = t.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
+  const x = Math.max(8, Math.min(r.left - p.left + r.width / 2 - w / 2, p.width - w - 8));
+  let y = r.top - p.top - h - 8; if (y < 8) y = r.bottom - p.top + 8;
+  tip.style.transform = `translate(${x}px,${y}px)`;
+}
+function hideTip() { hover = null; tip.classList.remove('on'); }
+stage.addEventListener('mouseover', explainBlock);
+stage.addEventListener('click', explainBlock);
+stage.addEventListener('mouseleave', hideTip);
+const split = document.getElementById('split'), splitLines = document.getElementById('splitLines');
+document.querySelectorAll('.howto li').forEach((li, i) => li.dataset.b = i + 1);
+function drawSplit() {
+  const s = split.getBoundingClientRect();
+  splitLines.innerHTML = [...split.querySelectorAll('.hl')].map(h => {
+    const a = h.getClientRects()[0], b = split.querySelector(`.bucket[data-b="${h.dataset.b}"] b`).getBoundingClientRect();
+    const x1 = a.left + a.width / 2 - s.left, y1 = a.bottom - s.top + 2, x2 = b.left + b.width / 2 - s.left, y2 = b.top - s.top - 2, m = (y1 + y2) / 2;
+    return `<path data-b="${h.dataset.b}" d="M${x1} ${y1} C${x1} ${m},${x2} ${m},${x2} ${y2}"/>`;
+  }).join('');
+}
+function focusStep(b) {
+  split.querySelectorAll('[data-b]').forEach(e => e.classList.toggle('dim', !!b && e.dataset.b !== b));
+  document.querySelectorAll('.howto li').forEach(e => e.classList.toggle('dim', !!b && e.dataset.b !== b));
+}
+document.querySelectorAll('#split [data-b], .howto li').forEach(e => {
+  e.addEventListener('mouseenter', () => focusStep(e.dataset.b));
+  e.addEventListener('mouseleave', () => focusStep(null));
+});
+new ResizeObserver(drawSplit).observe(split);
+document.fonts && document.fonts.ready.then(drawSplit);
+new ResizeObserver(layout).observe(wrap);
+layout();
+playStory(!reduce);
+
+document.getElementById('copy').onclick = async e => {
+  const b = e.currentTarget, text = document.getElementById('cmd').textContent.replace(/\\\n\s*/, '');
+  try { await navigator.clipboard.writeText(text); b.lastChild.textContent = 'Copied'; }
+  catch { const r = document.createRange(); r.selectNodeContents(document.getElementById('cmd')); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); b.lastChild.textContent = 'Selected'; }
+  setTimeout(() => b.lastChild.textContent = 'Copy', 1800);
+};
 </script>
 </body>
 </html>

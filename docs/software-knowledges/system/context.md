@@ -10,8 +10,11 @@ flowchart LR
     architect([Solution architect])
     dev([Implementer])
     agent([Coding agent])
+    stakeholder([Stakeholder])
+    owner([Product owner])
 
     subgraph framework [Artifact Driven]
+        landing[landing page]
         install[install.sh]
         scripts[scripts: checks, impact, site]
         viewer[knowledge viewer]
@@ -22,6 +25,7 @@ flowchart LR
 
     architect & dev & agent --> scripts
     architect --> viewer
+    stakeholder & owner & architect --> landing
     install -- "downloads the workspace" --> github
     viewer -- "reads repositories" --> github
     viewer -- "loads Python" --> pyodide
@@ -34,11 +38,14 @@ flowchart LR
 | Solution architect | Writes and reviews the knowledge; reads impact and coverage across workspaces |
 | Implementer | Builds a service or a client from the knowledge; names knowledge IDs in tests |
 | Coding agent | Writes knowledge and code by the runbooks, and runs the checks |
+| Stakeholder | Follows a project that a team, often another company, builds: its flows, its coverage and the size of a change |
+| Product owner | Writes the goals and their success criteria, and approves them |
 
 ## Parts
 
 | Part | Holds |
 | --- | --- |
+| Landing page (`index.html`) | The story of how a goal becomes flows, rules, artifacts, clients and tests, for readers who do not read the repository |
 | `install.sh` | Creates a workspace from the shared files and the sample |
 | `scripts` | The structure, docs and test checks, impact analysis and the knowledge site |
 | Knowledge viewer | The knowledge site of several workspaces in the browser |
