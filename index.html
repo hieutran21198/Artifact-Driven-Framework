@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Artifact Driven: start with a goal, then break it down.">
+<meta name="description" content="A simple way to keep software development clear for years, with fast analysis. No cost.">
 <title>Artifact Driven</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -77,12 +77,12 @@ section{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}
   #lines path.hit{stroke-dasharray:4 6;animation:run 1.6s linear infinite}}
 @media (prefers-reduced-motion:reduce){.it,.box,.chk,#lines path,.steps button{transition:none}}
 
-.layers{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;list-style:none;margin:0;padding:0}
-.layers li{position:relative;display:grid;gap:6px;align-content:start;background:var(--k);color:var(--ki);border-radius:14px;padding:14px}
-.layers li strong{display:flex;align-items:center;gap:7px;font-weight:500;font-size:15px}
-.layers li span{font-size:13.5px;line-height:1.5;opacity:.9}
-.layers li+li::before{content:"";position:absolute;left:-9px;top:50%;width:8px;height:8px;border-top:1.5px solid var(--faint);border-right:1.5px solid var(--faint);transform:translate(-2px,-50%) rotate(45deg)}
-@media (max-width:720px){.layers{grid-template-columns:minmax(0,1fr)}.layers li+li::before{left:50%;top:-9px;transform:translate(-50%,-2px) rotate(135deg)}}
+.layers{display:grid;gap:12px;list-style:none;margin:0;padding:0;--step:36px}
+.layers li{position:relative;margin-left:calc(var(--d) * var(--step));display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;background:var(--k);color:var(--ki);border-radius:12px;padding:11px 16px;max-width:560px}
+.layers li strong{display:inline-flex;align-items:center;gap:7px;font-weight:500;font-size:15px;min-width:84px}
+.layers li span{font-size:14.5px;line-height:1.5;opacity:.9}
+.layers li+li::before{content:"";position:absolute;left:calc(var(--step) * -1 + 12px);top:-12px;width:calc(var(--step) - 12px);height:34px;border-left:1.5px solid var(--faint);border-bottom:1.5px solid var(--faint);border-bottom-left-radius:8px}
+@media (max-width:620px){.layers{--step:16px}.layers li{display:grid;gap:2px}.layers li+li::before{left:calc(var(--step) * -1 + 6px);width:calc(var(--step) - 6px)}}
 
 /* questions */
 .roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:40px 32px}
@@ -107,7 +107,7 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
 <main>
   <header class="hero">
     <h1>Artifact Driven</h1>
-    <p class="lede">Start with a goal, then break it down.</p>
+    <p class="lede">A simple way to keep software development clear for years, with fast analysis. No cost.</p>
     <div class="actions">
       <a class="btn" href="#install" data-i="terminal">Set it up</a>
       <a class="link" id="tracker" href="https://github.com/hieutran21198/Artifact-Driven-Framework">Project tracker</a>
@@ -117,11 +117,11 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
   <section aria-labelledby="structure-h">
     <h2 id="structure-h">The structure</h2>
     <ol class="layers">
-      <li style="--k:var(--l0);--ki:var(--l0i)"><strong data-i="goal">Goal</strong><span>What someone wants to get done.</span></li>
-      <li style="--k:var(--l1);--ki:var(--l1i)"><strong data-i="flow">Flow</strong><span>The steps to get there.</span></li>
-      <li style="--k:var(--l2);--ki:var(--l2i)"><strong data-i="rule">Rule</strong><span>What must always hold along the way.</span></li>
-      <li style="--k:var(--l3);--ki:var(--l3i)"><strong data-i="artifact">Artifact</strong><span>The rules about one thing, like books.</span></li>
-      <li style="--k:var(--cl);--ki:var(--cli)"><strong data-i="app">App</strong><span>What people use: a website or a phone app.</span></li>
+      <li style="--d:0;--k:var(--l0);--ki:var(--l0i)"><strong data-i="goal">Goal</strong><span>What someone wants to get done.</span></li>
+      <li style="--d:1;--k:var(--l1);--ki:var(--l1i)"><strong data-i="flow">Flow</strong><span>The steps to get there.</span></li>
+      <li style="--d:2;--k:var(--l2);--ki:var(--l2i)"><strong data-i="rule">Rule</strong><span>What must always hold along the way.</span></li>
+      <li style="--d:3;--k:var(--l3);--ki:var(--l3i)"><strong data-i="artifact">Artifact</strong><span>The rules about one thing, like books.</span></li>
+      <li style="--d:4;--k:var(--cl);--ki:var(--cli)"><strong data-i="app">App</strong><span>What people use: a website or a phone app.</span></li>
     </ol>
   </section>
 
