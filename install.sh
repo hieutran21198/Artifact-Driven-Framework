@@ -1,0 +1,55 @@
+#!/bin/sh
+# Creates an Artifact Driven workspace in a new folder: the framework's shared
+# files, and the sample of template/ in place of the framework's own knowledge.
+#
+#   install.sh <folder> [ref]
+#
+# ref is a branch, tag or commit of the framework, main by default.
+# AD_SOURCE=<folder> copies from a clean local copy of the framework instead of
+# downloading it.
+set -eu
+
+dest=${1:?usage: install.sh <folder> [ref]}
+ref=${2:-main}
+if [ -e "$dest" ]; then
+  echo "install.sh: $dest already exists" >&2
+  exit 1
+fi
+
+src=${AD_SOURCE:-}
+if [ -z "$src" ]; then
+  src=$(mktemp -d)
+  trap 'rm -rf "$src"' EXIT
+  curl -fsSL "https://codeload.github.com/hieutran21198/Artifact-Driven-Framework/tar.gz/$ref" |
+    tar -xz -C "$src" --strip-components=1
+fi
+
+copy() {
+  mkdir -p "$dest/$(dirname "$2")"
+  cp -R "$src/$1" "$dest/$2"
+}
+
+# The shared files, as the framework has them.
+for path in .agents .claude .editorconfig .gitignore AGENTS.md CLAUDE.md CONTRIBUTING.md \
+  docs scripts services/README.md apps/README.md e2e/README.md; do
+  copy "$path" "$path"
+done
+
+# The sample replaces what belongs to the framework itself.
+rm -rf "$dest/docs/software-knowledges"
+for path in README.md artifact-driven.json docs/software-knowledges docs/architecture/domain-map.md \
+  services/README.md apps/README.md; do
+  rm -rf "${dest:?}/$path"
+  copy "template/$path" "$path"
+done
+
+cat <<EOF
+Created $dest with the library lending sample. Next:
+
+  cd $dest
+  git init
+  python3 scripts/check_structure.py
+  python3 scripts/check_docs.py
+
+Then follow "Start a new project" in README.md.
+EOF

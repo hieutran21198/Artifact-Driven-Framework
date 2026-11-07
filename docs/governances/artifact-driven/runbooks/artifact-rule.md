@@ -2,7 +2,7 @@
 
 Use when a rule, the model or the lifecycle of one domain changes.
 
-Sample: [book specification](../../../software-knowledges/artifacts/book/specification.md).
+Sample: [book specification](https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/template/docs/software-knowledges/artifacts/book/specification.md).
 
 ## Files
 

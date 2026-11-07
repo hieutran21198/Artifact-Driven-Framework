@@ -9,8 +9,6 @@ the service name in the [domain map](../docs/architecture/domain-map.md) and in
 
 | Directory | Repository | Owner | Stack |
 | --- | --- | --- | --- |
-| `lending/` | — | — | Go |
-| `notification/` | — | — | Go |
 
 The [domain map](../docs/architecture/domain-map.md) says which service serves
 each domain.

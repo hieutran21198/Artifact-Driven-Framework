@@ -296,7 +296,7 @@ footer{border-top:1px solid var(--rule);padding-top:20px;font-size:14px;color:va
         <tr><td>Contract first</td><td>OpenAPI contracts are written and linted before the code, and each client says what it needs from a response. Spec Kit's plan step writes contracts for one feature. BMAD's architecture document describes the APIs.</td><td class="score">5</td><td class="score">2</td><td class="score">3</td></tr>
         <tr><td>Scripted checks</td><td>Plain Python checks links, IDs, citation direction, scenarios and test IDs, and fails the build. BMAD and Spec Kit check with checklists and prompts that the agent runs.</td><td class="score">5</td><td class="score">2</td><td class="score">2</td></tr>
         <tr><td>Discovery and planning</td><td>BMAD covers brainstorming, research, a PRD, the architecture and stories, with an agent for each. Spec Kit starts from a feature description. Artifact Driven starts from a goal you already know.</td><td class="score">2</td><td class="score">5</td><td class="score">3</td></tr>
-        <tr><td>Quick start</td><td>Spec Kit and BMAD install with one command and add slash commands to your agent. Artifact Driven is a template you copy and fill in.</td><td class="score">2</td><td class="score">4</td><td class="score">5</td></tr>
+        <tr><td>Quick start</td><td>Spec Kit and BMAD install with one command and add slash commands to your agent. Artifact Driven installs a workspace with one command; you fill it in.</td><td class="score">2</td><td class="score">4</td><td class="score">5</td></tr>
       </tbody>
     </table>
   </div>
@@ -329,13 +329,12 @@ python3 scripts/impact.py --questions</pre><button class="copy-btn" type="button
 <section id="start">
   <div class="head">
     <span class="eyebrow">Start a project</span>
-    <h2>Copy the template, add your repositories, write the first goal</h2>
+    <h2>Install the workspace, add your repositories, write the first goal</h2>
   </div>
   <ol class="steps">
-    <li><div><h3>Copy the template</h3><p>Start a fresh repository from it, without its history. Rename the README and the site title.</p>
-      <div class="cmd"><pre>cp -R artifact-driven my-project-workspace
-cd my-project-workspace
-rm -rf .git build
+    <li><div><h3>Create the workspace</h3><p>The installer copies the rules, the scripts and the library sample into a new folder. Then start its repository and rename the README and the site title.</p>
+      <div class="cmd"><pre>curl -fsSL https://raw.githubusercontent.com/hieutran21198/Artifact-Driven-Framework/main/install.sh | sh -s -- my-workspace
+cd my-workspace
 git init</pre><button class="copy-btn" type="button">Copy</button></div></div></li>
     <li><div><h3>Clone the services and the clients</h3><p>One or many of each, with the owner of each. List them in <code>artifact-driven.json</code> with the same names as their folders, so each artifact gets a <code>&lt;client&gt;.md</code> page and each service its routes and tests.</p>
       <div class="cmd"><pre>git clone &lt;service repository URL&gt; services/&lt;service&gt;

@@ -2,7 +2,7 @@
 
 Use when behavior crosses artifacts, services or clients.
 
-Sample: [Borrow a book](../../../software-knowledges/flows/borrow-book.md).
+Sample: [Borrow a book](https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/template/docs/software-knowledges/flows/borrow-book.md).
 
 ## Files
 

@@ -3,8 +3,8 @@
 Use when an endpoint, a payload that is not an HTTP response, or a worker
 trigger is new or changes. The contract is written and agreed before the code.
 
-Samples: [book contract](../../../software-knowledges/artifacts/book/openapi.yaml),
-[Borrow a book contract](../../../software-knowledges/flows/borrow-book.openapi.yaml).
+Samples: [book contract](https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/template/docs/software-knowledges/artifacts/book/openapi.yaml),
+[Borrow a book contract](https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/template/docs/software-knowledges/flows/borrow-book.openapi.yaml).
 
 ## Choose the file
 

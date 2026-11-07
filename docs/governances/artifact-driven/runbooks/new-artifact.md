@@ -2,7 +2,7 @@
 
 Use when a domain gets its first knowledge.
 
-Sample: [book artifact](../../../software-knowledges/artifacts/book/README.md).
+Sample: [book artifact](https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/template/docs/software-knowledges/artifacts/book/README.md).
 
 ## Files
 

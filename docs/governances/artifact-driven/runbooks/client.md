@@ -8,7 +8,7 @@ service change does not break it (SYS-4 in the reference pass). The client's
 owner keeps the page: they write it, or review it when an analyst writes it. Which client calls
 which operation is in the flow, not on this page.
 
-Sample: [book on the mobile app](../../../software-knowledges/artifacts/book/mobile.md).
+Sample: [book on the mobile app](https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/template/docs/software-knowledges/artifacts/book/mobile.md).
 
 ## Files
 

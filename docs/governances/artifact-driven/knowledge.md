@@ -1,7 +1,7 @@
 # Knowledge
 
 How [software knowledge](../../software-knowledges/README.md) is organized.
-The [reference pass](../../software-knowledges/goals/borrow-a-book.md), from system
+The [reference pass](https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/template/docs/software-knowledges/goals/borrow-a-book.md), from system
 down to the `book` and `member` artifacts, shows every rule on this page. Where
 this page names a `SYS` ID, it is the ID of the reference pass; a project
 keeps the same requirements under its own IDs.
