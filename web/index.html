@@ -6,20 +6,34 @@
 <title>Knowledge Viewer</title>
 <link rel="icon" href="data:,">
 <style>
-:root{--bg:#fff;--fg:#1a1a1a;--muted:#666;--line:#ddd;--accent:#2457c5}
-@media (prefers-color-scheme:dark){:root{--bg:#141414;--fg:#eee;--muted:#999;--line:#333;--accent:#7aa2ff}}
+:root{--bg:#fff;--fg:#1a1a1a;--muted:#666;--line:#ddd;--accent:#2457c5;--warn:#a15c00}
+@media (prefers-color-scheme:dark){:root{--bg:#141414;--fg:#eee;--muted:#999;--line:#333;--accent:#7aa2ff;--warn:#e0a040}}
 *{box-sizing:border-box}
 body{margin:0;font:14px/1.4 system-ui,sans-serif;background:var(--bg);color:var(--fg);display:flex;flex-direction:column;height:100vh}
-header{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid var(--line)}
-label{display:flex;flex-direction:column;gap:2px;font-size:12px;color:var(--muted)}
-input,textarea,button{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
-textarea{width:320px;height:58px;resize:vertical}
-button{cursor:pointer;align-self:flex-end}
+header,#parts{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 16px;border-bottom:1px solid var(--line)}
+#parts:empty{display:none}
+#parts span,label{font-size:12px;color:var(--muted)}
+input,textarea,button,select{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:5px 8px}
+select{max-width:340px}
+button{cursor:pointer}
 button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-#tabs{display:flex;gap:4px;flex-wrap:wrap;padding:6px 16px;border-bottom:1px solid var(--line)}
-#tabs button{align-self:auto}
-#tabs button[aria-pressed=true]{border-color:var(--accent);color:var(--accent)}
+button:disabled,input:disabled{opacity:.5;cursor:default}
+.ref{width:180px}
+#parts .ref{width:150px}
+#settings{padding:0 16px;border-bottom:1px solid var(--line)}
+#settings summary{cursor:pointer;padding:8px 0;color:var(--accent)}
+#settings .grid{display:flex;gap:24px;flex-wrap:wrap;padding-bottom:12px}
+#settings section{display:flex;flex-direction:column;gap:6px}
+#settings h3{margin:0;font-size:13px}
+#settings p{margin:0;font-size:12px;color:var(--muted);max-width:360px}
+#settings textarea{width:360px;height:90px;resize:vertical}
+#settings .note{color:var(--warn)}
+#settings .row{display:flex;gap:6px;flex-wrap:wrap}
+#owners{display:flex;gap:6px;flex-wrap:wrap;font-size:12px}
+#owners span{border:1px solid var(--line);border-radius:12px;padding:2px 4px 2px 10px}
+#owners button{border:0;padding:0 6px}
 #status{padding:4px 16px;font-size:12px;color:var(--muted);min-height:22px}
+#status.warn{color:var(--warn)}
 iframe{flex:1;border:0;width:100%;background:#fff}
 #coverage{padding:0 16px 6px;font-size:12px}
 #coverage summary{cursor:pointer;color:var(--accent)}
@@ -29,15 +43,53 @@ iframe{flex:1;border:0;width:100%;background:#fff}
 </head>
 <body>
 <header>
-  <label>GitHub token (read-only; kept in this tab only)
-    <input id="token" type="password" autocomplete="off" placeholder="optional for public repositories">
-  </label>
-  <label>Projects: one owner/repo or owner/repo@branch per line
-    <textarea id="projects" spellcheck="false"></textarea>
-  </label>
+  <select id="workspace" title="Workspace"></select>
+  <input id="ref" class="ref" list="refs" placeholder="branch, tag or SHA" title="Branch, tag or commit">
+  <datalist id="refs"></datalist>
   <button id="reload" class="primary">Reload</button>
 </header>
-<nav id="tabs"></nav>
+<nav id="parts"></nav>
+<details id="settings">
+  <summary>Settings</summary>
+  <div class="grid">
+    <section>
+      <h3>Workspaces</h3>
+      <p>One per line: <code>owner/repo</code> for a GitHub repository, or
+      <code>local:name</code> for a folder added below.</p>
+      <textarea id="list" spellcheck="false"></textarea>
+      <div class="row">
+        <button id="save">Save</button>
+        <button id="add-local">Add local folder</button>
+      </div>
+      <p id="local-note" class="note" hidden><b>Note for this browser:</b> it
+      cannot keep access to a local folder. After each page load, Reload asks
+      you to choose the folder again, and the browser lists every file in it,
+      which takes longer for a big folder. Chrome and Edge keep the access.</p>
+    </section>
+    <section>
+      <h3>GitHub tokens</h3>
+      <p>A read-only token for each owner of a private repository; owner
+      <code>*</code> is used for any other owner. Kept in this browser tab only,
+      sent only to api.github.com, never exported.</p>
+      <div class="row">
+        <input id="owner" placeholder="owner or *" size="12">
+        <input id="token" type="password" autocomplete="off" placeholder="token" size="18">
+        <button id="set-token">Set</button>
+      </div>
+      <div id="owners"></div>
+    </section>
+    <section>
+      <h3>Configuration</h3>
+      <p>Export the workspaces and the chosen refs to a file, to use them in
+      another browser. Tokens are not in it.</p>
+      <div class="row">
+        <button id="export">Export</button>
+        <button id="import">Import</button>
+        <input id="import-file" type="file" accept="application/json" hidden>
+      </div>
+    </section>
+  </div>
+</details>
 <div id="status"></div>
 <details id="coverage" hidden>
   <summary>Rule coverage</summary>
@@ -56,35 +108,81 @@ iframe{flex:1;border:0;width:100%;background:#fff}
 <iframe id="view" title="Knowledge site"></iframe>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
 <script>
-// Builds the knowledge site of each project in the browser: the files come
-// from the GitHub API at the branch's current commit, and Pyodide runs the
-// framework's own scripts on them. Nothing leaves the browser.
+// Builds the knowledge site of a workspace in the browser: the files come from
+// the GitHub API at the chosen ref, or from a local folder, and Pyodide runs
+// the framework's own scripts on them. Nothing leaves the browser.
 const API = "https://api.github.com";
 const SCRIPTS = ["project.py", "impact.py", "site.py", "site.html"];
 const $ = id => document.getElementById(id);
 const store = {
   get(area, key) { try { return window[area].getItem(key); } catch { return null; } },
   set(area, key, value) { try { window[area].setItem(key, value); } catch {} },
+  remove(area, key) { try { window[area].removeItem(key); } catch {} },
 };
-const pages = {};
-let pyodide = null, current = null;
 
-$("token").value = store.get("sessionStorage", "token") || "";
-$("projects").value = store.get("localStorage", "projects") || "";
-$("token").onchange = () => store.set("sessionStorage", "token", $("token").value.trim());
-$("projects").onchange = () => store.set("localStorage", "projects", $("projects").value);
-$("reload").onclick = reload;
+// ---- Configuration: versioned, migrated on load -------------------------
 
-function status(text) { $("status").textContent = text; }
+const VERSION = 1;
+const migrations = [
+  // 0 → 1: the first page kept a list of "owner/repo@branch" lines and one token.
+  old => ({
+    version: 1,
+    workspaces: (old.projects || "").split("\n").map(l => l.trim()).filter(Boolean).map(line => {
+      const [repo, branch] = line.split("@");
+      return { type: "github", repo, branch: branch || "", parts: {} };
+    }),
+    selected: "",
+  }),
+];
+let config, readOnly = false;
 
-async function gh(path) {
+function loadConfig() {
+  let raw = null;
+  try { raw = JSON.parse(store.get("localStorage", "viewer-config")); } catch {}
+  if (!raw) {
+    raw = { version: 0, projects: store.get("localStorage", "projects") || "" };
+    const token = store.get("sessionStorage", "token");
+    if (token) setToken("*", token);
+  }
+  return migrate(raw);
+}
+
+function migrate(raw) {
+  if (!raw || typeof raw.version !== "number") throw new Error("not a viewer configuration");
+  readOnly = raw.version > VERSION;
+  while (raw.version < VERSION) raw = migrations[raw.version](raw);
+  return raw;
+}
+
+function saveConfig() {
+  if (readOnly) return;
+  store.set("localStorage", "viewer-config", JSON.stringify(config));
+  store.remove("localStorage", "projects");
+  store.remove("sessionStorage", "token");
+}
+
+const idOf = w => w.type === "local" ? "local:" + w.name : w.repo;
+const selected = () => config.workspaces.find(w => idOf(w) === config.selected) || config.workspaces[0];
+
+// ---- Tokens: one per owner, in this tab only ---------------------------
+
+function tokens() { try { return JSON.parse(store.get("sessionStorage", "viewer-tokens")) || {}; } catch { return {}; } }
+function setToken(owner, token) {
+  const all = tokens();
+  if (token) all[owner] = token; else delete all[owner];
+  store.set("sessionStorage", "viewer-tokens", JSON.stringify(all));
+}
+
+// ---- GitHub ------------------------------------------------------------
+
+async function gh(path, repo) {
   const headers = { Accept: "application/vnd.github+json" };
-  const token = $("token").value.trim();
+  const all = tokens(), token = all[repo.split("/")[0]] || all["*"];
   if (token) headers.Authorization = "Bearer " + token;
   const res = await fetch(API + path, { headers });
-  if (res.status === 404 || res.status === 401) throw new Error("not found, or the token cannot read it");
-  if (res.status === 403) throw new Error("GitHub refused the request: rate limit reached, or the token lacks access");
-  if (!res.ok) throw new Error(`GitHub answered ${res.status}`);
+  if (res.status === 404 || res.status === 401) throw new Error(repo + ": not found, or the token cannot read it");
+  if (res.status === 403) throw new Error(repo + ": GitHub refused the request: rate limit reached, or the token lacks access");
+  if (!res.ok) throw new Error(`${repo}: GitHub answered ${res.status}`);
   return res.json();
 }
 
@@ -93,7 +191,7 @@ async function blob(repo, sha) {
   const key = "blob:" + sha;
   const cached = store.get("localStorage", key);
   if (cached !== null) return cached;
-  const data = await gh(`/repos/${repo}/git/blobs/${sha}`);
+  const data = await gh(`/repos/${repo}/git/blobs/${sha}`, repo);
   const bytes = Uint8Array.from(atob(data.content.replace(/\n/g, "")), c => c.charCodeAt(0));
   const text = new TextDecoder().decode(bytes);
   store.set("localStorage", key, text);
@@ -107,11 +205,27 @@ async function inBatches(items, size, fn) {
 }
 
 async function tree(repo, ref) {
-  const head = await gh(`/repos/${repo}/commits/${encodeURIComponent(ref || "HEAD")}`);
-  const tree = await gh(`/repos/${repo}/git/trees/${head.commit.tree.sha}?recursive=1`);
+  const head = await gh(`/repos/${repo}/commits/${encodeURIComponent(ref || "HEAD")}`, repo);
+  const tree = await gh(`/repos/${repo}/git/trees/${head.commit.tree.sha}?recursive=1`, repo);
   if (tree.truncated) throw new Error(repo + ": the tree is too large for one request");
   return { sha: head.sha.slice(0, 7), entries: Object.fromEntries(tree.tree.filter(e => e.type === "blob").map(e => [e.path, e.sha])) };
 }
+
+// The branches and tags of a repository, read once per page load or reload.
+const refCache = {};
+async function refs(repo) {
+  if (!refCache[repo]) refCache[repo] = Promise.all([
+    gh(`/repos/${repo}`, repo),
+    gh(`/repos/${repo}/branches?per_page=100`, repo),
+    gh(`/repos/${repo}/tags?per_page=100`, repo),
+  ]).then(([info, branches, tags]) => ({
+    main: info.default_branch,
+    names: [info.default_branch, ...branches.map(b => b.name).filter(n => n !== info.default_branch), ...tags.map(t => t.name)],
+  })).catch(e => { delete refCache[repo]; throw e; });
+  return refCache[repo];
+}
+
+function fillRefs(list, names) { list.innerHTML = names.map(n => `<option value="${n.replace(/"/g, "&quot;")}">`).join(""); }
 
 // A glob of artifact-driven.json, such as **/*_test.go, as a regular expression.
 function globRe(glob) {
@@ -119,36 +233,155 @@ function globRe(glob) {
   return new RegExp("^" + re + "$");
 }
 
-// The tests of each part whose tests setting names a repository: the files
-// that match its glob, placed in the part's folder as if it were cloned there.
-async function tests(config) {
-  const parts = [...Object.values(config.services || {}), ...Object.values(config.clients || {})]
-    .map(p => p && typeof p === "object" ? p.tests : null);
-  if (config.e2e) parts.push(config.e2e);
-  const out = {};
-  for (const t of parts.filter(t => t && t.repository && t.folder)) {
-    const [repo, ref] = t.repository.split("@");
-    const { entries } = await tree(repo, ref);
+const knowledgeOf = c => (c.knowledge || "docs/software-knowledges").replace(/\/+$/, "") + "/";
+const isKnowledge = (c, p) => p.startsWith(knowledgeOf(c)) && /\.(md|ya?ml)$/.test(p);
+
+// Every part with tests: [name, tests setting], end-to-end tests as "e2e".
+function testParts(c) {
+  const parts = [...Object.entries(c.services || {}), ...Object.entries(c.clients || {})]
+    .filter(([, p]) => p && typeof p === "object" && p.tests && p.tests.folder).map(([n, p]) => [n, p.tests]);
+  if (c.e2e && c.e2e.folder) parts.push(["e2e", c.e2e]);
+  return parts;
+}
+
+async function readGitHub(w, ref, partRefs) {
+  const { sha, entries } = await tree(w.repo, ref);
+  if (!entries["artifact-driven.json"]) throw new Error(w.repo + ": no artifact-driven.json at its root");
+  const conf = JSON.parse(await blob(w.repo, entries["artifact-driven.json"]));
+  const paths = Object.keys(entries).filter(p => isKnowledge(conf, p));
+  const files = { "artifact-driven.json": JSON.stringify(conf) };
+  (await inBatches(paths, 8, p => blob(w.repo, entries[p]))).forEach((t, i) => files[paths[i]] = t);
+  // Each part's tests come from its repository, placed in its folder as if cloned there.
+  for (const [name, t] of testParts(conf).filter(([, t]) => t.repository)) {
+    const [repo, branch] = t.repository.split("@");
+    const part = await tree(repo, partRefs[name] || branch);
     const match = globRe(t.glob || "**/*_test.*");
-    const paths = Object.keys(entries).filter(p => match.test(p));
-    const texts = await inBatches(paths, 8, p => blob(repo, entries[p]));
-    paths.forEach((p, i) => out[t.folder.replace(/\/+$/, "") + "/" + p] = texts[i]);
+    const tests = Object.keys(part.entries).filter(p => match.test(p));
+    (await inBatches(tests, 8, p => blob(repo, part.entries[p]))).forEach((text, i) => files[t.folder.replace(/\/+$/, "") + "/" + tests[i]] = text);
   }
-  return out;
+  return { label: sha, conf, files };
 }
 
-async function files(repo, ref) {
-  const { sha, entries } = await tree(repo, ref);
-  if (!entries["artifact-driven.json"]) throw new Error(repo + ": no artifact-driven.json at its root");
-  const config = JSON.parse(await blob(repo, entries["artifact-driven.json"]));
-  const knowledge = (config.knowledge || "docs/software-knowledges").replace(/\/+$/, "") + "/";
-  const wanted = Object.keys(entries).filter(p => p.startsWith(knowledge) && /\.(md|ya?ml)$/.test(p));
-  const texts = await inBatches(wanted, 8, p => blob(repo, entries[p]));
-  const out = { "artifact-driven.json": JSON.stringify(config), ...await tests(config) };
-  wanted.forEach((p, i) => out[p] = texts[i]);
-  return { sha, files: out };
+// ---- Local folders: handles kept in IndexedDB --------------------------
+
+function idb(mode, fn) {
+  return new Promise((resolve, reject) => {
+    const open = indexedDB.open("knowledge-viewer", 1);
+    open.onupgradeneeded = () => open.result.createObjectStore("folders");
+    open.onerror = () => reject(open.error);
+    open.onsuccess = () => {
+      const req = fn(open.result.transaction("folders", mode).objectStore("folders"));
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    };
+  });
 }
 
+async function dir(root, path) {
+  let d = root;
+  for (const part of path.split("/").filter(Boolean)) {
+    try { d = await d.getDirectoryHandle(part); } catch { return null; }
+  }
+  return d;
+}
+
+async function readText(root, path) {
+  const parts = path.split("/"), name = parts.pop();
+  const d = await dir(root, parts.join("/"));
+  try { return d ? await (await (await d.getFileHandle(name)).getFile()).text() : null; } catch { return null; }
+}
+
+async function* walk(d, prefix, skip) {
+  for await (const [name, h] of d.entries()) {
+    if (h.kind === "directory") { if (!skip.has(name)) yield* walk(h, prefix + name + "/", skip); }
+    else yield [prefix + name, () => h.getFile().then(f => f.text())];
+  }
+}
+
+// A local folder, read through one of two browser APIs: a folder handle
+// (Chrome, Edge), which the page keeps between visits, or the files of a
+// folder input (Firefox, Safari), which last until the page is reloaded.
+const HANDLES = !!window.showDirectoryPicker;
+const picked = {};  // name → Map(path → File), for the folder input
+
+function folderOfHandle(root) {
+  return {
+    text: path => readText(root, path),
+    async *list(folder, skip) {
+      const d = await dir(root, folder);
+      if (d) yield* walk(d, folder.replace(/\/+$/, "") + "/", skip);
+    },
+  };
+}
+
+function folderOfFiles(files) {
+  return {
+    text: async path => files.has(path) ? files.get(path).text() : null,
+    async *list(folder, skip) {
+      const base = folder.replace(/\/+$/, "") + "/";
+      for (const [path, f] of files)
+        if (path.startsWith(base) && !path.split("/").slice(0, -1).some(s => skip.has(s))) yield [path, () => f.text()];
+    },
+  };
+}
+
+// The folder input: the files of the chosen folder, by path inside it.
+function pickFiles() {
+  return new Promise(resolve => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.webkitdirectory = true;
+    input.onchange = () => {
+      const all = [...input.files];
+      if (!all.length) return resolve(null);
+      const name = all[0].webkitRelativePath.split("/")[0];
+      resolve({ name, files: new Map(all.map(f => [f.webkitRelativePath.split("/").slice(1).join("/"), f])) });
+    };
+    input.click();
+  });
+}
+
+async function localFolder(w) {
+  if (picked[w.name]) return folderOfFiles(picked[w.name]);
+  if (!HANDLES) {
+    if (!picked[w.name]) {
+      const got = await pickFiles();
+      if (!got) throw new Error(`local:${w.name}: choose the folder to read it`);
+      picked[w.name] = got.files;
+    }
+    return folderOfFiles(picked[w.name]);
+  }
+  const root = await idb("readonly", s => s.get(w.name));
+  if (!root) throw new Error(`local:${w.name}: no folder chosen in this browser; add it again in Settings`);
+  if (await root.queryPermission({ mode: "read" }) !== "granted" &&
+      await root.requestPermission({ mode: "read" }) !== "granted")
+    throw new Error(`local:${w.name}: press Reload and allow access to the folder`);
+  return folderOfHandle(root);
+}
+
+async function readLocal(w) {
+  const folder = await localFolder(w);
+  const text = await folder.text("artifact-driven.json");
+  if (text === null) throw new Error(`local:${w.name}: no artifact-driven.json in the folder`);
+  const conf = JSON.parse(text);
+  const skip = new Set([".git", "node_modules", ...(conf.skip || [])]);
+  const files = { "artifact-driven.json": text };
+  const read = async (path, keep) => {
+    for await (const [p, load] of folder.list(path, new Set([".git", "node_modules"]))) if (keep(p)) files[p] = await load();
+  };
+  await read(knowledgeOf(conf), p => isKnowledge(conf, p));
+  for (const [, t] of testParts(conf)) {
+    const base = t.folder.replace(/\/+$/, "") + "/", match = globRe(t.glob || "**/*_test.*");
+    await read(t.folder, p => match.test(p.slice(base.length)) && !p.slice(base.length).split("/").some(s => skip.has(s)));
+  }
+  const head = (await folder.text(".git/HEAD") || "").trim();
+  const label = "working copy" + (head.startsWith("ref: refs/heads/") ? " · " + head.slice(16) : head ? " · " + head.slice(0, 7) : "");
+  return { label, conf, files };
+}
+
+// ---- Python ------------------------------------------------------------
+
+let pyodide = null;
 async function python() {
   if (pyodide) return pyodide;
   status("Loading Python…");
@@ -158,11 +391,10 @@ async function python() {
   return pyodide;
 }
 
-async function build(repo, ref) {
-  const { sha, files: tree } = await files(repo, ref);
+async function run(files, label) {
   const py = await python();
-  py.globals.set("tree", py.toPy(tree));
-  py.globals.set("sha", sha);
+  py.globals.set("tree", py.toPy(files));
+  py.globals.set("sha", label);
   return py.runPython(`
 import os, shutil, sys
 from pathlib import Path
@@ -178,7 +410,7 @@ for name, text in {"project.py": _project_py, "impact.py": _impact_py, "site.py"
     (scripts / name).write_text(text, encoding="utf-8")
 os.chdir(root)
 # project.py finds the repository from the current directory when imported,
-# so each project imports the scripts afresh. site.py is loaded by path: the
+# so each build imports the scripts afresh. site.py is loaded by path: the
 # name "site" is taken by Python's own module.
 for name in ("project", "impact"):
     sys.modules.pop(name, None)
@@ -198,42 +430,124 @@ sys.path.remove(str(scripts))
 `).toJs();
 }
 
-function show(name) {
-  current = name;
-  const [html, coverage] = pages[name] || ["", ""];
-  $("view").srcdoc = html;
-  $("coverage").hidden = !coverage;
-  $("coverage-text").textContent = coverage;
-  [...$("tabs").children].forEach(b => b.setAttribute("aria-pressed", b.textContent === name));
+// ---- Page --------------------------------------------------------------
+
+const built = {};  // "workspace@ref parts" → [html, coverage, conf], for this page load
+let busy = false;
+
+function status(text, warn) { $("status").textContent = text; $("status").className = warn ? "warn" : ""; }
+
+function render() {
+  $("workspace").innerHTML = config.workspaces.map(w => `<option>${idOf(w)}</option>`).join("") || "<option value=''>No workspace: add one in Settings</option>";
+  const w = selected();
+  $("workspace").value = w ? idOf(w) : "";
+  $("ref").value = w && w.type === "github" ? w.branch || "" : "";
+  $("ref").disabled = !w || w.type !== "github";
+  $("ref").placeholder = w && w.type === "local" ? "local folder" : "branch, tag or SHA";
+  $("list").value = config.workspaces.map(idOf).join("\n");
+  const owners = Object.keys(tokens());
+  $("owners").innerHTML = owners.map(o => `<span>${o}<button data-owner="${o}" title="Remove">×</button></span>`).join("");
+  $("local-note").hidden = HANDLES;
 }
 
-async function reload() {
-  const lines = $("projects").value.split("\n").map(l => l.trim()).filter(Boolean);
-  store.set("localStorage", "projects", $("projects").value);
-  store.set("sessionStorage", "token", $("token").value.trim());
-  $("reload").disabled = true;
-  $("tabs").innerHTML = "";
-  const failed = [];
-  for (const line of lines) {
-    const [repo, ref] = line.split("@");
-    status(`Reading ${line}…`);
-    try {
-      pages[line] = await build(repo, ref);
-      const tab = document.createElement("button");
-      tab.textContent = line;
-      tab.onclick = () => show(line);
-      $("tabs").append(tab);
-    } catch (e) {
-      failed.push(`${line}: ${e.message}`);
+function renderParts(w, conf) {
+  const parts = w.type === "github" ? testParts(conf).filter(([, t]) => t.repository) : [];
+  $("parts").innerHTML = parts.length ? "<span>Tests at</span>" + parts.map(([name, t]) =>
+    `<label>${name} <input class="ref" list="refs-${name}" data-part="${name}" data-repo="${t.repository.split("@")[0]}"
+      value="${(w.parts[name] || {}).branch || ""}" placeholder="${t.repository.split("@")[1] || "default branch"}">
+      <datalist id="refs-${name}"></datalist></label>`).join("") : "";
+}
+
+async function show(fresh) {
+  const w = selected();
+  if (!w || busy) return;
+  busy = true; $("reload").disabled = true;
+  const partRefs = Object.fromEntries(Object.entries(w.parts || {}).map(([n, p]) => [n, p.branch]).filter(([, b]) => b));
+  const key = `${idOf(w)}@${w.branch || ""} ${JSON.stringify(partRefs)}`;
+  try {
+    if (fresh || !built[key]) {
+      status(`Reading ${idOf(w)}${w.branch ? "@" + w.branch : ""}…`);
+      const { label, conf, files } = w.type === "local" ? await readLocal(w) : await readGitHub(w, w.branch, partRefs);
+      status("Building…");
+      built[key] = [...await run(files, label), conf, label];
     }
+    const [html, coverage, conf, label] = built[key];
+    $("view").srcdoc = html;
+    $("coverage").hidden = !coverage;
+    $("coverage-text").textContent = coverage;
+    renderParts(w, conf);
+    status(`${idOf(w)} at ${label}` + (readOnly ? " · this configuration comes from a newer page: shown, not saved" : ""), readOnly);
+  } catch (e) {
+    status(e.message, true);
+  } finally {
+    busy = false; $("reload").disabled = false;
   }
-  $("reload").disabled = false;
-  const built = Object.keys(pages).filter(n => lines.includes(n));
-  if (built.length) show(built.includes(current) ? current : built[0]);
-  status(failed.length ? "Failed: " + failed.join(" · ") : `Built ${built.length} project(s).`);
+  if (w.type === "github") refs(w.repo).then(r => fillRefs($("refs"), r.names)).catch(() => {});
 }
 
-if ($("projects").value.trim()) reload();
+$("workspace").onchange = () => { config.selected = $("workspace").value; saveConfig(); render(); show(); };
+$("ref").onchange = () => { selected().branch = $("ref").value.trim(); saveConfig(); show(); };
+$("reload").onclick = () => { const w = selected(); if (w && w.type === "github") delete refCache[w.repo]; show(true); };
+$("parts").onfocusin = e => {
+  const input = e.target.closest("input[data-part]");
+  if (input) refs(input.dataset.repo).then(r => fillRefs($("refs-" + input.dataset.part), r.names)).catch(() => {});
+};
+$("parts").onchange = e => {
+  const input = e.target.closest("input[data-part]"), w = selected();
+  if (!input) return;
+  w.parts = w.parts || {};
+  w.parts[input.dataset.part] = { branch: input.value.trim() };
+  saveConfig(); show();
+};
+$("save").onclick = () => {
+  const old = Object.fromEntries(config.workspaces.map(w => [idOf(w), w]));
+  config.workspaces = $("list").value.split("\n").map(l => l.trim()).filter(Boolean).map(id => old[id] ||
+    (id.startsWith("local:") ? { type: "local", name: id.slice(6) } : { type: "github", repo: id.split("@")[0], branch: id.split("@")[1] || "", parts: {} }));
+  saveConfig(); render(); show();
+};
+$("add-local").onclick = async () => {
+  let handle = null, got = null;
+  if (HANDLES) { try { handle = await window.showDirectoryPicker({ mode: "read" }); } catch { return; } }
+  else if (!(got = await pickFiles())) return;
+  const base = handle ? handle.name : got.name;
+  let name = base, n = 2;
+  while (config.workspaces.some(w => idOf(w) === "local:" + name)) name = `${base}-${n++}`;
+  if (handle) await idb("readwrite", s => s.put(handle, name)); else picked[name] = got.files;
+  config.workspaces.push({ type: "local", name });
+  config.selected = "local:" + name;
+  saveConfig(); render(); show();
+};
+$("set-token").onclick = () => {
+  const owner = $("owner").value.trim();
+  if (!owner) return;
+  setToken(owner, $("token").value.trim());
+  $("owner").value = $("token").value = "";
+  Object.keys(refCache).forEach(k => delete refCache[k]);
+  render();
+};
+$("owners").onclick = e => { const o = e.target.dataset.owner; if (o) { setToken(o, ""); render(); } };
+$("export").onclick = () => {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(config, null, 2)], { type: "application/json" }));
+  a.download = "viewer-config.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+$("import").onclick = () => $("import-file").click();
+$("import-file").onchange = async () => {
+  const file = $("import-file").files[0];
+  $("import-file").value = "";
+  if (!file) return;
+  try { config = migrate(JSON.parse(await file.text())); } catch (e) { return status("Import failed: " + e.message, true); }
+  saveConfig(); render(); show();
+};
+
+try { config = loadConfig(); } catch { config = { version: VERSION, workspaces: [], selected: "" }; }
+saveConfig();
+render();
+if (!config.workspaces.length) $("settings").open = true;
+else if (selected().type === "github") show();
+else status("Press Reload to read the local folder.");
 </script>
 </body>
 </html>
