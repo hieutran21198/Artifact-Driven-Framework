@@ -52,7 +52,7 @@ components:
   schemas:
     Step:
       type: string
-      enum: [goal, flow, rule, artifact, client, test, change]
+      enum: [goal, flow, rule, artifact, client, scan, change]
       description: A step of the story, in the order of INTRO-1.
     PlayStoryInput:
       type: object
@@ -90,7 +90,7 @@ components:
       properties:
         text:
           type: string
-          description: What the block is in the sample, in plain words. On the test step, a rule also says whether it has a test (INTRO-9).
+          description: What the block is in the sample, in plain words. On the scan step, a rule also says whether the scan found it (INTRO-9).
           example: A borrowed book is due back 14 days later.
     CopyInstallOutput:
       type: object

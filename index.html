@@ -127,7 +127,7 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
         <h3 data-i="briefcase">Stakeholder</h3>
         <p>You follow a project someone builds for you.</p>
         <ul>
-          <li><a class="trk" href="#">How much is tested</a></li>
+          <li><a class="trk" href="#">How much is in the product</a></li>
           <li><a class="trk" href="#">How each flow works</a></li>
           <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/scripts/README.md#impact">What a change affects</a></li>
         </ul>
@@ -155,7 +155,7 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
 
   <section aria-labelledby="build-h">
     <h2 id="build-h">For developers</h2>
-    <p class="lede" style="font-size:16px">Mention the rule in the test, so it can be counted.</p>
+    <p class="lede" style="font-size:16px">Mention the rule in the test, so the scan finds it.</p>
 <pre><code><span class="cmt">// BK-3: only an available book can be lent.</span>
 func TestLendRefusesBookOnLoan(t *testing.T) {
 	book := onLoanBook()
@@ -167,7 +167,7 @@ func TestLendRefusesBookOnLoan(t *testing.T) {
   <section aria-labelledby="mean-h">
     <h2 id="mean-h">Good to know</h2>
     <div class="notes">
-      <div class="note"><h3 data-i="test">Tests</h3><p>Tests are counted, not run. A rule with a test is not proof that it works.</p></div>
+      <div class="note"><h3 data-i="scan">Scan</h3><p>The scan shows which rules are in the product. It does not show that they work.</p></div>
       <div class="note"><h3 data-i="change">Changes</h3><p>A change shows what it affects, not what it costs.</p></div>
       <div class="note"><h3 data-i="calendar">Plans</h3><p>Plans and progress stay in your task tracker.</p></div>
     </div>
@@ -199,6 +199,7 @@ const ICON = {
   app:'<rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>',
   phone:'<rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/>',
   test:'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+  scan:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
   change:'<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
   book:'<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>',
   users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/>',
@@ -219,15 +220,15 @@ document.querySelectorAll('[data-i]').forEach(e => e.insertAdjacentHTML('afterbe
 const TRACKER = document.getElementById('tracker').href;
 document.querySelectorAll('.trk').forEach(a => a.href = TRACKER);
 
-const STEPS = ['Goal','Flows','Rules','Artifacts','Apps','Tests','A change'];
-const STEP_ICONS = ['goal','flow','rule','artifact','app','test','change'];
+const STEPS = ['Goal','Flows','Rules','Artifacts','Apps','Scan','A change'];
+const STEP_ICONS = ['goal','flow','rule','artifact','app','scan','change'];
 const CAPS = [
   'A goal: a member borrows a book and brings it back.',
   'It splits into two flows: borrowing and returning. A flow is the steps a person goes through.',
   'Each flow follows a few rules, like "only a book on the shelf can be lent".',
   'Rules are grouped by what they are about: books, members or notices. Each group is an artifact.',
   'The website uses books and members. The phone app uses books.',
-  'Tests check the rules. In this example, 4 of the 6 rules have a test.',
+  'A scan checks which rules are already in the product. In this example, it finds 4 of the 6.',
   'Change one rule, and you see everything it affects: both flows and the phone app. The website is not affected.'
 ];
 const RULES = [
@@ -342,7 +343,7 @@ function explainBlock(e) {
   if (!t || !stage.contains(t) || t.style.opacity === '0') return hideTip();
   hover = t;
   let text = TIPS[t.id];
-  if (t.id[0] === 'r' && step >= 5) text += RULES[+t.id.slice(1)][2] ? ' It has a test.' : ' It has no test.';
+  if (t.id[0] === 'r' && step >= 5) text += RULES[+t.id.slice(1)][2] ? ' The scan found it in the product.' : ' The scan did not find it in the product.';
   tip.textContent = text; tip.classList.add('on');
   const p = panel.getBoundingClientRect(), r = t.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
   const x = Math.max(8, Math.min(r.left - p.left + r.width / 2 - w / 2, p.width - w - 8));
