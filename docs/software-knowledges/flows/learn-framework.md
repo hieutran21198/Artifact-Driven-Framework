@@ -4,10 +4,12 @@ A reader who does not read the repository learns, from the landing page, how
 a goal becomes flows, rules, artifacts, clients and tests, and where to go
 next.
 
-- Crosses: [introduction](../artifacts/introduction/README.md), served by the
-  `landing` service, and [workspace](../artifacts/workspace/README.md),
-  served by the `install` service.
-- Contract: `playStory`, `showStep`, `copyInstall` and `openTracker` in the
+- Crosses: [introduction](../artifacts/introduction/README.md) and
+  [guide](../artifacts/guide/README.md), served by the `landing` service,
+  and [workspace](../artifacts/workspace/README.md), served by the `install`
+  service.
+- Contract: `playStory`, `showStep`, `explainBlock`, `openFramework`,
+  `copyInstall` and `openTracker` in the
   [introduction contract](../artifacts/introduction/openapi.yaml), and
   `installWorkspace` in the
   [workspace contract](../artifacts/workspace/openapi.yaml).
@@ -26,7 +28,9 @@ next.
    (INTRO-9).
 3. The reader reads the card for their role and follows the link of a
    question (INTRO-6), such as `openTracker`.
-4. The reader copies the install command with `copyInstall` and runs
+4. A technical reader opens the framework page with `openFramework`, and
+   reads what the framework holds (GUIDE-1 to GUIDE-4).
+5. The reader copies the install command with `copyInstall` and runs
    `installWorkspace` in a shell. The new workspace holds the sample that the
    story showed (WS-4).
 
@@ -66,6 +70,9 @@ sequenceDiagram
 | F-LEARN-9 | A browser 360 px wide, on a system that uses a dark theme | The reader opens the page and calls `showStep` with each step | The page stays light, every step reads, and the page needs no horizontal scrolling | INTRO-7 |
 | F-LEARN-10 | The page file served with no access to another host | The reader opens it, which calls `playStory` | The story plays through all its steps, in the fonts of the system | INTRO-8 |
 | F-LEARN-11 | The story playing at the rule step | The reader points at a rule, which calls `explainBlock` | The rule is explained in plain words, and the story does not move on until the reader points away | INTRO-9, INTRO-5 |
+| F-LEARN-12 | A solution architect on the landing page | The reader calls `openFramework` | The framework page says in a few paragraphs what the framework turns the governance into, lists its parts with one sentence each, what each workspace gets from them, and the files of a workspace | INTRO-13, GUIDE-1 |
+| F-LEARN-13 | The framework page | The reader calls `openFramework` and follows the link of each part | Each link leads to the rules of that part, and every name on the page exists in the framework | GUIDE-2, GUIDE-3 |
+| F-LEARN-14 | A browser 360 px wide, on a system that uses a dark theme | The reader calls `openFramework` | The page stays light, the text reads, and the page needs no horizontal scrolling | GUIDE-4 |
 
 ## Open questions
 
