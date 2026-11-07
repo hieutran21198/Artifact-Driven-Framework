@@ -90,6 +90,13 @@ section{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}
   @keyframes drawdown{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
   .layers li{animation:stepin .6s cubic-bezier(.3,.1,.2,1) both;animation-delay:calc(var(--d) * 260ms + 250ms)}
   .layers li+li::before{animation:drawdown .35s ease-out both;animation-delay:calc(var(--d) * 260ms + 120ms)}}
+.howto{list-style:none;margin:0;padding:0;display:grid;gap:22px;counter-reset:s}
+.howto li{display:grid;grid-template-columns:34px minmax(0,1fr);gap:4px 16px;counter-increment:s}
+.howto li::before{content:counter(s);grid-row:span 3;width:30px;height:30px;border-radius:50%;background:var(--k);color:var(--ki);font:500 14px/30px var(--body);text-align:center}
+.howto h3{font-family:var(--body);font-size:16px;font-weight:500;display:flex;align-items:center;gap:8px}
+.howto h3 .ic{color:var(--ki)}
+.howto p{color:var(--muted);font-size:15px}
+.howto .eg{font-size:14px;color:var(--faint)}
 /* questions */
 .roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:40px 32px}
 .role{display:grid;gap:10px;align-content:start}
@@ -142,6 +149,18 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
       <p id="cap" aria-live="polite"></p>
       <button class="play" id="play" type="button">Pause</button>
     </div>
+  </section>
+
+  <section aria-labelledby="howto-h">
+    <h2 id="howto-h">How to break down a requirement</h2>
+    <ol class="howto">
+      <li style="--k:var(--l0);--ki:var(--l0i)"><h3 data-i="goal">Write the goal</h3><p>Who needs what, and how you will know it is done.</p><p class="eg">A member can borrow a book and sees when it is due.</p></li>
+      <li style="--k:var(--l1);--ki:var(--l1i)"><h3 data-i="flow">Split it into flows</h3><p>Write the steps of each flow as scenarios: what happens, and what happens when something goes wrong.</p><p class="eg">The book is already on loan, so the request is refused.</p></li>
+      <li style="--k:var(--l2);--ki:var(--l2i)"><h3 data-i="rule">Pull out the rules</h3><p>Every "must", "only" or "at most" in a step becomes a rule.</p><p class="eg">Only a book on the shelf can be lent.</p></li>
+      <li style="--k:var(--l3);--ki:var(--l3i)"><h3 data-i="artifact">Group the rules by topic</h3><p>Each topic is an artifact: one domain, run by one service.</p><p class="eg">Books, members, notices.</p></li>
+      <li style="--k:var(--cl);--ki:var(--cli)"><h3 data-i="app">Note what each app needs</h3><p>The API calls and fields each app relies on, so a change does not break it.</p><p class="eg">The phone app reads the due date of a book.</p></li>
+      <li style="--k:var(--panel);--ki:var(--ink)"><h3 data-i="scan">Mention the rule in its test</h3><p>Each rule has a short ID. The test that checks it mentions the ID, so the scan can find it.</p><p class="eg">BK-3 is the rule "only a book on the shelf can be lent".</p></li>
+    </ol>
   </section>
 
   <section aria-labelledby="roles-h">
