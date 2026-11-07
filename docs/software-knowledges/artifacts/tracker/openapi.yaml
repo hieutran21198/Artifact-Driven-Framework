@@ -56,7 +56,7 @@ x-commands:
     output:
       type: object
   checkSettings:
-    caller: The page when the settings open, or a reader who asks to check again.
+    caller: The page the first time the settings open in a page load, for what it has not checked yet, or a reader who asks to check again.
     description: Checks each workspace, each part its configuration names and each token, with one call to GitHub for each repository and each token (TRK-11).
     input:
       type: object
