@@ -21,8 +21,8 @@ Sample: [book artifact](https://github.com/hieutran21198/Artifact-Driven-Framewo
    and a link to the domain map for the service that serves it.
 3. Write `specification.md`: model, rules with IDs, lifecycle
    ([artifact rule](artifact-rule.md)).
-4. Write `service.md`: the domain contract the serving service provides,
-   meaning the `Writer` and `Reader` interfaces and their operations. Name no
+4. When the serving service has `Writer` and `Reader` interfaces for the
+   domain, write `service.md`: those interfaces and their operations. Name no
    packages, types or tables.
 5. Add a contract when the artifact has its own endpoints
    ([contract](contract.md)), and client pages for the clients that use it

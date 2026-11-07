@@ -148,7 +148,7 @@ answer a question that a page below leaves open.
 | `README.md` | What the artifact owns, its rule prefix, a link to the domain map for the service that serves it, and links |
 | `specification.md` | Model, rules and lifecycle; no service, client or flow |
 | `openapi.yaml` | The HTTP contract of the artifact's own endpoints, internal ones included |
-| `service.md` | The domain contract the serving service provides: the `Writer` and `Reader` interfaces and their operations; no packages, types or tables |
+| `service.md` | The domain contract the serving service provides: the `Writer` and `Reader` interfaces and their operations; no packages, types or tables. Only when the service has such interfaces, as a service with a database does |
 | `<client>.md`, one per client in the [configuration](../../../scripts/README.md#configuration) | What that client needs from the artifact, by `operationId`, by payload schema, or by rule ID for a need no response carries; only when it uses the artifact |
 
 An artifact is never split per service or per client. Client pages cite rule IDs and

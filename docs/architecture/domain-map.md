@@ -1,22 +1,25 @@
 # Domain map
 
-The domains of the product and the service that serves each one. Each domain
+The domains of the framework and the service that serves each one. Each domain
 is one artifact in the
-[software knowledge](../software-knowledges/artifacts/README.md) and one
-package under `internal/domain` of its service. A new domain, or a domain that
-moves to another service, is an architecture change first.
+[software knowledge](../software-knowledges/artifacts/README.md) and one part
+of the code of its service, such as a package under `internal/domain` of a Go
+service. The [services](../../services/README.md) page names each service and
+its code. A new domain, or a domain that moves to another service, is an
+architecture change first.
 
 | Domain | Service | Holds | Existing code that moves into it |
 | --- | --- | --- | --- |
+| `workspace` | `install` | What a new workspace holds, and where install takes it from | — |
+| `configuration` | `scripts` | The root of a workspace and the settings in `artifact-driven.json` | — |
+| `repository` | `scripts` | The folders and Markdown pages of a workspace, and their links | — |
+| `knowledge` | `scripts` | Knowledge IDs, operations and the citations between units | — |
+| `test` | `scripts` | Which knowledge IDs the test files of a part name, and how strongly each is proved | — |
 
-Where code predates this structure, name the packages that move into each
-domain.
-
-External systems become adapters under `adapter/<vendor>` of the service that
-uses them, not domains:
+External systems are used through the service that uses them, not as domains:
 
 | Adapter | Used for | Existing code that moves into it |
 | --- | --- | --- |
-| — | — | — |
+| GitHub | `install` downloads the framework at a ref | — |
 
 Return to [architecture](README.md).

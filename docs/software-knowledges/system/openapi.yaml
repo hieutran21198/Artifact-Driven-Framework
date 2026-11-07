@@ -1,0 +1,28 @@
+openapi: 3.0.3
+info:
+  title: Shared components
+  version: 0.1.0
+  description: >
+    Components every contract of the framework uses: the lines a command
+    prints. The framework has no HTTP endpoint; its commands are under
+    x-commands of artifact and flow contracts. This file has no paths.
+servers:
+  - url: http://localhost
+    description: No server; the commands run on the machine of the caller.
+paths: {}
+components:
+  schemas:
+    Lines:
+      type: array
+      description: The lines a command prints on one stream, in order.
+      items:
+        type: string
+    Problems:
+      type: array
+      description: >
+        The problems a check found, one per line on standard error. A line
+        starts with the path of the file, relative to the root, when the
+        problem has one (SYS-3).
+      items:
+        type: string
+        example: 'docs/README.md: missing guide.md'

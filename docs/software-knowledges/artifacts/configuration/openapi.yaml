@@ -1,0 +1,93 @@
+openapi: 3.0.3
+info:
+  title: Configuration artifact
+  version: 0.1.0
+  description: >
+    Contract of the configuration artifact: the schema of artifact-driven.json
+    at the root of a workspace (CFG-1). It has no endpoint and no command.
+servers:
+  - url: http://localhost
+    description: No server; the scripts read the file on the machine of the caller.
+paths: {}
+components:
+  schemas:
+    Configuration:
+      type: object
+      description: The file artifact-driven.json. Every key is optional (CFG-2, CFG-3).
+      properties:
+        knowledge:
+          type: string
+          description: The knowledge folder, relative to the root.
+          default: docs/software-knowledges
+        skip:
+          type: array
+          description: Names of folders whose Markdown pages are not checked for links. A given list replaces the default (CFG-3).
+          items:
+            type: string
+          default: [.git, node_modules, build]
+        clients:
+          type: object
+          description: The client pages an artifact may have, by file name without .md.
+          additionalProperties:
+            oneOf:
+              - type: string
+                description: The name the site shows.
+              - $ref: '#/components/schemas/Client'
+          default: {}
+        services:
+          type: object
+          description: The services, by name as in the domain map.
+          additionalProperties:
+            $ref: '#/components/schemas/Service'
+          default: {}
+        e2e:
+          $ref: '#/components/schemas/Tests'
+        site:
+          type: object
+          description: The knowledge site. Each key takes its default when not given (CFG-3).
+          properties:
+            title:
+              type: string
+              default: Software knowledge
+            output:
+              type: string
+              description: The file the site writes, relative to the root.
+              default: build/site/index.html
+    Client:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name the site shows; the file name when not given.
+        tests:
+          $ref: '#/components/schemas/Tests'
+    Service:
+      type: object
+      properties:
+        routes:
+          type: object
+          description: Where the site finds the routes of the service.
+          properties:
+            folders:
+              type: array
+              items:
+                type: string
+            glob:
+              type: string
+            pattern:
+              type: string
+              description: A regular expression with the named groups method and path.
+        tests:
+          $ref: '#/components/schemas/Tests'
+    Tests:
+      type: object
+      description: Where the tests of a part live (CFG-4, CFG-5).
+      required: [folder]
+      properties:
+        folder:
+          type: string
+          description: Relative to the root.
+          example: tests/scripts
+        glob:
+          type: string
+          default: '**/*_test.*'
