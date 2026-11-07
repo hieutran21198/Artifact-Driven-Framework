@@ -80,9 +80,10 @@ section{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}
 .layers{display:grid;gap:12px;list-style:none;margin:0;padding:0;--step:36px}
 .layers li{position:relative;margin-left:calc(var(--d) * var(--step));display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;background:var(--k);color:var(--ki);border-radius:12px;padding:11px 16px;max-width:560px}
 .layers li strong{display:inline-flex;align-items:center;gap:7px;font-weight:500;font-size:15px;min-width:84px}
-.layers li span{font-size:14.5px;line-height:1.5;opacity:.9}
+.layers li span{font-size:14.5px;line-height:1.5}
+.layers li em{font-style:normal;font-size:13.5px;line-height:1.5;opacity:.65;margin-left:auto}
 .layers li+li::before{content:"";position:absolute;left:calc(var(--step) * -1 + 12px);top:-12px;width:calc(var(--step) - 12px);height:34px;border-left:1.5px solid var(--faint);border-bottom:1.5px solid var(--faint);border-bottom-left-radius:8px}
-@media (max-width:620px){.layers{--step:16px}.layers li{display:grid;gap:2px}.layers li+li::before{left:calc(var(--step) * -1 + 6px);width:calc(var(--step) - 6px)}}
+@media (max-width:620px){.layers{--step:16px}.layers li{display:grid;gap:2px}.layers li em{margin-left:0}.layers li+li::before{left:calc(var(--step) * -1 + 6px);width:calc(var(--step) - 6px)}}
 
 @media (prefers-reduced-motion:no-preference){
   @keyframes stepin{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
@@ -122,11 +123,11 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
   <section aria-labelledby="structure-h">
     <h2 id="structure-h">The structure</h2>
     <ol class="layers">
-      <li style="--d:0;--k:var(--l0);--ki:var(--l0i)"><strong data-i="goal">Goal</strong><span>What someone wants to get done.</span></li>
-      <li style="--d:1;--k:var(--l1);--ki:var(--l1i)"><strong data-i="flow">Flow</strong><span>The steps to get there.</span></li>
-      <li style="--d:2;--k:var(--l2);--ki:var(--l2i)"><strong data-i="rule">Rule</strong><span>What must always hold along the way.</span></li>
-      <li style="--d:3;--k:var(--l3);--ki:var(--l3i)"><strong data-i="artifact">Artifact</strong><span>The rules about one thing, like books.</span></li>
-      <li style="--d:4;--k:var(--cl);--ki:var(--cli)"><strong data-i="app">App</strong><span>What people use: a website or a phone app.</span></li>
+      <li style="--d:0;--k:var(--l0);--ki:var(--l0i)"><strong data-i="goal">Goal</strong><span>What someone needs.</span><em>A member borrows a book.</em></li>
+      <li style="--d:1;--k:var(--l1);--ki:var(--l1i)"><strong data-i="flow">Flow</strong><span>How it happens, step by step.</span><em>Borrowing, returning.</em></li>
+      <li style="--d:2;--k:var(--l2);--ki:var(--l2i)"><strong data-i="rule">Rule</strong><span>What must stay true.</span><em>Only a book on the shelf can be lent.</em></li>
+      <li style="--d:3;--k:var(--l3);--ki:var(--l3i)"><strong data-i="artifact">Artifact</strong><span>One topic and its rules.</span><em>Books, members, notices.</em></li>
+      <li style="--d:4;--k:var(--cl);--ki:var(--cli)"><strong data-i="app">App</strong><span>Where people do it.</span><em>Website, phone app.</em></li>
     </ol>
   </section>
 
