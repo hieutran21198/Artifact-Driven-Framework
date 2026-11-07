@@ -14,7 +14,7 @@ and where to go next.
 
 | ID | Criterion | Proven by |
 | --- | --- | --- |
-| G-LEARN-1 | A reader sees, in one story, a goal split into flows, rules, artifacts, clients and tests, with the names and IDs of the sample. | F-LEARN-1, F-LEARN-5 |
+| G-LEARN-1 | A reader sees, in one story, a goal split into flows, rules, artifacts, clients and tests, with the names of the sample, and can ask what each block is. | F-LEARN-1, F-LEARN-5, F-LEARN-11 |
 | G-LEARN-2 | A reader can stop the story at any step, and a reader who asks for reduced motion sees it without motion. | F-LEARN-2, F-LEARN-3 |
 | G-LEARN-3 | A reader learns that coverage tells only that tests name an ID, and that a change is measured by its size, never by its cost. | F-LEARN-2, F-LEARN-4, F-LEARN-6 |
 | G-LEARN-4 | A stakeholder, a solution architect and a product owner each find their questions and the page that answers each, and reach the project tracker in one step. | F-LEARN-7 |

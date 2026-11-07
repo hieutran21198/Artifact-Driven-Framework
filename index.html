@@ -41,7 +41,11 @@ section{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}
 .link{font-size:15px}
 
 /* story */
-.panel{background:var(--panel);border-radius:20px;padding:24px;display:grid;gap:18px;min-width:0}
+.panel{position:relative;background:var(--panel);border-radius:20px;padding:24px;display:grid;gap:18px;min-width:0}
+.tip{position:absolute;left:0;top:0;z-index:5;max-width:260px;background:var(--ink);color:var(--paper);font-size:14px;line-height:1.5;padding:10px 12px;border-radius:10px;pointer-events:none;opacity:0;transition:opacity .2s}
+.tip.on{opacity:1}
+#stage .it,#stage .box{cursor:default}
+#stage .it:hover{box-shadow:0 0 0 1.5px var(--faint)}
 .steps{display:flex;gap:4px 18px;flex-wrap:wrap;align-items:center}
 .steps button{font:400 14px/1 var(--body);color:var(--faint);background:none;border:0;border-bottom:1px solid transparent;padding:6px 0;cursor:pointer;transition:color .4s,border-color .4s}
 .steps button[aria-current="step"]{color:var(--ink);border-bottom-color:var(--ink)}
@@ -106,7 +110,8 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
   <section aria-labelledby="story-h">
     <div style="display:grid;gap:6px">
       <h2 id="story-h">Example: borrowing a book</h2>
-      <p class="label">A small library, the same example every new project starts with.</p>
+      <p class="lede" style="font-size:16px">A library lends books to its members. A member picks a book from the shelf and takes it home. They bring it back within 14 days, and the book goes back on the shelf. If it is late, the library sends them a note.</p>
+      <p class="label">Every new project starts with this example. Point at any block to see what it is.</p>
     </div>
     <div class="panel">
       <div class="steps" id="steps" role="group" aria-label="Steps of the story"></div>
@@ -287,6 +292,7 @@ function layout() {
 function put(id, x, y, o) { const e = document.getElementById(id); e.style.transform = `translate(${x}px,${y}px)`; e.style.opacity = o; }
 function show(n) {
   step = (n + STEPS.length) % STEPS.length;
+  if (typeof hideTip === 'function') hideTip();
   const s = step, g = lay, hot = s === 6, dim = id => hot && !HIT.has(id);
   const [gw, , x0, y0, x1, y1] = g.goal;
   put('goal', s ? x1 : x0, s ? y1 : y0, dim('goal') ? .3 : 1);
@@ -307,12 +313,47 @@ function show(n) {
 }
 function playStory(on) {
   clearInterval(timer); timer = null;
-  if (on) timer = setInterval(() => show(step + 1), 4600);
+  if (on) timer = setInterval(() => { if (!hover) show(step + 1); }, 4600);
   document.getElementById('play').innerHTML = ic(on ? 'pause' : 'play') + (on ? 'Pause' : 'Play');
 }
 function showStep(i) { playStory(false); show(i); }
 STEPS.forEach((n, i) => { const b = document.createElement('button'); b.type = 'button'; b.innerHTML = ic(STEP_ICONS[i]) + n; b.onclick = () => showStep(i); document.getElementById('steps').appendChild(b); });
 document.getElementById('play').onclick = () => playStory(!timer);
+const TIPS = {
+  goal: 'The goal: what a person wants to get done. Here, a member wants to borrow a book and bring it back.',
+  fB: 'Borrowing: the steps from picking a book to taking it home.',
+  fR: 'Returning: the steps from bringing a book back to having it on the shelf again.',
+  r0: 'Only a book on the shelf can be lent. A book someone already has cannot be lent again.',
+  r1: 'A borrowed book is due back 14 days later.',
+  r2: 'A member can hold only a set number of books at once.',
+  r3: 'When a book comes back, it is free for the next person.',
+  r4: 'A book that is not back by its due date is marked late.',
+  r5: 'Each notice goes to one person only.',
+  aB: 'Books: everything about the books, such as whether one is on the shelf and when it is due.',
+  aM: 'Members: everything about the people who borrow, such as how many books they hold.',
+  aN: 'Notices: the messages the library sends, such as a note that a book is late.',
+  web: 'The website shows books and members, so it relies on both groups.',
+  mob: 'The phone app shows books, so it relies only on the Books group.'
+};
+const panel = document.querySelector('.panel'), tip = document.createElement('div');
+tip.className = 'tip'; tip.setAttribute('role', 'tooltip'); panel.appendChild(tip);
+let hover = null;
+function explainBlock(e) {
+  const t = e.target.closest('.it,.box');
+  if (!t || !stage.contains(t) || t.style.opacity === '0') return hideTip();
+  hover = t;
+  let text = TIPS[t.id];
+  if (t.id[0] === 'r' && step >= 5) text += RULES[+t.id.slice(1)][2] ? ' It has a test.' : ' It has no test.';
+  tip.textContent = text; tip.classList.add('on');
+  const p = panel.getBoundingClientRect(), r = t.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
+  const x = Math.max(8, Math.min(r.left - p.left + r.width / 2 - w / 2, p.width - w - 8));
+  let y = r.top - p.top - h - 8; if (y < 8) y = r.bottom - p.top + 8;
+  tip.style.transform = `translate(${x}px,${y}px)`;
+}
+function hideTip() { hover = null; tip.classList.remove('on'); }
+stage.addEventListener('mouseover', explainBlock);
+stage.addEventListener('click', explainBlock);
+stage.addEventListener('mouseleave', hideTip);
 new ResizeObserver(layout).observe(wrap);
 layout();
 playStory(!reduce);

@@ -27,6 +27,13 @@ x-commands:
       $ref: '#/components/schemas/ShowStepInput'
     output:
       $ref: '#/components/schemas/StoryState'
+  explainBlock:
+    caller: A reader who points at a block of the story, or taps it.
+    description: Shows what the block is in the sample, in plain words (INTRO-9).
+    input:
+      $ref: '#/components/schemas/ExplainBlockInput'
+    output:
+      $ref: '#/components/schemas/ExplainBlockOutput'
   copyInstall:
     caller: A reader who presses the copy button next to the install command.
     description: Puts the install command on the clipboard of the reader.
@@ -69,6 +76,22 @@ components:
         playing:
           type: boolean
           description: True while the story goes from step to step by itself (INTRO-5).
+    ExplainBlockInput:
+      type: object
+      required: [block]
+      properties:
+        block:
+          type: string
+          description: The block of the story the reader points at, such as the goal, a flow, a rule, a group or an app.
+          example: Borrowing
+    ExplainBlockOutput:
+      type: object
+      required: [text]
+      properties:
+        text:
+          type: string
+          description: What the block is in the sample, in plain words. On the test step, a rule also says whether it has a test (INTRO-9).
+          example: A borrowed book is due back 14 days later.
     CopyInstallOutput:
       type: object
       required: [clipboard]

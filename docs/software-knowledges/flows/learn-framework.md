@@ -22,6 +22,8 @@ next.
    motion (INTRO-5). The story goes through its steps (INTRO-1), with the
    names and IDs of the sample (INTRO-2).
 2. The reader picks a step with `showStep`. The story stops there (INTRO-5).
+   The reader points at a block with `explainBlock` to read what it is
+   (INTRO-9).
 3. The reader reads the card for their role and follows the link of a
    question (INTRO-6), such as `openTracker`.
 4. The reader copies the install command with `copyInstall` and runs
@@ -63,6 +65,7 @@ sequenceDiagram
 | F-LEARN-8 | A folder that does not exist | The reader calls `copyInstall` and runs the copied command in a shell, which calls `installWorkspace` | A workspace is created in that folder from main | WS-1, WS-2, WS-4 |
 | F-LEARN-9 | A browser 360 px wide, on a system that uses a dark theme | The reader opens the page and calls `showStep` with each step | The page stays light, every step reads, and the page needs no horizontal scrolling | INTRO-7 |
 | F-LEARN-10 | The page file served with no access to another host | The reader opens it, which calls `playStory` | The story plays through all its steps, in the fonts of the system | INTRO-8 |
+| F-LEARN-11 | The story playing at the rule step | The reader points at a rule, which calls `explainBlock` | The rule is explained in plain words, and the story does not move on until the reader points away | INTRO-9, INTRO-5 |
 
 ## Open questions
 
