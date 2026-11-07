@@ -26,7 +26,10 @@ folders exists, the site leaves that service out of API coverage. The `tests`
 of a service or a client say where its tests live: `folder` (relative to the
 root) and `glob`, by default `**/*_test.*`; `e2e` has the same two keys. The
 test check and the test coverage read the tests of every part, end-to-end
-tests included, whose folder exists.
+tests included, whose folder exists. A `tests` setting may also name the
+part's GitHub `repository`, as `owner/repo` or `owner/repo@branch`; the
+scripts ignore it, and the [knowledge viewer](../web/README.md) reads the tests
+from there.
 
 The template's [artifact-driven.json](../artifact-driven.json) has the two
 services of the reference pass, `lending` and `notification`, each a Go service

@@ -40,8 +40,10 @@ has a `README.md` that explains its purpose and links to its contents.
    clone.
 7. [Scripts](scripts/README.md): the checks, the impact analysis and the
    knowledge site, set up by [artifact-driven.json](artifact-driven.json).
-8. [Agent resources](.agents/README.md): the agent team and its skills.
-9. [Claude Code](.claude/README.md): links Claude Code reads.
+8. [Knowledge viewer](web/README.md): the knowledge site of several projects
+   in the browser, read from GitHub, with no Python or clone.
+9. [Agent resources](.agents/README.md): the agent team and its skills.
+10. [Claude Code](.claude/README.md): links Claude Code reads.
 
 The [software knowledge](docs/software-knowledges/README.md) holds a reference
 pass: a small library lending service, written from system down to client

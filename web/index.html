@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Knowledge Viewer</title>
+<link rel="icon" href="data:,">
+<style>
+:root{--bg:#fff;--fg:#1a1a1a;--muted:#666;--line:#ddd;--accent:#2457c5}
+@media (prefers-color-scheme:dark){:root{--bg:#141414;--fg:#eee;--muted:#999;--line:#333;--accent:#7aa2ff}}
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.4 system-ui,sans-serif;background:var(--bg);color:var(--fg);display:flex;flex-direction:column;height:100vh}
+header{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid var(--line)}
+label{display:flex;flex-direction:column;gap:2px;font-size:12px;color:var(--muted)}
+input,textarea,button{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+textarea{width:320px;height:58px;resize:vertical}
+button{cursor:pointer;align-self:flex-end}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+#tabs{display:flex;gap:4px;flex-wrap:wrap;padding:6px 16px;border-bottom:1px solid var(--line)}
+#tabs button{align-self:auto}
+#tabs button[aria-pressed=true]{border-color:var(--accent);color:var(--accent)}
+#status{padding:4px 16px;font-size:12px;color:var(--muted);min-height:22px}
+iframe{flex:1;border:0;width:100%;background:#fff}
+#coverage{padding:0 16px 6px;font-size:12px}
+#coverage summary{cursor:pointer;color:var(--accent)}
+#coverage p{margin:6px 0;color:var(--muted);max-width:820px}
+#coverage pre{margin:0;max-height:30vh;overflow:auto;white-space:pre-wrap;border:1px solid var(--line);border-radius:6px;padding:8px}
+</style>
+</head>
+<body>
+<header>
+  <label>GitHub token (read-only; kept in this tab only)
+    <input id="token" type="password" autocomplete="off" placeholder="optional for public repositories">
+  </label>
+  <label>Projects: one owner/repo or owner/repo@branch per line
+    <textarea id="projects" spellcheck="false"></textarea>
+  </label>
+  <button id="reload" class="primary">Reload</button>
+</header>
+<nav id="tabs"></nav>
+<div id="status"></div>
+<details id="coverage" hidden>
+  <summary>Rule coverage</summary>
+  <p><b>Coverage tells whether each rule is in the code, not whether the
+  project is right.</b> A rule counts as covered when a test of a service, a
+  client or the end-to-end suite names its ID. It does not check that the test
+  passes, that the code does what the rule says, or that the rule is the right
+  one for the business.<br>
+  <b>Độ phủ chỉ cho biết rule đã có trong code hay chưa, không cho biết
+  project đúng hay sai.</b> Một rule được tính là đã phủ khi có test của
+  service, client hoặc bộ end-to-end ghi tên ID của nó. Nó không kiểm test có
+  pass không, code có làm đúng như rule không, hay rule có đúng nghiệp vụ
+  không.</p>
+  <pre id="coverage-text"></pre>
+</details>
+<iframe id="view" title="Knowledge site"></iframe>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<script>
+// Builds the knowledge site of each project in the browser: the files come
+// from the GitHub API at the branch's current commit, and Pyodide runs the
+// framework's own scripts on them. Nothing leaves the browser.
+const API = "https://api.github.com";
+const SCRIPTS = ["project.py", "impact.py", "site.py", "site.html"];
+const $ = id => document.getElementById(id);
+const store = {
+  get(area, key) { try { return window[area].getItem(key); } catch { return null; } },
+  set(area, key, value) { try { window[area].setItem(key, value); } catch {} },
+};
+const pages = {};
+let pyodide = null, current = null;
+
+$("token").value = store.get("sessionStorage", "token") || "";
+$("projects").value = store.get("localStorage", "projects") || "";
+$("token").onchange = () => store.set("sessionStorage", "token", $("token").value.trim());
+$("projects").onchange = () => store.set("localStorage", "projects", $("projects").value);
+$("reload").onclick = reload;
+
+function status(text) { $("status").textContent = text; }
+
+async function gh(path) {
+  const headers = { Accept: "application/vnd.github+json" };
+  const token = $("token").value.trim();
+  if (token) headers.Authorization = "Bearer " + token;
+  const res = await fetch(API + path, { headers });
+  if (res.status === 404 || res.status === 401) throw new Error("not found, or the token cannot read it");
+  if (res.status === 403) throw new Error("GitHub refused the request: rate limit reached, or the token lacks access");
+  if (!res.ok) throw new Error(`GitHub answered ${res.status}`);
+  return res.json();
+}
+
+// A blob's SHA is the hash of its content, so a cached blob never goes stale.
+async function blob(repo, sha) {
+  const key = "blob:" + sha;
+  const cached = store.get("localStorage", key);
+  if (cached !== null) return cached;
+  const data = await gh(`/repos/${repo}/git/blobs/${sha}`);
+  const bytes = Uint8Array.from(atob(data.content.replace(/\n/g, "")), c => c.charCodeAt(0));
+  const text = new TextDecoder().decode(bytes);
+  store.set("localStorage", key, text);
+  return text;
+}
+
+async function inBatches(items, size, fn) {
+  const out = [];
+  for (let i = 0; i < items.length; i += size) out.push(...await Promise.all(items.slice(i, i + size).map(fn)));
+  return out;
+}
+
+async function tree(repo, ref) {
+  const head = await gh(`/repos/${repo}/commits/${encodeURIComponent(ref || "HEAD")}`);
+  const tree = await gh(`/repos/${repo}/git/trees/${head.commit.tree.sha}?recursive=1`);
+  if (tree.truncated) throw new Error(repo + ": the tree is too large for one request");
+  return { sha: head.sha.slice(0, 7), entries: Object.fromEntries(tree.tree.filter(e => e.type === "blob").map(e => [e.path, e.sha])) };
+}
+
+// A glob of artifact-driven.json, such as **/*_test.go, as a regular expression.
+function globRe(glob) {
+  const re = glob.split("**/").map(part => part.replace(/[.+^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^/]*").replace(/\?/g, "[^/]")).join("(?:.*/)?");
+  return new RegExp("^" + re + "$");
+}
+
+// The tests of each part whose tests setting names a repository: the files
+// that match its glob, placed in the part's folder as if it were cloned there.
+async function tests(config) {
+  const parts = [...Object.values(config.services || {}), ...Object.values(config.clients || {})]
+    .map(p => p && typeof p === "object" ? p.tests : null);
+  if (config.e2e) parts.push(config.e2e);
+  const out = {};
+  for (const t of parts.filter(t => t && t.repository && t.folder)) {
+    const [repo, ref] = t.repository.split("@");
+    const { entries } = await tree(repo, ref);
+    const match = globRe(t.glob || "**/*_test.*");
+    const paths = Object.keys(entries).filter(p => match.test(p));
+    const texts = await inBatches(paths, 8, p => blob(repo, entries[p]));
+    paths.forEach((p, i) => out[t.folder.replace(/\/+$/, "") + "/" + p] = texts[i]);
+  }
+  return out;
+}
+
+async function files(repo, ref) {
+  const { sha, entries } = await tree(repo, ref);
+  if (!entries["artifact-driven.json"]) throw new Error(repo + ": no artifact-driven.json at its root");
+  const config = JSON.parse(await blob(repo, entries["artifact-driven.json"]));
+  const knowledge = (config.knowledge || "docs/software-knowledges").replace(/\/+$/, "") + "/";
+  const wanted = Object.keys(entries).filter(p => p.startsWith(knowledge) && /\.(md|ya?ml)$/.test(p));
+  const texts = await inBatches(wanted, 8, p => blob(repo, entries[p]));
+  const out = { "artifact-driven.json": JSON.stringify(config), ...await tests(config) };
+  wanted.forEach((p, i) => out[p] = texts[i]);
+  return { sha, files: out };
+}
+
+async function python() {
+  if (pyodide) return pyodide;
+  status("Loading Python…");
+  pyodide = await loadPyodide();
+  const scripts = await Promise.all(SCRIPTS.map(name => fetch("../scripts/" + name).then(r => r.text())));
+  SCRIPTS.forEach((name, i) => pyodide.globals.set("_" + name.replace(".", "_"), scripts[i]));
+  return pyodide;
+}
+
+async function build(repo, ref) {
+  const { sha, files: tree } = await files(repo, ref);
+  const py = await python();
+  py.globals.set("tree", py.toPy(tree));
+  py.globals.set("sha", sha);
+  return py.runPython(`
+import os, shutil, sys
+from pathlib import Path
+root = Path("/work")
+shutil.rmtree(root, ignore_errors=True)
+for path, text in tree.items():
+    target = root / path
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(text, encoding="utf-8")
+scripts = root / "scripts"
+scripts.mkdir(exist_ok=True)
+for name, text in {"project.py": _project_py, "impact.py": _impact_py, "site.py": _site_py, "site.html": _site_html}.items():
+    (scripts / name).write_text(text, encoding="utf-8")
+os.chdir(root)
+# project.py finds the repository from the current directory when imported,
+# so each project imports the scripts afresh. site.py is loaded by path: the
+# name "site" is taken by Python's own module.
+for name in ("project", "impact"):
+    sys.modules.pop(name, None)
+sys.path.insert(0, str(scripts))
+import importlib.util
+spec = importlib.util.spec_from_file_location("knowledge_site", scripts / "site.py")
+knowledge_site = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(knowledge_site)
+knowledge_site.commit = lambda: sha
+knowledge_site.main([str(root / "out.html")])
+import contextlib, io
+report = io.StringIO()
+with contextlib.redirect_stdout(report), contextlib.redirect_stderr(report):
+    sys.modules["impact"].coverage(sys.modules["impact"].build(), sys.modules["impact"].test_folders())
+sys.path.remove(str(scripts))
+[(root / "out.html").read_text(encoding="utf-8"), report.getvalue()]
+`).toJs();
+}
+
+function show(name) {
+  current = name;
+  const [html, coverage] = pages[name] || ["", ""];
+  $("view").srcdoc = html;
+  $("coverage").hidden = !coverage;
+  $("coverage-text").textContent = coverage;
+  [...$("tabs").children].forEach(b => b.setAttribute("aria-pressed", b.textContent === name));
+}
+
+async function reload() {
+  const lines = $("projects").value.split("\n").map(l => l.trim()).filter(Boolean);
+  store.set("localStorage", "projects", $("projects").value);
+  store.set("sessionStorage", "token", $("token").value.trim());
+  $("reload").disabled = true;
+  $("tabs").innerHTML = "";
+  const failed = [];
+  for (const line of lines) {
+    const [repo, ref] = line.split("@");
+    status(`Reading ${line}…`);
+    try {
+      pages[line] = await build(repo, ref);
+      const tab = document.createElement("button");
+      tab.textContent = line;
+      tab.onclick = () => show(line);
+      $("tabs").append(tab);
+    } catch (e) {
+      failed.push(`${line}: ${e.message}`);
+    }
+  }
+  $("reload").disabled = false;
+  const built = Object.keys(pages).filter(n => lines.includes(n));
+  if (built.length) show(built.includes(current) ? current : built[0]);
+  status(failed.length ? "Failed: " + failed.join(" · ") : `Built ${built.length} project(s).`);
+}
+
+if ($("projects").value.trim()) reload();
+</script>
+</body>
+</html>
