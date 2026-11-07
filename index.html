@@ -176,7 +176,7 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
     <p class="lede">A simple way to keep software development clear for years, with fast analysis and a quick view of what every change affects. No cost, no overhead.</p>
     <div class="actions">
       <a class="btn" href="#install" data-i="terminal">Set it up</a>
-      <a class="link" id="tracker" href="https://github.com/hieutran21198/Artifact-Driven-Framework">Project tracker</a>
+      <a class="link" href="tracker/">Project tracker</a>
       <a class="link" href="framework.html">How the framework works</a>
     </div>
   </header>
@@ -274,8 +274,8 @@ func TestLendBookOnLoan(t *testing.T) {
         <h3 data-i="briefcase">Stakeholder</h3>
         <p>You follow a project someone builds for you.</p>
         <ul>
-          <li><a class="trk" href="#">How much is in the product</a></li>
-          <li><a class="trk" href="#">How each flow works</a></li>
+          <li><a href="tracker/">How much is in the product</a></li>
+          <li><a href="tracker/">How each flow works</a></li>
           <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/scripts/README.md#impact">What a change affects</a></li>
         </ul>
       </div>
@@ -324,7 +324,7 @@ func TestLendBookOnLoan(t *testing.T) {
     <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/README.md">Docs</a>
     <a href="https://github.com/hieutran21198/Artifact-Driven-Framework">Source</a>
     <a href="framework.html">Framework</a>
-    <a class="trk" href="#">Project tracker</a>
+    <a href="tracker/">Project tracker</a>
   </footer>
 </main>
 
@@ -355,8 +355,6 @@ const ICON = {
 };
 const ic = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
 document.querySelectorAll('[data-i]').forEach(e => e.insertAdjacentHTML('afterbegin', ic(e.dataset.i)));
-const TRACKER = document.getElementById('tracker').href;
-document.querySelectorAll('.trk').forEach(a => a.href = TRACKER);
 
 const STEPS = ['Goal','Flows','Rules','Artifacts','Apps','Scan','A change'];
 const STEP_ICONS = ['goal','flow','rule','artifact','app','scan','change'];
