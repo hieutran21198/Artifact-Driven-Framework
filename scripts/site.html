@@ -238,7 +238,7 @@ function renderResults(){
  if(selected&&S.has(selected))select(selected);else $("detail").innerHTML=`<p class="muted">${T("selectNode")}</p>`;
 }
 const LAYER=["system/","goals/","flows/"],svgs={};let shown=[],mermaidOn=false;
-function mermaidReady(){mermaid.initialize({startOnLoad:false,theme:matchMedia("(prefers-color-scheme: dark)").matches?"dark":"default"});mermaidOn=true;if(analysis)drawDiagrams(shown);}
+function mermaidReady(){mermaid.initialize({startOnLoad:false,theme:{light:"default",dark:"dark"}[document.documentElement.dataset.theme]||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"default")});mermaidOn=true;if(analysis)drawDiagrams(shown);}
 function drawDiagrams(list){shown=list.sort((a,b)=>LAYER.findIndex(l=>a.page.startsWith(l))-LAYER.findIndex(l=>b.page.startsWith(l))||a.i-b.i);
  $("diagram-cards").innerHTML=(window.mermaid?"":`<p class="muted" style="font-size:13px">${T("diagrams.offline")}</p>`)+shown.map(d=>`<div class="card diagram" style="margin-bottom:12px"><h3>${esc(d.title)}${d.section?` <span class="muted">· ${esc(d.section)}</span>`:""}</h3><p class="sub" style="margin:2px 0 8px"><code>${esc(d.page)}</code></p><div id="mm${d.i}">${svgs[d.i]||`<pre>${esc(d.code)}</pre>`}</div></div>`).join("");
  if(mermaidOn)shown.filter(d=>!svgs[d.i]).forEach(d=>mermaid.render("mmsvg"+d.i,d.code).then(r=>{svgs[d.i]=r.svg;const e=$("mm"+d.i);if(e)e.innerHTML=r.svg;}).catch(()=>{}));}
