@@ -48,9 +48,16 @@ x-commands:
       type: object
     output:
       $ref: '#/components/schemas/CopyInstallOutput'
+  openMethod:
+    caller: A reader who follows the link to the how-we-work page.
+    description: Opens the page that shows how a requirement is broken down and who does what (INTRO-15).
+    input:
+      type: object
+    output:
+      type: object
   openTracker:
     caller: A reader who follows the link to the project tracker.
-    description: Opens the project tracker (INTRO-6).
+    description: Opens the project tracker (INTRO-15).
     input:
       type: object
     output:
