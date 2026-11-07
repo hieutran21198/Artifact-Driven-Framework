@@ -24,6 +24,9 @@ Each term is defined once, here. Other pages use it without restating it.
 | Check | A script that finds broken knowledge or broken tests and fails when it finds them. |
 | Gate | The checks that a pull request into the default branch must pass. |
 | Blast radius | What a change to one unit affects, counted by kind. |
+| Landing page | The page `index.html` at the root of the framework, which introduces it. |
+| Story | The steps of the landing page that show the sample, one layer at a time. |
+| Project tracker | The page that shows the knowledge of a workspace and its coverage, for readers who do not read the repository. |
 | Coverage | The share of the knowledge IDs a goal relies on that tests name. |
 
 Return to [system](README.md).
