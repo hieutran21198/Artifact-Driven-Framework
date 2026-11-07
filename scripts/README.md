@@ -28,7 +28,7 @@ root) and `glob`, by default `**/*_test.*`; `e2e` has the same two keys. The
 test check and the test coverage read the tests of every part, end-to-end
 tests included, whose folder exists. A `tests` setting may also name the
 part's GitHub `repository`, as `owner/repo` or `owner/repo@branch`; the
-scripts ignore it, and the [knowledge viewer](../web/README.md) reads the tests
+scripts ignore it, and the [project tracker](https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/tracker/README.md) reads the tests
 from there.
 
 The template's [artifact-driven.json](../artifact-driven.json) has the two

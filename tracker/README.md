@@ -1,8 +1,8 @@
-# Knowledge viewer
+# Project tracker
 
 [index.html](index.html) shows the [knowledge site](../scripts/README.md#knowledge-site)
-of the workspaces that use this framework, with no Python, no clone and no
-server of its own. Open it from any static host that also serves
+and the coverage of the workspaces that use this framework, with no Python,
+no clone and no server of its own. Open it from any static host that also serves
 [scripts](../scripts/README.md), such as the GitHub Pages of this repository
 or `python3 -m http.server` at its root.
 

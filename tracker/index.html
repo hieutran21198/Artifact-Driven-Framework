@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Knowledge Viewer</title>
+<title>Project tracker</title>
 <link rel="icon" href="data:,">
 <style>
 :root{--bg:#fff;--fg:#1a1a1a;--muted:#666;--line:#ddd;--accent:#2457c5;--warn:#a15c00}
@@ -251,6 +251,13 @@ async function readGitHub(w, ref, partRefs) {
   const paths = Object.keys(entries).filter(p => isKnowledge(conf, p));
   const files = { "artifact-driven.json": JSON.stringify(conf) };
   (await inBatches(paths, 8, p => blob(w.repo, entries[p]))).forEach((t, i) => files[paths[i]] = t);
+  // A part with no repository keeps its tests in this one, under its folder.
+  for (const [, t] of testParts(conf).filter(([, t]) => !t.repository)) {
+    const folder = t.folder.replace(/\/+$/, "") + "/";
+    const match = globRe(t.glob || "**/*_test.*");
+    const tests = Object.keys(entries).filter(p => p.startsWith(folder) && match.test(p.slice(folder.length)));
+    (await inBatches(tests, 8, p => blob(w.repo, entries[p]))).forEach((text, i) => files[tests[i]] = text);
+  }
   // Each part's tests come from its repository, placed in its folder as if cloned there.
   for (const [name, t] of testParts(conf).filter(([, t]) => t.repository)) {
     const [repo, branch] = t.repository.split("@");
