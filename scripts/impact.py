@@ -72,7 +72,7 @@ def read_contract(graph, path):
             unit, kind = page, None
         if line.startswith("paths:"):
             kind = "paths"
-        if line.startswith("x-triggers:"):
+        if line.startswith(("x-triggers:", "x-commands:")):
             kind = "x-triggers"
         component = re.match(r"^  (\w+):$", line)
         if component and kind == "x-triggers":

@@ -74,8 +74,9 @@ python3 scripts/check_docs.py
 It checks every Markdown file outside the `skip` folders for broken relative
 links and missing heading anchors. In the knowledge folder it checks that
 every cited ID is defined, once, and not withdrawn; that every scenario that is
-not withdrawn names an `operationId` or a trigger under `x-triggers`; and that
-every operation and trigger is named by a scenario. It also checks the
+not withdrawn names an `operationId`, a trigger under `x-triggers` or a
+command under `x-commands`; and that every one of them is named by a
+scenario. It also checks the
 citation direction: a flow names no goal criterion, and an artifact names no
 goal criterion or flow scenario. It lists the problems and exits with status 1
 when it finds any.
@@ -142,10 +143,10 @@ python3 scripts/impact.py --coverage tests
 python3 scripts/impact.py --questions
 ```
 
-A worker trigger declared under `x-triggers` counts as an operation, a client
-page heading that names a payload schema cites that schema, and a heading that
+A worker trigger under `x-triggers` and a command under `x-commands` count
+as operations, a client page heading that names a payload schema cites that schema, and a heading that
 names a rule ID (`### BK-4`) cites that rule. A scenario that names no
-operation, trigger or rule is invisible to it.
+operation, trigger, command or rule is invisible to it.
 
 ## Knowledge site
 

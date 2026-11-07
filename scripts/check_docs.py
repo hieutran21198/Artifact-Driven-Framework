@@ -79,9 +79,9 @@ def check_ids():
 
 
 def triggers(text):
-    """The names declared under the root key x-triggers of a contract."""
-    block = re.search(r"^x-triggers:\n((?:[ \t]+.*\n?|\n)*)", text, re.MULTILINE)
-    return set(re.findall(r"^  (\w+):", block.group(1), re.MULTILINE)) if block else set()
+    """The names declared under the root keys x-triggers and x-commands of a contract."""
+    return {name for block in re.finditer(r"^x-(?:triggers|commands):\n((?:[ \t]+.*\n?|\n)*)", text, re.MULTILINE)
+            for name in re.findall(r"^  (\w+):", block.group(1), re.MULTILINE)}
 
 
 def check_scenarios():
@@ -122,7 +122,7 @@ def main():
         print(problem, file=sys.stderr)
     if problems:
         return 1
-    print("Docs check passed: links, anchors, knowledge IDs, citation direction, and scenarios and the operations or triggers they name.")
+    print("Docs check passed: links, anchors, knowledge IDs, citation direction, and scenarios and the operations, triggers or commands they name.")
     return 0
 
 

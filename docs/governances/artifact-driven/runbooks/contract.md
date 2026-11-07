@@ -15,6 +15,7 @@ Samples: [book contract](https://github.com/hieutran21198/Artifact-Driven-Framew
 | Is called by an external system, such as a webhook | `flows/<flow>.openapi.yaml` of the flow it starts |
 | A push, email or deep link a flow sends | `components/schemas` of that flow's contract |
 | A timer or schedule that starts a worker | `x-triggers` of the flow it starts, with its input under `components/schemas` |
+| A CLI command or an action in a client's interface | `x-commands` of the artifact or flow it belongs to, with its input and output under `components/schemas` |
 | A message a service publishes to a queue or a topic | `components/schemas` of the flow that publishes it, and `x-triggers` of each flow it starts in another service |
 | Shared parts: errors, authentication | `system/openapi.yaml` |
 

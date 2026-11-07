@@ -17,7 +17,7 @@ each citing only the layers below it:
 | --- | --- | --- |
 | System | Purpose, actors, services, clients, system-wide requirements, glossary, shared contract parts | `SYS-n` |
 | Goal | A business outcome and its success criteria | `G-<GOAL>-n` |
-| Flow | Behavior across artifacts, as testable scenarios that each name an operation or a trigger | `F-<FLOW>-n` |
+| Flow | Behavior across artifacts, as testable scenarios that each name an operation, a trigger or a command | `F-<FLOW>-n` |
 | Artifact | One domain: model, rules, lifecycle, OpenAPI contract, and what each client needs | `<PREFIX>-n` |
 
 Every fact has one owner and an ID; other pages cite the ID. Because every
