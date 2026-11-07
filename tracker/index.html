@@ -715,11 +715,20 @@ function drawCoverage(b) {
 function drawSite(html) {
   $("site").hidden = false;
   const frame = $("view");
+  // The frame never scrolls: the page scrolls once. Its height follows the
+  // content, and an open drop-down list, which does not take room of its own.
+  frame.setAttribute("scrolling", "no");
   frame.onload = () => {
     const doc = frame.contentDocument;
-    const fit = () => { frame.style.height = doc.documentElement.scrollHeight + "px"; };
+    doc.documentElement.style.overflow = "hidden";
+    const fit = () => {
+      const lists = [...doc.querySelectorAll("details[open] > .drop-list")].map(e => e.getBoundingClientRect().bottom + 16);
+      frame.style.height = Math.ceil(Math.max(doc.body.scrollHeight, ...lists)) + "px";
+    };
     fit();
     new ResizeObserver(fit).observe(doc.body);
+    doc.addEventListener("toggle", fit, true);
+    if (doc.fonts) doc.fonts.ready.then(fit);
   };
   frame.srcdoc = html.replace(/<html([^>]*)>/i, '<html$1 data-theme="light">');
 }
