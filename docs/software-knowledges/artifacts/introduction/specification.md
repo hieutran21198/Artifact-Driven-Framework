@@ -47,6 +47,7 @@ solution architect and the product owner.
 | INTRO-10 | Above the story, the page names the layers in order - goal, flow, rule, artifact, client - each with one plain sentence and an example from the sample. | — |
 | INTRO-11 | Below the story, the page lists in order the steps to break a requirement down, from the goal to the test that mentions a rule, each with an example from the sample and a small diagram of that example, such as a sequence for a flow, and a diagram that splits one requirement sentence into the parts of each step. It uses only common technical words. | — |
 | INTRO-12 | After the steps, the page names the method behind them - domains first, contracts first, a diagram for every layer - and shows how it relates to Domain-Driven Design. Each step that follows a known method carries its name as a label. | — |
+| INTRO-13 | The page links the framework page at its top and at its foot. | — |
 
 ## Lifecycle
 

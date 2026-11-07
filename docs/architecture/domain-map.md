@@ -14,6 +14,7 @@ architecture change first.
 | `configuration` | `scripts` | The root of a workspace and the settings in `artifact-driven.json` | — |
 | `repository` | `scripts` | The folders and Markdown pages of a workspace, and their links | — |
 | `knowledge` | `scripts` | Knowledge IDs, operations and the citations between units | — |
+| `guide` | `landing` | The framework page: what the framework is and the parts it has | — |
 | `introduction` | `landing` | The landing page: its story, its reader cards and its links | — |
 | `test` | `scripts` | Which knowledge IDs the test files of a part name, and how strongly each is proved | — |
 
