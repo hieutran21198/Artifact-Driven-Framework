@@ -1,28 +1,35 @@
 # Services
 
-The services of the product: one or many, such as one backend API or several
-microservices behind an API gateway. Each one is a separate clone that this
-workspace ignores, with its own README and agent instructions for building,
-running and testing it. Fill in one row per service; the directory name is
-the service name in the [domain map](../docs/architecture/domain-map.md) and in
+The parts of the framework that the team builds and releases. Unlike the
+services of a workspace, they live in this repository, not in separate
+clones. The service name is the one in the
+[domain map](../docs/architecture/domain-map.md) and in
 [artifact-driven.json](../artifact-driven.json).
 
-| Directory | Repository | Owner | Stack |
-| --- | --- | --- | --- |
+| Service | Code | Tests | Owner | Stack |
+| --- | --- | --- | --- | --- |
+| `scripts` | [scripts](../scripts/README.md) | `tests/scripts` | `hieutran21198` | Python 3 |
+| `install` | [install.sh](../install.sh) | `tests/install` | `hieutran21198` | POSIX `sh` |
 
 The [domain map](../docs/architecture/domain-map.md) says which service serves
-each domain.
+each domain. A new workspace gets the empty table of
+[template](../template/services/README.md) in place of this page.
 
-Clone each service after cloning the workspace:
+## Change a service
 
-```sh
-git clone <repository URL> services/<name>
-```
+The implementer follows the [workflow](../docs/governances/artifact-driven/workflow.md)
+and these instructions in place of a stack skill:
 
-Each service's changes are made, reviewed and merged in its own repository by
-its implementer, and approved by its owner
-([team](../docs/governances/artifact-driven/team.md#parts-and-owners)). The
-scripts read each service's routes and tests as
-[artifact-driven.json](../artifact-driven.json) says.
+- Each service keeps the [system requirements](../docs/software-knowledges/system/requirements.md),
+  such as what it may need to run (SYS-1) and what it may change (SYS-4).
+- `scripts` reads [artifact-driven.json](../artifact-driven.json) through
+  `project.py`.
+- Tests use `unittest` and run with
+  `python3 -m unittest discover -s tests -t .`. A test is named after the ID
+  it proves, such as `test_SYS_1_...`, and its docstring names the ID, such
+  as `SYS-1`. A test of `install` runs `install.sh` with `AD_SOURCE` into a
+  temporary folder.
+- Tests stay under `tests/`, which `install.sh` never copies, so a workspace
+  does not get them.
 
 Return to the [project contents](../README.md).

@@ -1,0 +1,129 @@
+openapi: 3.0.3
+info:
+  title: Knowledge artifact
+  version: 0.1.0
+  description: >
+    Contract of the knowledge artifact. Written before the code (contract
+    first); the scripts service implements it. It has no HTTP endpoint; its
+    commands are under x-commands. Each command reads the knowledge folder and
+    changes nothing (SYS-4).
+servers:
+  - url: http://localhost
+    description: No server; the commands run on the machine of the caller.
+paths: {}
+x-commands:
+  traceImpact:
+    caller: A person or a coding agent, before a change, in any folder of a workspace.
+    description: >
+      python3 scripts/impact.py <name>. Lists what a change to the units the
+      name stands for affects (KN-7, KN-8, KN-10).
+    input:
+      $ref: '#/components/schemas/TraceInput'
+    output:
+      $ref: '#/components/schemas/TraceOutput'
+  traceDown:
+    caller: A person or a coding agent, before building, in any folder of a workspace.
+    description: >
+      python3 scripts/impact.py --down <name>. Lists what the units the name
+      stands for rely on (KN-7, KN-9, KN-10).
+    input:
+      $ref: '#/components/schemas/TraceInput'
+    output:
+      $ref: '#/components/schemas/TraceOutput'
+  countImpact:
+    caller: A person, in any folder of a workspace.
+    description: >
+      python3 scripts/impact.py --stats [name]. Counts the size of each goal
+      and the blast radius of each requirement, rule and operation, or both
+      counts for one name (KN-10, KN-11).
+    input:
+      $ref: '#/components/schemas/CountInput'
+    output:
+      $ref: '#/components/schemas/CountOutput'
+  listQuestions:
+    caller: A person, before a goal is built, in any folder of a workspace.
+    description: >
+      python3 scripts/impact.py --questions. Lists, for each goal, the open
+      questions that hold it (KN-12).
+    input:
+      $ref: '#/components/schemas/ListQuestionsInput'
+    output:
+      $ref: '#/components/schemas/ListQuestionsOutput'
+components:
+  schemas:
+    TraceInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          description: >
+            The only argument besides the option: a knowledge ID, a prefix, an
+            operation, a page path in the knowledge folder or a schema
+            property (KN-10).
+          example: checkDocs
+    TraceOutput:
+      type: object
+      required: [exit_status, stdout, stderr]
+      properties:
+        exit_status:
+          type: integer
+          enum: [0, 1, 2]
+          description: 0 when the name stands for a unit, 1 when it stands for nothing (KN-10), 2 when the command is not given exactly one name.
+        stdout:
+          allOf:
+            - $ref: '../../system/openapi.yaml#/components/schemas/Lines'
+          description: >
+            One line for each kind that has units, in this order - Requirements,
+            Goal criteria, Flow scenarios, Artifact rules, Operations, Contract
+            schemas, Client needs - each followed by its units in sorted order;
+            then one line of Pages.
+          example: ['Operations: checkDocs', 'Pages: flows/check-change.openapi.yaml']
+        stderr:
+          allOf:
+            - $ref: '../../system/openapi.yaml#/components/schemas/Lines'
+          description: When the name stands for nothing, one line that says so; on a usage error, the usage.
+    CountInput:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The only argument besides the option. A goal key, a knowledge ID or an operation (KN-10). Without it, every goal and every requirement, rule and operation is counted.
+          example: G-GATE
+    CountOutput:
+      type: object
+      required: [exit_status, stdout, stderr]
+      properties:
+        exit_status:
+          type: integer
+          enum: [0, 1]
+          description: 0 when counted, 1 when the name stands for nothing (KN-10).
+        stdout:
+          allOf:
+            - $ref: '../../system/openapi.yaml#/components/schemas/Lines'
+          description: >
+            Without a name, the size of each goal, then the blast radius of
+            each requirement, rule and operation, the most scenarios first,
+            then the most operations (KN-11). With a name, one line of what it
+            relies on and one line of what a change to it affects.
+        stderr:
+          allOf:
+            - $ref: '../../system/openapi.yaml#/components/schemas/Lines'
+          description: When the name stands for nothing, one line that says so.
+    ListQuestionsInput:
+      type: object
+      description: The command takes no argument besides the option.
+    ListQuestionsOutput:
+      type: object
+      required: [exit_status, stdout]
+      properties:
+        exit_status:
+          type: integer
+          enum: [0]
+        stdout:
+          allOf:
+            - $ref: '../../system/openapi.yaml#/components/schemas/Lines'
+          description: >
+            For each goal, the number of open questions that hold it, then
+            each one with its page (KN-12). Then the open questions that name
+            nothing in the knowledge.

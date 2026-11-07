@@ -56,7 +56,8 @@ own knowledge. Every directory has a `README.md` that explains its purpose.
    [CLAUDE.md](CLAUDE.md) points Claude Code at them.
 7. [Agent resources](.agents/README.md): the agent team and its skills.
 8. [Claude Code](.claude/README.md): links Claude Code reads.
-9. [Services](services/README.md), [applications](apps/README.md) and
+9. [Services](services/README.md): the parts of the framework, their owner
+   and how to change them. [Applications](apps/README.md) and
    [end-to-end tests](e2e/README.md): where a workspace clones its parts.
 10. [index.html](index.html): the landing page of the framework.
 

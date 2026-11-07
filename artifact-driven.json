@@ -1,8 +1,27 @@
 {
   "knowledge": "docs/software-knowledges",
-  "skip": [".git", "node_modules", "build", "template"],
+  "skip": [
+    ".git",
+    "node_modules",
+    "build",
+    "template",
+    "tests"
+  ],
   "clients": {},
-  "services": {},
+  "services": {
+    "scripts": {
+      "tests": {
+        "folder": "tests/scripts",
+        "glob": "**/test_*.py"
+      }
+    },
+    "install": {
+      "tests": {
+        "folder": "tests/install",
+        "glob": "**/test_*.py"
+      }
+    }
+  },
   "site": {
     "title": "Artifact Driven knowledge",
     "output": "build/site/index.html"
