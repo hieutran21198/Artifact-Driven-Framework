@@ -12,10 +12,12 @@ servers:
 paths: {}
 x-commands:
   openWorkspace:
-    caller: The page when it opens, or a reader who picks a workspace, a ref or the ref of a part.
+    caller: The page when it opens with a workspace in its address, or a reader who presses Load.
     description: >
-      Shows the build of the workspace at the ref, building it when it is not
-      kept (TRK-1 to TRK-5, TRK-9).
+      Reads the commit and the file tree of the workspace's ref and of each
+      part's ref, downloads the files it does not keep, and shows the build,
+      building again only when a commit or the configuration changed
+      (TRK-1 to TRK-5, TRK-9).
     input:
       $ref: '#/components/schemas/OpenWorkspaceInput'
     output:
@@ -27,18 +29,55 @@ x-commands:
       $ref: '#/components/schemas/ListRefsInput'
     output:
       $ref: '#/components/schemas/ListRefsOutput'
-  reloadBuild:
-    caller: A reader who presses Reload.
-    description: Reads the ref again and builds it, downloading only the files that changed (TRK-5).
+  setToken:
+    caller: A reader who sets or removes a token in the settings.
+    description: Keeps a read-only token under a name until the tab closes, or removes it (TRK-6).
+    input:
+      $ref: '#/components/schemas/SetTokenInput'
+    output:
+      type: object
+  addWorkspace:
+    caller: A reader who adds a repository in the settings.
+    description: Adds the repository with its branch and the token picked, or none, and checks it (TRK-6, TRK-7, TRK-11).
+    input:
+      $ref: '#/components/schemas/AddWorkspaceInput'
+    output:
+      $ref: '#/components/schemas/CheckSettingsOutput'
+  removeWorkspace:
+    caller: A reader who removes a workspace in the settings.
+    description: Removes the workspace from the settings and the workspace picker (TRK-7).
+    input:
+      type: object
+      required: [workspace]
+      properties:
+        workspace:
+          type: string
+          example: hieutran21198/Artifact-Driven-Framework
+    output:
+      type: object
+  checkSettings:
+    caller: The page when the settings open, or a reader who asks to check again.
+    description: Checks each workspace, each part its configuration names and each token, with one call to GitHub for each repository and each token (TRK-11).
     input:
       type: object
     output:
-      $ref: '#/components/schemas/Build'
-  setToken:
-    caller: A reader who sets or removes the token of an owner.
-    description: Keeps a read-only token for an owner until the tab closes, or removes it (TRK-6).
+      $ref: '#/components/schemas/CheckSettingsOutput'
+  changeConfiguration:
+    caller: A reader who edits the configuration of a workspace in the settings.
+    description: Validates the configuration given and, when it is valid, keeps it for the workspace in this browser and uses it in place of the workspace's (TRK-12).
     input:
-      $ref: '#/components/schemas/SetTokenInput'
+      $ref: '#/components/schemas/ChangeConfigurationInput'
+    output:
+      $ref: '#/components/schemas/ChangeConfigurationOutput'
+  restoreConfiguration:
+    caller: A reader who goes back to the configuration of the workspace.
+    description: Drops the configuration changed in this browser for the workspace (TRK-12).
+    input:
+      type: object
+      required: [workspace]
+      properties:
+        workspace:
+          type: string
     output:
       type: object
   addFolder:
@@ -76,12 +115,80 @@ components:
           type: string
           description: A branch, a tag or a commit SHA. The default branch when not given. Not used for a folder (TRK-8).
           example: main
-        part_refs:
-          type: object
-          description: The ref of the tests repository of each part, by part name (TRK-4).
-          additionalProperties:
+        parts:
+          $ref: '#/components/schemas/PartChoices'
+    PartChoices:
+      type: object
+      description: For each part whose tests setting names a repository, by part name, the ref and the token picked (TRK-4, TRK-6).
+      additionalProperties:
+        type: object
+        properties:
+          ref:
             type: string
-          example: {library-api: feature/renew}
+          token:
+            type: string
+            description: The name of a token, or none.
+      example: {lending: {ref: feature/renew, token: team}}
+    AddWorkspaceInput:
+      type: object
+      required: [repository]
+      properties:
+        repository:
+          type: string
+          example: hieutran21198/Artifact-Driven-Framework
+        ref:
+          type: string
+          description: The branch shown. The default branch when not given.
+        token:
+          type: string
+          description: The name of the token to read it with, or none (TRK-6).
+          example: team
+    ChangeConfigurationInput:
+      type: object
+      required: [workspace, text]
+      properties:
+        workspace:
+          type: string
+          example: hieutran21198/Artifact-Driven-Framework
+        text:
+          type: string
+          description: The configuration as the reader wrote it, in JSON.
+    ChangeConfigurationOutput:
+      type: object
+      required: [valid, problems]
+      properties:
+        valid:
+          type: boolean
+          description: True when it is kept and used (TRK-12).
+        problems:
+          type: array
+          description: One line for each problem, with the line of the JSON or the key it is in.
+          items:
+            type: string
+          example: ['services: must be an object']
+    CheckSettingsOutput:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          description: One line for each workspace, each part with a repository, and each token (TRK-11).
+          items:
+            type: object
+            required: [kind, name, connected]
+            properties:
+              kind:
+                type: string
+                enum: [workspace, part, token]
+              name:
+                type: string
+                example: lending
+              connected:
+                type: boolean
+              reason:
+                type: string
+                description: Why the tracker cannot connect, when it cannot.
+                enum: [not found, no access, needs a token, token refused, choose the folder again]
     Build:
       type: object
       required: [workspace, coverage, unread]
@@ -105,7 +212,7 @@ components:
           description: Each part, repository or file that could not be read, with the reason (TRK-4, TRK-9).
           items:
             type: string
-          example: ['library-api: no test files to read']
+          example: ['lending: needs a token']
     ListRefsInput:
       type: object
       required: [repository]
@@ -129,15 +236,15 @@ components:
             type: string
     SetTokenInput:
       type: object
-      required: [owner]
+      required: [name]
       properties:
-        owner:
+        name:
           type: string
-          description: A GitHub owner, or * for any owner without a token of its own (TRK-6).
-          example: hieutran21198
-        token:
+          description: The name the reader gives the token, which the settings keep (TRK-6).
+          example: team
+        value:
           type: string
-          description: A read-only token. Empty removes the token of the owner.
+          description: A read-only token. Empty removes the token.
     Settings:
       type: object
       required: [version, workspaces]
@@ -145,7 +252,7 @@ components:
         version:
           type: integer
           description: The version of the settings (TRK-7).
-          example: 1
+          example: 2
         workspaces:
           type: array
           items:
@@ -157,10 +264,13 @@ components:
                 example: hieutran21198/Artifact-Driven-Framework
               ref:
                 type: string
-              part_refs:
-                type: object
-                additionalProperties:
-                  type: string
+              token:
+                type: string
+                description: The name of the token picked, never its value (TRK-6).
+              parts:
+                $ref: '#/components/schemas/PartChoices'
+              configuration:
+                $ref: '../configuration/openapi.yaml#/components/schemas/Configuration'
     ImportSettingsOutput:
       type: object
       required: [stored]
