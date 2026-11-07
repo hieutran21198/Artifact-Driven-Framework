@@ -11,8 +11,8 @@ flows and artifacts link.
   tracker runs in the browser.
 - Contract: `openWorkspace`, `listRefs`, `setToken`,
   `addWorkspace`, `removeWorkspace`, `addFolder`, `checkSettings`,
-  `changeConfiguration`, `restoreConfiguration`, `exportSettings` and
-  `importSettings` in the
+  `changeConfiguration`, `restoreConfiguration`, `copyCloneScript`,
+  `exportSettings` and `importSettings` in the
   [tracker contract](../artifacts/tracker/openapi.yaml), and
   `measureCoverage` in the
   [measure coverage contract](measure-coverage.openapi.yaml).
@@ -32,7 +32,9 @@ flows and artifacts link.
    private part there. `checkSettings` checks them again. To try another
    configuration, the reader changes it with `changeConfiguration`; the
    tracker validates it and uses it in place of the workspace's until
-   `restoreConfiguration` (TRK-12).
+   `restoreConfiguration` (TRK-12). To read a workspace from disk instead,
+   the reader copies its clone script with `copyCloneScript`, runs it, and
+   adds the clone with `addFolder` (TRK-13, TRK-8).
 2. The page opens and calls `openWorkspace` with the workspace and the ref
    the address names, or the ones chosen before, or the repository of the
    framework (TRK-1, TRK-7).
@@ -110,6 +112,7 @@ sequenceDiagram
 | F-VIEW-13 | A token named `old` that GitHub refuses, and a repository that does not exist | The reader calls `checkSettings`, then `addWorkspace` with that repository, then `removeWorkspace` | The token `old` shows as refused; the new workspace shows as not found; after the removal it is gone from the settings and the workspace picker | TRK-11, TRK-7 |
 | F-VIEW-14 | A workspace, and a changed configuration that is not valid JSON, then one whose `services` is a list | The reader calls `changeConfiguration` with each | Each is reported, the first with the line where it fails and the second with the key; the tracker builds with neither and keeps the last valid one | TRK-12, CFG-2 |
 | F-VIEW-15 | A workspace whose configuration was changed in the tracker to add a part with a tests folder | The reader calls `openWorkspace`, then `restoreConfiguration` | The first build reads the tests of the added part and says, above the coverage, that it uses a configuration changed in this browser; the workspace has no new commit; after the restore the build uses the workspace's configuration again | TRK-12, TRK-4 |
+| F-VIEW-16 | A workspace picked at `main`, a part whose tests setting names a private repository and folder `services/lending`, `feature/renew` picked for it, and a token picked for it | The reader calls `copyCloneScript`, runs the script in an empty folder, then calls `addFolder` with the clone | The script clones the workspace at `main` and the part at `feature/renew` into `services/lending`, and holds no token; the folder builds with the part's tests | TRK-13, TRK-6, TRK-8, CFG-6 |
 
 ## Open questions
 

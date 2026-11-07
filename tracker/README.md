@@ -25,6 +25,14 @@ and of the flow [View a workspace](../docs/software-knowledges/flows/view-worksp
 3. To try another `artifact-driven.json`, change it under the workspace's
    parts in Settings. It is used in this browser only, and the workspace page
    says so above the coverage.
+4. To read a workspace from disk, copy its **Clone script** under its parts
+   in Settings, run it in any folder with your own git access, and add the
+   clone as a folder. It clones the workspace and each part's repository at
+   the refs picked, and holds no token.
+
+A repository read with no token is downloaded from `raw.githubusercontent.com`,
+which does not count against GitHub's limit of 60 API calls an hour without a
+token; a load then needs only the commit and the file tree from the API.
 
 An address such as `tracker/?workspace=owner/repo&ref=main` opens and loads
 that workspace. Settings lists what the browser keeps, and where.

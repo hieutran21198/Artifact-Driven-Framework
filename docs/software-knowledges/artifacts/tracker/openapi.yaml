@@ -80,6 +80,18 @@ x-commands:
           type: string
     output:
       type: object
+  copyCloneScript:
+    caller: A reader who copies the clone script of a workspace in the settings.
+    description: Puts on the clipboard a shell script that clones the workspace and the repository of each part at the refs picked (TRK-13).
+    input:
+      type: object
+      required: [workspace]
+      properties:
+        workspace:
+          type: string
+          example: hieutran21198/Artifact-Driven-Framework
+    output:
+      $ref: '#/components/schemas/CloneScriptOutput'
   addFolder:
     caller: A reader who adds a folder on their computer as a workspace.
     description: Adds the folder to the workspaces and opens it (TRK-8).
@@ -166,6 +178,16 @@ components:
           items:
             type: string
           example: ['services: must be an object']
+    CloneScriptOutput:
+      type: object
+      required: [clipboard]
+      properties:
+        clipboard:
+          type: string
+          description: The script. It names no token; git uses the access of the reader (TRK-13).
+          example: |
+            git clone https://github.com/hieutran21198/Artifact-Driven-Framework.git Artifact-Driven-Framework
+            git -C Artifact-Driven-Framework checkout main
     CheckSettingsOutput:
       type: object
       required: [items]

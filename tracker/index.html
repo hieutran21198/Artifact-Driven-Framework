@@ -352,6 +352,7 @@ async function gh(path, token) {
 // Why a repository cannot be read, in the words of TRK-11.
 function reason(e, token) {
   if (!e.status) return e instanceof TypeError ? "cannot reach GitHub" : e.message;
+  if (e.status === 422) return "no such branch, tag or commit";
   if (e.status === 401) return token ? `token ${token} refused` : "GitHub refused the request";
   if (e.status === 404) return token ? `no access with token ${token}, or not found` : "not found, or private: pick a token";
   if ((e.status === 403 || e.status === 429) && e.limited) return e.token ? "GitHub's hourly limit for this token is reached" : "GitHub's hourly limit for calls without a token is reached: set a token in Settings";
@@ -359,14 +360,22 @@ function reason(e, token) {
   return e.message;
 }
 
-// A blob's SHA is the hash of its content, so a kept blob never goes stale (TRK-5).
-async function blob(repo, sha, token) {
+// A blob's SHA is the hash of its content, so a kept blob never goes stale.
+// With no token, the file comes from raw.githubusercontent.com by commit and
+// path, outside GitHub's API limit; with one, through the API (TRK-5).
+async function blob(repo, sha, token, commit, path) {
   const key = "blob:" + sha;
   const kept = store.get("localStorage", key);
   if (kept !== null) return kept;
-  const data = await gh(`/repos/${repo}/git/blobs/${sha}`, token);
-  const bytes = Uint8Array.from(atob(data.content.replace(/\n/g, "")), c => c.charCodeAt(0));
-  const text = new TextDecoder().decode(bytes);
+  let text;
+  if (!token) {
+    const res = await fetch(`https://raw.githubusercontent.com/${repo}/${commit}/${path.split("/").map(encodeURIComponent).join("/")}`);
+    if (!res.ok) { const e = new Error(`raw.githubusercontent.com answered ${res.status}`); e.status = res.status; throw e; }
+    text = await res.text();
+  } else {
+    const data = await gh(`/repos/${repo}/git/blobs/${sha}`, token);
+    text = new TextDecoder().decode(Uint8Array.from(atob(data.content.replace(/\n/g, "")), c => c.charCodeAt(0)));
+  }
   store.set("localStorage", key, text);
   return text;
 }
@@ -381,7 +390,7 @@ async function tree(repo, ref, token) {
   const head = await gh(`/repos/${repo}/commits/${encodeURIComponent(ref || "HEAD")}`, token);
   const tree = await gh(`/repos/${repo}/git/trees/${head.commit.tree.sha}?recursive=1`, token);
   if (tree.truncated) throw new Error(repo + ": the tree is too large for one request");
-  return { sha: head.sha.slice(0, 7), entries: Object.fromEntries(tree.tree.filter(e => e.type === "blob").map(e => [e.path, e.sha])) };
+  return { sha: head.sha.slice(0, 7), commit: head.sha, entries: Object.fromEntries(tree.tree.filter(e => e.type === "blob").map(e => [e.path, e.sha])) };
 }
 
 // The branches and tags of a repository, read once per page load.
@@ -453,7 +462,7 @@ function validate(text) {
 async function planGitHub(w) {
   const head = await tree(w.repo, w.branch, w.token);
   if (!head.entries["artifact-driven.json"]) throw new Error("no artifact-driven.json at its root");
-  const conf = w.configuration || JSON.parse(await blob(w.repo, head.entries["artifact-driven.json"], w.token));
+  const conf = w.configuration || JSON.parse(await blob(w.repo, head.entries["artifact-driven.json"], w.token, head.commit, "artifact-driven.json"));
   const parts = {}, leftOut = [];
   for (const [name, t] of testParts(conf).filter(([, t]) => t.repository)) {
     const [repo, ref] = partRepo(t), pick = (w.parts || {})[name] || {};
@@ -466,18 +475,18 @@ async function planGitHub(w) {
 async function readGitHub(w, plan) {
   const { head, conf, parts } = plan;
   const files = { "artifact-driven.json": JSON.stringify(conf) };
-  const get = async (paths, repo, entries, token, at = p => p) =>
-    (await inBatches(paths, 8, p => blob(repo, entries[p], token))).forEach((t, i) => files[at(paths[i])] = t);
-  await get(Object.keys(head.entries).filter(p => isKnowledge(conf, p)), w.repo, head.entries, w.token);
+  const get = async (paths, repo, { entries, commit }, token, at = p => p) =>
+    (await inBatches(paths, 8, p => blob(repo, entries[p], token, commit, p))).forEach((t, i) => files[at(paths[i])] = t);
+  await get(Object.keys(head.entries).filter(p => isKnowledge(conf, p)), w.repo, head, w.token);
   // A part with no repository keeps its tests in this one, under its folder.
   for (const [, t] of testParts(conf).filter(([, t]) => !t.repository)) {
     const folder = t.folder.replace(/\/+$/, "") + "/", match = globRe(t.glob || "**/*_test.*");
-    await get(Object.keys(head.entries).filter(p => p.startsWith(folder) && match.test(p.slice(folder.length))), w.repo, head.entries, w.token);
+    await get(Object.keys(head.entries).filter(p => p.startsWith(folder) && match.test(p.slice(folder.length))), w.repo, head, w.token);
   }
   // Each part's tests come from its repository, placed in its folder as if cloned there.
   for (const [name, t] of testParts(conf).filter(([n, t]) => t.repository && parts[n])) {
     const p = parts[name], match = globRe(t.glob || "**/*_test.*");
-    await get(Object.keys(p.entries).filter(x => match.test(x)), p.repo, p.entries, p.token, x => t.folder.replace(/\/+$/, "") + "/" + x);
+    await get(Object.keys(p.entries).filter(x => match.test(x)), p.repo, p, p.token, x => t.folder.replace(/\/+$/, "") + "/" + x);
   }
   return files;
 }
@@ -886,6 +895,7 @@ function editor(w, conf) {
   const id = idOf(w);
   if (!conf) return "";
   if (!(id in editing)) return `<div class="cfg"><div class="row"><button class="btn quiet" type="button" data-edit="${esc(id)}">Change configuration</button>` +
+    (w.type === "github" && !showing.has(id) ? `<button class="btn quiet" type="button" data-script-show="${esc(id)}">Clone script</button>` : "") +
     (w.configuration ? `<button class="x link" type="button" data-restore="${esc(id)}">Use the workspace's configuration</button>` : "") + `</div></div>`;
   const problems = validate(editing[id]);
   return `<div class="cfg"><label class="field"><span><code>artifact-driven.json</code> for this browser only. The workspace is not changed.</span>
@@ -894,6 +904,34 @@ function editor(w, conf) {
     <div class="row"><button class="btn" type="button" data-use="${esc(id)}"${problems.length ? " disabled" : ""}>Use in this browser</button>
     <button class="btn quiet" type="button" data-cancel="${esc(id)}">Cancel</button>
     ${w.configuration ? `<button class="x link" type="button" data-restore="${esc(id)}">Use the workspace's configuration</button>` : ""}</div></div>`;
+}
+// The clone script of a workspace: the workspace at its ref, and the repository
+// of each part at its ref, into the part's tests folder (TRK-13). It names no
+// token: git uses the reader's own access.
+const sq = s => "'" + String(s).replace(/'/g, "'\\''") + "'";
+function cloneScript(w, conf) {
+  const top = w.repo.split("/")[1], lines = [
+    `# Clones ${w.repo} and the repositories of its parts. Run it in any folder,`,
+    `# then add the folder ${top} in the project tracker's Settings.`,
+    "set -e",
+    `git clone ${sq("https://github.com/" + w.repo + ".git")} ${sq(top)}`,
+  ];
+  if (w.branch) lines.push(`git -C ${sq(top)} checkout ${sq(w.branch)}`);
+  for (const [n, t] of testParts(conf).filter(([, t]) => t.repository)) {
+    const [repo, ref] = partRepo(t), at = top + "/" + t.folder.replace(/\/+$/, ""), pick = ((w.parts || {})[n] || {}).ref || ref;
+    lines.push(`git clone ${sq("https://github.com/" + repo + ".git")} ${sq(at)}`);
+    if (pick) lines.push(`git -C ${sq(at)} checkout ${sq(pick)}`);
+  }
+  return lines.join("\n") + "\n";
+}
+const showing = new Set();  // workspace ids whose clone script is shown
+function scriptBox(w, conf) {
+  if (w.type !== "github" || !conf) return "";
+  const id = idOf(w);
+  if (!showing.has(id)) return "";
+  return `<div class="cfg"><label class="field"><span>Clone script. It holds no token; git uses your own access to each repository.</span>
+    <textarea readonly spellcheck="false" data-script="${esc(id)}" rows="6">${esc(cloneScript(w, conf))}</textarea></label>
+    <div class="row"><button class="btn" type="button" data-copy="${esc(id)}">Copy</button><button class="btn quiet" type="button" data-hide="${esc(id)}">Hide</button><span class="ok" data-copied="${esc(id)}" hidden>Copied.</span></div></div>`;
 }
 const problemList = problems => problems.length ? `<ul class="problems">${problems.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : `<p class="ok">Valid. Use it to build with it.</p>`;
 
@@ -906,7 +944,7 @@ function partList(w) {
     const own = t.repository && w.type === "github";
     const where = t.repository ? `${esc(t.repository)} · ${esc(t.glob || "**/*_test.*")}` : `${esc(t.folder)} in this ${w.type === "local" ? "folder" : "repository"} · ${esc(t.glob || "**/*_test.*")}`;
     return `<li><code>${esc(n)}</code><span class="src">${where}${own ? ` · <select data-part-token="${esc(n)}" aria-label="Token for ${esc(n)}">${tokenOptions(((w.parts || {})[n] || {}).token)}</select>` : ""}</span>${own ? tag(checks[`part:${id}:${n}`]) : "<span></span>"}</li>`;
-  }).join("")}</ul><p>Parts come from ${w.configuration ? "the configuration changed in this browser" : "<code>artifact-driven.json</code> in the workspace"}. Change them in the workspace, or try a change here.</p>${editor(w, conf)}</details>`;
+  }).join("")}</ul><p>Parts come from ${w.configuration ? "the configuration changed in this browser" : "<code>artifact-driven.json</code> in the workspace"}. Change them in the workspace, or try a change here.</p>${editor(w, conf)}${scriptBox(w, conf)}</details>`;
 }
 
 function drawSettings() {
@@ -1020,6 +1058,18 @@ $("ws-rows").addEventListener("toggle", e => {
   if (li && e.target.matches("details.parts")) e.target.open ? opened.add(li.dataset.id) : opened.delete(li.dataset.id);
 }, true);
 $("ws-rows").addEventListener("click", e => {
+  const c = e.target.closest("[data-script-show],[data-hide],[data-copy]");
+  if (c) {
+    const id = c.dataset.scriptShow || c.dataset.hide || c.dataset.copy;
+    if (c.dataset.scriptShow) showing.add(id);
+    if (c.dataset.hide) showing.delete(id);
+    if (c.dataset.copy) {
+      const box = document.querySelector(`textarea[data-script="${CSS.escape(id)}"]`), done = document.querySelector(`[data-copied="${CSS.escape(id)}"]`);
+      navigator.clipboard.writeText(box.value).then(() => { done.hidden = false; }, () => { box.focus(); box.select(); });
+      return;
+    }
+    drawSettings(); return;
+  }
   const b = e.target.closest("[data-ws],[data-edit],[data-use],[data-cancel],[data-restore]");
   if (!b) return;
   if (b.dataset.ws !== undefined) {
