@@ -51,6 +51,7 @@ each.
 | INTRO-14 | After the story, the page lists situations of a team's day - a rule changes, a defect is reported, someone joins, a release is near, a stakeholder asks how it goes, the docs drift from the code - each with the question it raises, what in the framework answers it, and an example from the sample. It states no cost, duration or speed. | — |
 | INTRO-15 | The page links the how-we-work page at its top and after the situations, and the project tracker at its top and at its foot. | — |
 | INTRO-16 | Among the notes, the page says that the framework invents no method, names the known practices it puts together, and links the list on the how-we-work page. | — |
+| INTRO-17 | The page links the agents page beside each link to the how-we-work page: at its top, after the situations and at its foot. | — |
 
 ## Lifecycle
 

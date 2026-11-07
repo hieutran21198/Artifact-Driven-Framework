@@ -16,6 +16,7 @@ architecture change first.
 | `knowledge` | `scripts` | Knowledge IDs, operations and the citations between units | — |
 | `guide` | `landing` | The framework page: what the framework is and the parts it has | — |
 | `method` | `landing` | The how-we-work page: the steps from a goal to a test, the method behind them, and who does what | — |
+| `agents` | `landing` | The agents page: how a team runs its coding agents on a workspace | — |
 | `introduction` | `landing` | The landing page: its story, its reader cards and its links | — |
 | `test` | `scripts` | Which knowledge IDs the test files of a part name, and how strongly each is proved | — |
 | `tracker` | `tracker` | The project tracker: the workspace and ref it shows, what it reads, what it shows first, and what the browser keeps | — |

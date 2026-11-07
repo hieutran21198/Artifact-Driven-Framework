@@ -5,12 +5,13 @@ a goal becomes flows, rules, artifacts, clients and tests, and where to go
 next.
 
 - Crosses: [introduction](../artifacts/introduction/README.md),
-  [guide](../artifacts/guide/README.md) and
-  [method](../artifacts/method/README.md), served by the `landing` service,
+  [guide](../artifacts/guide/README.md),
+  [method](../artifacts/method/README.md) and
+  [agents](../artifacts/agents/README.md), served by the `landing` service,
   and [workspace](../artifacts/workspace/README.md), served by the `install`
   service.
 - Contract: `playStory`, `showStep`, `explainBlock`, `openFramework`,
-  `openMethod`, `copyInstall` and `openTracker` in the
+  `openMethod`, `openAgents`, `copyInstall` and `openTracker` in the
   [introduction contract](../artifacts/introduction/openapi.yaml),
   `installWorkspace` in the
   [workspace contract](../artifacts/workspace/openapi.yaml), and
@@ -31,7 +32,8 @@ next.
    (INTRO-9).
 3. The reader reads the situations of a team's day (INTRO-14), then opens
    the how-we-work page with `openMethod` or the project tracker with
-   `openTracker` (INTRO-15).
+   `openTracker` (INTRO-15). A reader who runs coding agents opens the agents
+   page with `openAgents` (INTRO-17).
 4. A technical reader opens the framework page with `openFramework`, and
    reads what the framework holds (GUIDE-1 to GUIDE-4).
 5. The reader copies the install command with `copyInstall` and runs
@@ -84,5 +86,8 @@ sequenceDiagram
 | F-LEARN-19 | A browser 360 px wide, on a system that uses a dark theme | The reader calls `openMethod` | The page stays light, the lanes read, and the page needs no horizontal scrolling | MTH-5, MTH-6 |
 | F-LEARN-20 | A solution architect on the how-we-work page | The reader calls `openMethod` and reads the last column of each step | Each step names the diagram its layer has and the tests that prove it as the rules say, and BDD, TDD and contract tests carry a label that says they are suggested | MTH-7 |
 | F-LEARN-21 | The landing page | The reader reads the notes, then calls `openMethod` from the note on known practices | The note says the framework invents no method and names its practices; the how-we-work page lists each practice and design idea with where it shows in the knowledge | INTRO-16, MTH-8 |
+| F-LEARN-22 | The landing page and a new workspace | The reader calls `openAgents` from the link after the situations, then lists the files of the workspace | The agents page names the project instructions, the agent of each role with its tools and model, the skills and the links for Claude Code, and each one is in the workspace | INTRO-17, AGT-1, AGT-7 |
+| F-LEARN-23 | An agent operator on the agents page, with Claude Code or with Codex | The reader calls `openAgents` and reads the part of their tool and the team | The page says what the tool reads from the workspace and how a session hands each step to the agent of its role, with a prompt for each step; the flow of the team is in the order of the team page, with its limits; each fact about the tool links the tool's own documentation | AGT-2, AGT-3, AGT-4, AGT-6 |
+| F-LEARN-24 | The agents page and a workspace with the sample | The reader follows the change of the default loan period and runs `traceImpact` with the rule that sets the due time of a loan | Each step names its role, what it runs and what it passes on; the contract designer shows as skipped because no shape changes; the impact lists 6 criteria, 14 scenarios and the phone app's page, as the page says | AGT-5, KN-8 |
 
 Return to [flows](README.md).
