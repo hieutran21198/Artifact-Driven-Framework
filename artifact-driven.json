@@ -7,6 +7,9 @@
     "template",
     "tests"
   ],
+  "standards": [
+    "EN"
+  ],
   "clients": {},
   "services": {
     "scripts": {

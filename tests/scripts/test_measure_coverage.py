@@ -37,6 +37,20 @@ class MeasureCoverage(unittest.TestCase):
         self.assertEqual(run.returncode, 0, run.stderr)
         self.assertIn("rules 1/1", run.stdout)
 
+    def test_F_COVER_11_system_requirements_have_a_line_of_their_own(self):
+        """F-COVER-11, TST-4: three requirements, one named by a test, give a
+        system line of 1/3 with the two others."""
+        ws = Workspace({})
+        self.addCleanup(ws.close)
+        ws.write("docs/software-knowledges/system/requirements.md",
+                 "# Requirements\n\n| ID | Requirement |\n| --- | --- |\n"
+                 "| SYS-1 | One. |\n| SYS-2 | Two. |\n| SYS-3 | Three. |\n")
+        ws.write("checks/one_test.py", "# SYS-2\n")
+        run = ws.run("impact.py", "--coverage", "checks")
+        self.assertEqual(run.returncode, 0, run.stderr)
+        self.assertIn("system       requirements 1/3", run.stdout)
+        self.assertIn("untested: SYS-1, SYS-3", run.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

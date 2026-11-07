@@ -65,5 +65,6 @@ sequenceDiagram
 | F-COVER-8 | A tests folder, a rule that no test names, and an operation that an open question names | The person runs `rankFragile` with the folder | The rule shows 0 tests and counts as weaker; the operation is marked as having an open question and scores 8 more | TST-5, KN-12 |
 | F-COVER-9 | Any workspace and its tests | The person runs `measureCoverage` or `rankFragile` | No test runs and no file changes | SYS-4, SYS-6 |
 | F-COVER-10 | Two parts whose tests folders are `tests/a` and `tests/b`, each with its own glob, and test files that only those globs match | The person runs `measureCoverage` with `tests` | It reads the test files of both parts, each with its part's glob | CFG-8, CFG-4 |
+| F-COVER-11 | Three system requirements, and test files that name one of them | The person runs `measureCoverage` | The goals' shares are as before, and a line for the requirements shows 1/3 and the two no test names | TST-4 |
 
 Return to [flows](README.md).

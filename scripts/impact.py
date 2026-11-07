@@ -350,6 +350,13 @@ def coverage(graph, folders):
         total[kind(u)][0] += 1 if tests.get(u) else 0
         total[kind(u)][1] += 1
     print("  all          " + "  ".join(f"{k.split()[1]} {total[k][0]}/{total[k][1]}" for k in kinds))
+    # System requirements are not in any goal's share; they get a line of their own (TST-4).
+    reqs = sorted((u for u in graph.file if kind(u) == "Requirements" and not withdrawn(graph, u)), key=natural)
+    if reqs:
+        print(f"  system       requirements {sum(1 for u in reqs if tests.get(u))}/{len(reqs)}")
+        untested = [u for u in reqs if not tests.get(u)]
+        if untested:
+            print(f"               untested: {', '.join(untested)}")
     return 0
 
 

@@ -39,6 +39,23 @@ class InstallWorkspace(unittest.TestCase):
         self.assertNotEqual(run.returncode, 0)
         self.assertEqual(list(self.out.iterdir()), [])
 
+    @unittest.skipUnless(shutil.which("git"), "needs git")
+    def test_F_START_11_git_copy_gives_no_ignored_file(self):
+        """F-START-11, WS-10: a local copy that is a Git working tree gives the
+        files it tracks and not the ones Git ignores."""
+        source = self.tmp / "copy"
+        shutil.copytree(FRAMEWORK, source, ignore=shutil.ignore_patterns(".git", "build", "__pycache__"))
+        subprocess.run(["git", "init", "-q"], cwd=source, check=True)
+        (source / "scripts" / "__pycache__").mkdir()
+        (source / "scripts" / "__pycache__" / "check.pyc").write_text("x")
+        (source / "docs" / "notes.swp").write_text("x")
+        run = install(source, self.out / "ws")
+        self.assertEqual(run.returncode, 0, run.stderr)
+        ws = self.out / "ws"
+        self.assertTrue((ws / "scripts" / "check_docs.py").is_file())
+        self.assertFalse((ws / "scripts" / "__pycache__").exists())
+        self.assertFalse((ws / "docs" / "notes.swp").exists())
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -37,5 +37,6 @@ writes it.
 | CFG-6 | The tests setting of a part may name the `repository` of the part's clone, as `owner/repo` or `owner/repo@ref`. Its tests `folder` is then where the clone sits in the workspace, and its `glob` applies inside that repository. The scripts do not read `repository`. | — |
 | CFG-7 | A configuration that is not valid JSON, or that is not a JSON object, stops every script before it reads anything else, with one line on standard error that names the file, the line and the column, and status 2 (SYS-3). | `ErrInvalidConfiguration` |
 | CFG-8 | A folder given in place of the tests of every part is read, for each part whose tests folder is that folder or under it, with that part's glob. A folder that holds no part's tests folder is read with the default glob. | — |
+| CFG-9 | The setting `standards` lists the prefixes of names of standards that a workspace writes, such as `EN` for `EN-301549`, and adds them to the ones KN-1 names. | — |
 
 Return to [Configuration](README.md).

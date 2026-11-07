@@ -25,6 +25,13 @@ components:
           items:
             type: string
           default: [.git, node_modules, build]
+        standards:
+          type: array
+          description: Prefixes of names of standards that are not knowledge IDs, besides those KN-1 names (CFG-9).
+          items:
+            type: string
+          default: []
+          example: [EN]
         clients:
           type: object
           description: The client pages an artifact may have, by file name without .md.

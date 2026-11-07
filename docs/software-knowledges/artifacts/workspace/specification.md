@@ -35,6 +35,7 @@ this artifact changes it again.
 | WS-7 | Creating a workspace leaves nothing outside its folder: a downloaded copy of the source is removed when the creation ends (SYS-4). | — |
 | WS-8 | A workspace is not a Git repository when it is created. Its team makes it one. | — |
 | WS-9 | A creation that fails leaves no folder: the workspace is made in a new folder beside the one given, and takes the given name only when it is complete. | `ErrNoSource` |
+| WS-10 | When `AD_SOURCE` is a Git working tree and Git is there, no file that Git ignores in it is copied, such as caches and editor files. Otherwise every file of the copy is copied, so creating a workspace still needs no Git (SYS-1). | — |
 
 ## Lifecycle
 
@@ -43,11 +44,5 @@ stateDiagram-v2
     [*] --> created: Create
     created --> [*]: belongs to its team
 ```
-
-## Open questions
-
-- With `AD_SOURCE`, every file of the local copy is copied, also files that
-  Git ignores there, such as caches and editor files (WS-2, WS-3). Whether
-  only the files Git tracks may be copied.
 
 Return to [Workspace](README.md).

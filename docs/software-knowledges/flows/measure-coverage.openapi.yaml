@@ -60,8 +60,9 @@ components:
             One line for each goal - its key, the tested share as a percent,
             and criteria, scenarios and rules as tested out of all - followed
             by a line of the IDs no test file names, in the order of their
-            numbers. Then one line for the whole knowledge (F-COVER-1,
-            F-COVER-3).
+            numbers. Then one line for the whole knowledge, and one for the
+            system requirements with the ones no test file names (F-COVER-1,
+            F-COVER-3, F-COVER-11).
           example: ['  G-GATE        60%  criteria 1/2  scenarios 2/4  rules 3/4']
         stderr:
           allOf:
