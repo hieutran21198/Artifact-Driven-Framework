@@ -60,6 +60,8 @@ own knowledge. Every directory has a `README.md` that explains its purpose.
    and how to change them. [Applications](apps/README.md) and
    [end-to-end tests](e2e/README.md): where a workspace clones its parts.
 10. [index.html](index.html): the landing page of the framework.
+11. [Project tracker](tracker/README.md): the coverage and the knowledge site
+    of a workspace at any branch, tag or commit, in the browser.
 
 ## Check a change
 
