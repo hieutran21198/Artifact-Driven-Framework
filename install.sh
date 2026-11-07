@@ -60,6 +60,18 @@ for path in README.md artifact-driven.json docs/software-knowledges docs/archite
   copy "template/$path" "$path"
 done
 
+# A local copy that is a Git working tree gives no file Git ignores there, such
+# as caches and editor files. Without Git, every file is copied (WS-10, SYS-1).
+if [ -n "${AD_SOURCE:-}" ] && command -v git >/dev/null 2>&1 &&
+  [ "$(git -C "$src" rev-parse --is-inside-work-tree 2>/dev/null)" = true ]; then
+  git -C "$src" ls-files --others --ignored --exclude-standard --directory |
+    while IFS= read -r path; do
+      path=${path%/}
+      rm -rf "${build:?}/$path"
+      case $path in template/*) rm -rf "${build:?}/${path#template/}" ;; esac
+    done
+fi
+
 mv "$build" "$dest"
 build=""
 

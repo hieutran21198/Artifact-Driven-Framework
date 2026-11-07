@@ -8,6 +8,7 @@ import sys
 
 from check_docs import ID, ROOT, knowledge_ids
 from impact import test_files, test_folders
+from project import TESTS
 
 
 def prefix(found):
@@ -20,8 +21,14 @@ def main(argv):
         return 2
     folders = test_folders(argv[0] if argv else None)
     if not folders:
-        print("No tests to check: no service, client or end-to-end tests that artifact-driven.json names are cloned.")
-        return 0
+        if not TESTS:
+            print("No tests to check: artifact-driven.json gives no part a tests setting.")
+            return 0
+        # Parts have tests, and none of their folders is here: a job that did
+        # not clone them must not pass (TST-6).
+        names = ", ".join(f"{name} ({tests['folder']})" for name, tests in TESTS)
+        print(f"No tests folder of any part exists: {names}. Clone the parts, or pass a folder.", file=sys.stderr)
+        return 2
     defined, withdrawn = knowledge_ids()
     prefixes = {prefix(i) for i in defined}
     problems = set()

@@ -23,7 +23,7 @@ without a second look.
 | G-GATE-4 | A layer that cites a layer above it fails the gate. | F-CHECK-10 |
 | G-GATE-5 | A scenario that names nothing that starts it, or an operation, trigger or command that no scenario names, fails the gate. | F-CHECK-11 |
 | G-GATE-6 | A test that names a knowledge ID that does not exist, or a withdrawn one, fails the gate. | F-CHECK-13, F-CHECK-14, F-CHECK-15 |
-| G-GATE-7 | A change that breaks no rule passes the gate, so the gate stops only broken changes. | F-CHECK-1, F-CHECK-4, F-CHECK-12, F-CHECK-16, F-CHECK-20, F-START-6 |
+| G-GATE-7 | A change that breaks no rule passes the gate, so the gate stops only broken changes. | F-CHECK-1, F-CHECK-4, F-CHECK-12, F-CHECK-16, F-CHECK-20, F-CHECK-23, F-CHECK-24, F-START-6 |
 | G-GATE-8 | One run of a check lists every problem it finds, and running it changes nothing. | F-CHECK-17, F-CHECK-18, F-CHECK-19, F-CHECK-21 |
 
 ## Flows

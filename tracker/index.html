@@ -428,7 +428,7 @@ const partRepo = t => t.repository ? t.repository.split("@") : null;
 // ---- Configuration changed in this browser (TRK-12) --------------------
 
 // The keys of the configuration contract, and the type of each.
-const KEYS = { knowledge: "string", skip: "array", clients: "object", services: "object", e2e: "object", site: "object" };
+const KEYS = { knowledge: "string", skip: "array", standards: "array", clients: "object", services: "object", e2e: "object", site: "object" };
 const typeOf = v => Array.isArray(v) ? "array" : v === null ? "null" : typeof v;
 function validate(text) {
   let c;
@@ -453,6 +453,7 @@ function validate(text) {
     for (const [n, v] of Object.entries(c[group])) if (typeOf(v) === "object" && v.tests !== undefined) tests(`${group}.${n}.tests`, v.tests);
   if (typeOf(c.e2e) === "object") tests("e2e", c.e2e);
   if (typeOf(c.skip) === "array" && c.skip.some(s => typeof s !== "string")) problems.push("skip: must be a list of folder names");
+  if (typeOf(c.standards) === "array" && c.standards.some(s => typeof s !== "string")) problems.push("standards: must be a list of prefixes");
   return problems;
 }
 
@@ -664,15 +665,16 @@ sys.path.remove(str(scripts))
 
 function parseCoverage(text) {
   const goals = [];
-  let all = null;
+  let all = null, system = null, last = null;
   const row = /^  (\S+)\s+(\d+)%\s+criteria (\d+)\/(\d+)\s+scenarios (\d+)\/(\d+)\s+rules (\d+)\/(\d+)/;
   for (const line of text.split("\n")) {
     let m;
-    if ((m = /^  all\s+criteria (\d+)\/(\d+)\s+scenarios (\d+)\/(\d+)\s+rules (\d+)\/(\d+)/.exec(line))) all = m.slice(1).map(Number);
-    else if ((m = row.exec(line))) goals.push({ key: m[1], percent: +m[2], counts: m.slice(3).map(Number), untested: [] });
-    else if ((m = /^\s+untested: (.*)$/.exec(line)) && goals.length) goals[goals.length - 1].untested = m[1].split(", ");
+    if ((m = /^  all\s+criteria (\d+)\/(\d+)\s+scenarios (\d+)\/(\d+)\s+rules (\d+)\/(\d+)/.exec(line))) { all = m.slice(1).map(Number); last = null; }
+    else if ((m = /^  system\s+requirements (\d+)\/(\d+)/.exec(line))) last = system = { counts: [+m[1], +m[2]], untested: [] };
+    else if ((m = row.exec(line))) goals.push(last = { key: m[1], percent: +m[2], counts: m.slice(3).map(Number), untested: [] });
+    else if ((m = /^\s+untested: (.*)$/.exec(line)) && last) last.untested = m[1].split(", ");
   }
-  return { goals, all };
+  return { goals, all, system };
 }
 
 // The title of each goal, by the key of its criteria: "G-GATE" → "Gate the default branch".
@@ -688,7 +690,7 @@ function goalTitles(files, conf) {
 
 const pair = (a, b) => `<td class="num">${a} / ${b}</td>`;
 function drawCoverage(b) {
-  const { goals, all } = parseCoverage(b.coverage);
+  const { goals, all, system } = parseCoverage(b.coverage);
   $("coverage").hidden = false;
   $("overridden").hidden = !b.overridden;
   $("left-out").hidden = !b.leftOut.length;
@@ -701,7 +703,9 @@ function drawCoverage(b) {
       goals.map(g => `<tr><td class="goal"><b>${esc(b.titles[g.key] || g.key)}</b><span class="mono">${esc(g.key)}</span>` +
         (g.untested.length ? `<details><summary>${g.untested.length} not named yet</summary><p>${g.untested.map(esc).join(", ")}</p></details>` : "") +
         `</td><td><div class="meter" style="--p:${g.percent}%"><i></i><span>${g.percent}%</span></div></td>${pair(g.counts[0], g.counts[1])}${pair(g.counts[2], g.counts[3])}${pair(g.counts[4], g.counts[5])}</tr>`).join("") +
-      (all ? `<tr class="all"><td>All knowledge</td><td></td>${pair(all[0], all[1])}${pair(all[2], all[3])}${pair(all[4], all[5])}</tr>` : "") + `</tbody></table>`;
+      (all ? `<tr class="all"><td>All knowledge</td><td></td>${pair(all[0], all[1])}${pair(all[2], all[3])}${pair(all[4], all[5])}</tr>` : "") + `</tbody></table>` +
+      (system ? `<p class="lede" style="padding:12px 16px;margin:0;font-size:14px">System requirements, outside the goals: ${system.counts[0]} / ${system.counts[1]} named by a test` +
+        (system.untested.length ? `; not yet: ${system.untested.map(esc).join(", ")}` : "") + `.</p>` : "");
   } else {
     const parts = testParts(b.conf);
     $("no-tests").innerHTML = parts.length

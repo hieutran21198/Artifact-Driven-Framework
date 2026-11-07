@@ -85,18 +85,14 @@ sequenceDiagram
 | F-CHECK-13 | A test file that names an ID with a prefix the knowledge uses, and no row defines the ID | The author runs `checkTests` | It exits with 1 and names the file and the ID | TST-1, TST-2 |
 | F-CHECK-14 | A test file that names a withdrawn ID | The author runs `checkTests` | It exits with 1 and names the file and the ID | TST-2 |
 | F-CHECK-15 | A test file that names an ID with a prefix no defined ID has | The author runs `checkTests` | It exits with 0 | TST-2 |
-| F-CHECK-16 | No tests folder of any part exists | The author runs `checkTests` with no folder | It exits with 0 and says there are no tests to check | CFG-5 |
+| F-CHECK-16 | Parts with a tests setting, and no tests folder of any of them exists | The author runs `checkTests` with no folder | It exits with 2 and says no part's tests folder exists, so a job that did not clone the parts fails | TST-6, CFG-5, SYS-3 |
 | F-CHECK-17 | A folder that does not exist | The author runs `checkTests` with that folder | It exits with 2 and says it is not a folder | SYS-3 |
 | F-CHECK-18 | A change with a broken link, an ID that is not defined and a scenario with no operation | The author runs `checkDocs` once | It lists all three problems in one run | SYS-3 |
 | F-CHECK-19 | Any workspace | The author runs `checkStructure`, `checkDocs` and `checkTests` | No file of the workspace changes | SYS-4 |
 | F-CHECK-20 | A configuration that gives no `knowledge` and no `skip` | The author runs `checkDocs` | It checks the IDs in `docs/software-knowledges` and reads no page under `.git`, `node_modules` or `build` | CFG-2 |
 | F-CHECK-21 | A configuration that is not valid JSON on its third line | The author runs `checkStructure`, `checkDocs` and `checkTests` | Each exits with 2 and one line that names `artifact-driven.json`, line 3 and the column, with no Python traceback | CFG-7, SYS-3 |
 | F-CHECK-22 | A page with two headings `Rules`, and links to `#rules`, `#rules-1` and `#rules-2` | The author runs `checkDocs` | It names only the link to `#rules-2` as a missing anchor | REPO-3 |
-
-## Open questions
-
-- `checkTests` passes when the configuration names parts with tests and none
-  of their tests folders exists, so a CI job that did not clone the parts
-  passes too (F-CHECK-16, CFG-5). Whether it must fail then.
+| F-CHECK-23 | A configuration that gives no part a tests setting | The author runs `checkTests` with no folder | It exits with 0 and says there are no tests to check | TST-6 |
+| F-CHECK-24 | A page that writes `EN-301549`, the name of a standard, and no row that defines it | The author runs `checkDocs`, then lists `EN` under `standards` and runs it again | The first run names `EN-301549` as cited and not defined; the second passes | KN-1, CFG-9, KN-4 |
 
 Return to [flows](README.md).

@@ -16,12 +16,13 @@ DEFAULTS = {
     "clients": {},
     "services": {},
     "e2e": None,
+    "standards": [],
     "site": {"title": "Software Knowledge", "output": "build/site/index.html"},
 }
 TEST_GLOB = "**/*_test.*"
-# A knowledge ID, such as SYS-4, G-SELL-2 or INV-3. Names of standards that
-# look like one, such as UTF-8 or RFC-3339, are not IDs.
-ID = re.compile(r"\b(?!(?:UTF|ISO|RFC|SHA|TLS|HTTP|IEEE)-)[A-Z]{1,6}(?:-[A-Z]{1,8})?-\d+\b")
+# Prefixes of names of standards that look like a knowledge ID, such as UTF-8
+# or RFC-3339 (KN-1). A workspace adds its own under "standards" (CFG-9).
+STANDARDS = ["UTF", "ISO", "RFC", "SHA", "TLS", "HTTP", "IEEE"]
 
 
 def find_root():
@@ -60,6 +61,12 @@ def stop(problem):
 ROOT = find_root()
 CONFIG = {**DEFAULTS, **read_config(ROOT / NAME)}
 CONFIG["site"] = {**DEFAULTS["site"], **(CONFIG.get("site") or {})}
+
+# A knowledge ID, such as SYS-4, G-SELL-2 or INV-3, and not the name of a standard.
+_standards = CONFIG.get("standards") or []
+if not isinstance(_standards, list) or not all(isinstance(s, str) for s in _standards):
+    stop(f"{ROOT / NAME}:1:1: standards must be a list of prefixes, such as [\"PCI\"]")
+ID = re.compile(r"\b(?!(?:" + "|".join(map(re.escape, STANDARDS + _standards)) + r")-)[A-Z]{1,6}(?:-[A-Z]{1,8})?-\d+\b")
 
 KNOWLEDGE = ROOT / CONFIG["knowledge"]
 SKIP = set(CONFIG["skip"])
