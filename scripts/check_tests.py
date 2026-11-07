@@ -17,7 +17,7 @@ def prefix(found):
 def main(argv):
     if argv and not (ROOT / argv[0]).is_dir():
         print(f"Not a folder: {ROOT / argv[0]}", file=sys.stderr)
-        return 1
+        return 2
     folders = test_folders(argv[0] if argv else None)
     if not folders:
         print("No tests to check: no service, client or end-to-end tests that artifact-driven.json names are cloned.")

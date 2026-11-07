@@ -16,6 +16,18 @@ def slug(heading):
     return re.sub(r"[^a-z0-9 -]", "", heading.lower()).replace(" ", "-")
 
 
+def anchors(text):
+    """The anchors of a page's headings. A repeated anchor takes -1, -2 and so
+    on, as GitHub gives it (REPO-3)."""
+    found, seen = set(), {}
+    for heading in HEADING.findall(text):
+        base = slug(heading)
+        n = seen.get(base, 0)
+        seen[base] = n + 1
+        found.add(f"{base}-{n}" if n else base)
+    return found
+
+
 def markdown_files():
     for path in ROOT.rglob("*.md"):
         if not SKIP.intersection(path.relative_to(ROOT).parts):
@@ -33,7 +45,7 @@ def check_links():
             if not resolved.exists():
                 problems.append(f"{where}: missing {target}")
             elif anchor and resolved.suffix == ".md":
-                headings = {slug(h) for h in HEADING.findall(resolved.read_text(encoding="utf-8"))}
+                headings = anchors(resolved.read_text(encoding="utf-8"))
                 if anchor not in headings:
                     problems.append(f"{where}: missing anchor {target}#{anchor}")
     return problems

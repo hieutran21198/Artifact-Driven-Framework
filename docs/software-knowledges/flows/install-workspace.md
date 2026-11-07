@@ -72,5 +72,6 @@ sequenceDiagram
 | F-START-7 | A ref that does not exist on GitHub, or no network | The person runs `installWorkspace` | The command exits with a status other than 0 and no folder exists | WS-6 |
 | F-START-8 | A download from GitHub | `installWorkspace` ends, with or without success | Nothing it downloaded is left outside the new folder | WS-7, SYS-4 |
 | F-START-9 | A machine with `sh`, `curl` and `tar`, and no other tool | The person runs `installWorkspace` | The workspace is created | SYS-1 |
+| F-START-10 | `AD_SOURCE` that names no folder, then a local copy with no `template` folder, which stops the copy half way | The person runs `installWorkspace` each time | Each exits with a status other than 0; neither the folder given nor any folder beside it is left | WS-9, WS-6 |
 
 Return to [flows](README.md).

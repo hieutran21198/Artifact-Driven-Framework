@@ -34,6 +34,7 @@ this artifact changes it again.
 | WS-6 | When the source cannot be read, such as a ref that does not exist or no network, no folder is created. | `ErrNoSource` |
 | WS-7 | Creating a workspace leaves nothing outside its folder: a downloaded copy of the source is removed when the creation ends (SYS-4). | — |
 | WS-8 | A workspace is not a Git repository when it is created. Its team makes it one. | — |
+| WS-9 | A creation that fails leaves no folder: the workspace is made in a new folder beside the one given, and takes the given name only when it is complete. | `ErrNoSource` |
 
 ## Lifecycle
 
@@ -45,10 +46,6 @@ stateDiagram-v2
 
 ## Open questions
 
-- A creation that fails after the folder is made, such as an `AD_SOURCE`
-  that does not exist or a copy that stops half way, leaves that folder in
-  place with part of the files (WS-1, WS-6). Whether it must remove the
-  folder.
 - With `AD_SOURCE`, every file of the local copy is copied, also files that
   Git ignores there, such as caches and editor files (WS-2, WS-3). Whether
   only the files Git tracks may be copied.
