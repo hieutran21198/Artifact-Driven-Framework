@@ -17,11 +17,13 @@ architecture change first.
 | `guide` | `landing` | The framework page: what the framework is and the parts it has | — |
 | `introduction` | `landing` | The landing page: its story, its reader cards and its links | — |
 | `test` | `scripts` | Which knowledge IDs the test files of a part name, and how strongly each is proved | — |
+| `tracker` | `tracker` | The project tracker: the workspace and ref it shows, what it reads, what it shows first, and what the browser keeps | — |
 
 External systems are used through the service that uses them, not as domains:
 
 | Adapter | Used for | Existing code that moves into it |
 | --- | --- | --- |
-| GitHub | `install` downloads the framework at a ref | — |
+| GitHub | `install` downloads the framework at a ref; `tracker` reads workspaces and the repositories of their parts | — |
+| Pyodide on jsDelivr | `tracker` runs the code of `scripts` in the browser | — |
 
 Return to [architecture](README.md).

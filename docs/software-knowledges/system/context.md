@@ -17,18 +17,18 @@ flowchart LR
         landing[landing page]
         install[install.sh]
         scripts[scripts: checks, impact, site]
-        viewer[knowledge viewer]
+        tracker[project tracker]
     end
 
     github[(GitHub)]
     pyodide[(Pyodide on jsDelivr)]
 
     architect & dev & agent --> scripts
-    architect --> viewer
+    stakeholder & owner & architect --> tracker
     stakeholder & owner & architect --> landing
     install -- "downloads the workspace" --> github
-    viewer -- "reads repositories" --> github
-    viewer -- "loads Python" --> pyodide
+    tracker -- "reads repositories" --> github
+    tracker -- "loads Python" --> pyodide
 ```
 
 ## Actors
@@ -48,7 +48,7 @@ flowchart LR
 | Landing page (`index.html`) | The story of how a goal becomes flows, rules, artifacts, clients and tests, for readers who do not read the repository |
 | `install.sh` | Creates a workspace from the shared files and the sample |
 | `scripts` | The structure, docs and test checks, impact analysis and the knowledge site |
-| Knowledge viewer | The knowledge site of several workspaces in the browser |
+| Project tracker (`tracker/index.html`) | The coverage and the knowledge site of a workspace at any ref, in the browser, for readers who do not read the repository |
 
 ## Supported client versions
 

@@ -74,9 +74,4 @@ sequenceDiagram
 | F-LEARN-13 | The framework page | The reader calls `openFramework` and follows the link of each part | Each link leads to the rules of that part, and every name on the page exists in the framework | GUIDE-2, GUIDE-3 |
 | F-LEARN-14 | A browser 360 px wide, on a system that uses a dark theme | The reader calls `openFramework` | The page stays light, the text reads, and the page needs no horizontal scrolling | GUIDE-4 |
 
-## Open questions
-
-- Which address `openTracker` opens, and which workspace the tracker shows
-  first (INTRO-6).
-
 Return to [flows](README.md).

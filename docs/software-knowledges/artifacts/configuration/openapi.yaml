@@ -91,3 +91,9 @@ components:
         glob:
           type: string
           default: '**/*_test.*'
+        repository:
+          type: string
+          description: >
+            The GitHub repository of the part's clone, as owner/repo or
+            owner/repo@ref. The scripts do not read it (CFG-6).
+          example: hieutran21198/library-api@main
