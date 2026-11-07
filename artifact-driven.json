@@ -23,7 +23,7 @@
     }
   },
   "site": {
-    "title": "Artifact Driven knowledge",
+    "title": "Artifact Driven Knowledge",
     "output": "build/site/index.html"
   }
 }

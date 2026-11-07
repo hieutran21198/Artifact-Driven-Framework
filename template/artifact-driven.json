@@ -25,7 +25,7 @@
   },
   "e2e": {"folder": "e2e/suite", "glob": "**/*.spec.*"},
   "site": {
-    "title": "Library lending knowledge",
+    "title": "Library Lending Knowledge",
     "output": "build/site/index.html"
   }
 }
