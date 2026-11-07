@@ -24,6 +24,7 @@ and where to go next.
 | G-LEARN-8 | A reader sees, from situations of a team's day, which question each raises and what in the framework answers it, with an example they can check in the sample. | F-LEARN-15 |
 | G-LEARN-9 | A product owner and a solution architect each see, on one page, what they write, read and decide at each step from a goal to an artifact, in the words of their own trade, with the diagram and the tests of each step, and reach the project tracker from the landing page in one step. | F-LEARN-16, F-LEARN-17, F-LEARN-18, F-LEARN-20 |
 | G-LEARN-10 | A reader learns that the framework puts known practices of software development together and invents none, and sees where each one shows. | F-LEARN-21 |
+| G-LEARN-11 | A developer or an agent operator learns how to run the agents of a workspace as the team, with Claude Code or with Codex, by following one change of the sample from the issue to the pull request, within the limits of the team. | F-LEARN-22, F-LEARN-23, F-LEARN-24 |
 
 ## Flows
 

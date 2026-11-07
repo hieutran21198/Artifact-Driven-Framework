@@ -55,6 +55,13 @@ x-commands:
       type: object
     output:
       type: object
+  openAgents:
+    caller: A reader who follows the link to the agents page.
+    description: Opens the page that shows how a team runs its coding agents on a workspace (INTRO-17).
+    input:
+      type: object
+    output:
+      type: object
   openTracker:
     caller: A reader who follows the link to the project tracker.
     description: Opens the project tracker (INTRO-15).
