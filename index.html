@@ -24,7 +24,7 @@
 body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.75 var(--body);padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
 main{max-width:880px;margin:0 auto;padding-block:72px 96px;display:grid;grid-template-columns:minmax(0,1fr);gap:96px}
 h1,h2,h3{font-family:var(--serif);font-weight:400;text-wrap:balance;margin:0;line-height:1.2}
-h1{font-size:clamp(34px,5vw,46px)}
+h1{font-size:clamp(40px,7vw,64px)}
 h2{font-size:clamp(24px,3vw,28px)}
 h3{font-size:19px}
 p{margin:0;max-width:var(--measure)}
@@ -34,7 +34,8 @@ code{font-family:var(--mono);font-size:.88em}
 .label{font:400 13px/1.4 var(--body);color:var(--faint)}
 .lede{font-size:18px;color:var(--muted)}
 section{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}
-.hero{display:grid;gap:20px}
+.hero{display:grid;gap:12px}
+.hero .lede{font-size:clamp(18px,2.2vw,21px)}
 .actions{display:flex;gap:24px;flex-wrap:wrap;align-items:center;margin-top:8px}
 .btn{font:500 15px/1 var(--body);padding:12px 20px;border-radius:999px;text-decoration:none;background:var(--ink);color:var(--paper)}
 .link{font-size:15px}
@@ -48,7 +49,12 @@ section{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}
 #stage{position:absolute;left:0;top:0;transform-origin:0 0}
 #stage.instant *{transition:none!important}
 .it{position:absolute;left:0;top:0;border-radius:12px;padding:7px 11px;font-size:13px;line-height:1.35;transition:transform 1.2s cubic-bezier(.45,.05,.25,1),opacity 1s,box-shadow .8s}
-.it b{display:block;font:400 11px/1.5 var(--body);opacity:.75}
+.it b{display:flex;align-items:center;gap:5px;font:400 11px/1.5 var(--body);opacity:.8}
+.ic{width:1.05em;height:1.05em;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.15em}
+.box{display:flex;align-items:flex-start;gap:6px}
+.steps button,.play,.btn,#copy{display:inline-flex;align-items:center;gap:7px}
+.role h3,.note h3{display:flex;align-items:center;gap:10px}
+.role h3 .ic,.note h3 .ic{width:20px;height:20px;color:var(--accent);stroke-width:1.6}
 .goal{background:var(--l0);color:var(--l0i)}
 .flow{background:var(--l1);color:var(--l1i)}
 .rule{background:var(--l2);color:var(--l2i);padding:4px 10px;font-size:12px;line-height:1.3;display:flex;align-items:center}
@@ -89,10 +95,10 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
 <body>
 <main>
   <header class="hero">
-    <span class="label">Artifact Driven</span>
-    <h1>Start with a goal, then break it down.</h1>
+    <h1>Artifact Driven</h1>
+    <p class="lede">Start with a goal, then break it down.</p>
     <div class="actions">
-      <a class="btn" href="#install">Set it up</a>
+      <a class="btn" href="#install" data-i="terminal">Set it up</a>
       <a class="link" id="tracker" href="https://github.com/hieutran21198/Artifact-Driven-Framework">Project tracker</a>
     </div>
   </header>
@@ -114,7 +120,7 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
     <h2 id="roles-h">By role</h2>
     <div class="roles">
       <div class="role">
-        <h3>Stakeholder</h3>
+        <h3 data-i="briefcase">Stakeholder</h3>
         <p>You follow a project someone builds for you.</p>
         <ul>
           <li><a class="trk" href="#">How much is tested</a></li>
@@ -123,7 +129,7 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
         </ul>
       </div>
       <div class="role">
-        <h3>Solution architect</h3>
+        <h3 data-i="grid">Solution architect</h3>
         <p>You plan how the product is split up.</p>
         <ul>
           <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/knowledge.md#layers">Where each rule belongs</a></li>
@@ -132,7 +138,7 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
         </ul>
       </div>
       <div class="role">
-        <h3>Product owner</h3>
+        <h3 data-i="flag">Product owner</h3>
         <p>You decide the goals.</p>
         <ul>
           <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/goal.md">How to write a goal</a></li>
@@ -157,9 +163,9 @@ func TestLendRefusesBookOnLoan(t *testing.T) {
   <section aria-labelledby="mean-h">
     <h2 id="mean-h">Good to know</h2>
     <div class="notes">
-      <div class="note"><h3>Tests</h3><p>Tests are counted, not run. A rule with a test is not proof that it works.</p></div>
-      <div class="note"><h3>Changes</h3><p>A change shows what it affects, not what it costs.</p></div>
-      <div class="note"><h3>Plans</h3><p>Plans and progress stay in your task tracker.</p></div>
+      <div class="note"><h3 data-i="test">Tests</h3><p>Tests are counted, not run. A rule with a test is not proof that it works.</p></div>
+      <div class="note"><h3 data-i="change">Changes</h3><p>A change shows what it affects, not what it costs.</p></div>
+      <div class="note"><h3 data-i="calendar">Plans</h3><p>Plans and progress stay in your task tracker.</p></div>
     </div>
   </section>
 
@@ -169,7 +175,7 @@ func TestLendRefusesBookOnLoan(t *testing.T) {
     <div class="install">
       <pre id="cmd">curl -fsSL https://raw.githubusercontent.com/hieutran21198/Artifact-Driven-Framework/main/install.sh \
   | sh -s -- my-workspace</pre>
-      <button id="copy" type="button">Copy</button>
+      <button id="copy" type="button" data-i="copy"><span>Copy</span></button>
     </div>
   </section>
 
@@ -181,10 +187,36 @@ func TestLendRefusesBookOnLoan(t *testing.T) {
 </main>
 
 <script>
+const ICON = {
+  goal:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+  flow:'<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>',
+  rule:'<path d="M12 3v18"/><path d="M7 21h10"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/><path d="m2 16 3-8 3 8c-.9.6-1.9 1-3 1s-2.1-.4-3-1Z"/><path d="m16 16 3-8 3 8c-.9.6-1.9 1-3 1s-2.1-.4-3-1Z"/>',
+  artifact:'<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9L9.6 3.9A2 2 0 0 0 7.9 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>',
+  app:'<rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>',
+  phone:'<rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/>',
+  test:'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+  change:'<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
+  book:'<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>',
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/>',
+  mail:'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-9 5.7a2 2 0 0 1-2 0L2 7"/>',
+  briefcase:'<rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+  grid:'<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+  flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/>',
+  code:'<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>',
+  terminal:'<path d="m4 17 6-6-6-6"/><path d="M12 19h8"/>',
+  calendar:'<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>',
+  copy:'<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2"/>',
+  play:'<path d="m6 3 14 9-14 9z"/>',
+  pause:'<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',
+  link:'<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>'
+};
+const ic = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
+document.querySelectorAll('[data-i]').forEach(e => e.insertAdjacentHTML('afterbegin', ic(e.dataset.i)));
 const TRACKER = document.getElementById('tracker').href;
 document.querySelectorAll('.trk').forEach(a => a.href = TRACKER);
 
 const STEPS = ['Goal','Flows','Rules','Artifacts','Apps','Tests','A change'];
+const STEP_ICONS = ['goal','flow','rule','artifact','app','test','change'];
 const CAPS = [
   'A goal: a member borrows a book and brings it back.',
   'It splits into two flows: borrowing and returning. A flow is the steps a person goes through.',
@@ -214,13 +246,13 @@ const HIT = new Set(['r0','goal','fB','fR','aB','mob','l1','l2','l4','l5','l9'])
 
 const stage = document.getElementById('stage'), wrap = document.getElementById('wrap'), svg = document.getElementById('lines');
 const el = (cls, id, html) => { const e = document.createElement('div'); e.className = cls; e.id = id; e.innerHTML = html; stage.appendChild(e); return e; };
-['aM','aB','aN'].forEach(id => el('box', id, {aM:'Members',aB:'Books',aN:'Notices'}[id]));
-el('it goal', 'goal', '<b>Goal</b>Borrow a book');
-el('it flow', 'fB', '<b>Flow</b>Borrowing');
-el('it flow', 'fR', '<b>Flow</b>Returning');
+['aM','aB','aN'].forEach(id => el('box', id, {aM:ic('users')+'Members',aB:ic('book')+'Books',aN:ic('mail')+'Notices'}[id]));
+el('it goal', 'goal', `<b>${ic('goal')}Goal</b>Borrow a book`);
+el('it flow', 'fB', `<b>${ic('flow')}Flow</b>Borrowing`);
+el('it flow', 'fR', `<b>${ic('flow')}Flow</b>Returning`);
 RULES.forEach(([d], i) => el('it rule', 'r' + i, `${d}<span class="chk" id="k${i}">✓</span>`));
-el('it client', 'web', '<b>App</b>Website');
-el('it client', 'mob', '<b>App</b>Phone app');
+el('it client', 'web', `<b>${ic('app')}App</b>Website`);
+el('it client', 'mob', `<b>${ic('phone')}App</b>Phone app`);
 EDGES.forEach(([id]) => { const p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); p.id = id; svg.appendChild(p); });
 
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -276,10 +308,10 @@ function show(n) {
 function playStory(on) {
   clearInterval(timer); timer = null;
   if (on) timer = setInterval(() => show(step + 1), 4600);
-  document.getElementById('play').textContent = on ? 'Pause' : 'Play';
+  document.getElementById('play').innerHTML = ic(on ? 'pause' : 'play') + (on ? 'Pause' : 'Play');
 }
 function showStep(i) { playStory(false); show(i); }
-STEPS.forEach((n, i) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = n; b.onclick = () => showStep(i); document.getElementById('steps').appendChild(b); });
+STEPS.forEach((n, i) => { const b = document.createElement('button'); b.type = 'button'; b.innerHTML = ic(STEP_ICONS[i]) + n; b.onclick = () => showStep(i); document.getElementById('steps').appendChild(b); });
 document.getElementById('play').onclick = () => playStory(!timer);
 new ResizeObserver(layout).observe(wrap);
 layout();
@@ -287,9 +319,9 @@ playStory(!reduce);
 
 document.getElementById('copy').onclick = async e => {
   const b = e.currentTarget, text = document.getElementById('cmd').textContent.replace(/\\\n\s*/, '');
-  try { await navigator.clipboard.writeText(text); b.textContent = 'Copied'; }
-  catch { const r = document.createRange(); r.selectNodeContents(document.getElementById('cmd')); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); b.textContent = 'Selected'; }
-  setTimeout(() => b.textContent = 'Copy', 1800);
+  try { await navigator.clipboard.writeText(text); b.lastChild.textContent = 'Copied'; }
+  catch { const r = document.createRange(); r.selectNodeContents(document.getElementById('cmd')); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); b.lastChild.textContent = 'Selected'; }
+  setTimeout(() => b.lastChild.textContent = 'Copy', 1800);
 };
 </script>
 </body>
