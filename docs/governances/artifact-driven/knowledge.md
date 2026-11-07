@@ -165,7 +165,8 @@ payload is about, under the name of the payload schema.
 Contracts come first: the OpenAPI contract is written and agreed before the code
 that implements it.
 
-- OpenAPI 3.0.3, in YAML.
+- OpenAPI 3.0.3, in YAML, also for what is not HTTP
+  ([decision](decisions.md#openapi-holds-every-contract-also-what-is-not-http)).
 - `system/openapi.yaml` holds the shared components: the error shape and
   authentication.
 - An artifact's `openapi.yaml` holds endpoints of that artifact only; the
@@ -190,6 +191,11 @@ that implements it.
   transaction and retries when the send fails; a consumer that receives it
   twice gets the same result (SYS-8). A change keeps what the consumers read
   (SYS-4).
+- A command that is not an HTTP request, such as a CLI command or an action
+  in a client's interface, is declared under `x-commands` of the contract of
+  the artifact or flow it belongs to, by name in camelCase, with its caller
+  and its input and output schemas. A scenario names the command as it names
+  an operation. A change keeps what callers pass and read (SYS-4).
 - An endpoint an external system calls, such as a payment webhook, belongs to
   the flow it starts. Its contract copies the request the external system
   documents; it is agreed with that documentation, not designed, and the
