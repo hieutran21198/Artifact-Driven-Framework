@@ -825,6 +825,9 @@ function drawPicker() {
 // ---- Settings: checks of connection only (TRK-11) -----------------------
 
 const checks = {};  // "ws:<id>", "part:<id>:<name>", "tok:<name>" → [kind, text], or undefined while checking
+const pending = new Set();  // the keys being checked now
+// Checked once per page load; again only on add, a new token pick, or Check again (TRK-11).
+const known = key => key in checks || pending.has(key);
 
 async function checkToken(name) {
   try { await gh("/rate_limit", name); return ["on", "Accepted by GitHub"]; }
@@ -861,23 +864,37 @@ async function checkPart(w, name, t) {
   catch (e) { return ["bad", e.status === 404 && !p.token ? "Needs a token" : reason(e, p.token)]; }
 }
 
-async function checkAll(which) {
+async function checkAll(which, onlyNew) {
   const jobs = [];
   if (which !== "ws") for (const n of Object.keys(tokens())) {
-    delete checks["tok:" + n];
-    jobs.push(checkToken(n).then(r => { checks["tok:" + n] = r; drawSettings(); }));
+    if (onlyNew && known("tok:" + n)) continue;
+    jobs.push(recheckToken(n));
   }
-  if (which !== "tok") for (const w of config.workspaces) jobs.push(checkOne(w));
+  if (which !== "tok") for (const w of config.workspaces) {
+    if (onlyNew && known("ws:" + idOf(w))) continue;
+    jobs.push(checkOne(w));
+  }
   drawSettings();
   await Promise.all(jobs);
+}
+
+async function recheckToken(n) {
+  delete checks["tok:" + n];
+  pending.add("tok:" + n);
+  drawSettings();
+  checks["tok:" + n] = await checkToken(n);
+  pending.delete("tok:" + n);
+  drawSettings();
 }
 
 async function checkOne(w) {
   const id = idOf(w);
   delete checks["ws:" + id];
+  pending.add("ws:" + id);
   Object.keys(checks).filter(k => k.startsWith(`part:${id}:`)).forEach(k => delete checks[k]);
   drawSettings();
   checks["ws:" + id] = await checkWorkspace(w);
+  pending.delete("ws:" + id);
   const conf = w.configuration || confOf[id];
   if (w.type === "github" && conf) await Promise.all(testParts(conf).filter(([, t]) => t.repository).map(async ([n, t]) => {
     checks[`part:${id}:${n}`] = await checkPart(w, n, t);
@@ -977,7 +994,7 @@ function view(settings) {
   $("settings").hidden = !settings;
   $("workspace-view").hidden = settings;
   $("open-settings").setAttribute("aria-pressed", settings);
-  if (settings) { drawSettings(); checkAll(); } else drawPicker();
+  if (settings) { drawSettings(); checkAll("all", true); } else drawPicker();
   window.scrollTo(0, 0);
 }
 
@@ -1004,9 +1021,7 @@ $("add-tok").onsubmit = e => {
   setToken(name, value);
   $("tok-name").value = $("tok-value").value = "";
   Object.keys(refCache).forEach(k => delete refCache[k]);
-  delete checks["tok:" + name];
-  drawSettings();
-  checkToken(name).then(r => { checks["tok:" + name] = r; drawSettings(); });
+  recheckToken(name);
 };
 $("tok-rows").onclick = e => {
   const b = e.target.closest("[data-tok]");
@@ -1099,8 +1114,13 @@ $("ws-rows").addEventListener("change", e => {
   if (!s) return;
   const w = byId(s.closest("li[data-id]").dataset.id);
   w.parts = w.parts || {};
-  (w.parts[s.dataset.partToken] = w.parts[s.dataset.partToken] || { ref: "" }).token = s.value;
-  saveConfig(); checkOne(w);
+  const name = s.dataset.partToken, key = `part:${idOf(w)}:${name}`;
+  (w.parts[name] = w.parts[name] || { ref: "" }).token = s.value;
+  saveConfig();
+  // Only this part is checked again: its repository with the new token.
+  const t = testParts(w.configuration || confOf[idOf(w)]).find(([n]) => n === name)[1];
+  delete checks[key]; drawSettings();
+  checkPart(w, name, t).then(r => { checks[key] = r; drawSettings(); });
 });
 
 $("export").onclick = () => {
