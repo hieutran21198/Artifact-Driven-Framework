@@ -7,6 +7,7 @@ that holds artifact-driven.json. Without one, it is the parent of scripts/.
 from pathlib import Path
 import json
 import re
+import sys
 
 NAME = "artifact-driven.json"
 DEFAULTS = {
@@ -36,9 +37,28 @@ def tests_of(part):
     return {"glob": TEST_GLOB, **tests} if tests and tests.get("folder") else None
 
 
+def read_config(file):
+    """The settings in the configuration file, or a problem line and status 2
+    when it is not a JSON object (CFG-7)."""
+    if not file.is_file():
+        return {}
+    try:
+        settings = json.loads(file.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as e:
+        stop(f"{file}:{e.lineno}:{e.colno}: not valid JSON: {e.msg}")
+    if not isinstance(settings, dict):
+        stop(f"{file}:1:1: not a JSON object")
+    return settings
+
+
+def stop(problem):
+    """Report that a script cannot run, and exit with status 2 (SYS-3)."""
+    print(problem, file=sys.stderr)
+    sys.exit(2)
+
+
 ROOT = find_root()
-_file = ROOT / NAME
-CONFIG = {**DEFAULTS, **(json.loads(_file.read_text(encoding="utf-8")) if _file.is_file() else {})}
+CONFIG = {**DEFAULTS, **read_config(ROOT / NAME)}
 CONFIG["site"] = {**DEFAULTS["site"], **(CONFIG.get("site") or {})}
 
 KNOWLEDGE = ROOT / CONFIG["knowledge"]

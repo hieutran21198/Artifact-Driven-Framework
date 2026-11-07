@@ -40,9 +40,10 @@ components:
           type: string
           description: >
             The only argument besides the option, relative to the root. The
-            tests folder to read instead of the tests of every part. When it
-            is the folder of a part, the glob of that part applies
-            (F-COVER-6).
+            tests folder to read instead of the tests of every part. The
+            tests folder of each part that is that folder or under it is read
+            with that part's glob; a folder with no part's tests folder, with
+            the default glob (F-COVER-6, F-COVER-10).
           example: tests/scripts
     MeasureCoverageOutput:
       type: object

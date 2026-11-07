@@ -7,7 +7,7 @@ goal cites them by ID.
 | --- | --- |
 | SYS-1 | The scripts need Python 3 and its standard library only. `install.sh` needs POSIX `sh`, `curl` and `tar` only. A workspace installs no package to use the framework. |
 | SYS-2 | Every script runs from the root of a workspace or from any folder under it, and reads the same workspace from each. |
-| SYS-3 | A check exits with status 0 when it finds no problem, and with a status other than 0 when it finds a problem or cannot run. In one run it reports every problem it finds, one per line on standard error, and names the file of each problem that has one. |
+| SYS-3 | A check exits with status 0 when it finds no problem, with 1 when it finds a problem, and with 2 when it cannot run. In one run it reports every problem it finds, one per line on standard error, and names the file of each problem that has one. |
 | SYS-4 | The scripts read the workspace and change no file in it, except the page that the knowledge site writes. `install.sh` changes nothing outside the folder it creates. |
 | SYS-5 | A new version of the framework keeps the commands, their arguments, the configuration keys and the knowledge forms that workspaces use. Knowledge that passes the checks of one version passes the checks of the next. |
 | SYS-6 | The scripts read the knowledge and the tests as text, by the forms the knowledge rules give. They never run the code or the tests of a workspace. |

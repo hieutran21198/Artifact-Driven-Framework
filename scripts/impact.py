@@ -246,12 +246,16 @@ def stats(graph, term):
 
 
 def test_folders(name=None):
-    """The (folder, glob) pairs to read tests from: the given folder, with the
-    glob of the part whose tests live there, or the tests of every service and
-    client in the configuration that exist."""
+    """The (folder, glob) pairs to read tests from: under the given folder,
+    each part's tests folder with its glob, or the folder with the default
+    glob; with no folder given, the tests of every part that exist."""
     if name:
-        globs = [t["glob"] for _, t in TESTS if (ROOT / name).resolve() == (ROOT / t["folder"]).resolve()]
-        return [(ROOT / name, globs[0] if globs else TEST_GLOB)]
+        # Each part whose tests folder is that folder or under it keeps its
+        # own glob; a folder with no part's tests folder, the default (CFG-8).
+        given = (ROOT / name).resolve()
+        parts = [(ROOT / t["folder"], t["glob"]) for _, t in TESTS
+                 if (ROOT / t["folder"]).resolve().is_relative_to(given) and (ROOT / t["folder"]).is_dir()]
+        return parts or [(ROOT / name, TEST_GLOB)]
     return [(ROOT / t["folder"], t["glob"]) for _, t in TESTS if (ROOT / t["folder"]).is_dir()]
 
 

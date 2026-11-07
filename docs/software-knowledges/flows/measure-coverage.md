@@ -64,12 +64,6 @@ sequenceDiagram
 | F-COVER-7 | No tests folder, and two rules with the same reach, one that a scenario cites and one that none cites | The person runs `rankFragile` | The rule that no scenario cites ranks above the other, and each line shows `-` for tests | TST-5 |
 | F-COVER-8 | A tests folder, a rule that no test names, and an operation that an open question names | The person runs `rankFragile` with the folder | The rule shows 0 tests and counts as weaker; the operation is marked as having an open question and scores 8 more | TST-5, KN-12 |
 | F-COVER-9 | Any workspace and its tests | The person runs `measureCoverage` or `rankFragile` | No test runs and no file changes | SYS-4, SYS-6 |
-
-## Open questions
-
-- A folder that holds the tests folders of several parts, and is none of
-  them, is read with the default glob, not with the globs of those parts. So
-  `measureCoverage` with such a folder can read none of their test files
-  (F-COVER-6, CFG-4). Whether it must use the globs of the parts under it.
+| F-COVER-10 | Two parts whose tests folders are `tests/a` and `tests/b`, each with its own glob, and test files that only those globs match | The person runs `measureCoverage` with `tests` | It reads the test files of both parts, each with its part's glob | CFG-8, CFG-4 |
 
 Return to [flows](README.md).
