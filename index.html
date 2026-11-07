@@ -94,7 +94,7 @@ section{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}
 .howto li.dim{opacity:.35}
 .howto li{display:grid;grid-template-columns:34px minmax(0,1fr);gap:4px 16px;counter-increment:s}
 .howto li::before{content:counter(s);grid-row:span 3;width:30px;height:30px;border-radius:50%;background:var(--k);color:var(--ki);font:500 14px/30px var(--body);text-align:center}
-.howto h3{font-family:var(--body);font-size:16px;font-weight:500;display:flex;align-items:center;gap:8px}
+.howto h3{font-family:var(--body);font-size:16px;font-weight:500;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 .howto h3 .ic{color:var(--ki)}
 .howto p{color:var(--muted);font-size:15px}
 .howto .eg{font-size:14px;color:var(--faint)}
@@ -114,6 +114,20 @@ section{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}
 .split .dim{opacity:.25}
 .howto li{transition:opacity .3s}
 @media (max-width:760px){.buckets{grid-template-columns:repeat(2,minmax(0,1fr))}#splitLines{display:none}.split{gap:24px}}
+.tag{font:400 11.5px/1 var(--body);color:var(--muted);border:1px solid var(--rule);border-radius:999px;padding:4px 9px;margin-left:4px;white-space:nowrap}
+.method{display:grid;gap:22px;margin-top:12px}
+.method h3{font-size:22px}
+.nest{background:var(--panel);border-radius:20px;padding:22px;display:grid;gap:16px;justify-items:center;text-align:center}
+.nest>strong{font-family:var(--serif);font-weight:500;font-size:18px}
+.nest .inner{background:var(--paper);border:1px dashed var(--faint);border-radius:14px;padding:14px 22px;display:grid;gap:2px}
+.nest .inner b{font-weight:500}
+.nest .inner span,.nest small{font-size:13.5px;color:var(--muted)}
+.adds{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.adds span{font-size:13.5px;border-radius:999px;padding:5px 12px;background:var(--k);color:var(--ki)}
+.principles{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.principles li{display:grid;gap:6px;align-content:start}
+.principles strong{font-weight:500}
+.principles p{font-size:15px;color:var(--muted)}
 /* questions */
 .roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:40px 32px}
 .role{display:grid;gap:10px;align-content:start}
@@ -185,12 +199,29 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
     </div>
     <ol class="howto">
       <li style="--k:var(--l0);--ki:var(--l0i)"><h3 data-i="goal">Write the goal</h3><p>Who needs what, and how you will know it is done.</p><p class="eg">A member can borrow a book and sees when it is due.</p></li>
-      <li style="--k:var(--l1);--ki:var(--l1i)"><h3 data-i="flow">Split it into flows</h3><p>Write the steps of each flow as scenarios: what happens, and what happens when something goes wrong.</p><p class="eg">The book is already on loan, so the request is refused.</p></li>
+      <li style="--k:var(--l1);--ki:var(--l1i)"><h3 data-i="flow">Split it into flows <span class="tag">Specs by example</span></h3><p>Write the steps of each flow as scenarios: what happens, and what happens when something goes wrong.</p><p class="eg">The book is already on loan, so the request is refused.</p></li>
       <li style="--k:var(--l2);--ki:var(--l2i)"><h3 data-i="rule">Pull out the rules</h3><p>Every "must", "only" or "at most" in a step becomes a rule.</p><p class="eg">Only a book on the shelf can be lent.</p></li>
-      <li style="--k:var(--l3);--ki:var(--l3i)"><h3 data-i="artifact">Group the rules by topic</h3><p>Each topic is an artifact: one domain, run by one service.</p><p class="eg">Books, members, notices.</p></li>
-      <li style="--k:var(--cl);--ki:var(--cli)"><h3 data-i="app">Note what each app needs</h3><p>The API calls and fields each app relies on, so a change does not break it.</p><p class="eg">The phone app reads the due date of a book.</p></li>
+      <li style="--k:var(--l3);--ki:var(--l3i)"><h3 data-i="artifact">Group the rules by topic <span class="tag">Strategic DDD</span></h3><p>Each topic is an artifact: one domain, run by one service.</p><p class="eg">Books, members, notices.</p></li>
+      <li style="--k:var(--cl);--ki:var(--cli)"><h3 data-i="app">Note what each app needs <span class="tag">Contract first</span></h3><p>The API calls and fields each app relies on, so a change does not break it.</p><p class="eg">The phone app reads the due date of a book.</p></li>
       <li style="--k:var(--panel);--ki:var(--ink)"><h3 data-i="scan">Mention the rule in its test</h3><p>Each rule has a short ID. The test that checks it mentions the ID, so the scan can find it.</p><p class="eg">BK-3 is the rule "only a book on the shelf can be lent".</p></li>
     </ol>
+    <div class="method">
+      <h3>The method behind it</h3>
+      <div class="nest">
+        <strong>Artifact Driven</strong>
+        <div class="inner"><b>Domain-Driven Design</b><span>Domains and their boundaries</span></div>
+        <small>and around it</small>
+        <div class="adds">
+          <span data-b="2">Specs</span><span data-b="2">Flows</span><span data-b="5">Data each app needs</span><span data-b="5">Contracts</span><span data-b="1">Diagrams</span><span data-b="6">Scan</span>
+        </div>
+      </div>
+      <ul class="principles">
+        <li><strong>Domains first</strong><p>Split the product by topic before writing code.</p><span class="tag" style="justify-self:start;margin:0">Strategic DDD</span></li>
+        <li><strong>Contracts first</strong><p>Agree on what each app sends and reads before building it.</p><span class="tag" style="justify-self:start;margin:0">Contract first</span></li>
+        <li><strong>A picture for every layer</strong><p>Each goal, flow and domain has its own diagram.</p><span class="tag" style="justify-self:start;margin:0">Diagrams as docs</span></li>
+      </ul>
+      <p class="lede" style="font-size:16px">Close to Domain-Driven Design, but it also covers specs, flows, the data each app needs, and diagrams.</p>
+    </div>
   </section>
 
   <section aria-labelledby="roles-h">
