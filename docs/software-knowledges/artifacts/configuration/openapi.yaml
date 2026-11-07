@@ -48,7 +48,7 @@ components:
           properties:
             title:
               type: string
-              default: Software knowledge
+              default: Software Knowledge
             output:
               type: string
               description: The file the site writes, relative to the root.

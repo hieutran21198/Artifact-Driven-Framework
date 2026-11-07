@@ -15,7 +15,7 @@ DEFAULTS = {
     "clients": {},
     "services": {},
     "e2e": None,
-    "site": {"title": "Software knowledge", "output": "build/site/index.html"},
+    "site": {"title": "Software Knowledge", "output": "build/site/index.html"},
 }
 TEST_GLOB = "**/*_test.*"
 # A knowledge ID, such as SYS-4, G-SELL-2 or INV-3. Names of standards that

@@ -17,7 +17,7 @@ that file. Every key is optional.
 | `clients` | The client pages an artifact may have: file name without `.md`, mapped to the name the site shows, or to an object with `name` and `tests` | none |
 | `services` | The services, by name as in the domain map: each with `routes` and `tests` | none |
 | `e2e` | Where the end-to-end tests live: `folder` and `glob` | none |
-| `site` | `title` of the site and `output`, the file it writes | `Software knowledge`, `build/site/index.html` |
+| `site` | `title` of the site and `output`, the file it writes | `Software Knowledge`, `build/site/index.html` |
 
 A service's `routes` says where the site finds its routes for API coverage:
 `folders` (relative to the root), `glob`, and `pattern`, a regular expression

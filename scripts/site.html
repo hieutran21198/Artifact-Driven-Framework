@@ -4,33 +4,39 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Software Knowledge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap">
 <style>
-:root{--bg:#f7f6f2;--card:#ffffff;--ink:#1f1e1b;--muted:#6b6a64;--line:#e3e1d9;--accent:#185fa5;--accent-bg:#e6f1fb;--up:#d85a30;--up-bg:#faece7;--down:#0f6e56;--down-bg:#e1f5ee;--warn:#854f0b;--warn-bg:#faeeda;--c0:#eeedfe;--c0i:#3c3489;--c1:#e1f5ee;--c1i:#085041;--c2:#fbeaf0;--c2i:#72243e;--c3:#f1efe8;--c3i:#444441;--c4:#faece7;--c4i:#712b13}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161614;--card:#1f1f1c;--ink:#ecebe5;--muted:#a19f97;--line:#34332f;--accent:#85b7eb;--accent-bg:#0c2a48;--up:#f0997b;--up-bg:#4a1b0c;--down:#5dcaa5;--down-bg:#04342c;--warn:#fac775;--warn-bg:#412402;--c0:#26215c;--c0i:#cecbf6;--c1:#04342c;--c1i:#9fe1cb;--c2:#4b1528;--c2i:#f4c0d1;--c3:#2c2c2a;--c3i:#d3d1c7;--c4:#4a1b0c;--c4i:#f5c4b3}}
+:root{--bg:#fbfcfd;--card:#ffffff;--panel:#f1f4f7;--ink:#1f2933;--muted:#5f6b78;--faint:#94a0ab;--line:#e3e8ed;--accent:#2f6db5;--accent-bg:#e8f0fa;--up:#b8542c;--up-bg:#fbece5;--down:#2f7d57;--down-bg:#e6f2e8;--warn:#8a5a12;--warn-bg:#fbf3e4;--c0:#ecebfb;--c0i:#3d3a8a;--c1:#e2f3ec;--c1i:#1f6a4f;--c2:#fbe9ee;--c2i:#8a3352;--c3:#f6f3ec;--c3i:#6b5d3a;--c4:#e4f0fb;--c4i:#245b8f;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;--body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;color-scheme:light}
+/* Light only, like the landing page: the page keeps its colors on a dark system theme. */
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif}
-main{max-width:1120px;margin:0 auto;padding:24px 16px 64px}
-h1{font-size:24px;font-weight:600;margin:0}h2{font-size:18px;font-weight:600;margin:40px 0 4px}h3{font-size:15px;font-weight:600;margin:0}
-.sub{color:var(--muted);font-size:13px;margin:4px 0 16px}
-nav{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;margin:12px 0 0}nav a{color:var(--accent);text-decoration:none}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 var(--body)}
+main{max-width:1120px;margin:0 auto;padding:32px max(20px,env(safe-area-inset-right,0px)) 72px max(20px,env(safe-area-inset-left,0px))}
+h1,h2{font-family:var(--serif);font-weight:400;line-height:1.2;text-wrap:balance}h1{font-size:clamp(30px,5vw,40px);margin:0}h2{font-size:26px;margin:48px 0 6px}h3{font-size:15px;font-weight:600;margin:0}
+a{color:var(--accent);text-underline-offset:3px;text-decoration-thickness:1px}:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+code{font-family:var(--mono);font-size:.88em}
+.sub{color:var(--muted);font-size:14px;margin:4px 0 18px;max-width:72ch}
+nav{display:flex;gap:6px 18px;flex-wrap:wrap;font-size:14px;margin:16px 0 0;padding-bottom:16px;border-bottom:1px solid var(--line)}nav a{color:var(--accent);text-decoration:none}nav a:hover{text-decoration:underline}
 .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0}
-.metric .k{color:var(--muted);font-size:12px}.metric .v{font-size:26px;font-weight:600}.metric .n{color:var(--muted);font-size:12px}
-.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;min-width:0}
+.metric .k{color:var(--faint);font-size:12px}.metric .v{font:400 32px/1.2 var(--serif);font-variant-numeric:tabular-nums}.metric .n{color:var(--muted);font-size:12px}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}.bar i{display:block;height:100%;background:var(--down);border-radius:4px}
 .row{display:grid;grid-template-columns:90px 1fr 90px;gap:12px;align-items:center;font-size:13px;margin:8px 0}
-table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted);font-weight:500}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--faint);font-weight:400;font-size:12px}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
-.pill{display:inline-block;font-size:11px;padding:1px 7px;border-radius:999px;margin:1px 2px 1px 0;font-family:ui-monospace,Menlo,monospace}
+.pill{display:inline-block;white-space:nowrap;font-size:11px;padding:1px 7px;border-radius:999px;margin:1px 2px 1px 0;font-family:var(--mono)}
 .p0{background:var(--c0);color:var(--c0i)}.p1{background:var(--c1);color:var(--c1i)}.p2{background:var(--c2);color:var(--c2i)}.p3{background:var(--c3);color:var(--c3i)}.p4{background:var(--c4);color:var(--c4i)}
 .gap{background:var(--warn-bg);color:var(--warn)}
 details{margin-top:8px}summary{cursor:pointer;color:var(--accent);font-size:13px}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
-.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:4px 12px;font-size:13px;cursor:pointer}
-.chip[aria-pressed="true"]{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
-button.plain{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:4px 10px;font-size:13px;cursor:pointer}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:4px 12px;font:13px var(--body);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--card)}
+button.plain{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:4px 12px;font:13px var(--body);cursor:pointer;white-space:nowrap;flex:none}
 .explorer{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:12px}
 @media (max-width:860px){.explorer{grid-template-columns:minmax(0,1fr)}}
-.graph{overflow-x:auto}svg text{font-size:11px;fill:var(--ink);dominant-baseline:central;font-family:ui-monospace,Menlo,monospace}
+.graph{overflow-x:auto}svg text{font-size:11px;fill:var(--ink);dominant-baseline:central;font-family:var(--mono)}
 svg .head{fill:var(--muted);font-family:inherit;font-size:12px}
 .node{cursor:pointer}.node rect{stroke:transparent}.node.sel rect{stroke:var(--ink);stroke-width:1.5}
 .node.dim{opacity:.15}.edge{fill:none;stroke:var(--muted);stroke-width:.6;opacity:.25}.edge.up{stroke:var(--up);opacity:.9;stroke-width:1.2}.edge.down{stroke:var(--down);opacity:.9;stroke-width:1.2}.edge.off{opacity:.03}
@@ -39,14 +45,34 @@ svg .head{fill:var(--muted);font-family:inherit;font-size:12px}
 .muted{color:var(--muted)}.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
 ul.tight{margin:6px 0 0;padding-left:18px;font-size:13px}
 .picker{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
-.drop{position:relative;min-width:280px;margin:0}.drop summary{list-style:none;border:1px solid var(--line);border-radius:8px;padding:7px 12px;color:var(--ink);background:var(--card)}.drop summary::-webkit-details-marker{display:none}.drop summary::after{content:"▾";float:right;margin-left:12px;color:var(--muted)}
+.drop{position:relative;min-width:280px;margin:0}.drop summary{list-style:none;border:1px solid var(--line);border-radius:8px;padding:8px 12px;color:var(--ink);background:var(--card);font-size:14px}.drop summary::-webkit-details-marker{display:none}.drop summary::after{content:"▾";float:right;margin-left:12px;color:var(--muted)}
 .drop-list{position:absolute;z-index:5;top:42px;left:0;right:0;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px;max-height:320px;overflow:auto}
-.drop-list label{display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:6px;font-size:14px;cursor:pointer}.drop-list label:hover{background:var(--bg)}.drop-list label.off{opacity:.45;cursor:not-allowed}.drop-list hr{border:0;border-top:1px solid var(--line);margin:4px 0}
-button.primary{border:0;background:var(--accent);color:var(--card);border-radius:8px;padding:8px 18px;font-size:14px;font-weight:600;cursor:pointer}button.primary[disabled]{opacity:.45;cursor:not-allowed}
+.drop-list label{display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:6px;font-size:14px;cursor:pointer}.drop-list label:hover{background:var(--panel)}.drop-list label.off{opacity:.45;cursor:not-allowed}.drop-list hr{border:0;border-top:1px solid var(--line);margin:4px 0}
+button.primary{border:1px solid var(--ink);background:var(--ink);color:var(--card);border-radius:999px;padding:8px 18px;font:500 14px var(--body);cursor:pointer}button.primary[disabled]{opacity:.45;cursor:not-allowed}
 #run-note{font-size:13px;align-self:center}
+/* Wide drawings scroll inside their card, so the page never scrolls sideways. */
+.card div:has(> svg),.explorer > .card,.card:has(> table){overflow-x:auto;min-width:0}
+/* Goals: cards of one height, six to a page; the criteria and flows open in a side panel. */
+.goal-card{display:flex;flex-direction:column;gap:10px;height:200px}
+.goal-card h3{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.goal-card .open{margin-top:auto;align-self:flex-start}
+.pager{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:14px;font-size:14px;color:var(--muted)}.pager:empty{display:none}
+.side-back{position:fixed;inset:0;background:rgba(31,41,51,.28);z-index:20}
+.side{position:fixed;top:0;right:0;height:100vh;width:min(600px,100%);background:var(--card);border-left:1px solid var(--line);box-shadow:-12px 0 32px rgba(31,41,51,.12);z-index:21;overflow:auto;padding:24px max(20px,env(safe-area-inset-right,0px)) 40px 24px}
+.side-head{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;margin-bottom:12px}.side-head h2{margin:0;font-size:24px}
+.slides{margin-bottom:12px;transition:box-shadow .3s}.slides.flash{box-shadow:0 0 0 2px var(--accent)}
+.to-flow{cursor:pointer}.to-flow:hover rect,.to-flow:hover path,.to-flow:focus-visible rect,.to-flow:focus-visible path{stroke:var(--accent)!important;stroke-width:2px!important}.to-flow:focus{outline:none}.slide-head{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.slide-nav{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}.slide-nav button[disabled]{opacity:.4;cursor:default}
 .diagram{overflow-x:auto}.diagram svg{max-width:100%;height:auto}.diagram pre{font-size:12px;white-space:pre;margin:8px 0 0;color:var(--muted)}
 </style>
-<script async src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js" onload="window.mermaidReady&&mermaidReady()"></script>
+<script type="module">
+// Mermaid with the ELK layout: right-angled edges that share their route, and fewer crossings.
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@12.1.0/dist/mermaid.esm.min.mjs";
+import elk from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@1.0.1/dist/mermaid-layout-elk.esm.min.mjs";
+mermaid.registerLayoutLoaders(elk);
+window.mermaid = mermaid;
+if (window.mermaidReady) mermaidReady();
+</script>
 </head>
 <body>
 <main>
@@ -68,7 +94,7 @@ button.primary{border:0;background:var(--accent);color:var(--card);border-radius
 
 <section id="coverage"><h2 data-i="nav.coverage"></h2><p class="sub" data-i="coverage.sub"></p><div class="card" id="coverage-bars"></div></section>
 
-<section id="goals"><h2 data-i="nav.goals"></h2><p class="sub" data-i="goals.sub"></p><div class="two" id="goal-cards"></div></section>
+<section id="goals"><h2 data-i="nav.goals"></h2><p class="sub" data-i="goals.sub"></p><div class="two" id="goal-cards"></div><div class="pager" id="goal-pager"></div></section>
 
 <section id="diagrams"><h2 data-i="nav.diagrams"></h2><p class="sub" data-i="diagrams.sub"></p><div id="diagram-cards"></div></section>
 
@@ -82,6 +108,8 @@ button.primary{border:0;background:var(--accent);color:var(--card);border-radius
 <section id="clients"><h2 data-i="nav.clients"></h2><p class="sub" data-i="clients.sub"></p><div class="two" id="client-cards"></div></section>
 </div>
 </main>
+<div class="side-back" id="side-back" hidden></div>
+<aside class="side" id="side" hidden aria-modal="true" role="dialog" aria-labelledby="side-title"><div class="side-head"><h2 id="side-title"></h2><button class="plain" id="side-close"></button></div><div id="side-body"></div></aside>
 <script>const DATA=/*DATA*/null;</script>
 <script>
 const I18N={
@@ -112,7 +140,7 @@ en:{
 "m.goals":["Goals","business outcomes"],"m.flows":["Flows","behaviors across domains"],"m.scenarios":["Scenarios","testable cases"],"m.rules":["Rules","domain rules"],"m.operations":["Operations","API operations with a contract"],"m.coverage":["API coverage",(c,t)=>`${c} of ${t} service routes`],
 "withKnowledge":"Routes with knowledge","withoutKnowledge":"Routes without knowledge",
 "kind":["Goal / requirement","Scenario","Rule","Operation","Client page"],
-"flows":"Flows","scenarios":"Scenarios","operations":"Operations","clientPages":"Client pages","criterion":"Criterion","none":"none","None":"None","item":"Item",
+"flows":"Flows","scenarios":"Scenarios","operations":"Operations","clientPages":"Client pages","criterion":"Criterion","none":"none","None":"None","item":"Item","details":"Criteria and flows","close":"Close","prev":"Previous","next":"Next","layer.system/":"System","layer.goals/":"Goals","layer.flows/":"Flows",
 "gap.rules":"Rules no scenario covers","gap.criteria":"Goal criteria no scenario proves","gap.ops":"Operations no scenario calls","gap.sys":"Requirements nothing cites",
 "affected":"Affected by a change","reliesOn":"Relies on","showAll":"Show all","selectNode":"Select a node to read it.",
 "flow":"Flow","given":"Given","when":"When","then":"Then","covers":"Covers","endpoint":"Endpoint","summary":"Summary","needs":n=>`${n} needs`,
@@ -154,7 +182,7 @@ vi:{
 "m.goals":["Goal","kết quả nghiệp vụ"],"m.flows":["Flow","hành vi qua nhiều domain"],"m.scenarios":["Scenario","ca test"],"m.rules":["Rule","luật nghiệp vụ"],"m.operations":["Operation","operation API có contract"],"m.coverage":["Độ phủ API",(c,t)=>`${c} trên ${t} route service`],
 "withKnowledge":"Route đã có knowledge","withoutKnowledge":"Route chưa có knowledge",
 "kind":["Goal / requirement","Scenario","Rule","Operation","Trang app"],
-"flows":"Flow","scenarios":"Scenario","operations":"Operation","clientPages":"Trang app","criterion":"Criterion","none":"chưa có","None":"Không có","item":"Mục",
+"flows":"Flow","scenarios":"Scenario","operations":"Operation","clientPages":"Trang app","criterion":"Criterion","none":"chưa có","None":"Không có","item":"Mục","details":"Criterion và flow","close":"Đóng","prev":"Trước","next":"Sau","layer.system/":"System","layer.goals/":"Goal","layer.flows/":"Flow",
 "gap.rules":"Rule chưa scenario nào phủ","gap.criteria":"Criterion chưa scenario nào chứng minh","gap.ops":"Operation chưa scenario nào gọi","gap.sys":"Requirement chưa ai trích",
 "affected":"Bị ảnh hưởng khi đổi","reliesOn":"Dựa vào","showAll":"Xem tất cả","selectNode":"Chọn một node để đọc nội dung.",
 "flow":"Flow","given":"Given","when":"When","then":"Then","covers":"Phủ","endpoint":"Endpoint","summary":"Tóm tắt","needs":n=>`${n} nhu cầu`,
@@ -201,6 +229,23 @@ drawMap();renderPicker();
 if(analysis)renderResults();
 }
 function metricCards(m,c,t){return m.map(([k,v])=>{const [label,note]=T(k);return `<div class="card metric"><div class="k">${label}</div><div class="v">${v}</div><div class="n">${typeof note==="function"?note(c,t):note}</div></div>`;}).join("");}
+// Goals six to a page; each card opens its criteria and flows in the side panel.
+const PER_PAGE=6;let goalList=[],goalPage=0,sideFor=null;
+const metricsOf=g=>{const z=DATA.size[g.key]||{};return `<div class="grid" style="grid-template-columns:repeat(4,minmax(0,1fr));margin:0">${[["flows",z.flows],["scenarios",z.scenarios],["operations",z.operations],["clientPages",z["client pages"]]].map(([k,v])=>`<div class="metric"><div class="k">${T(k)}</div><div class="v" style="font-size:20px">${v??0}</div></div>`).join("")}</div>`;};
+function drawGoals(){const pages=Math.max(1,Math.ceil(goalList.length/PER_PAGE));goalPage=Math.min(goalPage,pages-1);
+ $("goal-cards").innerHTML=goalList.slice(goalPage*PER_PAGE,(goalPage+1)*PER_PAGE).map(g=>`<div class="card goal-card"><h3>${esc(g.title)} <span class="muted">${esc(g.key)}</span></h3>${metricsOf(g)}<button class="plain open" data-goal="${esc(g.key)}">${T("details")} · ${g.criteria.length}</button></div>`).join("");
+ $("goal-pager").innerHTML=pages>1?`<button class="plain" data-page="-1"${goalPage?"":" disabled"}>← ${T("prev")}</button><span>${goalPage+1} / ${pages}</span><button class="plain" data-page="1"${goalPage<pages-1?"":" disabled"}>${T("next")} →</button>`:"";}
+function openSide(key){const g=DATA.goals.find(x=>x.key===key);if(!g)return;sideFor=key;
+ const crit=g.criteria.map(c=>{const by=c.proven;return `<tr><td>${pill(c.id)}</td><td>${esc(c.text)}</td><td class="num">${by.length?by.length:`<span class="pill gap">${T("none")}</span>`}</td></tr>`;}).join("");
+ $("side-title").innerHTML=`${esc(g.title)} <span class="muted" style="font-size:16px">${esc(g.key)}</span>`;
+ $("side-close").textContent=T("close")+" ×";
+ $("side-body").innerHTML=`${metricsOf(g)}<h3 style="margin:20px 0 6px">${T("criterion")}</h3><table><tr><th>${T("criterion")}</th><th></th><th class="num">${T("scenarios")}</th></tr>${crit}</table>
+  <h3 style="margin:20px 0 6px">${T("flows")}</h3><ul class="tight">${g.flows.map(p=>flowByPage[p]?`<li>${esc(flowByPage[p].title)} · ${flowByPage[p].scenarios.length} ${T("scenarios").toLowerCase()}</li>`:"").join("")}</ul>`;
+ $("side").hidden=$("side-back").hidden=false;placeSide();$("side-close").focus();}
+// Inside the tracker the page is as tall as its content, so the panel follows the tracker's own scroll.
+function placeSide(){const f=window.frameElement,s=$("side");if(!f||s.hidden){s.style.top="";s.style.height="";return;}
+ try{const top=Math.max(0,-f.getBoundingClientRect().top);s.style.top=top+"px";s.style.height=Math.min(parent.innerHeight,document.documentElement.scrollHeight-top)+"px";}catch{}}
+function closeSide(){sideFor=null;$("side").hidden=$("side-back").hidden=true;}
 function renderPicker(){const all=chosen.has("*"),n=all?DATA.goals.length:chosen.size;
  $("drop-label").textContent=T("drop")(n);
  $("goal-options").innerHTML=`<label><input type="checkbox" value="*" ${all?"checked":""}> ${T("allGoals")}</label><hr>`+DATA.goals.map(g=>{const on=all||chosen.has(g.key),off=!all&&!on&&chosen.size>=3;return `<label class="${off?"off":""}"><input type="checkbox" value="${g.key}" ${on?"checked":""} ${off||all?"disabled":""}> ${esc(g.title)} <span class="muted">${g.key}</span></label>`;}).join("");
@@ -216,12 +261,7 @@ function renderResults(){
  $("coverage-bars").innerHTML=`<p class="muted" style="margin:0 0 8px;font-size:13px">${T("projectNote")}</p>`+Object.entries(spaces).sort((a,b)=>b[1].length-a[1].length).map(([s,rs])=>{const c=rs.filter(r=>r.covered).length;return `<div class="row"><code>${esc(s)}</code><div class="bar"><i style="width:${pct(c,rs.length)}%"></i></div><span class="muted">${c} / ${rs.length}</span></div>`;}).join("")
  +`<details open><summary>${T("inThis")} (${routes.length})</summary><table>${routes.map(r=>`<tr><td>${r.method}</td><td><code>${esc(r.path)}</code></td><td>${pill(r.covered)}</td></tr>`).join("")}</table></details>`
  +`<details><summary>${T("withoutKnowledge")} (${ROUTES.length-covered})</summary><table>${ROUTES.filter(r=>!r.covered).map(r=>`<tr><td>${r.method}</td><td><code>${esc(r.path)}</code></td></tr>`).join("")}</table></details>`;
- $("goal-cards").innerHTML=goals.map(g=>{const z=DATA.size[g.key]||{};
-  const crit=g.criteria.map(c=>{const by=c.proven;return `<tr><td>${pill(c.id)}</td><td>${esc(c.text)}</td><td class="num">${by.length?by.length:`<span class="pill gap">${T("none")}</span>`}</td></tr>`;}).join("");
-  return `<div class="card"><h3>${esc(g.title)} <span class="muted">${esc(g.key)}</span></h3>
-  <div class="grid" style="grid-template-columns:repeat(4,minmax(0,1fr));margin:10px 0">${[["flows",z.flows],["scenarios",z.scenarios],["operations",z.operations],["clientPages",z["client pages"]]].map(([k,v])=>`<div class="metric"><div class="k">${T(k)}</div><div class="v" style="font-size:20px">${v??0}</div></div>`).join("")}</div>
-  <table><tr><th>${T("criterion")}</th><th></th><th class="num">${T("scenarios")}</th></tr>${crit}</table>
-  <details><summary>${T("flows")}</summary><ul class="tight">${g.flows.map(p=>flowByPage[p]?`<li>${esc(flowByPage[p].title)} · ${flowByPage[p].scenarios.length} ${T("scenarios").toLowerCase()}</li>`:"").join("")}</ul></details></div>`;}).join("");
+ goalList=goals;goalPage=0;drawGoals();if(sideFor)openSide(sideFor);
  const radius=Object.entries(DATA.radius).filter(([id])=>S.has(id)).sort((a,b)=>b[1].scenarios-a[1].scenarios||b[1].operations-a[1].operations||a[0].localeCompare(b[0]));
  $("radius-table").innerHTML=`<tr><th>${T("item")}</th><th class="num">${T("flows")}</th><th class="num">${T("scenarios")}</th><th class="num">${T("operations")}</th><th class="num">${T("clientPages")}</th></tr>`+radius.map(([id,r])=>`<tr><td>${pill(id)}</td><td class="num">${r.flows}</td><td class="num">${r.scenarios}</td><td class="num">${r.operations}</td><td class="num">${r["client pages"]}</td></tr>`).join("");
  const gaps=[
@@ -237,11 +277,35 @@ function renderResults(){
  drawDiagrams(DATA.diagrams.map((d,i)=>({...d,i})).filter(d=>pages.has(d.page)));
  if(selected&&S.has(selected))select(selected);else $("detail").innerHTML=`<p class="muted">${T("selectNode")}</p>`;
 }
-const LAYER=["system/","goals/","flows/"],svgs={};let shown=[],mermaidOn=false;
-function mermaidReady(){mermaid.initialize({startOnLoad:false,theme:{light:"default",dark:"dark"}[document.documentElement.dataset.theme]||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"default")});mermaidOn=true;if(analysis)drawDiagrams(shown);}
+const LAYER=["system/","goals/","flows/"],svgs={},slideAt={};let shown=[],mermaidOn=false;
+// Diagrams take the colors and the font of the page: quiet cards, thin borders, muted lines.
+function mermaidTheme(){const c=getComputedStyle(document.documentElement),v=n=>c.getPropertyValue(n).trim(),dark=false;
+ return{theme:"base",layout:"elk",elk:{mergeEdges:false,nodePlacementStrategy:"NETWORK_SIMPLEX"},fontFamily:getComputedStyle(document.body).fontFamily,themeVariables:{darkMode:dark,fontFamily:getComputedStyle(document.body).fontFamily,fontSize:"14px",background:v("--card"),
+  primaryColor:v("--card"),primaryTextColor:v("--ink"),primaryBorderColor:v("--muted"),secondaryColor:v("--accent-bg"),secondaryTextColor:v("--ink"),secondaryBorderColor:v("--accent"),tertiaryColor:v("--bg"),tertiaryTextColor:v("--ink"),tertiaryBorderColor:v("--line"),
+  lineColor:v("--muted"),textColor:v("--ink"),mainBkg:v("--card"),nodeBorder:v("--muted"),nodeTextColor:v("--ink"),clusterBkg:v("--bg"),clusterBorder:v("--line"),titleColor:v("--ink"),edgeLabelBackground:v("--card"),
+  actorBkg:v("--card"),actorBorder:v("--muted"),actorTextColor:v("--ink"),actorLineColor:v("--line"),signalColor:v("--muted"),signalTextColor:v("--ink"),labelBoxBkgColor:v("--bg"),labelBoxBorderColor:v("--line"),labelTextColor:v("--ink"),loopTextColor:v("--muted"),
+  noteBkgColor:v("--warn-bg"),noteBorderColor:v("--line"),noteTextColor:v("--ink"),activationBkgColor:v("--accent-bg"),activationBorderColor:v("--accent"),sequenceNumberColor:v("--card"),
+  classText:v("--ink"),stateBkg:v("--card"),stateLabelColor:v("--ink"),transitionColor:v("--muted"),altBackground:v("--bg"),compositeBackground:v("--bg"),compositeTitleBackground:v("--bg")},
+  themeCSS:".node rect,.node polygon,.node circle,.node path,.cluster rect,.actor,rect.note,.labelBox{stroke-width:1px!important}.node rect,.cluster rect{rx:8px;ry:8px}.edgePath .path,.flowchart-link,.messageLine0,.messageLine1,.transition{stroke-width:1.25px!important}.cluster-label,.cluster .nodeLabel{font-weight:600}",
+  flowchart:{curve:"linear",padding:12,htmlLabels:true},sequence:{actorMargin:48,boxMargin:8,mirrorActors:false}}}
+function mermaidReady(){mermaid.initialize({startOnLoad:false,...mermaidTheme()});mermaidOn=true;if(analysis)drawDiagrams(shown);}
 function drawDiagrams(list){shown=list.sort((a,b)=>LAYER.findIndex(l=>a.page.startsWith(l))-LAYER.findIndex(l=>b.page.startsWith(l))||a.i-b.i);
- $("diagram-cards").innerHTML=(window.mermaid?"":`<p class="muted" style="font-size:13px">${T("diagrams.offline")}</p>`)+shown.map(d=>`<div class="card diagram" style="margin-bottom:12px"><h3>${esc(d.title)}${d.section?` <span class="muted">· ${esc(d.section)}</span>`:""}</h3><p class="sub" style="margin:2px 0 8px"><code>${esc(d.page)}</code></p><div id="mm${d.i}">${svgs[d.i]||`<pre>${esc(d.code)}</pre>`}</div></div>`).join("");
- if(mermaidOn)shown.filter(d=>!svgs[d.i]).forEach(d=>mermaid.render("mmsvg"+d.i,d.code).then(r=>{svgs[d.i]=r.svg;const e=$("mm"+d.i);if(e)e.innerHTML=r.svg;}).catch(()=>{}));}
+ // One card per layer; its diagrams are slides, one shown at a time.
+ const groups=LAYER.map(l=>[l,shown.filter(d=>d.page.startsWith(l))]).filter(([,ds])=>ds.length);
+ $("diagram-cards").innerHTML=(window.mermaid?"":`<p class="muted" style="font-size:13px">${T("diagrams.offline")}</p>`)+groups.map(([l,ds])=>{const at=Math.min(slideAt[l]||0,ds.length-1);slideAt[l]=at;
+  return `<div class="card diagram slides" data-layer="${l}"><div class="slide-head"><h3>${T("layer."+l)} <span class="muted">· ${ds.length}</span></h3>${ds.length>1?`<div class="slide-nav"><button class="plain" data-slide="-1" aria-label="${T("prev")}"${at?"":" disabled"}>←</button><span>${at+1} / ${ds.length}</span><button class="plain" data-slide="1" aria-label="${T("next")}"${at<ds.length-1?"":" disabled"}>→</button></div>`:""}</div>`+
+  ds.map((d,k)=>`<div class="slide"${k===at?"":" hidden"}><p style="margin:10px 0 0;font-weight:600;font-size:15px">${esc(d.title)}${d.section?` <span class="muted" style="font-weight:400">· ${esc(d.section)}</span>`:""}</p><p class="sub" style="margin:2px 0 8px"><code>${esc(d.page)}</code></p><div id="mm${d.i}">${svgs[d.i]||`<pre>${esc(d.code)}</pre>`}</div></div>`).join("")+`</div>`;}).join("");
+ shown.forEach(linkFlows);
+ if(mermaidOn)shown.filter(d=>!svgs[d.i]).forEach(d=>mermaid.render("mmsvg"+d.i,d.code).then(r=>{svgs[d.i]=r.svg;const e=$("mm"+d.i);if(e){e.innerHTML=r.svg;linkFlows(d);}}).catch(()=>{}));}
+// In a goal's diagram, each node named after a flow shows that flow's slide in the Flows card.
+function linkFlows(d){if(!d.page.startsWith("goals/"))return;const e=$("mm"+d.i);if(!e)return;
+ e.querySelectorAll(".node").forEach(n=>{const f=DATA.flows.find(x=>x.title===n.textContent.trim());if(!f||!shown.some(s=>s.page===f.page))return;
+  n.classList.add("to-flow");n.setAttribute("tabindex","0");n.setAttribute("role","link");n.setAttribute("aria-label",f.title);
+  n.onclick=n.onkeydown=ev=>{if(ev.type==="keydown"&&ev.key!=="Enter")return;focusFlow(f.page);};});}
+function focusFlow(page){const ds=shown.filter(s=>s.page.startsWith("flows/")),k=ds.findIndex(s=>s.page===page);if(k<0)return;
+ slideAt["flows/"]=k;drawDiagrams(shown);const c=document.querySelector('[data-layer="flows/"]');
+ c.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+ c.classList.add("flash");setTimeout(()=>c.classList.remove("flash"),1600);}
 function examplePath(){
  const opsIn=x=>DATA.operations.filter(o=>new RegExp("\\b"+o.id+"\\b").test(x.when));
  const appOf=id=>Object.keys(col).find(n=>col[n]===4&&out[n].includes(id));
@@ -265,6 +329,12 @@ function drawMap(){const svg=$("map");[...svg.querySelectorAll("g,rect,text")].f
   svg.appendChild(g);});}
 const NS="http://www.w3.org/2000/svg",RH=22,TOP=30,COLS=[{x:4,w:84},{x:110,w:76},{x:208,w:60},{x:290,w:200},{x:512,w:150}],CV=["--c0","--c1","--c2","--c3","--c4"],CI=["--c0i","--c1i","--c2i","--c3i","--c4i"];
 const chosen=new Set();let analysis=null,selected=null;
+$("diagram-cards").onclick=e=>{const b=e.target.closest("[data-slide]");if(!b||b.disabled)return;const l=b.closest("[data-layer]").dataset.layer;slideAt[l]=(slideAt[l]||0)+ +b.dataset.slide;drawDiagrams(shown);};
+$("goal-cards").onclick=e=>{const b=e.target.closest("[data-goal]");if(b)openSide(b.dataset.goal);};
+$("goal-pager").onclick=e=>{const b=e.target.closest("[data-page]");if(!b||b.disabled)return;goalPage+=+b.dataset.page;drawGoals();$("goals").scrollIntoView({block:"start"});};
+$("side-close").onclick=$("side-back").onclick=closeSide;
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&sideFor)closeSide();});
+try{if(window.frameElement)parent.addEventListener("scroll",placeSide,{passive:true});}catch{}
 $("run").onclick=()=>{analysis=new Set(chosen.has("*")?DATA.goals.map(g=>g.key):[...chosen]);$("drop").open=false;$("results").hidden=false;draw();render();$("summary").scrollIntoView({behavior:"smooth"});};
 document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>{lang=b.dataset.lang;try{localStorage.setItem("lang",lang);}catch(e){}if(analysis)draw();render();});
 const walk=(s,adj)=>{const seen=new Set(s),q=[...s];while(q.length)for(const n of adj[q.pop()]||[])if(!seen.has(n)){seen.add(n);q.push(n);}return seen;};
