@@ -1,7 +1,7 @@
 # Entities
 
 How a domain entity is written. The examples use the `book` domain of the
-[reference pass](../software-knowledges/artifacts/book/specification.md).
+[reference pass](https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/template/docs/software-knowledges/artifacts/book/specification.md).
 
 ## Naming
 

@@ -2,7 +2,7 @@
 
 Use when a business need is new, or its success criteria change.
 
-Sample: [Borrow a book](../../../software-knowledges/goals/borrow-a-book.md).
+Sample: [Borrow a book](https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/template/docs/software-knowledges/goals/borrow-a-book.md).
 
 ## Files
 

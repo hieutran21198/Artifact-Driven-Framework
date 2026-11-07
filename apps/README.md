@@ -8,8 +8,6 @@ directory name is the client name in
 
 | Directory | Repository | Owner | Branch where work happens | Stack |
 | --- | --- | --- | --- | --- |
-| `web/` | — | — | — | — |
-| `mobile/` | — | — | — | — |
 
 Clone each client after cloning the workspace, on the branch where work
 happens:

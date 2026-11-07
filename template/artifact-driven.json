@@ -1,0 +1,31 @@
+{
+  "knowledge": "docs/software-knowledges",
+  "skip": [".git", "apps", "services", "e2e", "node_modules", "build"],
+  "clients": {
+    "web": "Web",
+    "mobile": "Mobile app"
+  },
+  "services": {
+    "lending": {
+      "routes": {
+        "folders": ["services/lending/internal/adapter/http"],
+        "glob": "**/*.go",
+        "pattern": "swagger:operation (?P<method>GET|POST|PUT|PATCH|DELETE) (?P<path>\\S+)"
+      },
+      "tests": {"folder": "services/lending", "glob": "**/*_test.go"}
+    },
+    "notification": {
+      "routes": {
+        "folders": ["services/notification/internal/adapter/http"],
+        "glob": "**/*.go",
+        "pattern": "swagger:operation (?P<method>GET|POST|PUT|PATCH|DELETE) (?P<path>\\S+)"
+      },
+      "tests": {"folder": "services/notification", "glob": "**/*_test.go"}
+    }
+  },
+  "e2e": {"folder": "e2e/suite", "glob": "**/*.spec.*"},
+  "site": {
+    "title": "Library lending knowledge",
+    "output": "build/site/index.html"
+  }
+}
