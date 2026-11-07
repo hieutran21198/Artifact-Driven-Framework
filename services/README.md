@@ -10,7 +10,7 @@ clones. The service name is the one in the
 | --- | --- | --- | --- | --- |
 | `scripts` | [scripts](../scripts/README.md) | `tests/scripts` | `hieutran21198` | Python 3 |
 | `install` | [install.sh](../install.sh) | `tests/install` | `hieutran21198` | POSIX `sh` |
-| `landing` | [index.html](../index.html) | — | `hieutran21198` | One HTML file, no build |
+| `landing` | [index.html](../index.html), [framework.html](../framework.html) | — | `hieutran21198` | One HTML file, no build |
 | `tracker` | `tracker/index.html` | — | `hieutran21198` | One HTML file, no build; Pyodide runs the code of `scripts` |
 
 The [domain map](../docs/architecture/domain-map.md) says which service serves

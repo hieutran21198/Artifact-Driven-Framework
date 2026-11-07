@@ -25,6 +25,7 @@ Each term is defined once, here. Other pages use it without restating it.
 | Gate | The checks that a pull request into the default branch must pass. |
 | Blast radius | What a change to one unit affects, counted by kind. |
 | Landing page | The page `index.html` at the root of the framework, which introduces it. |
+| Framework page | The page `framework.html` at the root of the framework: what the framework is and the parts it has. |
 | Story | The steps of the landing page that show the sample, one layer at a time. |
 | Project tracker | The page `tracker/index.html` of the framework, which shows the coverage and the knowledge site of a workspace at a ref, for readers who do not read the repository. |
 | Coverage | The share of the knowledge IDs a goal relies on that tests name. |

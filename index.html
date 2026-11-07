@@ -177,6 +177,7 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
     <div class="actions">
       <a class="btn" href="#install" data-i="terminal">Set it up</a>
       <a class="link" id="tracker" href="https://github.com/hieutran21198/Artifact-Driven-Framework">Project tracker</a>
+      <a class="link" href="framework.html">How the framework works</a>
     </div>
   </header>
 
@@ -236,10 +237,10 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
       <li style="--k:var(--cl);--ki:var(--cli)"><h3 data-i="app">Note what each app needs <span class="tag">Contract first</span></h3><p>The API calls and fields each app relies on, so a change does not break it.</p><p class="eg">The phone app reads the due date of a book.</p><div class="fig"><span class="t">Contract · what the phone app reads</span><pre>POST /v1/books/{id}/borrow
 
 {
-  "id": "b-12",
-  "title": "Dune",
+  "id": 1,
+  "title": "A Field Guide to Birds",
   <em>"status"</em>: "on_loan",
-  <em>"due_at"</em>: "2026-11-21T10:00:00Z"
+  <em>"due_at"</em>: "2030-01-15T18:00:00Z"
 }</pre></div></li>
       <li style="--k:var(--panel);--ki:var(--ink)"><h3 data-i="scan">Mention the rule in its test</h3><p>Each rule has a short ID. The test that checks it mentions the ID, so the scan can find it.</p><p class="eg">BK-3 is the rule "only a book on the shelf can be lent".</p><div class="fig"><span class="t">Test and scan</span><pre>// BK-3: only a book on the shelf
 func TestLendBookOnLoan(t *testing.T) {
@@ -322,6 +323,7 @@ func TestLendBookOnLoan(t *testing.T) {
   <footer>
     <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/README.md">Docs</a>
     <a href="https://github.com/hieutran21198/Artifact-Driven-Framework">Source</a>
+    <a href="framework.html">Framework</a>
     <a class="trk" href="#">Project tracker</a>
   </footer>
 </main>

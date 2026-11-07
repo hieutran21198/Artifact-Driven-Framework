@@ -34,6 +34,13 @@ x-commands:
       $ref: '#/components/schemas/ExplainBlockInput'
     output:
       $ref: '#/components/schemas/ExplainBlockOutput'
+  openFramework:
+    caller: A reader who follows the link to the framework page.
+    description: Opens the framework page, the technical guide (INTRO-13).
+    input:
+      type: object
+    output:
+      type: object
   copyInstall:
     caller: A reader who presses the copy button next to the install command.
     description: Puts the install command on the clipboard of the reader.

@@ -20,6 +20,7 @@ and where to go next.
 | G-LEARN-4 | A stakeholder, a solution architect and a product owner each find their questions and the page that answers each, and reach the project tracker in one step. | F-LEARN-7 |
 | G-LEARN-5 | A reader creates, from the page, a workspace that holds the sample the story showed. | F-LEARN-5, F-LEARN-8 |
 | G-LEARN-6 | The page reads on a phone, also when the phone uses a dark theme, and shows its story with no build and with no other host to reach. | F-LEARN-9, F-LEARN-10 |
+| G-LEARN-7 | A developer or an agent operator learns, on one short page, what the framework turns the governance of Artifact Driven into, its parts, and what each workspace gets from them. | F-LEARN-12, F-LEARN-13, F-LEARN-14 |
 
 ## Flows
 
