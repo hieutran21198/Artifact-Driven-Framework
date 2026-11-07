@@ -47,14 +47,13 @@ ul.tight{margin:6px 0 0;padding-left:18px;font-size:13px}
 .picker{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
 .drop{position:relative;min-width:280px;margin:0}.drop summary{list-style:none;border:1px solid var(--line);border-radius:8px;padding:8px 12px;color:var(--ink);background:var(--card);font-size:14px}.drop summary::-webkit-details-marker{display:none}.drop summary::after{content:"▾";float:right;margin-left:12px;color:var(--muted)}
 .drop-list{position:absolute;z-index:5;top:42px;left:0;right:0;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px;max-height:320px;overflow:auto}
-.drop-list label{display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:6px;font-size:14px;cursor:pointer}.drop-list label:hover{background:var(--panel)}.drop-list label.off{opacity:.45;cursor:not-allowed}.drop-list hr{border:0;border-top:1px solid var(--line);margin:4px 0}
+.drop-list label{display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:6px;font-size:14px;cursor:pointer}.drop-list label:hover{background:var(--panel)}.drop-list label.off{opacity:.45;cursor:not-allowed}.drop-list label .muted{white-space:nowrap;margin-left:auto;font-family:var(--mono);font-size:12px}.drop-list hr{border:0;border-top:1px solid var(--line);margin:4px 0}
 button.primary{border:1px solid var(--ink);background:var(--ink);color:var(--card);border-radius:999px;padding:8px 18px;font:500 14px var(--body);cursor:pointer}button.primary[disabled]{opacity:.45;cursor:not-allowed}
 #run-note{font-size:13px;align-self:center}
 /* Wide drawings scroll inside their card, so the page never scrolls sideways. */
 .card div:has(> svg),.explorer > .card,.card:has(> table){overflow-x:auto;min-width:0}
-/* Goals: cards of one height, six to a page; the criteria and flows open in a side panel. */
-.goal-card{display:flex;flex-direction:column;gap:10px;height:200px}
-.goal-card h3{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+/* Goals: six to a page; the criteria and flows open in a side panel. */
+.goal-card{display:flex;flex-direction:column;gap:10px}
 .goal-card .open{margin-top:auto;align-self:flex-start}
 .pager{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:14px;font-size:14px;color:var(--muted)}.pager:empty{display:none}
 .side-back{position:fixed;inset:0;background:rgba(31,41,51,.28);z-index:20}
