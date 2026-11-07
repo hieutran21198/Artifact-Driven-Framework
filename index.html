@@ -90,71 +90,14 @@ section{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}
   @keyframes drawdown{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
   .layers li{animation:stepin .6s cubic-bezier(.3,.1,.2,1) both;animation-delay:calc(var(--d) * 260ms + 250ms)}
   .layers li+li::before{animation:drawdown .35s ease-out both;animation-delay:calc(var(--d) * 260ms + 120ms)}}
-.howto{list-style:none;margin:0;padding:0;display:grid;gap:22px;counter-reset:s}
-.howto>li.dim{opacity:.35}
-.howto>li{display:grid;grid-template-columns:34px minmax(0,1fr);gap:4px 16px;counter-increment:s}
-.howto>li::before{content:counter(s);grid-row:span 3;width:30px;height:30px;border-radius:50%;background:var(--k);color:var(--ki);font:500 14px/30px var(--body);text-align:center}
-.howto h3{font-family:var(--body);font-size:16px;font-weight:500;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
-.howto h3 .ic{color:var(--ki)}
-.howto p{color:var(--muted);font-size:15px}
-.howto .eg{font-size:14px;color:var(--faint)}
-.split{position:relative;display:grid;gap:56px;background:var(--panel);border-radius:20px;padding:24px}
-#splitLines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
-#splitLines path{fill:none;stroke:var(--ki);stroke-opacity:.5;stroke-width:1.3;transition:opacity .3s,stroke .3s}
-.req{font-family:var(--serif);font-size:clamp(18px,2.2vw,21px);line-height:1.9;max-width:none;position:relative}
-.hl{border-radius:5px;padding:2px 5px;transition:opacity .3s;cursor:default;box-decoration-break:clone;-webkit-box-decoration-break:clone}
-.buckets{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;position:relative}
-.bucket{display:grid;gap:6px;align-content:start;transition:opacity .3s}
-.bucket b{display:flex;align-items:center;gap:6px;font-weight:500;font-size:13px;color:var(--ki);padding:6px 9px;border-radius:9px;background:var(--k)}
-.bucket b i{font-style:normal;opacity:.7}
-.bucket span{font-size:13px;line-height:1.35;color:var(--ink);background:var(--paper);border-radius:8px;padding:6px 9px}
-[data-b="1"]{--k:var(--l0);--ki:var(--l0i)} [data-b="2"]{--k:var(--l1);--ki:var(--l1i)} [data-b="3"]{--k:var(--l2);--ki:var(--l2i)}
-[data-b="4"]{--k:var(--l3);--ki:var(--l3i)} [data-b="5"]{--k:var(--cl);--ki:var(--cli)} [data-b="6"]{--k:#e7ebee;--ki:var(--ink)}
-.hl[data-b]{background:var(--k);color:var(--ki)}
-.split .dim{opacity:.25}
-.howto>li{transition:opacity .3s}
-@media (max-width:760px){.buckets{grid-template-columns:repeat(2,minmax(0,1fr))}#splitLines{display:none}.split{gap:24px}}
-.tag{font:400 11.5px/1 var(--body);color:var(--muted);border:1px solid var(--rule);border-radius:999px;padding:4px 9px;margin-left:4px;white-space:nowrap}
-.method{display:grid;gap:22px;margin-top:12px}
-.method h3{font-size:22px}
-.nest{background:var(--panel);border-radius:20px;padding:22px;display:grid;gap:16px;justify-items:center;text-align:center}
-.nest>strong{font-family:var(--serif);font-weight:500;font-size:18px}
-.nest .inner{background:var(--paper);border:1px dashed var(--faint);border-radius:14px;padding:14px 22px;display:grid;gap:2px}
-.nest .inner b{font-weight:500}
-.nest .inner span,.nest small{font-size:13.5px;color:var(--muted)}
-.adds{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-.adds span{font-size:13.5px;border-radius:999px;padding:5px 12px;background:var(--k);color:var(--ki)}
-.principles{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
-.principles li{display:grid;gap:6px;align-content:start}
-.principles strong{font-weight:500}
-.principles p{font-size:15px;color:var(--muted)}
-.howto{gap:36px}
-.howto>li{grid-template-columns:34px minmax(0,1fr) minmax(0,330px);grid-template-rows:auto auto 1fr;align-content:start}
-.howto .fig{grid-column:3;grid-row:1 / span 3;align-self:start;background:var(--panel);border-radius:14px;padding:14px 16px;font-size:13px;line-height:1.5;color:var(--ink);display:grid;gap:8px;min-width:0}
-.fig .t{font-size:12px;color:var(--faint)}
-.fig ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
-.fig ul li{display:flex;gap:7px;align-items:flex-start}
-.fig ul li .ic{color:var(--ok);margin-top:3px}
-.fig svg.seq{width:100%;height:auto;color:var(--muted)}
-.fig table{border-collapse:collapse;width:100%}
-.fig td{padding:4px 0;vertical-align:top}
-.fig td:nth-child(2){color:var(--faint);padding:4px 8px}
-.fig mark{background:var(--l2);color:var(--l2i);border-radius:4px;padding:0 3px}
-.fig .doms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.fig .dom{background:var(--l3);color:var(--l3i);border-radius:10px;padding:8px;display:grid;gap:5px;align-content:start}
-.fig .dom b{font-weight:500;display:flex;gap:5px;align-items:center}
-.fig .dom span{background:var(--l2);color:var(--l2i);border-radius:6px;padding:2px 6px;font-size:12px}
-.fig .dom small{font-size:11px;opacity:.75}
-.fig pre{margin:0;padding:0;background:none;border-radius:0;font:12px/1.6 var(--mono);overflow-x:auto;white-space:pre}
-.fig pre em{font-style:normal;background:var(--cl);color:var(--cli);border-radius:3px;padding:0 2px}
-.fig .ok{color:var(--ok)}
-@media (max-width:760px){.howto>li{grid-template-columns:34px minmax(0,1fr)}.howto .fig{grid-column:2;grid-row:auto;margin-top:8px}}
-/* questions */
-.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:40px 32px}
-.role{display:grid;gap:10px;align-content:start}
-.role p{font-size:15px;color:var(--muted)}
-.role ul{margin:4px 0 0;padding:0;list-style:none;display:grid;gap:10px}
-.role li{font-size:15px;line-height:1.5}
+/* how it helps */
+.helps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:28px 32px}
+.helps li{display:grid;gap:6px;align-content:start;padding-top:18px;border-top:1px solid var(--rule)}
+.helps h3{display:flex;align-items:center;gap:10px;font-size:18px}
+.helps h3 .ic{width:20px;height:20px;color:var(--accent);stroke-width:1.6}
+.helps .q{font-weight:500}
+.helps p{font-size:15px}
+.helps .eg{font-size:14px;color:var(--faint)}
 pre{margin:0;background:var(--panel);border-radius:14px;padding:18px 20px;overflow-x:auto;font:14px/1.7 var(--mono);color:var(--ink)}
 #cmd{white-space:pre-wrap;overflow-wrap:anywhere}
 .cmt{color:var(--faint)}
@@ -176,6 +119,7 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
     <p class="lede">A simple way to keep software development clear for years, with fast analysis and a quick view of what every change affects. No cost, no overhead.</p>
     <div class="actions">
       <a class="btn" href="#install" data-i="terminal">Set it up</a>
+      <a class="link" href="how-we-work.html">How we work</a>
       <a class="link" href="tracker/">Project tracker</a>
       <a class="link" href="framework.html">How the framework works</a>
     </div>
@@ -205,101 +149,19 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
     </div>
   </section>
 
-  <section aria-labelledby="howto-h">
-    <h2 id="howto-h">How to break down a requirement</h2>
-    <div class="split" id="split">
-      <svg id="splitLines" aria-hidden="true"></svg>
-      <p class="req"><span class="hl" data-b="1">A member wants to read books at home.</span> <span class="hl" data-b="2">They borrow</span> <span class="hl" data-b="3">up to a few books</span>, <span class="hl" data-b="3">only those on the shelf</span>, <span class="hl" data-b="3">for 14 days</span>. <span class="hl" data-b="2">They bring them back</span>, and <span class="hl" data-b="3">a late book is flagged</span>.</p>
-      <div class="buckets">
-        <div class="bucket" data-b="1"><b data-i="goal"><i>1</i> Goal</b><span>Borrow a book</span></div>
-        <div class="bucket" data-b="2"><b data-i="flow"><i>2</i> Flows</b><span>Borrowing</span><span>Returning</span></div>
-        <div class="bucket" data-b="3"><b data-i="rule"><i>3</i> Rules</b><span>A few books at most</span><span>On the shelf only</span><span>Due in 14 days</span><span>Late is flagged</span></div>
-        <div class="bucket" data-b="4"><b data-i="artifact"><i>4</i> Artifacts</b><span>Members</span><span>Books</span></div>
-        <div class="bucket" data-b="5"><b data-i="app"><i>5</i> Apps</b><span>Website</span><span>Phone app</span></div>
-        <div class="bucket" data-b="6"><b data-i="scan"><i>6</i> Tests</b><span>MBR-2 ✓</span><span>BK-3 ✓</span><span>BK-4 ✓</span><span>BK-6</span></div>
-      </div>
-    </div>
-    <ol class="howto">
-      <li style="--k:var(--l0);--ki:var(--l0i)"><h3 data-i="goal">Write the goal</h3><p>Who needs what, and how you will know it is done.</p><p class="eg">A member can borrow a book and sees when it is due.</p><div class="fig"><span class="t">Goal · Borrow a book</span><ul><li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>A member borrows an available book and sees when it is due.</li><li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>A book is on loan to one member at a time.</li><li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>A member never holds more books than the limit.</li></ul></div></li>
-      <li style="--k:var(--l1);--ki:var(--l1i)"><h3 data-i="flow">Split it into flows <span class="tag">Specs by example</span></h3><p>Write the steps of each flow as scenarios: what happens, and what happens when something goes wrong.</p><p class="eg">The book is already on loan, so the request is refused.</p><div class="fig"><span class="t">Flow · Borrowing</span><svg class="seq" viewBox="0 0 320 178" role="img" aria-label="Sequence: the member asks the app to borrow, the app asks the library service, which refuses a book on loan or lends it for 14 days">
-<defs><marker id="sa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="currentColor" stroke-width="1.5"/></marker></defs>
-<g font-size="11" fill="currentColor" text-anchor="middle"><text x="40" y="14">Member</text><text x="160" y="14">App</text><text x="270" y="14">Library service</text></g>
-<g stroke="currentColor" stroke-width="1" stroke-dasharray="3 4" opacity=".5"><path d="M40 22V170"/><path d="M160 22V170"/><path d="M270 22V170"/></g>
-<g stroke="currentColor" stroke-width="1.2" fill="none" marker-end="url(#sa)"><path d="M40 44H156"/><path d="M160 70H266"/></g>
-<g stroke="currentColor" stroke-width="1.2" fill="none" stroke-dasharray="4 3" marker-end="url(#sa)"><path d="M270 114H164"/><path d="M270 154H164"/></g>
-<g font-size="11" fill="currentColor" text-anchor="middle"><text x="100" y="38">Borrow this book</text><text x="215" y="64">borrow</text><text x="215" y="110">Refused</text><text x="215" y="148">On loan, due in 14 days</text></g>
-<rect x="150" y="80" width="165" height="84" rx="6" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/>
-<path d="M150 124H315" stroke="currentColor" stroke-width=".8" stroke-dasharray="3 3" opacity=".6"/>
-<g font-size="10" fill="currentColor" opacity=".8"><text x="156" y="92">if the book is on loan</text><text x="156" y="136">else</text></g>
-</svg></div></li>
-      <li style="--k:var(--l2);--ki:var(--l2i)"><h3 data-i="rule">Pull out the rules</h3><p>Read each step and write down what must always be true. Words such as "must", "only" or "at most" are good hints. A person does this by reading; no tool guesses rules from words.</p><p class="eg">Only a book on the shelf can be lent.</p><div class="fig"><span class="t">Read a step, write the rule (by hand)</span><table><tr><td>borrow <mark>only</mark> from the shelf</td><td>→</td><td>On the shelf only</td></tr><tr><td><mark>at most</mark> a few books</td><td>→</td><td>A few books at most</td></tr><tr><td><mark>must</mark> be back in 14 days</td><td>→</td><td>Due in 14 days</td></tr></table></div></li>
-      <li style="--k:var(--l3);--ki:var(--l3i)"><h3 data-i="artifact">Group the rules by topic <span class="tag">Strategic DDD</span></h3><p>Each topic is an artifact: one domain.</p><p class="eg">Books, members, notices.</p><div class="fig"><span class="t">Artifacts</span><div class="doms"><div class="dom"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>Books</b><span>On the shelf only</span><span>Due in 14 days</span><span>Late is flagged</span></div><div class="dom"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Members</b><span>A few books at most</span></div><div class="dom"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-9 5.7a2 2 0 0 1-2 0L2 7"/></svg>Notices</b><span>One reader each</span></div></div></div></li>
-      <li style="--k:var(--cl);--ki:var(--cli)"><h3 data-i="app">Note what each app needs <span class="tag">Contract first</span></h3><p>The API calls and fields each app relies on, so a change does not break it.</p><p class="eg">The phone app reads the due date of a book.</p><div class="fig"><span class="t">Contract · what the phone app reads</span><pre>POST /v1/books/{id}/borrow
-
-{
-  "id": 1,
-  "title": "A Field Guide to Birds",
-  <em>"status"</em>: "on_loan",
-  <em>"due_at"</em>: "2030-01-15T18:00:00Z"
-}</pre></div></li>
-      <li style="--k:var(--panel);--ki:var(--ink)"><h3 data-i="scan">Mention the rule in its test</h3><p>Each rule has a short ID. The test that checks it mentions the ID, so the scan can find it.</p><p class="eg">BK-3 is the rule "only a book on the shelf can be lent".</p><div class="fig"><span class="t">Test and scan</span><pre>// BK-3: only a book on the shelf
-func TestLendBookOnLoan(t *testing.T) {
-  err := onLoanBook().Lend(member)
-  assert.Error(t, err)
-}</pre><span><span class="ok">✓</span> Scan: BK-3 found in lend_test.go</span></div></li>
+  <section aria-labelledby="helps-h">
+    <h2 id="helps-h">How it helps</h2>
+    <p class="lede" style="font-size:16px">Situations a team meets every week, the question each one raises, and what answers it. The examples are from the library.</p>
+    <ol class="helps">
+      <li><h3 data-i="change">A rule changes</h3><p class="q">What does it affect?</p><p>Impact lists the flows, scenarios and apps that rely on it.</p><p class="eg">BK-3, "only a book on the shelf can be lent": 5 criteria, 10 scenarios, both flows and the phone app.</p></li>
+      <li><h3 data-i="flag">A defect is reported</h3><p class="q">Is the code wrong, or the rule?</p><p>Find the rule by its ID and compare it with what the product does.</p><p class="eg">A member got a book that was on loan: BK-3 says that must be refused.</p></li>
+      <li><h3 data-i="users">Someone joins the team</h3><p class="q">Where is the rule about this?</p><p>One page for each topic, one ID for each rule, kept in one place.</p><p class="eg">Every rule about books is on the Books page: 10 rules, BK-1 to BK-10.</p></li>
+      <li><h3 data-i="scan">A release is near</h3><p class="q">What has no test yet?</p><p>The scan lists the rules that no test mentions.</p><p class="eg">In the story above, "late gets flagged" has no test yet, so the scan does not find it.</p></li>
+      <li><h3 data-i="briefcase">A stakeholder asks how it goes</h3><p class="q">How much is in the product?</p><p>The project tracker shows, for each goal, how much of it the tests mention.</p><p class="eg"><a href="tracker/">Open the project tracker</a></p></li>
+      <li><h3 data-i="code">The docs drift from the code</h3><p class="q">Who notices?</p><p>The checks fail on a broken link, an unknown ID or a rule cited the wrong way, before the change is merged.</p><p class="eg">A flow that cites BK-11 fails the check: the Books page has no such rule.</p></li>
     </ol>
-    <div class="method">
-      <h3>The method behind it</h3>
-      <div class="nest">
-        <strong>Artifact Driven</strong>
-        <div class="inner"><b>Domain-Driven Design</b><span>Domains and their boundaries</span></div>
-        <small>and around it</small>
-        <div class="adds">
-          <span data-b="2">Specs</span><span data-b="2">Flows</span><span data-b="5">Data each app needs</span><span data-b="5">Contracts</span><span data-b="1">Diagrams</span><span data-b="6">Scan</span>
-        </div>
-      </div>
-      <ul class="principles">
-        <li><strong>Domains first</strong><p>Split the product by topic before writing code.</p><span class="tag" style="justify-self:start;margin:0">Strategic DDD</span></li>
-        <li><strong>Contracts first</strong><p>Agree on what each app sends and reads before building it.</p><span class="tag" style="justify-self:start;margin:0">Contract first</span></li>
-        <li><strong>A picture for every layer</strong><p>Each goal, flow and domain has its own diagram.</p><span class="tag" style="justify-self:start;margin:0">Diagrams as docs</span></li>
-      </ul>
-      <p class="lede" style="font-size:16px">Close to Domain-Driven Design, but it also covers specs, flows, the data each app needs, and diagrams.</p>
-    </div>
+    <p><a href="how-we-work.html">How we work: from a goal to an artifact, and who does what</a></p>
   </section>
-
-  <section aria-labelledby="roles-h">
-    <h2 id="roles-h">By role</h2>
-    <div class="roles">
-      <div class="role">
-        <h3 data-i="briefcase">Stakeholder</h3>
-        <p>You follow a project someone builds for you.</p>
-        <ul>
-          <li><a href="tracker/">How much is in the product</a></li>
-          <li><a href="tracker/">How each flow works</a></li>
-          <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/scripts/README.md#impact">What a change affects</a></li>
-        </ul>
-      </div>
-      <div class="role">
-        <h3 data-i="grid">Solution architect</h3>
-        <p>You plan how the product is split up.</p>
-        <ul>
-          <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/knowledge.md#layers">Where each rule belongs</a></li>
-          <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/scripts/README.md#impact">What a new goal needs</a></li>
-          <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/scripts/README.md#impact">What a change affects</a></li>
-        </ul>
-      </div>
-      <div class="role">
-        <h3 data-i="flag">Product owner</h3>
-        <p>You decide the goals.</p>
-        <ul>
-          <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/goal.md">How to write a goal</a></li>
-          <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/README.md#approval-of-knowledge">How to approve it</a></li>
-          <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/done.md">When it is done</a></li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
 
   <section aria-labelledby="mean-h">
     <h2 id="mean-h">Good to know</h2>
@@ -307,6 +169,7 @@ func TestLendBookOnLoan(t *testing.T) {
       <div class="note"><h3 data-i="scan">Scan</h3><div><p>The scan shows which rules are in the product. It does not show that they work.</p><p class="how">How it works: it reads the test files and looks for rule IDs, such as BK-3. It does not run the tests or read the product's code.</p></div></div>
       <div class="note"><h3 data-i="change">Impact</h3><div><p>Find every part a change affects, in seconds.</p><p class="how">How it works: it follows the links from a rule up to its flows and goal, and across to the apps that use it. It does not estimate cost or time.</p></div></div>
       <div class="note"><h3 data-i="calendar">Plans</h3><p>Plans and progress stay in your task tracker.</p></div>
+      <div class="note"><h3 data-i="grid">Nothing new</h3><div><p>It invents no method. It puts practices teams already use in one place: Domain-Driven Design, specification by example, contracts first, docs as code and requirements traceability.</p><p class="how"><a href="how-we-work.html#nothing-new">Each practice, and where it shows</a></p></div></div>
     </div>
   </section>
 
@@ -323,6 +186,7 @@ func TestLendBookOnLoan(t *testing.T) {
   <footer>
     <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/README.md">Docs</a>
     <a href="https://github.com/hieutran21198/Artifact-Driven-Framework">Source</a>
+    <a href="how-we-work.html">How we work</a>
     <a href="framework.html">Framework</a>
     <a href="tracker/">Project tracker</a>
   </footer>
@@ -490,26 +354,6 @@ function hideTip() { hover = null; tip.classList.remove('on'); }
 stage.addEventListener('mouseover', explainBlock);
 stage.addEventListener('click', explainBlock);
 stage.addEventListener('mouseleave', hideTip);
-const split = document.getElementById('split'), splitLines = document.getElementById('splitLines');
-document.querySelectorAll('.howto>li').forEach((li, i) => li.dataset.b = i + 1);
-function drawSplit() {
-  const s = split.getBoundingClientRect();
-  splitLines.innerHTML = [...split.querySelectorAll('.hl')].map(h => {
-    const a = h.getClientRects()[0], b = split.querySelector(`.bucket[data-b="${h.dataset.b}"] b`).getBoundingClientRect();
-    const x1 = a.left + a.width / 2 - s.left, y1 = a.bottom - s.top + 2, x2 = b.left + b.width / 2 - s.left, y2 = b.top - s.top - 2, m = (y1 + y2) / 2;
-    return `<path data-b="${h.dataset.b}" d="M${x1} ${y1} C${x1} ${m},${x2} ${m},${x2} ${y2}"/>`;
-  }).join('');
-}
-function focusStep(b) {
-  split.querySelectorAll('[data-b]').forEach(e => e.classList.toggle('dim', !!b && e.dataset.b !== b));
-  document.querySelectorAll('.howto>li').forEach(e => e.classList.toggle('dim', !!b && e.dataset.b !== b));
-}
-document.querySelectorAll('#split [data-b], .howto>li').forEach(e => {
-  e.addEventListener('mouseenter', () => focusStep(e.dataset.b));
-  e.addEventListener('mouseleave', () => focusStep(null));
-});
-new ResizeObserver(drawSplit).observe(split);
-document.fonts && document.fonts.ready.then(drawSplit);
 new ResizeObserver(layout).observe(wrap);
 layout();
 playStory(!reduce);
