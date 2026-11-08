@@ -52,7 +52,8 @@ select:disabled,input:disabled{color:var(--faint);background:var(--panel)}
 .tag.on{color:var(--ok);background:var(--ok-bg)}
 .tag.warn{color:var(--warn);background:var(--warn-bg)}
 .tag.bad{color:var(--bad);background:var(--bad-bg)}
-.bar-note{font-size:14px;border-radius:10px;padding:10px 14px;max-width:72ch}
+.bar-note{overflow-wrap:anywhere;font-size:14px;border-radius:10px;padding:10px 14px;max-width:72ch}
+#provenance pre{white-space:pre-wrap;overflow-wrap:anywhere}
 .bar-note.warn{color:var(--warn);background:var(--warn-bg)}
 .bar-note.bad{color:var(--bad);background:var(--bad-bg)}
 
@@ -164,6 +165,7 @@ tr.all td{background:var(--panel);font-weight:500}
     <section class="coverage" id="coverage" aria-labelledby="cov-h" hidden>
       <h2 id="cov-h">How much of each goal the tests name</h2>
       <p class="bar-note warn" id="overridden" hidden>Built with an <code>artifact-driven.json</code> changed in this browser. The workspace is unchanged. <button class="x link" type="button" id="restore-main">Use the workspace's configuration</button></p>
+      <div id="provenance" class="bar-note"></div>
       <p class="bar-note bad" id="left-out" hidden></p>
       <p class="lede">A rule counts when a test names its ID. The tests are not run, so a rule that counts can still be wrong in the code.</p>
       <div id="coverage-table" class="table" hidden></div>
@@ -203,7 +205,7 @@ tr.all td{background:var(--panel);font-weight:500}
             <label class="field narrow"><span>Token</span><select id="new-tok"></select></label>
             <button class="btn">Add</button>
           </form>
-          <p class="aside">Or <button class="x link" type="button" id="add-folder">add a folder on this computer</button>: pick the root of a workspace, the folder that holds <code>artifact-driven.json</code>. The browser asks you to allow it to read the folder; nothing in it is sent anywhere.<span id="folder-note" hidden> This browser cannot keep access to a folder: after each page load, choose it again. Chrome and Edge keep the access.</span></p>
+          <p class="aside">Or <button class="x link" type="button" id="add-folder">add a folder on this computer</button>: pick the root of a workspace, the folder that holds <code>artifact-driven.json</code>. The browser asks you to allow it to read the folder; nothing in it is sent anywhere.<span id="folder-note" hidden> This browser cannot keep access to a folder: choose it again for each Load so added and removed files are included. Chrome and Edge keep the access.</span></p>
         </section>
 
         <section class="group" aria-labelledby="g-file">
@@ -324,9 +326,12 @@ const current = () => byId($("ws").value) || config.workspaces[0];
 
 // ---- Tokens: by name, in this tab only (TRK-6) --------------------------
 
+const tokenVersions = {};
+const credential = (name, values = tokens()) => ({ name: name || "", value: values[name] || "" });
 function tokens() { try { return JSON.parse(store.get("sessionStorage", "viewer-tokens")) || {}; } catch { return {}; } }
 function setToken(name, value) {
   const all = tokens();
+  tokenVersions[name] = (tokenVersions[name] || 0) + 1;
   if (value) all[name] = value; else delete all[name];
   store.set("sessionStorage", "viewer-tokens", JSON.stringify(all));
 }
@@ -336,7 +341,7 @@ function setToken(name, value) {
 // A call with the token picked for that repository, or none.
 async function gh(path, token) {
   const headers = { Accept: "application/vnd.github+json" };
-  const value = token ? tokens()[token] : "";
+  const { value } = typeof token === "object" ? token : credential(token);
   if (value) headers.Authorization = "Bearer " + value;
   const res = await fetch(API + path, { headers });
   if (!res.ok) {
@@ -351,6 +356,7 @@ async function gh(path, token) {
 
 // Why a repository cannot be read, in the words of TRK-11.
 function reason(e, token) {
+  token = typeof token === "object" ? token.name : token;
   if (!e.status) return e instanceof TypeError ? "cannot reach GitHub" : e.message;
   if (e.status === 422) return "no such branch, tag or commit";
   if (e.status === 401) return token ? `token ${token} refused` : "GitHub refused the request";
@@ -368,12 +374,13 @@ async function blob(repo, sha, token, commit, path) {
   const kept = store.get("localStorage", key);
   if (kept !== null) return kept;
   let text;
-  if (!token) {
+  const auth = typeof token === "object" ? token : credential(token);
+  if (!auth.value) {
     const res = await fetch(`https://raw.githubusercontent.com/${repo}/${commit}/${path.split("/").map(encodeURIComponent).join("/")}`);
     if (!res.ok) { const e = new Error(`raw.githubusercontent.com answered ${res.status}`); e.status = res.status; throw e; }
     text = await res.text();
   } else {
-    const data = await gh(`/repos/${repo}/git/blobs/${sha}`, token);
+    const data = await gh(`/repos/${repo}/git/blobs/${sha}`, auth);
     text = new TextDecoder().decode(Uint8Array.from(atob(data.content.replace(/\n/g, "")), c => c.charCodeAt(0)));
   }
   store.set("localStorage", key, text);
@@ -388,19 +395,23 @@ async function inBatches(items, size, fn) {
 
 async function tree(repo, ref, token) {
   const head = await gh(`/repos/${repo}/commits/${encodeURIComponent(ref || "HEAD")}`, token);
-  const tree = await gh(`/repos/${repo}/git/trees/${head.commit.tree.sha}?recursive=1`, token);
-  if (tree.truncated) throw new Error(repo + ": the tree is too large for one request");
+  let tree;
+  try {
+    tree = await gh(`/repos/${repo}/git/trees/${head.commit.tree.sha}?recursive=1`, token);
+    if (tree.truncated) throw new Error(repo + ": the tree is too large for one request");
+  } catch (e) { e.commit = head.sha; throw e; }
   return { sha: head.sha.slice(0, 7), commit: head.sha, entries: Object.fromEntries(tree.tree.filter(e => e.type === "blob").map(e => [e.path, e.sha])) };
 }
 
 // The branches and tags of a repository, read once per page load.
 const refCache = {};
 async function refs(repo, token) {
-  const key = repo + " " + token;
+  const auth = credential(token);
+  const key = JSON.stringify([repo, token || "", tokenVersions[token] || 0]);
   if (!refCache[key]) refCache[key] = Promise.all([
-    gh(`/repos/${repo}`, token),
-    gh(`/repos/${repo}/branches?per_page=100`, token),
-    gh(`/repos/${repo}/tags?per_page=100`, token),
+    gh(`/repos/${repo}`, auth),
+    gh(`/repos/${repo}/branches?per_page=100`, auth),
+    gh(`/repos/${repo}/tags?per_page=100`, auth),
   ]).then(([info, branches, tags]) => [info.default_branch, ...branches.map(b => b.name).filter(n => n !== info.default_branch), ...tags.map(t => t.name)])
     .catch(e => { delete refCache[key]; throw e; });
   return refCache[key];
@@ -415,14 +426,14 @@ function globRe(glob) {
 const knowledgeOf = c => (c.knowledge || "docs/software-knowledges").replace(/\/+$/, "") + "/";
 const isKnowledge = (c, p) => p.startsWith(knowledgeOf(c)) && /\.(md|ya?ml)$/.test(p);
 
-// Every part of a configuration: [name, tests setting or null], end-to-end tests as "e2e".
+// The group is output identity only; saved selections remain keyed by name.
 function allParts(c) {
-  const parts = [...Object.entries(c.services || {}), ...Object.entries(c.clients || {})]
-    .map(([n, p]) => [n, p && typeof p === "object" && p.tests && p.tests.folder ? p.tests : null]);
-  if (c.e2e && c.e2e.folder) parts.push(["e2e", c.e2e]);
+  const parts = ["services", "clients"].flatMap(group => Object.entries(c[group] || {})
+    .map(([name, part]) => [name, part && typeof part === "object" ? part.tests || null : null, group === "services" ? "service" : "client"]));
+  if (Object.hasOwn(c, "e2e")) parts.push(["e2e", c.e2e, "e2e"]);
   return parts;
 }
-const testParts = c => allParts(c).filter(([, t]) => t);
+const testParts = c => allParts(c).filter(([, t]) => t && t.folder);
 const partRepo = t => t.repository ? t.repository.split("@") : null;
 
 // ---- Configuration changed in this browser (TRK-12) --------------------
@@ -459,35 +470,101 @@ function validate(text) {
 
 // ---- Reading a workspace -----------------------------------------------
 
-// The commits, trees and configuration of a load, before any file is downloaded.
-async function planGitHub(w) {
-  const head = await tree(w.repo, w.branch, w.token);
-  if (!head.entries["artifact-driven.json"]) throw new Error("no artifact-driven.json at its root");
-  const conf = w.configuration || JSON.parse(await blob(w.repo, head.entries["artifact-driven.json"], w.token, head.commit, "artifact-driven.json"));
-  const parts = {}, leftOut = [];
-  for (const [name, t] of testParts(conf).filter(([, t]) => t.repository)) {
-    const [repo, ref] = partRepo(t), pick = (w.parts || {})[name] || {};
-    try { parts[name] = { repo, token: pick.token || "", ...await tree(repo, pick.ref || ref, pick.token) }; }
-    catch (e) { leftOut.push([name, reason(e, pick.token)]); }
+// Content identities never use short labels or credential values (TRK-5/17).
+function canonical(value) {
+  if (Array.isArray(value)) return "[" + value.map(canonical).join(",") + "]";
+  if (value && typeof value === "object") return "{" + Object.keys(value).sort().map(k => JSON.stringify(k) + ":" + canonical(value[k])).join(",") + "}";
+  return JSON.stringify(value);
+}
+async function digest(value, runtime = null) {
+  if (globalThis.crypto && crypto.subtle) {
+    const bytes = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
+    return "sha256:" + [...new Uint8Array(bytes)].map(n => n.toString(16).padStart(2, "0")).join("");
   }
-  return { head, conf, parts, leftOut, key: JSON.stringify([idOf(w), head.sha, Object.entries(parts).map(([n, p]) => [n, p.sha]), conf]) };
+  // Web Crypto is absent on HTTP static hosts. Bootstrap supplies its runtime
+  // explicitly so hashing the analyzer cannot recurse into its initialization.
+  const py = runtime || await python();
+  py.globals.set("_digest_input", value);
+  try { return py.runPython('import hashlib\n"sha256:" + hashlib.sha256(_digest_input.encode("utf-8")).hexdigest()'); }
+  finally { py.globals.delete("_digest_input"); }
+}
+function configuration(text, overridden = false) {
+  if (overridden) {
+    const problems = validate(text);
+    if (problems.length) throw new Error("artifact-driven.json: " + problems.join("; "));
+  }
+  // Source files keep the scripts' JSON-object semantics, including extensions.
+  let value;
+  try { value = JSON.parse(text); } catch { throw new Error("artifact-driven.json: not valid JSON"); }
+  if (typeOf(value) !== "object") throw new Error("artifact-driven.json: must be an object");
+  return value;
+}
+const repositorySource = (repository, requested_ref, commit = null) => ({ kind: "repository", repository, requested_ref: requested_ref || "", commit });
+const partRead = (group, name, source, status, reason = null) => ({ group, name, source, status, reason });
+const folderPrefix = folder => folder.replace(/\/+$/, "") + "/";
+
+// Resolve every source at the captured choices, including when analysis is kept.
+async function planGitHub(w, values) {
+  const auth = credential(w.token, values), head = await tree(w.repo, w.branch, auth);
+  const source = repositorySource(w.repo, w.branch, head.commit);
+  let text = w.configuration ? JSON.stringify(w.configuration) : null;
+  if (!w.configuration && head.entries["artifact-driven.json"]) {
+    try { text = await blob(w.repo, head.entries["artifact-driven.json"], auth, head.commit, "artifact-driven.json"); }
+    catch (e) { throw new Error("artifact-driven.json: " + reason(e, auth)); }
+  }
+  if (text === null) throw new Error("no artifact-driven.json at its root");
+  const conf = configuration(text, !!w.configuration), parts = [];
+  for (const [name, tests, group] of allParts(conf)) {
+    const part = { tests, head, auth, outcome: partRead(group, name, source, "missing", "no tests setting") };
+    parts.push(part);
+    if (!tests) continue;
+    if (!tests.folder) { part.outcome.reason = "no tests folder"; continue; }
+    if (tests.repository) {
+      const [repo, ref] = partRepo(tests), choice = (w.parts || {})[name] || {};
+      part.auth = credential(choice.token, values);
+      part.outcome.source = repositorySource(repo, choice.ref || ref);
+      try {
+        part.head = await tree(repo, choice.ref || ref, part.auth);
+        part.outcome.source.commit = part.head.commit;
+      } catch (e) {
+        part.outcome.status = "failed";
+        part.outcome.source.commit = e.commit || null;
+        part.outcome.reason = reason(e, part.auth);
+        continue;
+      }
+    }
+    const base = tests.repository ? "" : folderPrefix(tests.folder), match = globRe(tests.glob || "**/*_test.*");
+    const entries = Object.keys(part.head.entries).filter(p => p.startsWith(base));
+    part.paths = entries.filter(p => match.test(p.slice(base.length)));
+    part.outcome.status = part.paths.length ? "complete" : "missing";
+    part.outcome.reason = part.paths.length ? null : !entries.length && base ? "tests folder not found: " + tests.folder : "no matching test files";
+  }
+  return { head, conf, source, auth, parts };
 }
 
 async function readGitHub(w, plan) {
   const { head, conf, parts } = plan;
   const files = { "artifact-driven.json": JSON.stringify(conf) };
-  const get = async (paths, repo, { entries, commit }, token, at = p => p) =>
-    (await inBatches(paths, 8, p => blob(repo, entries[p], token, commit, p))).forEach((t, i) => files[at(paths[i])] = t);
-  await get(Object.keys(head.entries).filter(p => isKnowledge(conf, p)), w.repo, head, w.token);
-  // A part with no repository keeps its tests in this one, under its folder.
-  for (const [, t] of testParts(conf).filter(([, t]) => !t.repository)) {
-    const folder = t.folder.replace(/\/+$/, "") + "/", match = globRe(t.glob || "**/*_test.*");
-    await get(Object.keys(head.entries).filter(p => p.startsWith(folder) && match.test(p.slice(folder.length))), w.repo, head, w.token);
-  }
-  // Each part's tests come from its repository, placed in its folder as if cloned there.
-  for (const [name, t] of testParts(conf).filter(([n, t]) => t.repository && parts[n])) {
-    const p = parts[name], match = globRe(t.glob || "**/*_test.*");
-    await get(Object.keys(p.entries).filter(x => match.test(x)), p.repo, p, p.token, x => t.folder.replace(/\/+$/, "") + "/" + x);
+  const get = async (paths, source, data, auth, at = p => p) => {
+    const texts = await inBatches(paths, 8, async path => {
+      try { return await blob(source.repository, data.entries[path], auth, data.commit, path); }
+      catch (e) { throw new Error(path + ": " + reason(e, auth)); }
+    });
+    return Object.fromEntries(paths.map((path, i) => [at(path), texts[i]]));
+  };
+  const knowledge = Object.keys(head.entries).filter(p => isKnowledge(conf, p));
+  if (!knowledge.length) throw new Error("knowledge folder has no readable Markdown or YAML files: " + knowledgeOf(conf));
+  Object.assign(files, await get(knowledge, plan.source, head, plan.auth));
+  for (const part of parts) {
+    if (part.outcome.status !== "complete") continue;
+    try {
+      const at = part.tests.repository ? p => folderPrefix(part.tests.folder) + p : p => p;
+      Object.assign(files, await get(part.paths, part.outcome.source, part.head, part.auth, at));
+    } catch (e) {
+      // Publish no file from a part until all its required reads succeed.
+      part.outcome.status = "failed";
+      part.outcome.reason = e.message;
+    }
   }
   return files;
 }
@@ -510,7 +587,7 @@ function idb(mode, fn) {
 async function dir(root, path) {
   let d = root;
   for (const part of path.split("/").filter(Boolean)) {
-    try { d = await d.getDirectoryHandle(part); } catch { return null; }
+    try { d = await d.getDirectoryHandle(part); } catch (e) { if (e.name === "NotFoundError") return null; throw e; }
   }
   return d;
 }
@@ -518,7 +595,7 @@ async function dir(root, path) {
 async function readText(root, path) {
   const parts = path.split("/"), name = parts.pop();
   const d = await dir(root, parts.join("/"));
-  try { return d ? await (await (await d.getFileHandle(name)).getFile()).text() : null; } catch { return null; }
+  try { return d ? await (await (await d.getFileHandle(name)).getFile()).text() : null; } catch (e) { if (e.name === "NotFoundError") return null; throw e; }
 }
 
 async function* walk(d, prefix, skip) {
@@ -533,10 +610,12 @@ async function* walk(d, prefix, skip) {
 // folder input (Firefox, Safari), which last until the page is reloaded.
 const HANDLES = !!window.showDirectoryPicker;
 const picked = {};  // name → Map(path → File), for the folder input
+const freshPicked = new Set();  // A new Add folder selection may be read once without another prompt.
 
 function folderOfHandle(root) {
   return {
     text: path => readText(root, path),
+    hasDirectory: async path => !!await dir(root, path),
     async *list(folder, skip) {
       const d = await dir(root, folder);
       if (d) yield* walk(d, folder.replace(/\/+$/, "") + "/", skip);
@@ -547,6 +626,7 @@ function folderOfHandle(root) {
 function folderOfFiles(files) {
   return {
     text: async path => files.has(path) ? files.get(path).text() : null,
+    hasDirectory: async folder => [...files.keys()].some(path => path.startsWith(folderPrefix(folder))),
     async *list(folder, skip) {
       const base = folder.replace(/\/+$/, "") + "/";
       for (const [path, f] of files)
@@ -561,6 +641,7 @@ function pickFiles() {
     const input = document.createElement("input");
     input.type = "file";
     input.webkitdirectory = true;
+    input.oncancel = () => resolve(null);
     input.onchange = () => {
       const all = [...input.files];
       if (!all.length) return resolve(null);
@@ -573,11 +654,15 @@ function pickFiles() {
 
 // The folder of a workspace, asking for it or for access only when ask is true.
 async function localFolder(w, ask) {
-  if (picked[w.name]) return folderOfFiles(picked[w.name]);
-  if (!HANDLES) {
+  if (picked[w.name] && (!ask || freshPicked.delete(w.name))) return folderOfFiles(picked[w.name]);
+  if (!HANDLES || picked[w.name]) {
     if (!ask) return null;
+    // File objects cannot enumerate additions or removals. Ask for a fresh list
+    // on every later load rather than claiming to reread the old membership.
     const got = await pickFiles();
-    if (!got) throw new Error("choose the folder to read it");
+    if (!got) throw new Error("folder selection cancelled; no new files read");
+    const expected = w.folderName || w.name;
+    if (got.name !== expected) throw new Error(`Selected folder ${got.name}, expected ${expected}. Add the different folder in Settings.`);
     picked[w.name] = got.files;
     return folderOfFiles(got.files);
   }
@@ -589,38 +674,70 @@ async function localFolder(w, ask) {
   return folderOfHandle(root);
 }
 
-async function readLocal(w) {
-  const folder = await localFolder(w, true);
+async function readLocal(w, capturedFiles) {
+  const folder = capturedFiles ? folderOfFiles(capturedFiles) : await localFolder(w, true);
   if (!folder) throw new Error("allow access to the folder to read it");
-  const text = await folder.text("artifact-driven.json");
+  const text = w.configuration ? JSON.stringify(w.configuration) : await folder.text("artifact-driven.json");
   if (text === null) throw new Error("no artifact-driven.json in the folder");
-  const conf = w.configuration || JSON.parse(text);
-  const skip = new Set([".git", "node_modules", ...(conf.skip || [])]);
-  const files = { "artifact-driven.json": JSON.stringify(conf) };
+  const conf = configuration(text, !!w.configuration), skip = new Set([".git", "node_modules", ...(conf.skip || ["build"])]);
+  const files = { "artifact-driven.json": JSON.stringify(conf) }, parts = [];
+  const source = { kind: "working_copy", folder: w.folderName || w.name };
+  try {
+    const head = (await folder.text(".git/HEAD") || "").trim();
+    if (head) source.git_label = head.startsWith("ref: refs/heads/") ? head.slice(16) : head;
+  } catch { /* An optional Git label is context, never a required source. */ }
   const read = async (path, keep) => {
-    for await (const [p, load] of folder.list(path, new Set([".git", "node_modules"]))) if (keep(p)) files[p] = await load();
+    const result = {};
+    if (path.split("/").filter(Boolean).some(name => skip.has(name))) return result;
+    for await (const [p, load] of folder.list(path, skip)) if (keep(p)) {
+      try { result[p] = await load(); } catch (e) { throw new Error(p + ": " + e.message); }
+    }
+    return result;
   };
-  await read(knowledgeOf(conf), p => isKnowledge(conf, p));
-  for (const [, t] of testParts(conf)) {
-    const base = t.folder.replace(/\/+$/, "") + "/", match = globRe(t.glob || "**/*_test.*");
-    await read(t.folder, p => match.test(p.slice(base.length)) && !p.slice(base.length).split("/").some(s => skip.has(s)));
+  if (!await folder.hasDirectory(knowledgeOf(conf))) throw new Error("knowledge folder not found: " + knowledgeOf(conf));
+  Object.assign(files, await read(knowledgeOf(conf), p => isKnowledge(conf, p)));
+  for (const [name, tests, group] of allParts(conf)) {
+    const outcome = partRead(group, name, source, "missing", "no tests setting");
+    parts.push(outcome);
+    if (!tests) continue;
+    if (!tests.folder) { outcome.reason = "no tests folder"; continue; }
+    try {
+      if (!await folder.hasDirectory(tests.folder)) { outcome.reason = "tests folder not found: " + tests.folder; continue; }
+      const base = folderPrefix(tests.folder), match = globRe(tests.glob || "**/*_test.*");
+      const readFiles = await read(tests.folder, p => match.test(p.slice(base.length)));
+      if (!Object.keys(readFiles).length) { outcome.reason = "no matching test files"; continue; }
+      Object.assign(files, readFiles);
+      outcome.status = "complete";
+      outcome.reason = null;
+    } catch (e) { outcome.status = "failed"; outcome.reason = e.message; }
   }
-  const head = (await folder.text(".git/HEAD") || "").trim();
-  const label = head.startsWith("ref: refs/heads/") ? head.slice(16) : head ? head.slice(0, 7) : "working copy";
-  return { label, conf, files };
+  return { label: "working copy" + (source.git_label ? " (Git context: " + source.git_label + ")" : ""), conf, files, source, parts };
 }
 
 // ---- Python ------------------------------------------------------------
 
-let pyodide = null;
+let pyodide = null, pythonReady = null, analyzerIdentity = null;
 async function python() {
   if (pyodide) return pyodide;
-  progress("Loading Python…");
-  pyodide = await loadPyodide();
-  const scripts = await Promise.all(SCRIPTS.map(name => fetch("../scripts/" + name).then(r => r.text())));
-  SCRIPTS.forEach((name, i) => pyodide.globals.set("_" + name.replace(".", "_"), scripts[i]));
-  return pyodide;
+  if (!pythonReady) pythonReady = (async () => {
+    const runtime = await loadPyodide();
+    // Capture trusted import locations before any workspace files are staged.
+    runtime.runPython('import os, sys\n_tracker_runtime_path = tuple(path for path in sys.path if path and os.path.isabs(path))');
+    const scripts = await Promise.all(SCRIPTS.map(async name => {
+      const response = await fetch("../scripts/" + name);
+      if (!response.ok) throw new Error("cannot read analyzer " + name + ": HTTP " + response.status);
+      return response.text();
+    }));
+    const identity = { digest: await digest(canonical(SCRIPTS.map((name, i) => [name, scripts[i]])), runtime),
+      python_version: runtime.runPython("import sys; sys.version.split()[0]") };
+    SCRIPTS.forEach((name, i) => runtime.globals.set("_" + name.replace(".", "_"), scripts[i]));
+    analyzerIdentity = identity;
+    pyodide = runtime;
+    return runtime;
+  })().catch(e => { pythonReady = null; throw e; });
+  return pythonReady;
 }
+async function analyzer() { await python(); return analyzerIdentity; }
 
 async function run(files, label) {
   const py = await python();
@@ -628,36 +745,58 @@ async function run(files, label) {
   py.globals.set("sha", label);
   return py.runPython(`
 import os, shutil, sys
-from pathlib import Path
+from pathlib import Path, PurePosixPath
+import contextlib, importlib.util, io
 root = Path("/work")
-shutil.rmtree(root, ignore_errors=True)
+scripts = Path("/analyzer")
+output = scripts / "out.html"
+# Validate the complete read set before writing any workspace file. A relative
+# alias must not replace the effective configuration or another staged file.
+staged = {}
 for path, text in tree.items():
-    target = root / path
-    target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(text, encoding="utf-8")
-scripts = root / "scripts"
-scripts.mkdir(exist_ok=True)
-for name, text in {"project.py": _project_py, "impact.py": _impact_py, "site.py": _site_py, "site.html": _site_html}.items():
-    (scripts / name).write_text(text, encoding="utf-8")
-os.chdir(root)
-# project.py finds the repository from the current directory when imported,
-# so each build imports the scripts afresh. site.py is loaded by path: the
-# name "site" is taken by Python's own module.
-for name in ("project", "impact"):
-    sys.modules.pop(name, None)
-sys.path.insert(0, str(scripts))
-import importlib.util
-spec = importlib.util.spec_from_file_location("knowledge_site", scripts / "site.py")
-knowledge_site = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(knowledge_site)
-knowledge_site.commit = lambda: sha
-knowledge_site.main([str(root / "out.html")])
-import contextlib, io
-report = io.StringIO()
-with contextlib.redirect_stdout(report), contextlib.redirect_stderr(report):
-    sys.modules["impact"].coverage(sys.modules["impact"].build(), sys.modules["impact"].test_folders())
-sys.path.remove(str(scripts))
-[(root / "out.html").read_text(encoding="utf-8"), report.getvalue()]
+    relative = PurePosixPath(path)
+    if not path or "\\x00" in path or relative.is_absolute() or ".." in relative.parts:
+        raise ValueError("unsafe workspace file path: " + repr(path))
+    target = (root / relative).resolve()
+    if target == root or not target.is_relative_to(root):
+        raise ValueError("workspace file path escapes its folder: " + repr(path))
+    if target in staged:
+        raise ValueError("workspace file paths have the same destination: " + repr(path))
+    staged[target] = text
+if root / "artifact-driven.json" not in staged:
+    raise ValueError("workspace has no effective artifact-driven.json")
+saved_path, saved_cwd = sys.path[:], os.getcwd()
+try:
+    # cwd still locates project.py's configuration, but is never an import path.
+    # Trusted code and generated output are not part of the workspace test set.
+    sys.path[:] = [str(scripts)] + [path for path in _tracker_runtime_path
+        if not Path(path).resolve().is_relative_to(root)
+        and not root.is_relative_to(Path(path).resolve())]
+    shutil.rmtree(root, ignore_errors=True)
+    shutil.rmtree(scripts, ignore_errors=True)
+    root.mkdir()
+    scripts.mkdir()
+    for target, text in staged.items():
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(text, encoding="utf-8")
+    for name, text in {"project.py": _project_py, "impact.py": _impact_py, "site.py": _site_py, "site.html": _site_html}.items():
+        (scripts / name).write_text(text, encoding="utf-8")
+    os.chdir(root)
+    for name in ("project", "impact"):
+        sys.modules.pop(name, None)
+    spec = importlib.util.spec_from_file_location("knowledge_site", scripts / "site.py")
+    knowledge_site = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(knowledge_site)
+    knowledge_site.commit = lambda: sha
+    knowledge_site.main([str(output)])
+    report = io.StringIO()
+    with contextlib.redirect_stdout(report), contextlib.redirect_stderr(report):
+        sys.modules["impact"].coverage(sys.modules["impact"].build(), sys.modules["impact"].test_folders())
+    result = [output.read_text(encoding="utf-8"), report.getvalue()]
+finally:
+    os.chdir(saved_cwd)
+    sys.path[:] = saved_path
+result
 `).toJs();
 }
 
@@ -689,13 +828,30 @@ function goalTitles(files, conf) {
 }
 
 const pair = (a, b) => `<td class="num">${a} / ${b}</td>`;
+function sourceText(source) {
+  return source.kind === "repository"
+    ? `${source.repository} · ref ${source.requested_ref || "default branch"} · commit ${source.commit || "unavailable"}`
+    : `${source.folder} · working-copy files (not an atomic snapshot)` + (source.git_label ? ` · Git context: ${source.git_label}` : "");
+}
+function drawProvenance(provenance) {
+  const { workspace, parts, configuration, analyzer } = provenance;
+  $("provenance").innerHTML = `<b>Sources of this build</b><p>${esc(sourceText(workspace))}</p>` +
+    `<p>Configuration: ${configuration.source === "browser_override" ? "browser override" : "workspace"} · <span class="mono">${esc(configuration.digest)}</span></p>` +
+    `<details><summary>Effective configuration</summary><pre>${esc(JSON.stringify(configuration.value, null, 2))}</pre></details>` +
+    `<p>Analyzer (${SCRIPTS.map(esc).join(", ")}): <span class="mono">${esc(analyzer.digest)}</span> · Python ${esc(analyzer.python_version)}</p>` +
+    (parts.length ? `<details><summary>Test reads of all ${parts.length} parts</summary><ul>` + parts.map(p =>
+      `<li><b>${esc(p.group)} ${esc(p.name)}: ${esc(p.status)}</b> · ${esc(sourceText(p.source))}${p.reason ? " · " + esc(p.reason) : ""}</li>`).join("") + `</ul></details>` : "");
+}
 function drawCoverage(b) {
   const { goals, all, system } = parseCoverage(b.coverage);
   $("coverage").hidden = false;
   $("overridden").hidden = !b.overridden;
-  $("left-out").hidden = !b.leftOut.length;
-  $("left-out").innerHTML = "Coverage leaves out the tests of " + b.leftOut.map(([n, r]) => `<code>${esc(n)}</code>: ${esc(r)}`).join("; ") +
-    ". Pick a token for it in Settings, or the ref of the part above.";
+  drawProvenance(b.provenance);
+  const unread = b.provenance.parts.filter(p => p.status !== "complete");
+  $("left-out").hidden = !unread.length;
+  $("left-out").className = "bar-note " + (unread.some(p => p.status === "failed") ? "bad" : "warn");
+  $("left-out").innerHTML = unread.length ? "Coverage includes only complete test reads. " + unread.map(p =>
+    `<b>${esc(p.group)} ${esc(p.name)}: ${esc(p.status)}</b> (${esc(sourceText(p.source))}): ${esc(p.reason)}`).join("; ") + "." : "";
   $("coverage-table").hidden = !goals.length;
   $("no-tests").hidden = !!goals.length;
   if (goals.length) {
@@ -707,11 +863,7 @@ function drawCoverage(b) {
       (system ? `<p class="lede" style="padding:12px 16px;margin:0;font-size:14px">System requirements, outside the goals: ${system.counts[0]} / ${system.counts[1]} named by a test` +
         (system.untested.length ? `; not yet: ${system.untested.map(esc).join(", ")}` : "") + `.</p>` : "");
   } else {
-    const parts = testParts(b.conf);
-    $("no-tests").innerHTML = parts.length
-      ? `<p><b>No test files to read yet.</b> These parts name a tests folder, and none of it holds a file that matches:</p><ul>${parts.map(([n, t]) =>
-          `<li><code>${esc(n)}</code>: <code>${esc(t.repository ? t.repository + " → " + t.folder : t.folder)}</code>, files <code>${esc(t.glob || "**/*_test.*")}</code></li>`).join("")}</ul><p class="lede">Coverage shows here once a test names a knowledge ID.</p>`
-      : `<p><b>No part names a tests folder</b> in <code>artifact-driven.json</code>, so there are no tests to read.</p>`;
+    $("no-tests").innerHTML = `<p>No goal coverage lines were produced. The test-read outcomes above show which files were included.</p>`;
   }
 }
 
@@ -767,48 +919,68 @@ function drawSite(html) {
 
 // ---- Load: read, then analyse (TRK-1, TRK-2, TRK-5) ---------------------
 
-const built = {};  // build key → build, for this page load
-let shown = null, loading = false;
+const built = {};  // Full source/configuration/analyzer key → successful analysis only.
+let shown = null, loading = false, loadVersion = 0, failedLoad = null;
 
-// What is picked now, to compare with what is shown.
-const pick = w => w ? JSON.stringify([idOf(w), w.branch || "", w.parts || {}, w.configuration || null, w.token || ""]) : "";
-
-function progress(text) { loading = text; drawStatus(); }
+// These fingerprints contain token names and change counters, never values.
+const tokenPicks = w => [w.token || "", ...Object.values(w.parts || {}).map(p => p.token || "")].map(name => [name, tokenVersions[name] || 0]);
+const pick = w => w ? canonical([idOf(w), w.branch || "", w.parts || {}, w.configuration || null, tokenPicks(w)]) : "";
+const configPick = w => canonical([idOf(w), w.branch || "", w.configuration || null, w.token || "", tokenVersions[w.token] || 0]);
+function freeze(value) {
+  if (value && typeof value === "object") { Object.values(value).forEach(freeze); Object.freeze(value); }
+  return value;
+}
+function progress(text, version) { if (version !== loadVersion) return; loading = text; drawStatus(); }
 
 async function load() {
-  const w = current();
-  if (!w || loading) return;
-  $("load").disabled = true;
+  const selected = current();
+  if (!selected) return;
+  // Snapshot before any await: settings and credentials stay private to this load.
+  const w = freeze(JSON.parse(JSON.stringify(selected))), values = freeze(tokens());
+  const selectedPick = pick(w), configurationPick = configPick(w), version = ++loadVersion;
+  const localFiles = w.type === "local" && picked[w.name] && freshPicked.delete(w.name) ? new Map(picked[w.name]) : null;
+  failedLoad = null;
   try {
-    let b;
-    if (w.type === "local") {
-      progress("Reading the folder…");
-      const { label, conf, files } = await readLocal(w);
-      progress("Analysing: coverage, then the knowledge site…");
-      const [html, coverage] = await run(files, label);
-      b = { html, coverage, conf, label, leftOut: [], titles: goalTitles(files, conf) };
-    } else {
-      progress("Reading the commit and the file tree…");
-      const plan = await planGitHub(w);
-      b = built[plan.key];
-      if (!b) {
-        progress("Downloading the files that changed…");
-        const files = await readGitHub(w, plan);
-        progress("Analysing: coverage, then the knowledge site…");
-        const [html, coverage] = await run(files, plan.head.sha);
-        b = built[plan.key] = { html, coverage, conf: plan.conf, label: plan.head.sha, leftOut: plan.leftOut, titles: goalTitles(files, plan.conf) };
-      }
+    progress(w.type === "local" ? "Reading working-copy files…" : "Reading the commit and the file tree…", version);
+    const plan = w.type === "local" ? await readLocal(w, localFiles) : await planGitHub(w, values);
+    if (version !== loadVersion) return;
+    // Only this configuration, not a previous settings check, owns the controls.
+    if (current() && configPick(current()) === configurationPick) {
+      confOf[idOf(w)] = plan.conf;
+      confKeys[idOf(w)] = configurationPick;
+      confVersions[idOf(w)] = (confVersions[idOf(w)] || 0) + 1;
+      drawPicker();
     }
-    b.overridden = !!w.configuration;
-    shown = { id: idOf(w), pick: pick(w), label: b.label, at: Date.now(), error: null };
+    progress("Loading the analyzer…", version);
+    const analyzerInfo = await analyzer();
+    const configurationInfo = { source: w.configuration ? "browser_override" : "workspace", value: plan.conf, digest: await digest(canonical(plan.conf)) };
+    if (version !== loadVersion) return;
+    let parts = w.type === "local" ? plan.parts : plan.parts.map(p => p.outcome);
+    const sourceIdentity = source => source.kind === "repository" ? [source.repository, source.commit] : null;
+    const key = w.type === "github" ? canonical([sourceIdentity(plan.source), parts.map(p => [p.group, p.name, sourceIdentity(p.source)]), configurationInfo.digest, analyzerInfo]) : null;
+    let analysis = key && !parts.some(p => p.status === "failed") ? built[key] : null;
+    const label = w.type === "local" ? plan.label : plan.head.sha;
+    if (!analysis) {
+      progress("Downloading the files that changed…", version);
+      const files = w.type === "local" ? plan.files : await readGitHub(w, plan);
+      if (version !== loadVersion) return;
+      progress("Analysing: coverage, then the knowledge site…", version);
+      const [html, coverage] = await run(files, label);
+      analysis = { html, coverage, titles: goalTitles(files, plan.conf) };
+      if (key && !parts.some(p => p.status === "failed")) built[key] = analysis;
+    }
+    if (version !== loadVersion) return;
+    const provenance = { workspace: plan.source, parts, configuration: configurationInfo, analyzer: analyzerInfo };
+    const b = { ...analysis, conf: plan.conf, label, provenance, overridden: !!w.configuration };
+    shown = { id: idOf(w), pick: selectedPick, label, at: Date.now() };
     drawCoverage(b);
     drawSite(b.html);
   } catch (e) {
-    shown = { id: idOf(w), pick: pick(w), error: w.type === "local" ? e.message : reason(e, w.token) };
+    if (version !== loadVersion) return;
+    // Retained coverage remains the previous build, including its original identity.
+    failedLoad = { id: idOf(w), pick: selectedPick, error: w.type === "local" ? e.message : reason(e, w.token) };
   } finally {
-    loading = false;
-    $("load").disabled = false;
-    drawStatus();
+    if (version === loadVersion) { loading = false; $("load").disabled = !current(); drawStatus(); }
   }
 }
 
@@ -820,28 +992,33 @@ function ago(t) {
 function drawStatus() {
   const s = $("status"), w = current();
   if (loading) { s.className = "status"; s.textContent = loading; return; }
+  const retained = shown ? `Showing <b>${esc(shown.id)}</b> at <span class="mono">${esc(shown.label)}</span>. ` : "";
+  if (failedLoad) { s.className = "status bad"; s.innerHTML = `<b>${esc(failedLoad.id)}</b>: ${esc(failedLoad.error)}. No new build. ${retained}Press Load to retry the selected inputs.`; return; }
   if (!w) { s.className = "status"; s.textContent = "Add a workspace in Settings."; return; }
   if (!shown) { s.className = "status"; s.innerHTML = `Press Load to read and analyse <b>${esc(idOf(w))}</b>.`; return; }
-  const now = pick(w);
-  if (shown.error && shown.pick === now) { s.className = "status bad"; s.innerHTML = `<b>${esc(shown.id)}</b>: ${esc(shown.error)}.`; return; }
-  if (shown.pick === now) { s.className = "status"; s.innerHTML = `<b>${esc(shown.id)}</b> at <span class="mono">${esc(shown.label)}</span> · loaded ${ago(shown.at)}`; return; }
+  if (shown.pick === pick(w)) { s.className = "status"; s.innerHTML = `<b>${esc(shown.id)}</b> at <span class="mono">${esc(shown.label)}</span> · loaded ${ago(shown.at)}`; return; }
   s.className = "status dirty";
-  s.innerHTML = (shown.error ? "" : `Showing <b>${esc(shown.id)}</b> at <span class="mono">${esc(shown.label)}</span>. `) +
-    `Press Load to read and analyse <b>${esc(idOf(w))}</b>${w.branch ? " at " + esc(w.branch) : ""}.`;
+  s.innerHTML = retained + `Press Load to read and analyse <b>${esc(idOf(w))}</b>${w.branch ? " at " + esc(w.branch) : ""}.`;
 }
 setInterval(() => { if (!loading) drawStatus(); }, 30000);
 
 // ---- Workspace page: picker and the ref of each part --------------------
 
-const confOf = {};  // workspace id → configuration read from it, for the parts
+const confOf = {}, confKeys = {}, confVersions = {};
+const effectiveConf = w => w.configuration || (confKeys[idOf(w)] === configPick(w) ? confOf[idOf(w)] : null);
+let pickerVersion = 0;
 function drawPicker() {
+  const version = ++pickerVersion;
   $("ws").innerHTML = config.workspaces.map(w => `<option${idOf(w) === config.selected ? " selected" : ""}>${esc(idOf(w))}</option>`).join("") || `<option value="">No workspace: add one in Settings</option>`;
   const w = current();
   $("ref").value = w && w.type === "github" ? w.branch || "" : "";
   $("ref").disabled = !w || w.type !== "github";
   $("ref").placeholder = w && w.type === "local" ? "branch from .git/HEAD" : "default branch";
-  $("load").disabled = !w || !!loading;
-  const conf = w && (w.configuration || confOf[idOf(w)]);
+  $("load").disabled = !w;
+  const conf = w && effectiveConf(w);
+  const requested = w && pick(w), requestedConfiguration = canonical(conf);
+  const applies = () => version === pickerVersion && current() && pick(current()) === requested
+    && canonical(effectiveConf(current())) === requestedConfiguration;
   const parts = conf ? testParts(conf) : [];
   $("part-refs").innerHTML = parts.length ? "<span>Tests of each part at</span>" + parts.map(([n, t]) => {
     const own = t.repository && w.type === "github", ref = ((w.parts || {})[n] || {}).ref || "";
@@ -851,10 +1028,12 @@ function drawPicker() {
   }).join("") : "";
   drawStatus();
   if (!w || w.type !== "github") return;
-  refs(w.repo, w.token).then(names => { $("ref-list").innerHTML = names.map(n => `<option value="${esc(n)}">`).join(""); }).catch(() => {});
+  $("ref-list").innerHTML = "";
+  refs(w.repo, w.token).then(names => { if (!applies()) return; $("ref-list").innerHTML = names.map(n => `<option value="${esc(n)}">`).join(""); }).catch(() => {});
   for (const [n, t] of parts.filter(([, t]) => t.repository)) {
     const p = (w.parts || {})[n] || {};
     refs(partRepo(t)[0], p.token).then(names => {
+      if (!applies()) return;
       const s = document.querySelector(`select[data-part-ref="${CSS.escape(n)}"]`);
       if (!s) return;
       const ref = p.ref || "";
@@ -866,6 +1045,7 @@ function drawPicker() {
 // ---- Settings: checks of connection only (TRK-11) -----------------------
 
 const checks = {};  // "ws:<id>", "part:<id>:<name>", "tok:<name>" → [kind, text], or undefined while checking
+const checkVersions = {};
 const pending = new Set();  // the keys being checked now
 // Checked once per page load; again only on add, a new token pick, or Check again (TRK-11).
 const known = key => key in checks || pending.has(key);
@@ -875,26 +1055,24 @@ async function checkToken(name) {
   catch (e) { return ["bad", e.status === 401 ? "Refused by GitHub" : reason(e, name)]; }
 }
 
-async function checkWorkspace(w) {
-  const id = idOf(w);
+async function checkWorkspace(w, applyConfiguration) {
+  const id = idOf(w), auth = credential(w.token);
   if (w.type === "local") {
     try {
       const folder = await localFolder(w, false);
       if (!folder) return ["warn", HANDLES ? "Allow access when you load it" : "Choose the folder again"];
       const text = await folder.text("artifact-driven.json");
       if (text === null) return ["bad", "No artifact-driven.json at its root"];
-      try { confOf[id] = JSON.parse(text); } catch { return ["bad", "artifact-driven.json is not valid JSON"]; }
-      const head = (await folder.text(".git/HEAD") || "").trim();
-      w.head = head.startsWith("ref: refs/heads/") ? head.slice(16) : "";
+      try { applyConfiguration(configuration(text)); } catch { return ["bad", "artifact-driven.json is not valid JSON"]; }
       return ["on", "Connected"];
     } catch (e) { return ["bad", e.message]; }
   }
   let info;
-  try { info = await gh(`/repos/${w.repo}`, w.token); } catch (e) { return ["bad", reason(e, w.token)]; }
+  try { info = await gh(`/repos/${w.repo}`, auth); } catch (e) { return ["bad", reason(e, w.token)]; }
   // One more call reads the configuration, for the parts.
   try {
-    const file = await gh(`/repos/${w.repo}/contents/artifact-driven.json?ref=${encodeURIComponent(w.branch || info.default_branch)}`, w.token);
-    confOf[id] = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(file.content.replace(/\n/g, "")), c => c.charCodeAt(0))));
+    const file = await gh(`/repos/${w.repo}/contents/artifact-driven.json?ref=${encodeURIComponent(w.branch || info.default_branch)}`, auth);
+    applyConfiguration(configuration(new TextDecoder().decode(Uint8Array.from(atob(file.content.replace(/\n/g, "")), c => c.charCodeAt(0)))));
   } catch (e) { return ["bad", e.status === 404 ? "No artifact-driven.json at its root" : "artifact-driven.json cannot be read"]; }
   return ["on", `Connected · ${info.private ? "private" : "public"}`];
 }
@@ -920,29 +1098,38 @@ async function checkAll(which, onlyNew) {
 }
 
 async function recheckToken(n) {
-  delete checks["tok:" + n];
-  pending.add("tok:" + n);
+  const key = "tok:" + n, tokenVersion = tokenVersions[n] || 0;
+  const version = checkVersions[key] = (checkVersions[key] || 0) + 1;
+  delete checks[key];
+  pending.add(key);
   drawSettings();
-  checks["tok:" + n] = await checkToken(n);
-  pending.delete("tok:" + n);
+  const result = await checkToken(n);
+  if (checkVersions[key] !== version) return;
+  pending.delete(key);
+  if ((tokenVersions[n] || 0) !== tokenVersion) return;
+  checks[key] = result;
   drawSettings();
 }
 
-async function checkOne(w) {
-  const id = idOf(w);
+async function checkOne(selected) {
+  const w = JSON.parse(JSON.stringify(selected)), id = idOf(w), requested = pick(w), key = configPick(w);
+  const version = confVersions[id] = (confVersions[id] || 0) + 1;
+  const checkVersion = checkVersions["ws:" + id] = (checkVersions["ws:" + id] || 0) + 1;
+  const applies = () => byId(id) && pick(byId(id)) === requested && confVersions[id] === version;
   delete checks["ws:" + id];
   pending.add("ws:" + id);
   Object.keys(checks).filter(k => k.startsWith(`part:${id}:`)).forEach(k => delete checks[k]);
   drawSettings();
-  checks["ws:" + id] = await checkWorkspace(w);
-  pending.delete("ws:" + id);
-  const conf = w.configuration || confOf[id];
+  const result = await checkWorkspace(w, conf => { if (applies()) { confOf[id] = conf; confKeys[id] = key; } });
+  if (checkVersions["ws:" + id] === checkVersion) pending.delete("ws:" + id);
+  if (!applies()) return;
+  checks["ws:" + id] = result;
+  const conf = effectiveConf(w);
   if (w.type === "github" && conf) await Promise.all(testParts(conf).filter(([, t]) => t.repository).map(async ([n, t]) => {
-    checks[`part:${id}:${n}`] = await checkPart(w, n, t);
-    drawSettings();
+    const result = await checkPart(w, n, t);
+    if (applies()) { checks[`part:${id}:${n}`] = result; drawSettings(); }
   }));
-  drawSettings();
-  drawPicker();
+  if (applies()) { drawSettings(); drawPicker(); }
 }
 
 const tag = s => s ? `<span class="tag ${s[0]}">${esc(s[1][0].toUpperCase() + s[1].slice(1))}</span>` : `<span class="tag">Checking…</span>`;
@@ -994,11 +1181,11 @@ function scriptBox(w, conf) {
 const problemList = problems => problems.length ? `<ul class="problems">${problems.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : `<p class="ok">Valid. Use it to build with it.</p>`;
 
 function partList(w) {
-  const id = idOf(w), conf = w.configuration || confOf[id], o = opened.has(id) ? " open" : "";
+  const id = idOf(w), conf = effectiveConf(w), o = opened.has(id) ? " open" : "";
   if (!conf) return `<details class="parts"${o}><summary>Parts</summary><p>The parts show once the check has read artifact-driven.json.</p></details>`;
   const list = allParts(conf);
   return `<details class="parts"${o}><summary>${list.length} part${list.length === 1 ? "" : "s"}</summary><ul>${list.map(([n, t]) => {
-    if (!t) return `<li><code>${esc(n)}</code><span class="src">No tests setting</span><span></span></li>`;
+    if (!t || !t.folder) return `<li><code>${esc(n)}</code><span class="src">No tests setting</span><span></span></li>`;
     const own = t.repository && w.type === "github";
     const where = t.repository ? `${esc(t.repository)} · ${esc(t.glob || "**/*_test.*")}` : `${esc(t.folder)} in this ${w.type === "local" ? "folder" : "repository"} · ${esc(t.glob || "**/*_test.*")}`;
     return `<li><code>${esc(n)}</code><span class="src">${where}${own ? ` · <select data-part-token="${esc(n)}" aria-label="Token for ${esc(n)}">${tokenOptions(((w.parts || {})[n] || {}).token)}</select>` : ""}</span>${own ? tag(checks[`part:${id}:${n}`]) : "<span></span>"}</li>`;
@@ -1043,14 +1230,14 @@ function view(settings) {
 
 $("open-settings").onclick = () => view($("settings").hidden);
 $("back").onclick = e => { e.preventDefault(); view(false); };
-$("ws").onchange = () => { config.selected = $("ws").value; saveConfig(); drawPicker(); const w = current(); if (w && !confOf[idOf(w)]) checkOne(w); };
-$("ref").onchange = () => { const w = current(); if (w) { w.branch = $("ref").value.trim(); saveConfig(); drawStatus(); } };
+$("ws").onchange = () => { config.selected = $("ws").value; saveConfig(); drawPicker(); const w = current(); if (w && !effectiveConf(w)) checkOne(w); };
+$("ref").onchange = () => { const w = current(); if (w) { w.branch = $("ref").value.trim(); saveConfig(); drawPicker(); } };
 $("part-refs").onchange = e => {
   const s = e.target.closest("select[data-part-ref]"), w = current();
   if (!s || !w) return;
   w.parts = w.parts || {};
   (w.parts[s.dataset.partRef] = w.parts[s.dataset.partRef] || { token: "" }).ref = s.value;
-  saveConfig(); drawStatus();
+  saveConfig(); drawPicker();
 };
 $("load").onclick = load;
 $("restore-main").onclick = () => { const w = current(); if (w) { delete w.configuration; saveConfig(); drawPicker(); } };
@@ -1101,8 +1288,9 @@ $("add-folder").onclick = async () => {
   const base = handle ? handle.name : got.name;
   let name = base, n = 2;
   while (byId("local:" + name)) name = `${base}-${n++}`;
-  if (handle) await idb("readwrite", s => s.put(handle, name)); else picked[name] = got.files;
-  const w = { type: "local", name };
+  if (handle) await idb("readwrite", s => s.put(handle, name));
+  else { picked[name] = got.files; freshPicked.add(name); }
+  const w = { type: "local", name, folderName: base };
   config.workspaces.push(w);
   config.selected = config.selected || "local:" + name;
   opened.add("local:" + name);
@@ -1161,7 +1349,10 @@ $("ws-rows").addEventListener("change", e => {
   // Only this part is checked again: its repository with the new token.
   const t = testParts(w.configuration || confOf[idOf(w)]).find(([n]) => n === name)[1];
   delete checks[key]; drawSettings();
-  checkPart(w, name, t).then(r => { checks[key] = r; drawSettings(); });
+  const requested = pick(w), confKey = canonical(effectiveConf(w));
+  checkPart(JSON.parse(JSON.stringify(w)), name, t).then(r => {
+    if (byId(idOf(w)) && pick(byId(idOf(w))) === requested && canonical(effectiveConf(w)) === confKey) { checks[key] = r; drawSettings(); }
+  });
 });
 
 $("export").onclick = () => {

@@ -30,6 +30,21 @@ and of the flow [View a workspace](../docs/software-knowledges/flows/view-worksp
    clone as a folder. It clones the workspace and each part's repository at
    the refs picked, and holds no token.
 
+When the browser uses a directory input instead of a kept folder handle, each
+later **Load** asks you to choose the same folder again. This includes files
+added or removed since the previous read. Cancelling keeps the previous build.
+Browsers with folder handles reread the folder directly.
+
+**Sources of this build**, above the coverage, shows the resolved commits,
+effective configuration, analyzer identity and each part's test-read outcome.
+For a local folder it identifies working-copy files, with any Git label as
+context only. These details belong to the displayed build, not pending picks.
+
+The tracker keeps downloaded workspace files separate from its trusted Python
+analyzer and generated output. Workspace Python files are read as test text,
+not imported. File paths that escape the workspace or alias another staged
+file stop that load.
+
 A repository read with no token is downloaded from `raw.githubusercontent.com`,
 which does not count against GitHub's limit of 60 API calls an hour without a
 token; a load then needs only the commit and the file tree from the API.
