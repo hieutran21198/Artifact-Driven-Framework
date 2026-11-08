@@ -37,6 +37,7 @@ section{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}
 .hero .lede{font-size:clamp(18px,2.2vw,21px)}
 .top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:14px}
 .top a{text-decoration:none}
+.top .nav{display:flex;gap:16px;flex-wrap:wrap}
 .ic{width:1.05em;height:1.05em;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.15em}
 h3[data-i]{display:flex;align-items:center;gap:10px}
 h3[data-i] .ic{width:20px;height:20px;color:var(--accent);stroke-width:1.6}
@@ -60,12 +61,6 @@ pre{margin:0;background:var(--panel);border-radius:14px;padding:18px 20px;overfl
 .tool dl{margin:0;display:grid;gap:12px}
 .tool dt{font-size:12.5px;color:var(--faint)}
 .tool dd{margin:2px 0 0;font-size:15px;line-height:1.6}
-.prompts{display:grid;gap:0;border:1px solid var(--rule);border-radius:16px;background:#fff;overflow:hidden}
-.prompts>div{display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr);gap:16px;padding:12px 16px;border-top:1px solid var(--rule);font-size:14.5px;align-items:baseline}
-.prompts>div:first-child{border-top:0}
-.prompts b{font-weight:500}
-.prompts q{quotes:none;font-family:var(--mono);font-size:13px;line-height:1.6;color:var(--ink);overflow-wrap:anywhere}
-@media (max-width:620px){.prompts>div{grid-template-columns:minmax(0,1fr);gap:4px}}
 
 /* the team: one row for each stage; roles of one stage run in parallel */
 .flow{list-style:none;margin:0;padding:0;display:grid;gap:0}
@@ -92,6 +87,11 @@ pre{margin:0;background:var(--panel);border-radius:14px;padding:18px 20px;overfl
 .change>div>*+*{border-left:1px dashed var(--rule)}
 .change .st{background:var(--k,var(--paper));color:var(--ki,var(--ink));font-weight:500}
 .change .skip{color:var(--faint)}
+.work>div{grid-template-columns:minmax(0,150px) minmax(0,1fr) minmax(0,1.4fr) minmax(0,1fr)}
+.work .st{display:flex;flex-direction:column;gap:4px}
+.work .st a{font-size:12.5px;font-weight:400}
+.work q,.try q{display:block;quotes:none;font-family:var(--mono);font-size:12.5px;line-height:1.6;color:var(--ink);overflow-wrap:anywhere;margin-top:6px}
+.try{margin:0;padding-left:20px;display:grid;gap:8px;font-size:15px}
 .change pre{padding:0;background:none;border-radius:0;font-size:12.5px;white-space:pre-wrap;overflow-wrap:anywhere;margin-top:4px}
 @media (max-width:760px){
   .change>div:first-child{display:none}
@@ -104,14 +104,12 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
 <body>
 <main>
   <header class="hero">
-    <nav class="top"><a href="index.html">← Artifact Driven</a><a href="how-we-work.html">How we work</a></nav>
+    <nav class="top"><a href="index.html">← Artifact Driven</a><span class="nav"><a href="how-we-work.html">How we work</a><a href="framework.html">Framework</a><a href="tracker/">Project tracker</a></span></nav>
     <h1>Work with coding agents</h1>
-    <p class="lede">A workspace tells a coding agent how the team works: who does each step, with which skill, and what each one may change. This page shows what is in the workspace, how Claude Code and Codex use it, and one change of the sample library from the issue to the pull request.</p>
   </header>
 
   <section aria-labelledby="gives-h">
     <h2 id="gives-h">What a workspace gives an agent</h2>
-    <p>Every new workspace has these files. The copies in <code>.agents</code> are the ones to change; <code>.claude</code> only links to them.</p>
     <div class="gives">
 <pre>AGENTS.md      <span class="cmt">instructions</span>
 CLAUDE.md      <span class="cmt">@AGENTS.md</span>
@@ -134,43 +132,26 @@ CLAUDE.md      <span class="cmt">@AGENTS.md</span>
         <div role="row"><code>reviewer</code><span>Nothing: reports findings</span><span class="m">opus</span></div>
       </div>
     </div>
-    <p class="src">Each agent file also lists its tools: the investigator and the reviewer have no Edit or Write. The main session is the coordinator and has no file. The roles are on the <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/team.md">team page</a>.</p>
   </section>
 
-  <section aria-labelledby="tools-h">
-    <h2 id="tools-h">How each tool uses it</h2>
-    <div class="tools">
-      <div class="tool">
-        <h3 data-i="terminal">Claude Code</h3>
-        <dl>
-          <dt>Reads</dt><dd><code>CLAUDE.md</code>, which imports <code>AGENTS.md</code>. <a href="https://code.claude.com/docs/en/memory">Docs</a></dd>
-          <dt>Finds</dt><dd>The agents in <code>.claude/agents</code> and the skills in <code>.claude/skills</code>, through the links. <a href="https://code.claude.com/docs/en/sub-agents">Subagents</a> · <a href="https://code.claude.com/docs/en/skills">Skills</a></dd>
-          <dt>Hands a step</dt><dd>Name the agent in the prompt. It runs with the tools and the model of its file, and reports back to the main session.</dd>
-        </dl>
-      </div>
-      <div class="tool">
-        <h3 data-i="terminal">Codex</h3>
-        <dl>
-          <dt>Reads</dt><dd><code>AGENTS.md</code>, from the repository root down to the folder it starts in. It does not read <code>CLAUDE.md</code>. <a href="https://developers.openai.com/codex/guides/agents-md">Docs</a></dd>
-          <dt>Finds</dt><dd>The skills in <code>.agents/skills</code>. Type <code>$</code> or <code>/skills</code> to name one. <a href="https://developers.openai.com/codex/skills">Skills</a></dd>
-          <dt>Hands a step</dt><dd>The agent files are written for Claude Code; Codex keeps its own in <code>.codex/agents</code>, and a workspace has none. Ask for a subagent and point it at the file of its role. A subagent keeps the sandbox of the session, so the tools line does not limit it: tell a role that writes nothing to change nothing. <a href="https://developers.openai.com/codex/subagents">Subagents</a></dd>
-        </dl>
-      </div>
-    </div>
-    <h3>A prompt for each step</h3>
-    <div class="prompts">
-      <div><b>1 · Issue</b><q>Read this issue and the knowledge it links. Which roles does it need, and which can skip?</q></div>
-      <div><b>2 · Knowledge</b><q>Use the knowledge-writer agent to write the change. Then one client-writer agent for each app that reads it, in parallel. Then the reviewer agent.</q></div>
-      <div><b>3 · Code</b><q>The knowledge branch is merged. Run one implementer agent for each part it touches, in parallel, then the reviewer agent.</q></div>
-      <div><b>4 · Pull requests</b><q>Commit and open a pull request for each part.</q></div>
-      <div><b>5 · Close</b><q>Check Done for this issue and tell me what is missing.</q></div>
+  <section aria-labelledby="work-h">
+    <h2 id="work-h">The work, step by step</h2>
+    <p>At each step the person decides and the agent does the work. Each step follows its runbook; the prompt is one way to start it.</p>
+    <div class="change work">
+      <div><span>Step</span><span>The person decides</span><span>The agent does</span><span>The person checks</span></div>
+      <div style="--k:var(--panel)"><span class="st">1 · Shape the need<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/shape.md">Runbook</a></span><p data-h="The person decides">Picks one option, and answers the questions.</p><div data-h="The agent does">Lists what holds today with its impact, lays out the options with the IDs each one keeps, changes or adds, then asks one question at a time.<q>Shape this issue with the shape runbook. Ask me one question at a time.</q></div><p data-h="The person checks">The IDs listed exist, each option names what it changes, and nothing is written into the knowledge yet.</p></div>
+      <div style="--k:var(--l1);--ki:var(--l1i)"><span class="st">2 · Knowledge<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/goal.md">Goal</a><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/flow.md">Flow</a><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/artifact-rule.md">Rule</a></span><p data-h="The person decides">Which rules hold: the agent proposes them from the steps of a flow, and the person decides.</p><div data-h="The agent does">The knowledge writer writes the goal, the flows and the rules that were settled, and runs the checks.<q>Use the knowledge-writer agent to write what we settled. Propose the rules; add none I have not agreed.</q></div><p data-h="The person checks">Each new ID names the IDs it was checked against, and the checks pass.</p></div>
+      <div style="--k:var(--cl);--ki:var(--cli)"><span class="st">3 · Contract and apps<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/contract.md">Contract</a><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/client.md">Client</a></span><p data-h="The person decides">The owner of the service approves the contract; the owner of each app, what it reads.</p><div data-h="The agent does">The contract designer, when a shape changes; one client writer for each app that reads it, in parallel.<q>Then the contract-designer agent if a shape changes, and one client-writer agent for each app, in parallel.</q></div><p data-h="The person checks">The existing response shapes are kept.</p></div>
+      <div><span class="st">4 · Review<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/check.md">Check</a></span><p data-h="The person decides">The owners merge the knowledge branch, or not.</p><div data-h="The agent does">The reviewer runs the checks and reads every page the impact lists.<q>Use the reviewer agent on the knowledge branch.</q></div><p data-h="The person checks">The findings and the verdict on the issue, and no open item that holds a goal.</p></div>
+      <div style="--k:var(--l3);--ki:var(--l3i)"><span class="st">5 · Code<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/workflow.md#steps">Workflow</a></span><p data-h="The person decides">The owner of each part approves its code.</p><div data-h="The agent does">One implementer for each part, in parallel, with tests that name the IDs they prove; then the reviewer.<q>The knowledge branch is merged. Run one implementer agent for each part it touches, in parallel, then the reviewer agent.</q></div><p data-h="The person checks">The tests name the changed IDs, and the test check passes.</p></div>
+      <div><span class="st">6 · Pull requests<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/done.md">Done</a></span><p data-h="The person decides">When to commit and open the pull requests.</p><div data-h="The agent does">The coordinator commits and opens one pull request for each part, only when asked.<q>Commit and open a pull request for each part. Then tell me what Done still misses.</q></div><p data-h="The person checks">Each pull request links the issue and the knowledge merge commit.</p></div>
     </div>
     <p class="src">In Codex, write “a subagent that follows <code>.agents/agents/knowledge-writer.md</code>” in place of “the knowledge-writer agent”.</p>
   </section>
 
   <section aria-labelledby="team-h">
     <h2 id="team-h">The agents as a team</h2>
-    <p>The order is the one on the team page. Roles on one row run in parallel. A role whose step the change does not need skips it.</p>
+    <p>Roles on one row run in parallel. A role the change does not need is skipped.</p>
     <ol class="flow">
       <li><span class="when">Issue</span><span class="who"><span class="role" data-i="flag">Coordinator</span><span class="role" data-i="scan">Defect investigator, for a defect</span></span></li>
       <li><span class="when">Knowledge</span><span class="who"><span class="role" style="--k:var(--l1);--ki:var(--l1i)" data-i="flow">Knowledge writer</span></span></li>
@@ -190,7 +171,7 @@ CLAUDE.md      <span class="cmt">@AGENTS.md</span>
       <li><b>Only the coordinator</b> commits, pushes and opens pull requests, and only when asked. The owners merge.</li>
     </ul>
     <div class="which">
-      <div><h3>One session with subagents</h3><p>Each role does its step and reports back to the coordinator. That is how this flow passes work, so it is enough for most changes, in both tools.</p></div>
+      <div><h3>One session with subagents</h3><p>Each role does its step and reports to the coordinator. Enough for most changes, in both tools.</p></div>
       <div><h3>An agent team</h3><p>Workers that must talk to each other during a step, such as reviewers who challenge each other's findings. In Claude Code, agent teams are experimental and off by default; a teammate can use an agent file of the workspace. <a href="https://code.claude.com/docs/en/agent-teams">Docs</a></p></div>
     </div>
   </section>
@@ -209,6 +190,45 @@ CLAUDE.md      <span class="cmt">@AGENTS.md</span>
       <div style="--k:var(--l3);--ki:var(--l3i)"><span class="st">7 · Code</span><span data-h="Role"><code>implementer</code> × 2, in parallel</span><p data-h="Does and runs"><code>lending</code>: the new default, and its test named BK-4, with the <code>backend-service</code> skill. Mobile: the help text, with the app's own instructions.</p><p data-h="Passes on">Each part on its own branch, with its test results.</p></div>
       <div><span class="st">8 · Review</span><span data-h="Role"><code>reviewer</code></span><p data-h="Does and runs">Reads the code against BK-4 and runs the tests.</p><p data-h="Passes on">Ready, or what blocks it.</p></div>
       <div><span class="st">9 · Pull requests</span><span data-h="Role">Coordinator, when asked</span><p data-h="Does and runs">Commits and opens one pull request for each part, linking the issue and the knowledge merge commit.</p><p data-h="Passes on">The owner of each part approves its pull request.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="try-h">
+    <h2 id="try-h">Run it with your own agent</h2>
+    <p>Make the same change in a new workspace, and judge the run by the list below.</p>
+    <ol class="try">
+      <li>Create a workspace with the <a href="index.html#install">install command</a>, and open your agent in it.</li>
+      <li>Give it the issue:<q>Lend books for 21 days by default, not 14. Work as the team of this workspace.</q></li>
+    </ol>
+    <h3>Watch for</h3>
+    <ul class="limits">
+      <li><b>It asks before it writes</b>, one question at a time. <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/workflow.md#questions">Questions</a></li>
+      <li><b>It runs the impact</b> of the rule and names what it reaches. <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/AGENTS.md">Project instructions</a></li>
+      <li><b>It changes the knowledge before the code.</b> <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/workflow.md#rules">Workflow</a></li>
+      <li><b>It runs the checks</b> and reports their results. <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/check.md">Check the docs</a></li>
+      <li><b>It does not commit or push</b> until you ask. <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/team.md#limits">Limits</a></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="tools-h">
+    <h2 id="tools-h">Reference: Claude Code and Codex</h2>
+    <div class="tools">
+      <div class="tool">
+        <h3 data-i="terminal">Claude Code</h3>
+        <dl>
+          <dt>Reads</dt><dd><code>CLAUDE.md</code>, which imports <code>AGENTS.md</code>. <a href="https://code.claude.com/docs/en/memory">Docs</a></dd>
+          <dt>Finds</dt><dd>The agents in <code>.claude/agents</code> and the skills in <code>.claude/skills</code>, through the links. <a href="https://code.claude.com/docs/en/sub-agents">Subagents</a> · <a href="https://code.claude.com/docs/en/skills">Skills</a></dd>
+          <dt>Hands a step</dt><dd>Name the agent in the prompt. It runs with the tools and the model of its file, and reports back to the main session.</dd>
+        </dl>
+      </div>
+      <div class="tool">
+        <h3 data-i="terminal">Codex</h3>
+        <dl>
+          <dt>Reads</dt><dd><code>AGENTS.md</code>, from the repository root down to the folder it starts in. It does not read <code>CLAUDE.md</code>. <a href="https://developers.openai.com/codex/guides/agents-md">Docs</a></dd>
+          <dt>Finds</dt><dd>The skills in <code>.agents/skills</code>. Type <code>$</code> or <code>/skills</code> to name one. <a href="https://developers.openai.com/codex/skills">Skills</a></dd>
+          <dt>Hands a step</dt><dd>The agent files are written for Claude Code; Codex keeps its own in <code>.codex/agents</code>, and a workspace has none. Ask for a subagent and point it at the file of its role. A subagent keeps the sandbox of the session, so the tools line does not limit it: tell a role that writes nothing to change nothing. <a href="https://developers.openai.com/codex/subagents">Subagents</a></dd>
+        </dl>
+      </div>
     </div>
   </section>
 

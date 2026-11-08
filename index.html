@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="A simple way to keep software development clear for years, with fast analysis and a quick view of what every change affects. No cost, no overhead.">
+<meta name="description" content="Write the rules of a product before its code, and trace each rule to its tests.">
 <title>Artifact Driven</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -116,7 +116,7 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
 <main>
   <header class="hero">
     <h1>Artifact Driven</h1>
-    <p class="lede">A simple way to keep software development clear for years, with fast analysis and a quick view of what every change affects. No cost, no overhead.</p>
+    <p class="lede">Write the rules of a product before its code, and trace each rule to its tests.</p>
     <div class="actions">
       <a class="btn" href="#install" data-i="terminal">Set it up</a>
       <a class="link" href="how-we-work.html">How we work</a>
@@ -152,7 +152,6 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
 
   <section aria-labelledby="helps-h">
     <h2 id="helps-h">How it helps</h2>
-    <p class="lede" style="font-size:16px">Situations a team meets every week, the question each one raises, and what answers it. The examples are from the library.</p>
     <ol class="helps">
       <li><h3 data-i="change">A rule changes</h3><p class="q">What does it affect?</p><p>Impact lists the flows, scenarios and apps that rely on it.</p><p class="eg">BK-3, "only a book on the shelf can be lent": 5 criteria, 10 scenarios, both flows and the phone app.</p></li>
       <li><h3 data-i="flag">A defect is reported</h3><p class="q">Is the code wrong, or the rule?</p><p>Find the rule by its ID and compare it with what the product does.</p><p class="eg">A member got a book that was on loan: BK-3 says that must be refused.</p></li>
@@ -171,7 +170,6 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
       <div class="note"><h3 data-i="scan">Scan</h3><div><p>The scan shows which rules are in the product. It does not show that they work.</p><p class="how">How it works: it reads the test files and looks for rule IDs, such as BK-3. It does not run the tests or read the product's code.</p></div></div>
       <div class="note"><h3 data-i="change">Impact</h3><div><p>Find every part a change affects, in seconds.</p><p class="how">How it works: it follows the links from a rule up to its flows and goal, and across to the apps that use it. It does not estimate cost or time.</p></div></div>
       <div class="note"><h3 data-i="calendar">Plans</h3><p>Plans and progress stay in your task tracker.</p></div>
-      <div class="note"><h3 data-i="grid">Nothing new</h3><div><p>It invents no method. It puts practices teams already use in one place: Domain-Driven Design, specification by example, contracts first, docs as code and requirements traceability.</p><p class="how"><a href="how-we-work.html#nothing-new">Each practice, and where it shows</a></p></div></div>
     </div>
   </section>
 

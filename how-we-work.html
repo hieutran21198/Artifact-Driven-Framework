@@ -98,6 +98,10 @@ section{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}
 .howto h3 .ic{color:var(--ki)}
 .howto p{color:var(--muted);font-size:15px}
 .howto .eg{font-size:14px;color:var(--faint)}
+.howto>li.pre{counter-increment:none}
+.howto>li.pre::before{content:"0"}
+.howto .rb{font-size:13px;grid-column:2}
+.src-note{font-size:14px;color:var(--faint);margin-top:24px}
 .split{position:relative;display:grid;gap:56px;background:var(--panel);border-radius:20px;padding:24px}
 #splitLines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
 #splitLines path{fill:none;stroke:var(--ki);stroke-opacity:.5;stroke-width:1.3;transition:opacity .3s,stroke .3s}
@@ -168,15 +172,10 @@ pre{margin:0;background:var(--panel);border-radius:14px;padding:18px 20px;overfl
 #copy{font:400 14px/1 var(--body);border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:999px;padding:0 18px;min-height:44px;cursor:pointer;align-self:center}
 footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);padding-top:24px;border-top:1px solid var(--rule)}
 
-.known{display:grid;gap:12px;padding-top:24px;border-top:1px solid var(--rule)}
-.known-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
-.known .label{display:block;margin-bottom:-6px}
-.known dl{margin:0;display:grid;grid-template-columns:minmax(0,240px) minmax(0,1fr);gap:8px 16px;font-size:15px;align-content:start}
-.known dt{font-weight:500}.known dd{margin:0;color:var(--muted)}
-@media (max-width:760px){.known-grid,.known dl{grid-template-columns:minmax(0,1fr)}.known dd{margin-bottom:6px}}
 /* who does what: one row for each step, one lane for each person */
 .top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:14px}
 .top a{text-decoration:none}
+.top .nav{display:flex;gap:16px;flex-wrap:wrap}
 .lanes{display:grid;gap:0;border:1px solid var(--rule);border-radius:16px;background:#fff;overflow:hidden}
 .lane-head,.lane-row{display:grid;grid-template-columns:minmax(0,130px) repeat(3,minmax(0,1fr)) minmax(0,1.1fr)}
 main{max-width:1080px}
@@ -215,9 +214,8 @@ main{max-width:1080px}
 <body>
 <main>
   <header class="hero">
-    <nav class="top"><a href="index.html">← Artifact Driven</a><a href="framework.html">The framework</a></nav>
+    <nav class="top"><a href="index.html">← Artifact Driven</a><span class="nav"><a href="agents.html">Coding agents</a><a href="framework.html">Framework</a><a href="tracker/">Project tracker</a></span></nav>
     <h1>How we work</h1>
-    <p class="lede">How a requirement becomes a goal, flows, rules, artifacts, apps and tests, and what the product owner, the solution architect and the developer each do on the way. The example is the library that lends books.</p>
   </header>
 
   <section aria-labelledby="howto-h">
@@ -235,7 +233,8 @@ main{max-width:1080px}
       </div>
     </div>
     <ol class="howto">
-      <li style="--k:var(--l0);--ki:var(--l0i)"><h3 data-i="goal">Write the goal</h3><p>Who needs what, and how you will know it is done.</p><p class="eg">A member can borrow a book and sees when it is due.</p><div class="fig"><span class="t">Goal · Borrow a book</span><ul><li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>A member borrows an available book and sees when it is due.</li><li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>A book is on loan to one member at a time.</li><li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>A member never holds more books than the limit.</li></ul></div></li>
+      <li class="pre" data-b="0" style="--k:var(--panel);--ki:var(--ink)"><h3 data-i="flag">Make the need clear</h3><p>When a need is still vague, first find what holds today, then lay out the options, then ask about the one chosen. All of it stays on the issue; the knowledge takes only what is settled.</p><p class="eg">Members bring books back late.</p><div class="fig"><span class="t">Issue · members bring books back late</span><table><tr><td>Holds today</td><td>→</td><td>Due in 14 days (BK-4); a late book is overdue (BK-6); a member with an overdue book cannot borrow (MBR-4)</td></tr><tr><td>Options</td><td>→</td><td>Remind before the due time: keeps BK-4, adds a notice. Shorter loans: changes BK-4. Block borrowing: MBR-4 holds it already.</td></tr><tr><td>Chosen</td><td>→</td><td>Remind before the due time</td></tr><tr><td>Questions</td><td>→</td><td>How long before? Again when it is overdue?</td></tr></table></div><p class="rb"><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/shape.md">Runbook: shape a need into a goal</a></p></li>
+      <li style="--k:var(--l0);--ki:var(--l0i)"><h3 data-i="goal">Write the goal</h3><p>Who needs what, and how you will know it is done.</p><p class="eg">A member can borrow a book and sees when it is due.</p><div class="fig"><span class="t">Goal · Borrow a book</span><ul><li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>A member borrows an available book and sees when it is due.</li><li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>A book is on loan to one member at a time.</li><li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>A member never holds more books than the limit.<p class="rb">Runbook: <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/goal.md">add or change a goal</a></p></li></ul></div></li>
       <li style="--k:var(--l1);--ki:var(--l1i)"><h3 data-i="flow">Split it into flows <span class="tag">Specs by example</span></h3><p>Write the steps of each flow as scenarios: what happens, and what happens when something goes wrong.</p><p class="eg">The book is already on loan, so the request is refused.</p><div class="fig"><span class="t">Flow · Borrowing</span><svg class="seq" viewBox="0 0 320 178" role="img" aria-label="Sequence: the member asks the app to borrow, the app asks the library service, which refuses a book on loan or lends it for 14 days">
 <defs><marker id="sa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="currentColor" stroke-width="1.5"/></marker></defs>
 <g font-size="11" fill="currentColor" text-anchor="middle"><text x="40" y="14">Member</text><text x="160" y="14">App</text><text x="270" y="14">Library service</text></g>
@@ -246,9 +245,9 @@ main{max-width:1080px}
 <rect x="150" y="80" width="165" height="84" rx="6" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/>
 <path d="M150 124H315" stroke="currentColor" stroke-width=".8" stroke-dasharray="3 3" opacity=".6"/>
 <g font-size="10" fill="currentColor" opacity=".8"><text x="156" y="92">if the book is on loan</text><text x="156" y="136">else</text></g>
-</svg></div></li>
-      <li style="--k:var(--l2);--ki:var(--l2i)"><h3 data-i="rule">Pull out the rules</h3><p>Read each step and write down what must always be true. Words such as "must", "only" or "at most" are good hints. A person does this by reading; no tool guesses rules from words.</p><p class="eg">Only a book on the shelf can be lent.</p><div class="fig"><span class="t">Read a step, write the rule (by hand)</span><table><tr><td>borrow <mark>only</mark> from the shelf</td><td>→</td><td>On the shelf only</td></tr><tr><td><mark>at most</mark> a few books</td><td>→</td><td>A few books at most</td></tr><tr><td><mark>must</mark> be back in 14 days</td><td>→</td><td>Due in 14 days</td></tr></table></div></li>
-      <li style="--k:var(--l3);--ki:var(--l3i)"><h3 data-i="artifact">Group the rules by topic <span class="tag">Strategic DDD</span></h3><p>Each topic is an artifact: one domain.</p><p class="eg">Books, members, notices.</p><div class="fig"><span class="t">Artifacts</span><div class="doms"><div class="dom"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>Books</b><span>On the shelf only</span><span>Due in 14 days</span><span>Late is flagged</span></div><div class="dom"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Members</b><span>A few books at most</span></div><div class="dom"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-9 5.7a2 2 0 0 1-2 0L2 7"/></svg>Notices</b><span>One reader each</span></div></div></div></li>
+</svg></div><p class="rb">Runbook: <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/flow.md">add or change a flow</a></p></li>
+      <li style="--k:var(--l2);--ki:var(--l2i)"><h3 data-i="rule">Pull out the rules</h3><p>Read each step and write down what must always be true. Words such as "must", "only" or "at most" are good hints. A person does this by reading; no tool guesses rules from words.</p><p class="eg">Only a book on the shelf can be lent.</p><div class="fig"><span class="t">Read a step, write the rule (by hand)</span><table><tr><td>borrow <mark>only</mark> from the shelf</td><td>→</td><td>On the shelf only</td></tr><tr><td><mark>at most</mark> a few books</td><td>→</td><td>A few books at most</td></tr><tr><td><mark>must</mark> be back in 14 days</td><td>→</td><td>Due in 14 days</td></tr></table></div><p class="rb">Runbook: <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/artifact-rule.md">change an artifact rule</a></p></li>
+      <li style="--k:var(--l3);--ki:var(--l3i)"><h3 data-i="artifact">Group the rules by topic <span class="tag">Strategic DDD</span></h3><p>Each topic is an artifact: one domain.</p><p class="eg">Books, members, notices.</p><div class="fig"><span class="t">Artifacts</span><div class="doms"><div class="dom"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>Books</b><span>On the shelf only</span><span>Due in 14 days</span><span>Late is flagged</span></div><div class="dom"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Members</b><span>A few books at most</span></div><div class="dom"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-9 5.7a2 2 0 0 1-2 0L2 7"/></svg>Notices</b><span>One reader each</span></div></div></div><p class="rb">Runbook: <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/new-artifact.md">start an artifact</a></p></li>
       <li style="--k:var(--cl);--ki:var(--cli)"><h3 data-i="app">Note what each app needs <span class="tag">Contract first</span></h3><p>The API calls and fields each app relies on, so a change does not break it.</p><p class="eg">The phone app reads the due date of a book.</p><div class="fig"><span class="t">Contract · what the phone app reads</span><pre>POST /v1/books/{id}/borrow
 
 {
@@ -256,13 +255,14 @@ main{max-width:1080px}
   "title": "A Field Guide to Birds",
   <em>"status"</em>: "on_loan",
   <em>"due_at"</em>: "2030-01-15T18:00:00Z"
-}</pre></div></li>
+}</pre></div><p class="rb">Runbook: <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/contract.md">add or change a contract</a>, <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/client.md">describe a client</a></p></li>
       <li style="--k:var(--panel);--ki:var(--ink)"><h3 data-i="scan">Mention the rule in its test</h3><p>Each rule has a short ID. The test that checks it mentions the ID, so the scan can find it.</p><p class="eg">BK-3 is the rule "only a book on the shelf can be lent".</p><div class="fig"><span class="t">Test and scan</span><pre>// BK-3: only a book on the shelf
 func TestLendBookOnLoan(t *testing.T) {
   err := onLoanBook().Lend(member)
   assert.Error(t, err)
-}</pre><span><span class="ok">✓</span> Scan: BK-3 found in lend_test.go</span></div></li>
+}</pre><span><span class="ok">✓</span> Scan: BK-3 found in lend_test.go</span></div><p class="rb">Runbook: <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/check.md">check the docs and the tests</a></p></li>
     </ol>
+    <p class="src-note">The grey labels name the known practice a step uses. Why each was chosen is on the <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/architecture/decisions.md">decisions page</a>.</p>
     <div class="method">
       <h3>The method behind it</h3>
       <div class="nest">
@@ -278,50 +278,34 @@ func TestLendBookOnLoan(t *testing.T) {
         <li><strong>Contracts first</strong><p>Agree on what each app sends and reads before building it.</p><span class="tag" style="justify-self:start;margin:0">Contract first</span></li>
         <li><strong>A picture for every layer</strong><p>Each goal, flow and domain has its own diagram.</p><span class="tag" style="justify-self:start;margin:0">Diagrams as docs</span></li>
       </ul>
-      <p class="lede" style="font-size:16px">Close to Domain-Driven Design, but it also covers specs, flows, the data each app needs, and diagrams.</p>
-      <div class="known" id="nothing-new">
-        <h3>Nothing new</h3>
-        <p>Artifact Driven invents no method. It puts practices that software teams already use in one place, and holds them together with a few ideas from software design.</p>
-        <div class="known-grid">
-          <span class="label">Practices it puts together</span>
-          <dl>
-            <dt>Domain-Driven Design</dt><dd>One artifact for each domain, with its boundary.</dd>
-            <dt>Specification by example, BDD</dt><dd>Each flow's scenarios, as Given, When and Then.</dd>
-            <dt>Test-driven development</dt><dd>Suggested: a test for each rule, written first, named after its ID.</dd>
-            <dt>Contract first, OpenAPI</dt><dd>The contract of each artifact, before its code.</dd>
-            <dt>Docs as code</dt><dd>The knowledge in Markdown, reviewed in pull requests, checked in CI.</dd>
-            <dt>Diagrams as code</dt><dd>Mermaid diagrams in the knowledge pages.</dd>
-            <dt>Requirements traceability</dt><dd>IDs and citations from a goal down to a test.</dd>
-            <dt>Architecture decision records</dt><dd>The <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/decisions.md">decisions page</a>: why each choice, and what it costs.</dd>
-          </dl>
-          <span class="label">Design ideas that hold them together</span>
-          <dl>
-            <dt>Single source of truth</dt><dd>Each fact has one owner; every other page cites it.</dd>
-            <dt>Separation of concerns</dt><dd>Each layer holds one kind of fact: a need, behavior, or a rule.</dd>
-            <dt>One direction</dt><dd>Citations point down, from a goal to its flows to their artifacts, as dependencies do in a layered design.</dd>
-          </dl>
-        </div>
-      </div>
     </div>
   </section>
 
 
   <section aria-labelledby="who-h">
     <h2 id="who-h">Who does what</h2>
-    <p class="lede" style="font-size:16px">The same six steps, one lane for each person. Who decides is who approves: the product owner a goal, the owner of each service what it serves. The last column is the diagram each layer has and the tests that prove it, as the rules ask; a label marks a suggested way to write the tests.</p>
+    <p class="lede" style="font-size:16px">Who decides is who approves: the product owner a goal, the owner of each service what it serves.</p>
     <div class="lanes">
       <div class="lane-head"><div>Step</div><div data-i="flag">Product owner</div><div data-i="grid">Solution architect</div><div data-i="code">Developer</div><div data-i="scan">Diagram and tests</div></div>
+      <div class="lane-row" style="--k:var(--panel);--ki:var(--ink)">
+        <div class="step" data-i="flag">0 · Need</div>
+        <div data-who="Product owner"><p><span class="v">Writes</span>The need, in their own words: <em>members bring books back late.</em></p><p class="dec"><span class="v">Decides</span>Picks one option.</p></div>
+        <div data-who="Solution architect"><p><span class="v">Reads</span>What holds today, and the impact of each ID the need touches.</p><p><span class="v">Writes</span>The options on the issue, each with the IDs it keeps, changes or adds.</p></div>
+        <div data-who="Developer"><p><span class="v">Reads</span>The options, and says what each one costs in the services they own.</p></div>
+        <div class="kit" data-who="Diagram and tests"><p><span class="v">Diagram</span>None: nothing is in the knowledge yet.</p><p><span class="v">Tests</span>None.</p></div>
+        <p class="pass"><b>Solution architect → product owner:</b> the options. <b>Back:</b> the choice.</p>
+      </div>
       <div class="lane-row" style="--k:var(--l0);--ki:var(--l0i)">
         <div class="step" data-i="goal">1 · Goal</div>
         <div data-who="Product owner"><p><span class="v">Writes</span>The need and how you will know it is done: <em>a member borrows an available book and sees when it is due.</em></p><p class="dec"><span class="v">Decides</span>Approves the goal.</p></div>
-        <div data-who="Solution architect"><p><span class="v">Reads</span>The goal.</p><p><span class="v">Writes</span>What is not clear yet, as open questions on the page.</p></div>
+        <div data-who="Solution architect"><p><span class="v">Reads</span>The goal.</p><p><span class="v">Asks</span>What is not clear yet, one question at a time. What is left goes on the issue as a checklist.</p></div>
         <div data-who="Developer"><p><span class="v">Reads</span>The goal.</p></div>
         <div class="kit" data-who="Diagram and tests"><p><span class="v">Diagram</span>A <code>flowchart</code> of the flows that reach the goal.</p><p><span class="v">Tests <span class="tag">e2e</span></span>An end-to-end test for each criterion, starting at the trigger: a request, a webhook or a worker run.</p></div>
-        <p class="pass"><b>Product owner → solution architect:</b> the goal. <b>Back:</b> the open questions.</p>
+        <p class="pass"><b>Product owner → solution architect:</b> the goal. <b>Back:</b> the questions.</p>
       </div>
       <div class="lane-row" style="--k:var(--l1);--ki:var(--l1i)">
         <div class="step" data-i="flow">2 · Flows</div>
-        <div data-who="Product owner"><p><span class="v">Reads</span>Each flow as a sequence diagram.</p><p><span class="v">Writes</span>The answers to the open questions: <em>what if the book is on loan?</em></p></div>
+        <div data-who="Product owner"><p><span class="v">Reads</span>Each flow as a sequence diagram.</p><p><span class="v">Writes</span>The answers to the questions on the issue: <em>what if the book is on loan?</em></p></div>
         <div data-who="Solution architect"><p><span class="v">Writes</span>The flows and their scenarios: <em>Borrowing, Returning.</em></p></div>
         <div data-who="Developer"><p><span class="v">Reads</span>The scenarios.</p><p class="dec"><span class="v">Decides</span>The owner of each service a flow crosses approves the flow.</p></div>
         <div class="kit" data-who="Diagram and tests"><p><span class="v">Diagram</span>A <code>sequenceDiagram</code>: each service a participant, <code>alt</code> for each failure.</p><p><span class="v">Tests <span class="tag s">Suggested: BDD</span></span>A test for each scenario, in the service each step runs in, written as its Given, When and Then.</p></div>
@@ -368,6 +352,7 @@ func TestLendBookOnLoan(t *testing.T) {
 
   <footer>
     <a href="index.html">Artifact Driven</a>
+    <a href="agents.html">Coding agents</a>
     <a href="framework.html">Framework</a>
     <a href="tracker/">Project tracker</a>
     <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/workflow.md">Workflow</a>
@@ -403,7 +388,7 @@ const ic = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICON[n
 document.querySelectorAll('[data-i]').forEach(e => e.insertAdjacentHTML('afterbegin', ic(e.dataset.i)));
 
 const split = document.getElementById('split'), splitLines = document.getElementById('splitLines');
-document.querySelectorAll('.howto>li').forEach((li, i) => li.dataset.b = i + 1);
+document.querySelectorAll('.howto>li:not(.pre)').forEach((li, i) => li.dataset.b = i + 1);
 function drawSplit() {
   const s = split.getBoundingClientRect();
   splitLines.innerHTML = [...split.querySelectorAll('.hl')].map(h => {

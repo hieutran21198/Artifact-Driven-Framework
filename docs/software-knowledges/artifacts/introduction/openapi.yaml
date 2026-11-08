@@ -36,7 +36,7 @@ x-commands:
       $ref: '#/components/schemas/ExplainBlockOutput'
   openFramework:
     caller: A reader who follows the link to the framework page.
-    description: Opens the framework page, the technical guide (INTRO-13).
+    description: Opens the framework page, the technical guide (SYS-8).
     input:
       type: object
     output:
@@ -50,21 +50,21 @@ x-commands:
       $ref: '#/components/schemas/CopyInstallOutput'
   openMethod:
     caller: A reader who follows the link to the how-we-work page.
-    description: Opens the page that shows how a requirement is broken down and who does what (INTRO-15).
+    description: Opens the page that shows how a requirement is broken down and who does what (SYS-8).
     input:
       type: object
     output:
       type: object
   openAgents:
     caller: A reader who follows the link to the agents page.
-    description: Opens the page that shows how a team runs its coding agents on a workspace (INTRO-17).
+    description: Opens the page that shows how a team runs its coding agents on a workspace (SYS-8).
     input:
       type: object
     output:
       type: object
   openTracker:
     caller: A reader who follows the link to the project tracker.
-    description: Opens the project tracker (INTRO-15).
+    description: Opens the project tracker (SYS-8).
     input:
       type: object
     output:
