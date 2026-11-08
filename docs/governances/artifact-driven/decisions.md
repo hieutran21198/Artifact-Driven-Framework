@@ -38,4 +38,30 @@ them. Redocly lint accepts them. The framework's scripts read them.
 such as AsyncAPI code generation for its messages. Then that kind moves to its
 standard, and the scripts learn to read it.
 
+## Ask first, and write only what is settled
+
+**Decision.** Ideas, options and questions stay on the issue. The coordinator
+asks the person who raised the need before anything is written; only what that
+person cannot settle becomes a checklist item on the issue. A new ID passes the
+four questions of [before adding a fact](knowledge.md#before-adding-a-fact).
+
+**Context.** Agents write most knowledge, and an agent writes fast. Left to
+itself it writes a guess as a rule, a question it could have asked as an open
+question, and the same fact on each page that needs it. Each of these is one
+more ID to cite, test and keep.
+
+**Options.**
+
+| Option | For | Against |
+| --- | --- | --- |
+| Ask first, settle on the issue, filter each new ID (chosen) | Fewer IDs, each one settled and owned once | The coordinator waits for a person; the filter needs judgment, so the reviewer checks it, not a script |
+| Write questions into the pages as they come up | Questions are next to the facts they touch | Pages fill with questions a person could answer in a minute |
+| Write everything, clean up later | Fast to write | Every ID is cited and tested at once, so a later cleanup moves and withdraws many IDs |
+
+**Costs.** A change waits for answers before its knowledge is written. The four
+questions are not a script check; a reviewer can miss a fact that fails them.
+
+**Revisit when** a check can find a restated fact by itself, such as two IDs
+with the same text. Then that part moves to `check_docs.py`.
+
 Return to [Artifact Driven](README.md).

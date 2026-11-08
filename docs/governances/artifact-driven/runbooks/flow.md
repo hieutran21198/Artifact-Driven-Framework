@@ -47,7 +47,9 @@ Sample: [Borrow a book](https://github.com/hieutran21198/Artifact-Driven-Framewo
    instead of deleting it ([the life of an ID](../knowledge.md#the-life-of-an-id)).
    Removing one operation from a scenario that names others keeps the ID; a
    scenario left with no operation is withdrawn.
-5. List behavior the flow does not define under `## Open questions`
+5. Ask about behavior the flow does not define yet
+   ([questions](../workflow.md#questions)). What is still open when the branch
+   merges goes under `## Open questions`
    ([open questions](../knowledge.md#open-questions)).
 6. If a step needs a rule an artifact does not have, add it first:
    [artifact rule](artifact-rule.md).

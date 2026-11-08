@@ -30,9 +30,12 @@ contract, client.
 1. Read the issue and the pages it links. Read the sample the runbook names.
    Before changing an existing ID, operation or field, run
    `python3 scripts/impact.py <it>` to see what depends on it.
-2. Follow the runbook step by step.
-3. Run [Check the docs](../../../docs/governances/artifact-driven/runbooks/check.md) and report each check's result.
-4. Report what changed, the IDs added or changed, and any open question you
-   wrote into a page instead of guessing.
+2. Ask the person who raised the need before writing; what they cannot settle
+   goes on the issue ([questions](../../../docs/governances/artifact-driven/workflow.md#questions)).
+3. Follow the runbook step by step. Before adding an ID, apply
+   [before adding a fact](../../../docs/governances/artifact-driven/knowledge.md#before-adding-a-fact).
+4. Run [Check the docs](../../../docs/governances/artifact-driven/runbooks/check.md) and report each check's result.
+5. Report what changed, the IDs added or changed, for each new ID the IDs it
+   was checked against, and the questions still open on the issue.
 
 Do not commit to client repositories, and do not push, merge or deploy.

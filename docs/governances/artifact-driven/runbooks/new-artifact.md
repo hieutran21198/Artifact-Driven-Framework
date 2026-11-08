@@ -27,8 +27,8 @@ Sample: [book artifact](https://github.com/hieutran21198/Artifact-Driven-Framewo
 5. Add a contract when the artifact has its own endpoints
    ([contract](contract.md)), and client pages for the clients that use it
    ([client](client.md)).
-6. When code already exists, start from what it does today. Mark anything not
-   yet confirmed as an open question in the page instead of guessing, and
+6. When code already exists, start from what it does today. Ask about anything
+   not yet confirmed instead of guessing ([questions](../workflow.md#questions)), and
    settle each conflict with the intended behavior as
    [knowledge and running code](../knowledge.md#knowledge-and-running-code)
    says.

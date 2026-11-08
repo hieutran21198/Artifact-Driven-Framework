@@ -36,7 +36,7 @@ decides. The decision and its reasons go on the issue.
 
 | Role | Does | Skill | Writes |
 | --- | --- | --- | --- |
-| Coordinator | Takes the issue, hands each step to its role, gathers results, asks the owners for decisions, commits and opens pull requests when asked | — | Commits and pull requests |
+| Coordinator | Takes the issue, asks the person who raised the need first ([questions](workflow.md#questions)), hands each step to its role, gathers results, asks the owners for decisions, commits and opens pull requests when asked | — | Commits and pull requests |
 | Knowledge writer | Goals, flows and artifact rules | `software-knowledge` | Knowledge pages, not contracts |
 | Contract designer | OpenAPI contracts, before the code | `software-knowledge` | Contracts |
 | Client writer | What one client needs from the responses. The client's owner writes it, or an analyst who reads the client's code writes it and the owner reviews it | `software-knowledge` | Client pages |
