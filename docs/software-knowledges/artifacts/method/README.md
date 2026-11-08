@@ -1,8 +1,7 @@
 # Method
 
-Owns the page `how-we-work.html`: how a requirement is broken down from a goal
-to a test, the method behind it, and who does what at each step. Rule prefix:
-`MTH`.
+Owns the explanation of how a requirement becomes knowledge and tests, and
+who does what at each step, on the canonical reading page. Rule prefix: `MTH`.
 
 Served by the service the [domain map](../../../architecture/domain-map.md) names.
 

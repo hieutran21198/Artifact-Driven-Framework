@@ -12,6 +12,12 @@
   ],
   "clients": {},
   "services": {
+    "landing": {
+      "tests": {
+        "folder": "tests/landing",
+        "glob": "**/test_*.py"
+      }
+    },
     "scripts": {
       "tests": {
         "folder": "tests/scripts",

@@ -39,5 +39,6 @@ python3 -m unittest discover -s tests -t .
 - [tracker](tracker/README.md): frame isolation, consistent scans and real
   browser/CLI coverage parity.
 - [hooks](hooks/README.md): the framework-only developer pre-push hook.
+- [landing](landing/README.md): the canonical reading guide and old page URLs.
 
 Return to the [project contents](../README.md).

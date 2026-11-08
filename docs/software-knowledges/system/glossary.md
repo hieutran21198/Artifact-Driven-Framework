@@ -24,9 +24,8 @@ Each term is defined once, here. Other pages use it without restating it.
 | Check | A script that finds broken knowledge or broken tests and fails when it finds them. |
 | Gate | The checks that a pull request into the default branch must pass. |
 | Blast radius | What a change to one unit affects, counted by kind. |
-| Landing page | The page `index.html` at the root of the framework, which introduces it. |
-| Framework page | The page `framework.html` at the root of the framework: what the framework is and the parts it has. |
-| Story | The steps of the landing page that show the sample, one layer at a time. |
+| Landing page | The canonical reading path at `index.html`, which introduces the framework and leads to its reference details and the separate tracker. |
+| Compatibility entrypoint | A former reading-page URL that leads to the matching topic or reference in the canonical reading path, including when it has an old hash link. |
 | Project tracker | The page `tracker/index.html` of the framework, which shows the coverage and the knowledge site of a workspace at a ref, for readers who do not read the repository. |
 | Coverage | The share of the knowledge IDs a goal relies on that tests name. |
 

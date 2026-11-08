@@ -44,6 +44,30 @@ class SiteBrowser(BrowserTestCase):
     def assert_no_workspace_requests(self):
         self.assertFalse([url for url in self.requests if "workspace.invalid" in url])
 
+    def test_F_VIEW_25_standalone_section_links_keep_native_hash_navigation(self):
+        """F-VIEW-25: section links still use normal document fragments outside the tracker."""
+        self.open_site(self.build())
+
+        def assert_layer_links():
+            links = self.page.locator("#map a").evaluate_all("links => links.map(a => ({href:a.getAttribute('href'), text:a.textContent.trim()}))")
+            self.assertEqual([link["href"] for link in links], ["#gaps", "#goals", "#explorer", "#radius", "#clients"])
+            self.assertTrue(all(link["text"] for link in links))
+            self.assertEqual(self.page.locator("#map > title#map-title").count(), 1)
+
+        assert_layer_links()
+        for fragment in ("#analyze", "#guide", "#analyze"):
+            self.page.locator(f'nav a[href="{fragment}"]').click()
+            self.assertEqual(self.page.url, self.url + "/fixture.html" + fragment)
+            self.assertEqual(self.page.locator("iframe").count(), 0)
+        self.analyze()
+        assert_layer_links()
+        for language in ("vi", "en", "vi", "en"):
+            self.page.locator(f'[data-lang="{language}"]').click()
+            assert_layer_links()
+        # Nested layers cover the ancestor link's center; use its visible label.
+        self.page.locator('#map a[href="#goals"]').get_by_text("2. Goals", exact=True).click()
+        self.assertEqual(self.page.url, self.url + "/fixture.html#goals")
+
     def test_SYS_7_F_VIEW_24_text_attributes_and_controls(self):
         """SYS-7, F-VIEW-24: every generated data kind stays text while controls work."""
         self.open_site(self.build())

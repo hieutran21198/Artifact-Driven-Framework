@@ -246,7 +246,7 @@ function openSide(key){const g=DATA.goals.find(x=>x.key===key);if(!g)return;side
  $("side-body").innerHTML=`${metricsOf(g)}<h3 style="margin:20px 0 6px">${T("criterion")}</h3><table><tr><th>${T("criterion")}</th><th></th><th class="num">${T("scenarios")}</th></tr>${crit}</table>
   <h3 style="margin:20px 0 6px">${T("flows")}</h3><ul class="tight">${g.flows.map(p=>flowByPage[p]?`<li>${esc(flowByPage[p].title)} · ${flowByPage[p].scenarios.length} ${T("scenarios").toLowerCase()}</li>`:"").join("")}</ul>`;
  $("side").hidden=$("side-back").hidden=false;placeSide();$("side-close").focus();}
-// The opaque-origin frame exchanges dimensions only. It never reads its parent's DOM or storage.
+// The opaque-origin frame exchanges dimensions and positions only. It never reads its parent's DOM or storage.
 let frameRender=null,frameViewport=null,lastHeight=-1,sizePending=false;
 const frameNumber=n=>typeof n==="number"&&Number.isFinite(n)&&n>=0&&n<=10000000;
 function reportSize(){sizePending=false;if(!frameRender)return;
@@ -268,6 +268,28 @@ function placeSide(){const s=$("side"),v=frameViewport;
  if(!frameRender||!v||s.hidden){s.style.top="";s.style.height="";return;}
  s.style.top=v.top+"px";s.style.height=v.height+"px";}
 function closeSide(){sideFor=null;$("side").hidden=$("side-back").hidden=true;}
+function scrollToSection(target){
+ if(frameRender){reportSize();const top=Math.max(0,target.getBoundingClientRect().top+window.scrollY);
+  if(frameNumber(top))parent.postMessage({type:"adf:site-scroll",render:frameRender,top},"*");
+ }else target.scrollIntoView({block:"start"});
+}
+// A srcdoc fragment resolves against the tracker URL. Scroll here instead of loading that URL in the frame.
+if(window!==parent)document.addEventListener("click",event=>{
+ const link=event.target.closest("a[href^='#']");
+ if(!link||event.defaultPrevented||event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
+ event.preventDefault();
+ const target=document.getElementById(link.getAttribute("href").slice(1));
+ if(!target)return;
+ const heading=target.querySelector("h2")||target;
+ if(!heading.getClientRects().length||heading.closest('[hidden],[inert],[aria-hidden="true"]'))return;
+ // Continue keyboard navigation at the destination without adding a permanent tab stop.
+ if(!heading.hasAttribute("tabindex")){
+  heading.setAttribute("tabindex","-1");
+  heading.addEventListener("blur",()=>heading.removeAttribute("tabindex"),{once:true});
+ }
+ heading.focus({preventScroll:true});
+ scrollToSection(target);
+});
 function renderPicker(){const all=chosen.has("*"),n=all?DATA.goals.length:chosen.size;
  $("drop-label").textContent=T("drop")(n);
  $("goal-options").innerHTML=`<label><input type="checkbox" value="*" ${all?"checked":""}> ${T("allGoals")}</label><hr>`+DATA.goals.map(g=>{const on=all||chosen.has(g.key),off=!all&&!on&&chosen.size>=3;return `<label class="${off?"off":""}"><input type="checkbox" value="${esc(g.key)}" ${on?"checked":""} ${off||all?"disabled":""}> ${esc(g.title)} <span class="muted">${esc(g.key)}</span></label>`;}).join("");
@@ -394,7 +416,7 @@ function examplePath(){
  const goal=DATA.goals.find(g=>g.criteria.some(c=>c.proven.includes(x.id)))||DATA.goals[0];
  return [sys,goal&&`${goal.title} (${goal.key})`,`${x.flow} · ${x.id}`,[rule,op&&op.id].filter(Boolean).join(" · "),op?appOf(op.id):""];}
 const HREF=["#gaps","#goals","#explorer","#radius","#clients"];
-function drawMap(){const svg=$("map");[...svg.querySelectorAll("g,rect,text")].forEach(e=>e.remove());
+function drawMap(){const svg=$("map");[...svg.querySelectorAll("a,g,rect,text")].forEach(e=>e.remove());
  const L=T("layers"),ex=examplePath()||[],W=1000,B=58,I=26,H=B*5+10;svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
  const nums=[DATA.requirements.length+" SYS",`${DATA.goals.length} · ${DATA.goals.flatMap(g=>g.criteria).length} criteria`,`${DATA.flows.length} · ${scen.length} scenarios`,`${DATA.rules.length} rules · ${DATA.operations.length} operations`,`${Object.keys(DATA.clients).length} app pages`];
  L.forEach(([name,desc],i)=>{const x=i*I,y=i*B,g=document.createElementNS(NS,"a");g.setAttribute("href",HREF[i]);

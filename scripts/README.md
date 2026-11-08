@@ -185,7 +185,8 @@ parse or rendering failures also keep that source readable. The site does
 not execute workspace code.
 
 The tracker and site exchange only a document identifier and numeric sizes
-and viewport positions. The site does not read the tracker document or
+and positions. Embedded section links request a scroll within the current
+document instead of navigating the frame. The site does not read the tracker document or
 storage. See [tracker isolation](https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/tracker/README.md) and the
 [script tests](https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/tests/scripts/README.md) for verification commands.
 

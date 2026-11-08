@@ -83,6 +83,43 @@ class FrameIsolation(BrowserTestCase):
         for message in messages:
             self.assertIn(message["type"], ("adf:site-init", "adf:site-viewport"))
 
+    def test_TRK_14_scrolling_rejects_unrelated_stale_and_invalid_messages(self):
+        """TRK-14, F-VIEW-25: only the visible current frame can request an in-document scroll."""
+        frame = self.embed(PROBE)
+        frame.wait_for_function("() => typeof render === 'string'")
+        self.page.wait_for_function("() => document.getElementById('view').style.height === '802px'")
+        old_render = frame.evaluate("render")
+        self.page.evaluate("window.oldFrame=document.getElementById('view').contentWindow")
+        frame = self.embed(PROBE)
+        frame.wait_for_function("() => typeof render === 'string'")
+        self.page.wait_for_function("() => document.getElementById('view').style.height === '802px'")
+        render = frame.evaluate("render")
+        self.page.evaluate("scrollTo(0, 0)")
+        frame.evaluate("""() => {
+          const base={type:'adf:site-scroll',render,top:300};
+          for(const data of [null,[],{}, {...base,type:'unknown'}, {...base,render:'old'},
+            {...base,top:-1}, {...base,top:Infinity}, {...base,top:NaN},
+            {...base,top:'300'}, {...base,top:801}, {...base,top:10000001}]) parent.postMessage(data,'*');
+        }""")
+        self.page.evaluate("""ids => {
+          const source=document.getElementById('view').contentWindow;
+          const data={type:'adf:site-scroll',render:ids[1],top:300};
+          dispatchEvent(new MessageEvent('message',{source:window,origin:'null',data}));
+          dispatchEvent(new MessageEvent('message',{source,origin:location.origin,data}));
+          dispatchEvent(new MessageEvent('message',{source:oldFrame,origin:'null',data}));
+          dispatchEvent(new MessageEvent('message',{source,origin:'null',data:{...data,render:ids[0]}}));
+        }""", [old_render, render])
+        self.page.evaluate("() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))")
+        self.assertEqual(self.page.evaluate("scrollY"), 0)
+        frame.evaluate("parent.postMessage({type:'adf:site-scroll',render,top:300},'*')")
+        self.page.wait_for_function("() => scrollY > 0")
+        self.assertEqual(self.page.url, self.url + "/tracker/")
+        # A retained frame cannot move the settings view.
+        self.page.locator("#open-settings").click()
+        frame.evaluate("parent.postMessage({type:'adf:site-scroll',render,top:300},'*')")
+        self.page.evaluate("() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))")
+        self.assertEqual(self.page.evaluate("scrollY"), 0)
+
 
 class FramePolicy(unittest.TestCase):
     def test_TRK_14_frame_declares_only_script_sandbox_permission(self):
@@ -120,6 +157,43 @@ class GeneratedFrame(BrowserTestCase):
         frame.locator("#run").click()
         frame.locator("#goal-cards [data-goal]").first.wait_for()
 
+    def test_F_VIEW_25_fragment_links_keep_the_generated_document(self):
+        """F-VIEW-25, TRK-14: local links scroll the embedded site without reloading the tracker."""
+        from playwright.sync_api import expect
+        html = self.build_site()
+        self.open_tracker()
+        frame = self.embed(html)
+        frame.wait_for_function("() => document.documentElement.style.overflow === 'hidden'")
+        parent_url = self.page.url
+        render = self.page.evaluate("siteFrame.render")
+        document = frame.evaluate_handle("document")
+        self.addCleanup(document.dispose)
+        navigations = []
+        self.page.on("framenavigated", lambda changed: navigations.append(changed.url))
+
+        for fragment in ("#analyze", "#guide", "#analyze"):
+            link = frame.locator(f'nav a[href="{fragment}"]')
+            # Native keyboard activation must work as well as pointer clicks.
+            if fragment == "#guide":
+                link.focus()
+                link.press("Enter")
+            else:
+                link.click()
+            self.assertEqual(frame.evaluate("location.href"), "about:srcdoc")
+            expect(frame.locator(fragment)).to_be_in_viewport()
+
+        self.analyze(frame)
+        # Nested layers cover the ancestor link's center; use its visible label.
+        frame.locator('#map a[href="#goals"]').get_by_text("2. Goals", exact=True).click()
+        self.assertEqual(frame.evaluate("location.href"), "about:srcdoc")
+        expect(frame.locator("#goals")).to_be_in_viewport()
+        self.assertTrue(frame.evaluate("original => original === document", document))
+        self.assertEqual(frame.locator("iframe").count(), 0)
+        self.assertEqual(self.page.url, parent_url)
+        self.assertEqual(self.page.evaluate("siteFrame.render"), render)
+        self.assertEqual(self.page.locator("#view").get_attribute("sandbox"), "allow-scripts")
+        self.assertEqual(navigations, [])
+
     def test_F_VIEW_24_generated_hostile_content_remains_data_embedded(self):
         """F-VIEW-24, SYS-7, TRK-14: the real generated page stays inert and usable embedded."""
         from tests.scripts.test_site import HOSTILE
@@ -138,6 +212,41 @@ class GeneratedFrame(BrowserTestCase):
         self.assertIn(HOSTILE, frame.locator("#side-body").text_content())
         frame.locator("#side-close").click()
         self.assertTrue(frame.locator("#side").is_hidden())
+
+    def test_F_VIEW_25_fragment_links_move_keyboard_focus_to_the_destination(self):
+        """F-VIEW-25, TRK-14: Enter moves focus to a section; Tab continues within it."""
+        from playwright.sync_api import expect
+        self.open_tracker()
+        frame = self.embed(self.build_site())
+        frame.wait_for_function("() => document.documentElement.style.overflow === 'hidden'")
+
+        # Hidden results do not become focus targets before analysis.
+        hidden_link = frame.locator('nav a[href="#goals"]')
+        hidden_link.focus()
+        hidden_link.press("Enter")
+        expect(hidden_link).to_be_focused()
+        self.assertIsNone(frame.locator("#goals h2").get_attribute("tabindex"))
+
+        for _ in range(2):
+            link = frame.locator('nav a[href="#analyze"]')
+            link.focus()
+            link.press("Enter")
+            heading = frame.locator("#analyze h2")
+            expect(heading).to_be_focused()
+            self.assertEqual(heading.get_attribute("tabindex"), "-1")
+            self.page.keyboard.press("Tab")
+            expect(frame.locator("#drop-label")).to_be_focused()
+            self.assertIsNone(heading.get_attribute("tabindex"))
+
+        self.analyze(frame)
+        layer_link = frame.locator('#map a[href="#goals"]')
+        layer_link.focus()
+        layer_link.press("Enter")
+        expect(frame.locator("#goals h2")).to_be_focused()
+        self.page.keyboard.press("Tab")
+        expect(frame.locator("#goal-cards [data-goal]").first).to_be_focused()
+        self.assertIsNone(frame.locator("#goals h2").get_attribute("tabindex"))
+        self.assertEqual(frame.evaluate("location.href"), "about:srcdoc")
 
     def test_F_VIEW_25_fitting_expanded_controls_details_and_offline_diagrams(self):
         """F-VIEW-25, TRK-14: controls fit one page; details track its viewport and source stays readable."""

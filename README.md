@@ -59,7 +59,9 @@ own knowledge. Every directory has a `README.md` that explains its purpose.
 9. [Services](services/README.md): the parts of the framework, their owner
    and how to change them. [Applications](apps/README.md) and
    [end-to-end tests](e2e/README.md): where a workspace clones its parts.
-10. [index.html](index.html): the landing page of the framework.
+10. [Reading guide](index.html): what the framework is, its knowledge, a change,
+    checks and setup. The former how-we-work, agents and framework URLs forward
+    to the matching topics.
 11. [Project tracker](tracker/README.md): the coverage and the knowledge site
     of a workspace at any branch, tag or commit, in the browser.
 12. [Developer hook](.githooks/README.md): opt-in pre-push checks and whitespace

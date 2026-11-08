@@ -1,50 +1,44 @@
 # Introduction specification
 
-The behavior of the landing page: its story, its reader cards and its links.
+The behavior of the introduction: its sample, explanations and links.
 It holds no knowledge of any service or flow.
 
 ## Model
 
 ```mermaid
 classDiagram
-    class Story {
-        +Play()
-        +Show(step)
+    class ReadingPage {
+        +Open(topic)
     }
-    class Step {
+    class Topic {
         <<enumeration>>
-        goal
-        flow
-        rule
-        artifact
-        client
-        scan
+        overview
+        knowledge
         change
+        checks
+        install
     }
-    class ReaderCard {
-        +Questions()
-        +Links()
-    }
-    Story --> Step
+    ReadingPage --> Topic
 ```
 
-The page has one story, then the situations a team meets and what answers
-each.
+The reader follows one path through What it is, Knowledge, A change, Checks
+and Start, or opens a topic directly. The sample makes the relationships
+concrete. Detailed references can be opened without leaving the reading path.
 
 ## Rules
 
 | ID | Rule | Error |
 | --- | --- | --- |
-| INTRO-1 | The story has seven steps in this order: goal, flow, rule, artifact, client, scan, change. Each step shows what the step before it showed and adds one layer, with one sentence that says what the new layer is. | — |
-| INTRO-2 | Every goal, flow, knowledge ID, artifact and client that the story shows is one the sample holds, linked as the sample links it. Which rules the story shows as found by the scan is an example, and the scan step says so. | — |
-| INTRO-3 | The scan step shows which rules a test names, as rules found in the product. The page says how the scan finds a rule - by its ID in a test file, without running the test - and that a rule found is not proof that the code is right (TST-3). | — |
-| INTRO-4 | The change step starts from one rule and shows every flow and client that a change to it affects, and the clients it does not affect. The page states no cost or duration of a change, and no plan or status. | — |
-| INTRO-5 | The story plays by itself, one step after the other, and goes back to the first step after the last. It stops when the reader picks a step. When the reader's system asks for reduced motion, the story does not play and shows the last step. | — |
+| INTRO-1 | Withdrawn. The seven-step story is replaced by a reader-controlled path. | — |
+| INTRO-2 | Every goal, flow, knowledge ID, artifact and client in the explanation exists in the sample and has the relationships the sample defines. An illustrative scan result is labeled as an example. A claimed script result or count is reproducible from the named sample; the page does not invent results. | — |
+| INTRO-3 | The page explains that the scan finds knowledge IDs in test files without running the tests. A named ID is a traceability link, not proof that the behavior works or that a test passed (TST-3). | — |
+| INTRO-4 | The worked change starts from one rule and shows how to find the flows, contracts and client needs it affects. Claims about affected or unaffected clients follow the impact output. The page states no cost or duration of a change, and no plan or status. | — |
+| INTRO-5 | Withdrawn. The reading path does not autoplay. | — |
 | INTRO-6 | Withdrawn: moved to MTH-3. | — |
 | INTRO-7 | Withdrawn: moved to SYS-8. | — |
-| INTRO-8 | Without access to another host, the page still shows the story, in the fonts of the system. | — |
-| INTRO-9 | Each block of the story, when the reader points at it or taps it, explains in plain words what it is in the sample. While the reader points at a block, the story does not move on. | — |
-| INTRO-10 | Above the story, the page names the layers in order - goal, flow, rule, artifact, client - each with one plain sentence and an example from the sample. | — |
+| INTRO-8 | Without access to another host, the page still shows its explanations and sample in the fonts of the system. | — |
+| INTRO-9 | Withdrawn. Explanations are readable without pointing at an animated block. | — |
+| INTRO-10 | The page explains each knowledge layer in plain words with a sample example. System is shared by all layers. A goal cites flows; a flow cites artifacts. Rules belong to an artifact, not a separate layer. Contracts, client needs and tests appear as related dependencies, not additional layers in that citation chain. | — |
 | INTRO-11 | Withdrawn: moved to MTH-1. | — |
 | INTRO-12 | Withdrawn: moved to MTH-2. | — |
 | INTRO-13 | Withdrawn: moved to SYS-8. | — |
@@ -52,17 +46,6 @@ each.
 | INTRO-15 | Withdrawn: moved to SYS-8. | — |
 | INTRO-16 | Withdrawn. Each step names the known practice it uses (MTH-10); a separate list of practices added nothing. | — |
 | INTRO-17 | Withdrawn: moved to SYS-8. | — |
-| INTRO-19 | After the story, the page lists situations of a team's day - a rule changes, a tester reports a defect, someone joins, a release is near, a stakeholder asks what has tests, the docs drift from the code - each with what in the framework handles it and an example from the sample. It states no cost, duration or speed. | — |
-
-## Lifecycle
-
-```mermaid
-stateDiagram-v2
-    [*] --> playing: Open
-    [*] --> stopped: Open with reduced motion
-    playing --> stopped: Show(step)
-    stopped --> playing: Play
-    playing --> stopped: Play
-```
+| INTRO-19 | The page connects the team tasks it describes to the framework resources that handle them. Examples use the sample and state no cost, duration or speed. | — |
 
 Return to [Introduction](README.md).

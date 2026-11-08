@@ -1,7 +1,7 @@
 # Guide
 
-Owns the framework page: what the framework is and the parts it has. Rule
-prefix: `GUIDE`.
+Owns the framework reference in the canonical reading path: the parts of the
+framework and the files a workspace gets. Rule prefix: `GUIDE`.
 
 Served by the service the [domain map](../../../architecture/domain-map.md) names.
 

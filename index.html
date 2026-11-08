@@ -3,345 +3,345 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Write the rules of a product before its code, and trace each rule to its tests.">
+<meta name="description" content="Artifact Driven is a workspace and workflow for teams to agree software behavior before implementation and trace it to code and tests.">
 <title>Artifact Driven</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&display=swap">
 <style>
-/* Layout: a quiet single column with generous space; the story sits on a soft panel, everything else is plain text. Light only, by choice: a clear white page with pale tints for each layer. */
 :root{
-  --paper:#fbfcfd; --panel:#f1f4f7; --ink:#1f2933; --muted:#5f6b78; --faint:#94a0ab; --rule:#e3e8ed;
-  --accent:#2f6db5; --soft:#d9822b; --ok:#4c9a5b;
-  --l0:#ecebfb; --l0i:#3d3a8a; --l1:#e2f3ec; --l1i:#1f6a4f; --l2:#fbe9ee; --l2i:#8a3352; --l3:#f6f3ec; --l3i:#6b5d3a; --cl:#e4f0fb; --cli:#245b8f;
+  --paper:#fbfcfd; --panel:#f1f4f7; --ink:#1f2933; --muted:#52616f; --rule:#dce3e9;
+  --accent:#245f9f; --system:#e4f0fb; --system-ink:#245b8f;
+  --goal:#ecebfb; --goal-ink:#3d3a8a; --flow:#e2f3ec; --flow-ink:#1f6a4f;
+  --artifact:#f6f3ec; --artifact-ink:#615233; --rule-bg:#fbe9ee; --rule-ink:#80304c;
   --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
   --body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
-  --measure:60ch;
   color-scheme:light;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.75 var(--body);padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
-main{max-width:880px;margin:0 auto;padding-block:72px 96px;display:grid;grid-template-columns:minmax(0,1fr);gap:96px}
-h1,h2,h3{font-family:var(--serif);font-weight:400;text-wrap:balance;margin:0;line-height:1.2}
-h1{font-size:clamp(40px,7vw,64px)}
-h2{font-size:clamp(24px,3vw,28px)}
-h3{font-size:19px}
-p{margin:0;max-width:var(--measure)}
-a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}
-a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
-code{font-family:var(--mono);font-size:.88em}
-.label{font:400 13px/1.4 var(--body);color:var(--faint)}
-.lede{font-size:18px;color:var(--muted)}
-section{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}
-.hero{display:grid;gap:12px}
-.hero .lede{font-size:clamp(18px,2.2vw,21px)}
-.actions{display:flex;gap:24px;flex-wrap:wrap;align-items:center;margin-top:8px}
-.btn{font:500 15px/1 var(--body);padding:12px 20px;border-radius:999px;text-decoration:none;background:var(--ink);color:var(--paper)}
-.link{font-size:15px}
-
-/* story */
-.panel{position:relative;background:var(--panel);border-radius:20px;padding:24px;display:grid;gap:18px;min-width:0}
-.tip{position:absolute;left:0;top:0;z-index:5;max-width:260px;background:var(--ink);color:var(--paper);font-size:14px;line-height:1.5;padding:10px 12px;border-radius:10px;pointer-events:none;opacity:0;transition:opacity .2s}
-.tip.on{opacity:1}
-#stage .it,#stage .box{cursor:default}
-#stage .it:hover{box-shadow:0 0 0 1.5px var(--faint)}
-.steps{display:flex;gap:4px 18px;flex-wrap:wrap;align-items:center}
-.steps button{font:400 14px/1 var(--body);color:var(--faint);background:none;border:0;border-bottom:1px solid transparent;padding:6px 0;cursor:pointer;transition:color .4s,border-color .4s}
-.steps button[aria-current="step"]{color:var(--ink);border-bottom-color:var(--ink)}
-#wrap{position:relative;width:100%;overflow:hidden}
-#stage{position:absolute;left:0;top:0;transform-origin:0 0}
-#stage.instant *{transition:none!important}
-.it{position:absolute;left:0;top:0;border-radius:12px;padding:7px 11px;font-size:13px;line-height:1.35;transition:transform 1.2s cubic-bezier(.45,.05,.25,1),opacity 1s,box-shadow .8s}
-.it b{display:flex;align-items:center;gap:5px;font:400 11px/1.5 var(--body);opacity:.8}
-.ic{width:1.05em;height:1.05em;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.15em}
-.box{display:flex;align-items:flex-start;gap:6px}
-.steps button,.play,.btn,#copy{display:inline-flex;align-items:center;gap:7px}
-.goal{background:var(--l0);color:var(--l0i)}
-.flow{background:var(--l1);color:var(--l1i)}
-.rule{background:var(--l2);color:var(--l2i);padding:4px 10px;font-size:12px;line-height:1.3;display:flex;align-items:center}
-.client{background:var(--cl);color:var(--cli)}
-.box{position:absolute;border-radius:16px;background:var(--l3);color:var(--l3i);font:400 12px/1 var(--body);padding:11px 13px;transition:opacity 1s}
-.chk{position:absolute;right:-6px;top:-6px;width:16px;height:16px;border-radius:50%;background:var(--ok);color:var(--paper);font-size:10px;display:flex;align-items:center;justify-content:center;transition:transform .8s ease,opacity .8s}
-#lines path{fill:none;stroke:var(--faint);stroke-width:1;transition:opacity 1s,stroke .8s}
-#lines path.hit{stroke:var(--soft);stroke-width:1.5}
-.it.hit{box-shadow:0 0 0 1.5px var(--soft)}
-#cap{font-size:17px;min-height:3.6em;max-width:none;color:var(--ink)}
-.play{justify-self:start;font:400 14px/1 var(--body);color:var(--muted);background:none;border:0;padding:4px 0;cursor:pointer}
-@media (prefers-reduced-motion:no-preference){
-  @keyframes breathe{50%{box-shadow:0 0 0 5px color-mix(in srgb,var(--soft) 25%,transparent)}}
-  @keyframes run{to{stroke-dashoffset:-20}}
-  .it.src{animation:breathe 2.4s ease-in-out infinite}
-  #lines path.hit{stroke-dasharray:4 6;animation:run 1.6s linear infinite}}
-@media (prefers-reduced-motion:reduce){.it,.box,.chk,#lines path,.steps button{transition:none}}
-
-.layers{display:grid;gap:12px;list-style:none;margin:0;padding:0;--step:36px}
-.layers li{position:relative;margin-left:calc(var(--d) * var(--step));display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;background:var(--k);color:var(--ki);border-radius:12px;padding:11px 16px;max-width:560px}
-.layers li strong{display:inline-flex;align-items:center;gap:7px;font-weight:500;font-size:15px;min-width:84px}
-.layers li span{font-size:14.5px;line-height:1.5}
-.layers li em{font-style:normal;font-size:13.5px;line-height:1.5;opacity:.65;margin-left:auto}
-.layers li+li::before{content:"";position:absolute;left:calc(var(--step) * -1 + 12px);top:-12px;width:calc(var(--step) - 12px);height:34px;border-left:1.5px solid var(--faint);border-bottom:1.5px solid var(--faint);border-bottom-left-radius:8px}
-@media (max-width:620px){.layers{--step:16px}.layers li{display:grid;gap:2px}.layers li em{margin-left:0}.layers li+li::before{left:calc(var(--step) * -1 + 6px);width:calc(var(--step) - 6px)}}
-
-@media (prefers-reduced-motion:no-preference){
-  @keyframes stepin{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
-  @keyframes drawdown{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
-  .layers li{animation:stepin .6s cubic-bezier(.3,.1,.2,1) both;animation-delay:calc(var(--d) * 260ms + 250ms)}
-  .layers li+li::before{animation:drawdown .35s ease-out both;animation-delay:calc(var(--d) * 260ms + 120ms)}}
-/* how it helps */
-.helps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:28px 32px}
-.helps li{display:grid;gap:6px;align-content:start;padding-top:18px;border-top:1px solid var(--rule)}
-.helps h3{display:flex;align-items:center;gap:10px;font-size:18px}
-.helps h3 .ic{width:20px;height:20px;color:var(--accent);stroke-width:1.6}
-.helps p{font-size:15px}
-.helps .eg{font-size:14px;color:var(--faint)}
-pre{margin:0;background:var(--panel);border-radius:14px;padding:18px 20px;overflow-x:auto;font:14px/1.7 var(--mono);color:var(--ink)}
-#cmd{white-space:pre-wrap;overflow-wrap:anywhere}
-.cmt{color:var(--faint)}
-.install{display:flex;gap:12px;align-items:stretch;flex-wrap:wrap}
-.install pre{flex:1 1 320px;min-width:0}
-#copy{font:400 14px/1 var(--body);border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:999px;padding:0 18px;min-height:44px;cursor:pointer;align-self:center}
-footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);padding-top:24px;border-top:1px solid var(--rule)}
+[hidden]{display:none!important}
+html{scroll-padding-top:24px}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.7 var(--body);padding-inline:max(20px,env(safe-area-inset-left,0px)) max(20px,env(safe-area-inset-right,0px))}
+main,.site-nav,footer{max-width:920px;margin-inline:auto;min-width:0}
+.site-nav{display:flex;align-items:baseline;justify-content:space-between;gap:14px 28px;flex-wrap:wrap;padding-block:25px 22px;border-bottom:1px solid var(--rule);font-size:14px}
+.site-nav ol,footer ul{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px 22px}
+.site-nav a{color:var(--muted);text-decoration:none}
+.site-nav a:hover{text-decoration:underline}
+.site-nav .tracker{color:var(--accent)}
+main{padding-block:44px 56px;display:grid;gap:76px}
+section{display:grid;gap:20px;min-width:0;scroll-margin-top:24px}
+h1,h2,h3{font-family:var(--serif);font-weight:400;line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:clamp(40px,7vw,60px);letter-spacing:-.025em}
+h2{font-size:clamp(29px,4vw,36px)}
+h3{font-size:22px}
+p{margin:0;max-width:72ch}
+a{color:var(--accent);text-underline-offset:3px;text-decoration-thickness:1px;overflow-wrap:anywhere}
+a:hover{text-decoration-thickness:2px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:5px;border-radius:2px}
+code{font-family:var(--mono);font-size:.88em;overflow-wrap:anywhere}
+strong{font-weight:500}
+.lede{font-size:clamp(18px,2.2vw,21px);line-height:1.55;max-width:66ch}
+.output{color:var(--muted);font-size:15px}
+.actions{display:flex;gap:14px 24px;flex-wrap:wrap;align-items:center}
+.btn{display:inline-block;padding:10px 19px;background:var(--ink);color:var(--paper);border-radius:999px;text-decoration:none;font-size:15px;font-weight:500}
+.section-head{display:flex;align-items:baseline;gap:16px}
+.section-number{font:13px/1.3 var(--mono);color:var(--muted)}
+.anchor-alias{display:block;height:0;scroll-margin-top:24px}
+.skip-link{position:absolute;left:20px;top:-80px;padding:10px 14px;background:var(--ink);color:var(--paper);z-index:2}
+.skip-link:focus{top:10px}
+/* The diagram is plain HTML: its meaning and labels do not depend on scripts or color. */
+.knowledge-map{margin:6px 0 0;display:grid;gap:14px}
+.system-band{border-radius:10px;padding:12px 18px;background:var(--system);color:var(--system-ink);display:flex;gap:6px 20px;flex-wrap:wrap;align-items:baseline}
+.system-band strong{font-size:16px}
+.system-band span{font-size:14px}
+.map-path{display:grid;grid-template-columns:minmax(0,1fr) 38px minmax(0,1fr) 38px minmax(0,1.25fr);align-items:stretch}
+.map-node{padding:15px 18px;border-radius:12px;min-width:0;display:grid;gap:5px;align-content:start}
+.map-node strong{font-size:18px}
+.map-node p{font-size:14px;line-height:1.55}
+.map-goal{background:var(--goal);color:var(--goal-ink)}
+.map-flow{background:var(--flow);color:var(--flow-ink)}
+.map-artifact{background:var(--artifact);color:var(--artifact-ink)}
+.map-arrow{align-self:center;justify-self:center;font-size:22px;color:var(--muted)}
+.rule-note{margin-top:3px;background:var(--rule-bg);color:var(--rule-ink);padding:5px 9px;border-radius:6px;font-size:13px}
+.map-attachments{border-top:1px solid var(--rule);padding-top:12px;color:var(--muted);font-size:14px}
+.map-attachments strong{color:var(--ink)}
+.knowledge-map figcaption{font-size:13px;color:var(--muted)}
+.example{margin:0;padding:21px 24px;border-left:3px solid var(--rule-ink);background:var(--panel);display:grid;gap:13px;border-radius:0 12px 12px 0}
+.example dt{font-size:14px;font-weight:500}
+.example dd{margin:3px 0 0;font-size:15px}
+.small{font-size:14px;color:var(--muted)}
+.milestones{list-style:none;margin:0;padding:0;counter-reset:milestone;display:grid;gap:24px}
+.milestones li{counter-increment:milestone;position:relative;padding-left:42px;display:grid;gap:7px}
+.milestones li::before{content:counter(milestone,decimal-leading-zero);position:absolute;left:0;top:2px;color:var(--muted);font:13px/1.7 var(--mono)}
+.milestones h3{font-size:21px}
+.milestones p{font-size:15px}
+.checks{margin:0;display:grid;gap:0}
+.checks>div{padding-block:17px;border-top:1px solid var(--rule);display:grid;grid-template-columns:180px minmax(0,1fr);gap:8px 24px}
+.checks dt{font-weight:500}
+.checks dd{margin:0;font-size:15px}
+.checks dd code{display:inline-block;margin-bottom:4px}
+pre{margin:0;padding:18px 20px;background:var(--panel);border:1px solid var(--rule);border-radius:10px;font:13px/1.7 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;min-width:0}
+pre code{font:inherit}
+.install-command{display:grid;gap:10px;min-width:0}
+.copy-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px}
+#copy{border:1px solid var(--rule);border-radius:999px;padding:10px 16px;background:var(--paper);color:var(--ink);font:500 14px/1.4 var(--body);cursor:pointer}
+#copy-status{font-size:14px;color:var(--muted)}
+.review-checklist{margin:0;padding-left:22px;display:grid;gap:8px;font-size:15px}
+.references{margin-top:8px;border-top:1px solid var(--rule)}
+details{padding-block:17px;border-bottom:1px solid var(--rule);scroll-margin-top:24px;min-width:0}
+summary{font-weight:500;cursor:pointer;list-style-position:outside;margin-left:18px;padding-left:4px}
+.details-body{padding-top:20px;display:grid;gap:18px;min-width:0}
+.details-body p,.details-body li,.details-body dd{font-size:15px}
+.details-body ul{margin:0;padding-left:22px;display:grid;gap:8px}
+.reference-list{margin:0;display:grid;gap:14px}
+.reference-list dt{font-weight:500}
+.reference-list dd{margin:3px 0 0}
+footer{display:grid;gap:19px;padding-block:24px 40px;border-top:1px solid var(--rule);font-size:14px;color:var(--muted)}
+@media(max-width:600px){
+  main{padding-block:32px 40px;gap:56px}
+  .site-nav{padding-block:19px 16px;gap:12px}
+  .site-nav ol{gap:7px 12px}
+  .map-path{grid-template-columns:minmax(0,1fr)}
+  .map-arrow{font-size:0;line-height:1;padding-block:7px}
+  .map-arrow::after{content:"↓";font-size:20px}
+  .map-node{padding:12px 16px}
+  .system-band{padding:12px 16px;gap:2px}
+  .checks>div{grid-template-columns:minmax(0,1fr);gap:4px}
+  .example{padding:18px}
+  .milestones li{padding-left:33px}
+  .section-head{gap:12px}
+  pre{padding:15px}
+}
 </style>
 </head>
 <body>
+<a class="skip-link" href="#overview">Skip to content</a>
+<nav class="site-nav" aria-label="Sections">
+  <ol>
+    <li><a href="#overview">What it is</a></li>
+    <li><a href="#knowledge">Knowledge</a></li>
+    <li><a href="#change">A change</a></li>
+    <li><a href="#checks">Checks</a></li>
+    <li><a href="#install">Start</a></li>
+  </ol>
+  <a class="tracker" href="tracker/">Project tracker ↗</a>
+</nav>
 <main>
-  <header class="hero">
-    <h1>Artifact Driven</h1>
+  <section id="overview" aria-labelledby="overview-h">
+    <h1 id="overview-h">Artifact Driven</h1>
+    <p class="lede">A workspace and workflow for teams to agree software behavior, then build code and tests from it.</p>
+    <p class="output">The installer creates a folder with knowledge, contracts, checks, agent instructions and a documented library lending example.</p>
     <div class="actions">
-      <a class="btn" href="#install" data-i="terminal">Set it up</a>
-      <a class="link" href="how-we-work.html">How we work</a>
-      <a class="link" href="agents.html">Coding agents</a>
-      <a class="link" href="tracker/">Project tracker</a>
-      <a class="link" href="framework.html">Framework</a>
+      <a class="btn" href="#install">Create a workspace</a>
+      <a href="https://github.com/hieutran21198/Artifact-Driven-Framework">View the source</a>
     </div>
-  </header>
+    <figure class="knowledge-map" aria-label="Four knowledge layers and their attached dependencies">
+      <div class="system-band"><strong>System · shared context</strong><span>Purpose, actors and requirements. In the sample: library members, clients and services.</span></div>
+      <div class="map-path">
+        <div class="map-node map-goal"><strong>Goal</strong><p>The outcome and its success criteria.</p></div>
+        <span class="map-arrow" aria-hidden="true">→</span>
+        <div class="map-node map-flow"><strong>Flow</strong><p>The behavior across domains, written as scenarios.</p></div>
+        <span class="map-arrow" aria-hidden="true">→</span>
+        <div class="map-node map-artifact"><strong>Artifact</strong><p>One domain: its model, rules and lifecycle.</p><span class="rule-note">Rules belong inside the artifact.</span></div>
+      </div>
+      <div class="map-attachments"><strong>Attached to the knowledge:</strong> contracts and client needs describe dependencies; tests name the IDs they prove.</div>
+      <figcaption>Arrows mean “cites.” Goal → Flow → Artifact. Each layer can also cite System.</figcaption>
+    </figure>
+  </section>
 
-  <section aria-labelledby="structure-h">
-    <h2 id="structure-h">The structure</h2>
-    <ol class="layers">
-      <li style="--d:0;--k:var(--l0);--ki:var(--l0i)"><strong data-i="goal">Goal</strong><span>A need, and how to check it is met.</span><em>A member borrows a book.</em></li>
-      <li style="--d:1;--k:var(--l1);--ki:var(--l1i)"><strong data-i="flow">Flow</strong><span>The steps, in order.</span><em>Borrowing, returning.</em></li>
-      <li style="--d:2;--k:var(--l2);--ki:var(--l2i)"><strong data-i="rule">Rule</strong><span>What must stay true.</span><em>Only a book on the shelf can be lent.</em></li>
-      <li style="--d:3;--k:var(--l3);--ki:var(--l3i)"><strong data-i="artifact">Artifact</strong><span>One topic and its rules.</span><em>Books, members, notices.</em></li>
-      <li style="--d:4;--k:var(--cl);--ki:var(--cli)"><strong data-i="app">App</strong><span>Where people do it.</span><em>Website, phone app.</em></li>
+  <section id="knowledge" aria-labelledby="knowledge-h">
+    <span id="structure-h" class="anchor-alias" aria-hidden="true"></span>
+    <span id="story-h" class="anchor-alias" aria-hidden="true"></span>
+    <div class="section-head"><span class="section-number" aria-hidden="true">02</span><h2 id="knowledge-h">Knowledge</h2></div>
+    <p>Each fact has one owner and an ID. Other pages cite that ID instead of copying the rule. The links let the scripts trace what a change affects and what a goal relies on.</p>
+    <dl class="example">
+      <div><dt>Goal · <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/template/docs/software-knowledges/goals/borrow-a-book.md">Borrow a book</a></dt><dd><code>G-BORROW-1</code>: a member in good standing borrows an available book and sees when it is due.</dd></div>
+      <div><dt>Flow · <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/template/docs/software-knowledges/flows/borrow-book.md">Borrowing</a></dt><dd><code>borrowBook</code> checks the member and book, records the loan in one transaction, and returns the book with its due time. A refused loan changes nothing.</dd></div>
+      <div><dt>Artifacts · <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/template/docs/software-knowledges/artifacts/book/specification.md">Book</a> and <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/template/docs/software-knowledges/artifacts/member/specification.md">Member</a></dt><dd><code>BK-3</code> permits lending only an available book. <code>MBR-2</code> sets the member's regional loan limit; <code>MBR-3</code> and <code>MBR-4</code> block borrowing for suspended members or members with an overdue book.</dd></div>
+    </dl>
+    <p>The OpenAPI contract defines the operation and response. Each client page records what that client needs from them. Contracts, client needs and tests connect to the four layers; they are not extra layers.</p>
+    <p class="small">Source: <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/knowledge.md">Knowledge rules</a>. For a new need, start with <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/shape.md">shape a need</a>, then write the <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/goal.md">goal</a> and <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/flow.md">flow</a>.</p>
+  </section>
+
+  <section id="change" aria-labelledby="change-h">
+    <div class="section-head"><span class="section-number" aria-hidden="true">03</span><h2 id="change-h">A change</h2></div>
+    <p class="lede">Change the default loan period from 14 to 21 days, for new loans only.</p>
+    <p>The sample's <code>BK-4</code> records the borrower and a due time <code>loan_days</code> after the loan. The setting defaults to 14; a change applies to new loans only. This example changes the default to 21 and keeps existing due times.</p>
+    <ol class="milestones">
+      <li>
+        <h3>Confirm the scope and trace the impact</h3>
+        <p>The coordinator clarifies the need with the person who raised it, then runs <code>python3 scripts/impact.py BK-4</code>. Read the linked flows, contracts and client needs before choosing which parts to change. If the choice is still open, compare the options and the rules each keeps, changes or adds, then ask the owner about the chosen option before writing knowledge.</p>
+        <p class="small">The requester confirms the 21-day default and unchanged existing due times. Guidance: <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/shape.md">clarify the need</a> and <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/artifact-rule.md">trace the rule</a>.</p>
+      </li>
+      <li>
+        <h3>Update the knowledge and dependencies</h3>
+        <p>A solution architect or knowledge-writer agent changes the default in <code>BK-4</code>. The contract designer checks the contract; if its promises still hold, no contract edit is needed. Client writers check each affected client's needs.</p>
+        <p>The <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/template/docs/software-knowledges/artifacts/book/mobile.md">mobile app's help text</a> states the default loan period, so it needs an update. For the period, the <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/template/docs/software-knowledges/artifacts/book/web.md">web client</a> uses the returned <code>due_at</code>; it also reads other fields. Check that dependency rather than assuming the web needs no work.</p>
+        <p class="small">Owners check the rule and each client's recorded needs. Runbooks: <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/artifact-rule.md">change a rule</a>, <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/contract.md">check the contract</a>, <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/client.md">check client needs</a>.</p>
+      </li>
+      <li>
+        <h3>Review and approve the knowledge</h3>
+        <p>An independent reviewer checks the affected pages and reports findings. The product owner approves goal changes; each affected service or client owner approves their share. The owners merge the knowledge branch. The code work uses that approved knowledge.</p>
+        <p class="small">Owners check the review findings and resolve questions that block approval. Follow <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/check.md">the check runbook</a> and <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/README.md#approval-of-knowledge">knowledge approval</a>.</p>
+      </li>
+      <li>
+        <h3>Implement and test each affected part</h3>
+        <p>In a project with service and client code, developers or implementer agents change the lending default and mobile help text. Tests name the IDs they prove. Test the new default and confirm that existing loans keep their due times.</p>
+        <p class="small">Owners check those test results, including failures and skipped tests. Guidance: <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/workflow.md#steps">implementation workflow</a> and <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/check.md">test ID checks</a>.</p>
+      </li>
+      <li>
+        <h3>Review the code and prepare requested pull requests</h3>
+        <p>A reviewer who did not write the change checks the code against the knowledge and runs the relevant tests. The coordinator commits, pushes and opens pull requests only when asked. Each pull request links the issue and knowledge merge commit; owners approve their parts before a requested merge.</p>
+        <p class="small">Owners check the review, test evidence and both links before approval. Use <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/check.md">the check runbook</a> and <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/done.md">Done</a>.</p>
+      </li>
     </ol>
+    <p class="small">Roles can be people or agents. Use only the roles the change needs. Follow the <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/workflow.md">workflow</a> for exceptions and the <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/done.md">definition of done</a> for release requirements.</p>
   </section>
 
-  <section aria-labelledby="story-h">
-    <h2 id="story-h">Borrowing a book</h2>
-    <div class="panel">
-      <div class="steps" id="steps" role="group" aria-label="Steps of the story"></div>
-      <div id="wrap" aria-hidden="true"><div id="stage"><svg id="lines" style="position:absolute;left:0;top:0;overflow:visible"></svg></div></div>
-      <p id="cap" aria-live="polite"></p>
-      <button class="play" id="play" type="button">Pause</button>
+  <section id="checks" aria-labelledby="checks-h">
+    <span id="helps-h" class="anchor-alias" aria-hidden="true"></span>
+    <div class="section-head"><span class="section-number" aria-hidden="true">04</span><h2 id="checks-h">Checks</h2></div>
+    <p>The framework reads knowledge and tests as text. Its static checks do not run the product or prove that the code follows the rules.</p>
+    <dl class="checks">
+      <div><dt>Docs consistency</dt><dd><code>python3 scripts/check_docs.py</code><br>Finds broken Markdown links, missing or invalid IDs, invalid citation direction, and scenarios or operations with missing links. <code>check_structure.py</code> checks README coverage.</dd></div>
+      <div><dt>Recorded impact</dt><dd><code>python3 scripts/impact.py BK-4</code><br>Follows recorded links to affected knowledge, contracts and clients. A dependency missing from the knowledge will not appear.</dd></div>
+      <div><dt>Test ID presence</dt><dd><code>python3 scripts/impact.py --coverage</code><br>Reports which knowledge IDs appear in test files. <code>check_tests.py</code> finds cited IDs that are unknown or withdrawn. Neither command proves that a test passes.</dd></div>
+      <div><dt>Runtime tests</dt><dd>Run the tests of each changed service and client. Domain tests prove artifact rules; command tests prove flow scenarios; end-to-end tests prove goal criteria. Record the actual results and gaps on the issue or pull request.</dd></div>
+    </dl>
+    <p><a href="tracker/">Open the project tracker</a> to explore a workspace's knowledge and test ID coverage at a selected revision. It remains separate from this guide.</p>
+    <p class="small">Commands and limits: <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/check.md">check runbook</a> and <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/scripts/README.md">scripts reference</a>.</p>
+  </section>
+
+  <section id="install" aria-labelledby="install-h">
+    <div class="section-head"><span class="section-number" aria-hidden="true">05</span><h2 id="install-h">Start</h2></div>
+    <p>Install into a new folder with POSIX <code>sh</code>, <code>curl</code> and <code>tar</code>. The checks need Git and Python 3.9 or later.</p>
+    <div class="install-command">
+    <pre id="cmd"><code>curl -fsSL https://raw.githubusercontent.com/hieutran21198/Artifact-Driven-Framework/main/install.sh \
+  | sh -s -- my-workspace</code></pre>
+    <div class="copy-actions"><button id="copy" type="button" aria-label="Copy install command" hidden>Copy command</button><span id="copy-status" role="status"></span></div>
+    </div>
+    <p class="small">This command downloads and runs the <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/install.sh">install script</a>. To inspect it first or choose a fixed version, use the <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/README.md#create-a-workspace">download-first instructions</a>.</p>
+    <p>Open the workspace, initialize Git, and check the sample:</p>
+    <pre><code>cd my-workspace
+git init
+python3 scripts/check_structure.py
+python3 scripts/check_docs.py
+python3 scripts/impact.py BK-4
+python3 scripts/site.py</code></pre>
+    <p>Open <code>build/site/index.html</code> to explore the sample. It is documentation for a lending system, not a running library app. No lending service or client implementation is included.</p>
+    <p>To try the same change with your coding agent, open it in the workspace and give it this task:</p>
+    <blockquote class="example"><p>Change the default of <code>loan_days</code> from 14 to 21 days, for new loans only. Work as the team in <code>AGENTS.md</code>. Confirm the scope before editing, trace <code>BK-4</code>, update the sample knowledge, and report the checks and remaining gaps. Do not invent missing service or client code. Do not commit, push or open pull requests.</p></blockquote>
+    <h3>Check the agent's work</h3>
+    <ul class="review-checklist">
+      <li>Confirm it <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/workflow.md#questions">clarifies the need before writing</a>.</li>
+      <li>Check that knowledge comes first and any implementation waits for <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/README.md#approval-of-knowledge">the owners' approval</a>.</li>
+      <li>Inspect the actual <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/scripts/README.md#impact">impact output</a> and <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/check.md">applicable check results</a>, including failures, skipped checks and missing code.</li>
+      <li>Review the remaining gaps. Keep commits, pushes, pull requests and merges within <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/team.md#limits">the team's approval limits</a>.</li>
+    </ul>
+    <p>For your own project, follow <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/template/README.md#start-a-new-project">Start a new project</a>: clone your parts, describe the system, and replace the sample after your first goal, flow and artifact exist.</p>
+
+    <div class="references" aria-label="Optional reference">
+      <details id="files">
+        <summary>Workspace files</summary>
+        <div class="details-body">
+          <pre>my-workspace/
+├── README.md                 Start here
+├── CONTRIBUTING.md           Change and check a part
+├── AGENTS.md                 Project instructions
+├── CLAUDE.md                 Imports AGENTS.md
+├── artifact-driven.json      Script configuration
+├── .agents/
+│   ├── agents/               One definition per role
+│   └── skills/               Procedures for the work
+├── .claude/                  Links to .agents
+├── docs/
+│   ├── architecture/         Decisions and domain map
+│   ├── governances/          Knowledge, workflow, team
+│   ├── coding-standards/
+│   ├── infrastructure/
+│   ├── principles/
+│   └── software-knowledges/
+│       ├── system/           Shared context and requirements
+│       ├── goals/            Success criteria
+│       ├── flows/            Scenarios and contracts
+│       └── artifacts/        Rules, contracts, client needs
+├── scripts/                  Checks, impact, knowledge site
+├── services/                 Clone each service here
+├── apps/                     Clone each client here
+└── e2e/                      Clone end-to-end tests here</pre>
+          <p>An artifact folder holds <code>README.md</code>, <code>specification.md</code> and <code>openapi.yaml</code>. It adds <code>service.md</code> when domain interfaces exist, and a page for each client that uses it. See <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/knowledge.md#artifact-files">artifact files</a>.</p>
+          <p>Diagrams match the layers: a context diagram for System, a flowchart for a goal, a sequence diagram (or flowchart for branching behavior) for a flow, and model or lifecycle diagrams for an artifact. See the <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/knowledge.md#diagrams">diagram rules</a>.</p>
+          <p>Reference: <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/README.md">governance</a>, <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/README.md">runbooks</a>, <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/decisions.md">decisions</a> and <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/.agents/skills/README.md">skills</a>.</p>
+        </div>
+      </details>
+      <details id="tools">
+        <summary>Agent roles and tools</summary>
+        <div class="details-body">
+          <p>The main session coordinates the work. <code>.agents/agents</code> defines the knowledge writer, contract designer, client writer, implementer, defect investigator and reviewer. Their scope comes from the <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/team.md">team rules</a>; current tool and model settings are in the <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/.agents/agents/README.md">agent definitions</a>.</p>
+          <dl class="reference-list">
+            <div><dt>Claude Code</dt><dd><code>CLAUDE.md</code> imports <code>AGENTS.md</code>. The links in <code>.claude</code> expose the roles and skills. Ask for the relevant agent by name. Vendor docs: <a href="https://code.claude.com/docs/en/memory">project instructions</a>, <a href="https://code.claude.com/docs/en/sub-agents">subagents</a> and <a href="https://code.claude.com/docs/en/skills">skills</a>.</dd></div>
+            <div><dt>Codex</dt><dd>Use <code>AGENTS.md</code> for project instructions and <code>.agents/skills</code> for skills. When delegating, point the subagent at its role file and state its write limits. Vendor docs: <a href="https://developers.openai.com/codex/guides/agents-md">project instructions</a>, <a href="https://developers.openai.com/codex/skills">skills</a> and <a href="https://developers.openai.com/codex/subagents">subagents</a>.</dd></div>
+          </dl>
+        </div>
+      </details>
+      <details id="terms">
+        <summary>Terms</summary>
+        <div class="details-body">
+          <dl class="reference-list">
+            <div><dt>Knowledge</dt><dd>Agreed statements of what the product must do. Evidence, plans and status stay on issues or pull requests.</dd></div>
+            <div><dt>Goal, flow and artifact</dt><dd>A user story describes a goal's need; acceptance criteria map to its success criteria. A use case maps to a flow. A bounded context describes the domain an artifact owns, without requiring a module boundary inside a service.</dd></div>
+            <div><dt>Part and owner</dt><dd>A part is a service, client or shared knowledge with an owner. The owner approves changes to that part.</dd></div>
+            <div><dt>Test ID coverage</dt><dd>The share of knowledge IDs found in test files, not a measure of code correctness or a record of passing tests.</dd></div>
+          </dl>
+          <p><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/knowledge.md">Knowledge definitions</a> · <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/team.md#parts-and-owners">Parts and owners</a></p>
+        </div>
+      </details>
+      <details id="limits">
+        <summary>Approval and work limits</summary>
+        <div class="details-body">
+          <p>A role changes only its assigned parts. Each handoff gives the coordinator the changes, IDs, check results and open questions. A knowledge gap found during implementation goes back to the knowledge writer.</p>
+          <p>The reviewer and defect investigator change no files. Owners merge knowledge branches. The coordinator commits, pushes, opens pull requests, merges code, deploys or releases only when the relevant owner asks. An issue being closed is not approval.</p>
+          <p><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/team.md#limits">Team limits</a> · <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/done.md">Definition of done</a></p>
+        </div>
+      </details>
     </div>
   </section>
-
-  <section aria-labelledby="helps-h">
-    <h2 id="helps-h">Situations</h2>
-    <ol class="helps">
-      <li><h3 data-i="change">A rule changes</h3><p>List what relies on the rule.</p><p class="eg">BK-3, "only a book on the shelf": both flows and the phone app.</p></li>
-      <li><h3 data-i="flag">A tester reports a defect</h3><p>Find the rule it breaks. Compare it with the product.</p><p class="eg">Defect: a book on loan was lent again. Rule: BK-3, on the shelf only.</p></li>
-      <li><h3 data-i="users">Someone joins the team</h3><p>Open the Books page.</p><p class="eg">10 rules, BK-1 to BK-10.</p></li>
-      <li><h3 data-i="scan">A release is near</h3><p>Look at the rules with no test.</p><p class="eg">"A book not back in time is marked overdue": no test yet.</p></li>
-      <li><h3 data-i="briefcase">A stakeholder asks what has tests</h3><p>Project tracker: the share of each goal's rules with a test.</p><p class="eg"><a href="tracker/">Open the project tracker</a></p></li>
-      <li><h3 data-i="code">The docs drift from the code</h3><p>Docs check: fails a broken link, an unknown ID, or a rule citing a flow.</p><p class="eg">A flow citing BK-11 fails: no such rule.</p></li>
-    </ol>
-  </section>
-
-  <section aria-labelledby="install-h" id="install">
-    <h2 id="install-h">Set it up</h2>
-    <p class="lede" style="font-size:16px">Needs <code>curl</code> and <code>tar</code>.</p>
-    <div class="install">
-      <pre id="cmd">curl -fsSL https://raw.githubusercontent.com/hieutran21198/Artifact-Driven-Framework/main/install.sh \
-  | sh -s -- my-workspace</pre>
-      <button id="copy" type="button" data-i="copy"><span>Copy</span></button>
-    </div>
-  </section>
-
-  <footer>
-    <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/README.md">Docs</a>
-    <a href="https://github.com/hieutran21198/Artifact-Driven-Framework">Source</a>
-    <a href="how-we-work.html">How we work</a>
-    <a href="agents.html">Coding agents</a>
-    <a href="framework.html">Framework</a>
-    <a href="tracker/">Project tracker</a>
-  </footer>
 </main>
-
+<footer>
+  <nav aria-label="Reading topics and tracker"><ul><li><a href="#overview">What it is</a></li><li><a href="#knowledge">Knowledge</a></li><li><a href="#change">A change</a></li><li><a href="#checks">Checks</a></li><li><a href="#install">Start</a></li><li><a href="tracker/">Project tracker</a></li></ul></nav>
+  <p><a href="https://github.com/hieutran21198/Artifact-Driven-Framework">Source</a> · <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/README.md">Documentation</a> · <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/LICENSE">MIT License</a></p>
+</footer>
 <script>
-const ICON = {
-  goal:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
-  flow:'<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>',
-  rule:'<path d="M12 3v18"/><path d="M7 21h10"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/><path d="m2 16 3-8 3 8c-.9.6-1.9 1-3 1s-2.1-.4-3-1Z"/><path d="m16 16 3-8 3 8c-.9.6-1.9 1-3 1s-2.1-.4-3-1Z"/>',
-  artifact:'<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9L9.6 3.9A2 2 0 0 0 7.9 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>',
-  app:'<rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>',
-  phone:'<rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/>',
-  test:'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
-  scan:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
-  change:'<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
-  book:'<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>',
-  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/>',
-  mail:'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-9 5.7a2 2 0 0 1-2 0L2 7"/>',
-  briefcase:'<rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
-  grid:'<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
-  flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/>',
-  code:'<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>',
-  terminal:'<path d="m4 17 6-6-6-6"/><path d="M12 19h8"/>',
-  calendar:'<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>',
-  copy:'<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2"/>',
-  play:'<path d="m6 3 14 9-14 9z"/>',
-  pause:'<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',
-  link:'<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>'
-};
-const ic = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
-document.querySelectorAll('[data-i]').forEach(e => e.insertAdjacentHTML('afterbegin', ic(e.dataset.i)));
-
-const STEPS = ['Goal','Flows','Rules','Artifacts','Apps','Scan','A change'];
-const STEP_ICONS = ['goal','flow','rule','artifact','app','scan','change'];
-const CAPS = [
-  'A goal: a member borrows a book and brings it back.',
-  'Flows: borrowing and returning.',
-  'Rules: such as "only a book on the shelf can be lent".',
-  'Artifacts: books, members and notices.',
-  'Apps: the website uses books and members. The phone app uses books.',
-  'Scan: 4 of the 6 rule IDs are in a test file. It runs no tests. A found ID proves no code.',
-  'A change: both flows and the phone app rely on the rule. The website does not.'
-];
-const RULES = [
-  ['On the shelf only','B',1],['Due in 14 days','B',1],['Loan limit','B',1],
-  ['Return frees it','R',1],['Marked overdue','R',0],['One reader each','R',0]];
-const L = {
-  wide:{W:680,H:500,goal:[220,58,230,170,230,20],fB:[200,52,75,120],fR:[200,52,405,120],chip:[104,44],
-    box:{aM:[20,255,190,140],aB:[225,255,230,140],aN:[470,255,190,140]},
-    s2:[[20,192],[128,192],[236,192],[352,192],[460,192],[568,192]],
-    s3:[[233,295],[343,295],[63,305],[233,343],[343,343],[513,305]],
-    cli:{web:[150,46,60,440],mob:[150,46,290,440]}},
-  narrow:{W:360,H:650,goal:[220,58,70,200,70,10],fB:[165,52,10,100],fR:[165,52,185,100],chip:[104,44],
-    box:{aB:[10,340,340,120],aM:[10,470,165,92],aN:[185,470,165,92]},
-    s2:[[40,172],[40,222],[40,272],[215,172],[215,222],[215,272]],
-    s3:[[24,366],[132,366],[40,504],[240,366],[24,412],[215,504]],
-    cli:{web:[150,46,20,584],mob:[150,46,190,584]}}};
-const EDGES = [['l1','goal',.4,'fB',.5,1],['l2','goal',.6,'fR',.5,1],['l3','fB',.3,'aM',.5,3],['l4','fB',.7,'aB',.3,3],
-  ['l5','fR',.3,'aB',.7,3],['l6','fR',.7,'aN',.5,3],['l7','aM',.5,'web',.35,4],['l8','aB',.25,'web',.7,4],['l9','aB',.6,'mob',.5,4]];
-const HIT = new Set(['r0','goal','fB','fR','aB','mob','l1','l2','l4','l5','l9']);
-
-const stage = document.getElementById('stage'), wrap = document.getElementById('wrap'), svg = document.getElementById('lines');
-const el = (cls, id, html) => { const e = document.createElement('div'); e.className = cls; e.id = id; e.innerHTML = html; stage.appendChild(e); return e; };
-['aM','aB','aN'].forEach(id => el('box', id, {aM:ic('users')+'Members',aB:ic('book')+'Books',aN:ic('mail')+'Notices'}[id]));
-el('it goal', 'goal', `<b>${ic('goal')}Goal</b>Borrow a book`);
-el('it flow', 'fB', `<b>${ic('flow')}Flow</b>Borrowing`);
-el('it flow', 'fR', `<b>${ic('flow')}Flow</b>Returning`);
-RULES.forEach(([d], i) => el('it rule', 'r' + i, `${d}<span class="chk" id="k${i}">✓</span>`));
-el('it client', 'web', `<b>${ic('app')}App</b>Website`);
-el('it client', 'mob', `<b>${ic('phone')}App</b>Phone app`);
-EDGES.forEach(([id]) => { const p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); p.id = id; svg.appendChild(p); });
-
-const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-let lay = null, step = reduce ? 6 : 0, timer = null;
-
-function geom(id) {
-  const g = lay;
-  if (id === 'goal') return [g.goal[4], g.goal[5], g.goal[0], g.goal[1]];
-  if (id === 'fB' || id === 'fR') return [g[id][2], g[id][3], g[id][0], g[id][1]];
-  if (g.box[id]) return g.box[id];
-  const c = g.cli[id]; return [c[2], c[3], c[0], c[1]];
+// Native details remain usable without JavaScript. Deep links open their target.
+function openReference() {
+  const target = document.getElementById(location.hash.slice(1));
+  const detail = target && target.closest('details');
+  if (detail) {
+    detail.open = true;
+    detail.scrollIntoView();
+  }
 }
-function layout() {
-  const next = wrap.clientWidth < 560 ? L.narrow : L.wide, jump = next !== lay;
-  lay = next;
-  if (jump) stage.classList.add('instant');
-  const s = wrap.clientWidth / lay.W;
-  stage.style.width = lay.W + 'px'; stage.style.height = lay.H + 'px';
-  stage.style.transform = `scale(${s})`; wrap.style.height = lay.H * s + 'px';
-  svg.setAttribute('width', lay.W); svg.setAttribute('height', lay.H);
-  Object.entries(lay.box).forEach(([id, [x, y, w, h]]) => Object.assign(document.getElementById(id).style, {left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px'}));
-  ['goal','fB','fR','web','mob'].forEach(id => { const [, , w, h] = geom(id); Object.assign(document.getElementById(id).style, {width: w + 'px', height: h + 'px'}); });
-  RULES.forEach((_, i) => Object.assign(document.getElementById('r' + i).style, {width: lay.chip[0] + 'px', height: lay.chip[1] + 'px'}));
-  EDGES.forEach(([id, a, fa, b, fb]) => {
-    const [ax, ay, aw, ah] = geom(a), [bx, by, bw] = geom(b);
-    const x1 = ax + aw * fa, y1 = ay + ah, x2 = bx + bw * fb, y2 = by, m = (y1 + y2) / 2;
-    document.getElementById(id).setAttribute('d', `M${x1} ${y1} C${x1} ${m},${x2} ${m},${x2} ${y2}`);
-  });
-  show(step);
-  if (jump) { stage.offsetWidth; requestAnimationFrame(() => stage.classList.remove('instant')); }
-}
-function put(id, x, y, o) { const e = document.getElementById(id); e.style.transform = `translate(${x}px,${y}px)`; e.style.opacity = o; }
-function show(n) {
-  step = (n + STEPS.length) % STEPS.length;
-  if (typeof hideTip === 'function') hideTip();
-  const s = step, g = lay, hot = s === 6, dim = id => hot && !HIT.has(id);
-  const [gw, , x0, y0, x1, y1] = g.goal;
-  put('goal', s ? x1 : x0, s ? y1 : y0, dim('goal') ? .3 : 1);
-  ['fB','fR'].forEach(id => { const [w, , x, y] = g[id]; put(id, s ? x : x0 + (gw - w) / 2, s ? y : y0 + 3, s ? (dim(id) ? .3 : 1) : 0); });
-  RULES.forEach(([, f, tested], i) => {
-    const flow = g[f === 'B' ? 'fB' : 'fR'], hide = [flow[2] + (flow[0] - g.chip[0]) / 2, flow[3] + 4];
-    const p = s >= 3 ? g.s3[i] : s === 2 ? g.s2[i] : hide;
-    put('r' + i, p[0], p[1], s >= 2 ? (dim('r' + i) ? .3 : 1) : 0);
-    const k = document.getElementById('k' + i), on = s >= 5 && tested;
-    k.style.opacity = on ? 1 : 0; k.style.transform = `scale(${on ? 1 : .4})`;
-  });
-  ['web','mob'].forEach(id => { const [x, y] = geom(id); put(id, x, s >= 4 ? y : y + 24, s >= 4 ? (dim(id) ? .3 : 1) : 0); });
-  ['aM','aB','aN'].forEach(id => document.getElementById(id).style.opacity = s >= 3 ? (dim(id) ? .35 : 1) : 0);
-  EDGES.forEach(([id, , , , , from]) => { const p = document.getElementById(id); p.style.opacity = s >= from ? (dim(id) ? .15 : .8) : 0; p.classList.toggle('hit', hot && HIT.has(id)); });
-  document.querySelectorAll('.it').forEach(e => { e.classList.toggle('hit', hot && HIT.has(e.id)); e.classList.toggle('src', hot && e.id === 'r0'); });
-  document.getElementById('cap').textContent = CAPS[s];
-  [...document.getElementById('steps').children].forEach((b, i) => b.setAttribute('aria-current', i === s ? 'step' : 'false'));
-}
-function playStory(on) {
-  clearInterval(timer); timer = null;
-  if (on) timer = setInterval(() => { if (!hover) show(step + 1); }, 4600);
-  document.getElementById('play').innerHTML = ic(on ? 'pause' : 'play') + (on ? 'Pause' : 'Play');
-}
-function showStep(i) { playStory(false); show(i); }
-STEPS.forEach((n, i) => { const b = document.createElement('button'); b.type = 'button'; b.innerHTML = ic(STEP_ICONS[i]) + n; b.onclick = () => showStep(i); document.getElementById('steps').appendChild(b); });
-document.getElementById('play').onclick = () => playStory(!timer);
-const TIPS = {
-  goal: 'Goal: a member borrows a book and brings it back.',
-  fB: 'Borrowing: the steps from picking a book to taking it home.',
-  fR: 'Returning: from bringing a book back to the shelf.',
-  r0: 'Only a book on the shelf can be lent.',
-  r1: 'A borrowed book is due back 14 days later.',
-  r2: 'A member holds at most the loan limit of books.',
-  r3: 'A returned book can be lent again.',
-  r4: 'A book not back by its due date is overdue.',
-  r5: 'A notice goes to one member.',
-  aB: 'Books: shelf status and due dates.',
-  aM: 'Members: who borrows, and how many books they hold.',
-  aN: 'Notices: messages to members, such as an overdue note.',
-  web: 'Website: uses Books and Members.',
-  mob: 'Phone app: uses Books only.'
-};
-const panel = document.querySelector('.panel'), tip = document.createElement('div');
-tip.className = 'tip'; tip.setAttribute('role', 'tooltip'); panel.appendChild(tip);
-let hover = null;
-function explainBlock(e) {
-  const t = e.target.closest('.it,.box');
-  if (!t || !stage.contains(t) || t.style.opacity === '0') return hideTip();
-  hover = t;
-  let text = TIPS[t.id];
-  if (t.id[0] === 'r' && step >= 5) text += RULES[+t.id.slice(1)][2] ? ' A test names it.' : ' No test names it yet.';
-  tip.textContent = text; tip.classList.add('on');
-  const p = panel.getBoundingClientRect(), r = t.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
-  const x = Math.max(8, Math.min(r.left - p.left + r.width / 2 - w / 2, p.width - w - 8));
-  let y = r.top - p.top - h - 8; if (y < 8) y = r.bottom - p.top + 8;
-  tip.style.transform = `translate(${x}px,${y}px)`;
-}
-function hideTip() { hover = null; tip.classList.remove('on'); }
-stage.addEventListener('mouseover', explainBlock);
-stage.addEventListener('click', explainBlock);
-stage.addEventListener('mouseleave', hideTip);
-new ResizeObserver(layout).observe(wrap);
-layout();
-playStory(!reduce);
+openReference();
+window.addEventListener('hashchange', openReference);
 
-document.getElementById('copy').onclick = async e => {
-  const b = e.currentTarget, text = document.getElementById('cmd').textContent.replace(/\\\n\s*/, '');
-  try { await navigator.clipboard.writeText(text); b.lastChild.textContent = 'Copied'; }
-  catch { const r = document.createRange(); r.selectNodeContents(document.getElementById('cmd')); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); b.lastChild.textContent = 'Selected'; }
-  setTimeout(() => b.lastChild.textContent = 'Copy', 1800);
-};
+const copyButton = document.getElementById('copy');
+copyButton.addEventListener('click', async () => {
+  const command = document.getElementById('cmd');
+  const status = document.getElementById('copy-status');
+  try {
+    await navigator.clipboard.writeText(command.textContent);
+    status.textContent = 'Command copied.';
+  } catch {
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(command);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    status.textContent = 'Automatic copy is unavailable. The command is selected; copy it with your keyboard or selection menu.';
+  }
+});
+copyButton.hidden = false;
 </script>
 </body>
 </html>

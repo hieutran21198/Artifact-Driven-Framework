@@ -1,60 +1,53 @@
 ---
 name: plain-writing
-description: Write or review the text of a page - a site page, a README, the prose around knowledge - so a reader gets its value in five seconds. A picture first, then results and "Label: value" lines; no lead-ins, stories, selling, comparisons or lists that only show breadth. Use before showing or publishing any page, and when asked to review or shorten its text.
+description: Write or review a site page, README or technical explanation so readers can identify its purpose and next action quickly. Use concrete examples and useful visuals, remove promotional filler and repetition, and preserve the meaning and conditions of the source.
 ---
 
 # Plain writing
 
-The language rules are in [Files and prose](../../../docs/coding-standards/README.md#files-and-prose)
-and [ASD-STE-100](../../../docs/coding-standards/asd-ste-100/README.md). This
-skill adds the form of a page and the cuts, by example.
+Follow [Files and prose](../../../docs/coding-standards/README.md#files-and-prose)
+and [ASD-STE-100](../../../docs/coding-standards/asd-ste-100/README.md).
+This skill helps choose what a page shows and what to cut; it does not change
+the product's rules or require a fixed sentence form.
 
-## Form
+## Shape the page
 
-1. **Picture first.** Under each heading, put the thing that shows the value:
-   a diagram, a table, a file tree, a worked example. Text labels it.
-2. **Results, not lead-ins.** Each line states a result or a fact as
-   "Label: value". Role lines are "Role: verb, verb".
-3. **One fact once** on a page.
+1. Identify what the reader needs to understand or do. Keep a short factual
+   definition when the title or picture does not explain the subject.
+2. Put a useful diagram, example, table or result beside the explanation.
+   The visual must show a relationship or outcome, not repeat every sentence.
+   Label it with words the reader knows and link technical terms to their source.
+3. Give each topic one home across the reading path. Link to details instead
+   of repeating a workflow, file tree or role list on several pages.
+4. Use one example through the steps of a procedure. Put tool settings,
+   file lists and other reference material after the first useful action.
 
-## Cut
+## Cut without losing meaning
 
-Delete the sentence. If the reader still knows what to do, it stays deleted.
-Cut on sight:
+Delete a sentence when the reader still knows what the subject is, what to do,
+and the conditions of that action. Remove empty introductions, sales claims,
+unsupported promises, repeated conclusions and lists that only show breadth.
 
-- an intro or a line about the page itself;
-- a story, even a concrete one;
-- a benefit, a speed, "no cost", a selling heading;
-- a comparison, pros and cons, a "why";
-- a list of practices or tools that only shows breadth;
-- a term or ID with no plain meaning next to it;
-- a closing line.
+Keep a reason, comparison or example when it explains a decision the reader
+must make. Preserve actors, defaults, limits, exceptions and the difference
+between an illustration, a measured result and a required outcome. Short prose,
+steps and "Label: value" lines are all useful; choose the form that reads clearly.
 
 ## Examples
 
-Each row is a cut a reviewer made on a real page.
-
-| Before | After |
+| Avoid | Use |
 | --- | --- |
-| A workspace tells a coding agent how the team works: who does each step, with which skill, and what each one may change. This page shows what is in the workspace… | (cut) |
-| Every new workspace has these files. The copies in `.agents` are the ones to change; `.claude` only links to them. | (cut: the file tree shows it) |
-| Write the rules of a product before its code, and trace each rule to its tests. | (cut: no reader knows yet what a rule is) |
-| Nothing new. Artifact Driven invents no method. It puts practices… in one place. | (cut) |
-| A table: a usual brainstorm beside shaping a need, with pros and cons. | (cut) |
-| Why shape a need first: to brainstorm a change, people read everything… | (cut) |
-| How to break down a requirement | Break down the requirement |
-| One change, from the issue to the pull request | Issue to pull request |
-| Who needs what, and how you will know it is done. | A member can borrow a book and sees when it is due. |
-| Writes the need and the criteria, answers the questions, and approves the goal. | Product owner: gather information, write the criteria, approve the goal |
-| Read each step and write down what must stay true. Words such as "must", "only" and "at most" point to a rule. | Only a book on the shelf can be lent. |
-| The scan reads the test files for rule IDs… A rule it finds has a test; the code may still be wrong. The impact follows the links… | (cut: the home page needs neither) |
-| The issue: lend books for 21 days by default, not 14. In the sample, one rule holds the default: BK-4 of Books, "a borrowed book is due back 14 days later". | Issue: lend books for 21 days, not 14. Rule: BK-4, due back 14 days later. |
-| BK-4 reaches 6 criteria of Borrow a book, 14 scenarios of Borrowing and Returning, and the Books pages of both apps. The checks pass. | Reach: 6 criteria, 14 scenarios, the Books pages of both apps. Checks: pass. |
+| A framework that transforms how teams deliver software. | A Git workspace for product requirements, contracts, agent instructions and checks. |
+| Rule: due back 14 days later. | Default loan period: 14 days. A change applies to new loans only. |
+| Checks: pass. | Name the checks and their actual result, or label the output as an example. |
+| Coverage proves the rules work. | The scan finds rule IDs in test files. Run the tests to check the behavior. |
 
 ## Review
 
-1. Read only the headings and the pictures. If the value is not clear in five
-   seconds, the page needs a better picture, not more text.
-2. Read each line against the examples above. Rewrite to the form; do not
-   patch a sentence with another sentence.
-3. Report each cut as before and after.
+- Read the title, headings and visuals first. Can a new reader identify the
+  subject, its concrete output and where to start within a few seconds?
+- Read the steps in order. Does each use the same example and say who acts?
+- Compare the shortened text with its source. Restore any condition or
+  explanation whose removal changed the meaning.
+- Report the material cuts or remaining ambiguity when requested; do not
+  add a separate writing report to ordinary work.

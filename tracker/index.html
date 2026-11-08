@@ -890,10 +890,15 @@ addEventListener("resize", scheduleSiteViewport);
 addEventListener("message", event => {
   if (!siteFrame || event.source !== siteFrame.frame.contentWindow || event.origin !== "null") return;
   const data = event.data;
-  if (!data || data.type !== "adf:site-size" || data.render !== siteFrame.render || !siteDimension(data.height)) return;
+  if (!data || data.render !== siteFrame.render) return;
   const frame = siteFrame.frame;
-  frame.style.height = (Math.ceil(data.height) + frame.offsetHeight - frame.clientHeight) + "px";
-  scheduleSiteViewport();
+  if (data.type === "adf:site-size" && siteDimension(data.height)) {
+    frame.style.height = (Math.ceil(data.height) + frame.offsetHeight - frame.clientHeight) + "px";
+    scheduleSiteViewport();
+  } else if (data.type === "adf:site-scroll" && siteDimension(data.top) && data.top <= frame.clientHeight && frame.getClientRects().length) {
+    // The sandbox requests a position within its own document, never a URL or parent element.
+    scrollTo({ top: scrollY + frame.getBoundingClientRect().top + frame.clientTop + data.top });
+  }
 });
 
 function drawSite(html) {
