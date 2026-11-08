@@ -7,7 +7,7 @@ roles, the flow and the limits.
 
 ## Model
 
-The page has five parts in this order: the files in a workspace, one change of the sample from the issue to the pull request, the limits of the team, the same change run by the reader's own agent, and a reference for each tool.
+The page has five parts in this order: one change of the sample from the issue to the pull request, the limits of the team, the same change run by the reader's own agent, the files in a workspace, and a reference for each tool.
 
 ## Rules
 

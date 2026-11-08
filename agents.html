@@ -94,6 +94,50 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
     <h1>Coding agents</h1>
   </header>
 
+  <section aria-labelledby="change-h">
+    <h2 id="change-h">Issue to pull request</h2>
+    <p>Issue: lend books for 21 days, not 14. Rule: BK-4, due back 14 days later.</p>
+    <div class="change">
+      <div><span>Step</span><span>Role</span><span>Does, with a prompt</span><span>You check</span></div>
+      <div style="--k:var(--panel)"><span class="st skip">0 · Shape<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/shape.md">Runbook</a></span><span data-h="Role" class="skip">Coordinator</span><p data-h="Does" class="skip">Skipped: the issue already says 21 days.</p><p data-h="You check" class="skip">—</p></div>
+      <div style="--k:var(--panel)"><span class="st">1 · Issue</span><span data-h="Role">Coordinator</span><div data-h="Does">Reads the issue, traces the rule.<pre>python3 scripts/impact.py BK-4</pre><q>Read this issue and trace the rule it changes.</q></div><p data-h="You check">Roles: no contract designer.</p></div>
+      <div style="--k:var(--l1;--ki:var(--l1i))"><span class="st">2 · Knowledge<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/artifact-rule.md">Runbook</a></span><span data-h="Role"><code>knowledge-writer</code></span><div data-h="Does">Changes BK-4 from 14 to 21, runs the checks and the impact.<q>Use the knowledge-writer agent to change BK-4.</q></div><p data-h="You check">Reach: 6 criteria, 14 scenarios, the Books pages of both apps. Checks: pass.</p></div>
+      <div style="--k:var(--paper)"><span class="st skip">3 · Contract<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/contract.md">Runbook</a></span><span data-h="Role" class="skip"><code>contract-designer</code></span><p data-h="Does" class="skip">Skipped: no field changes.</p><p data-h="You check" class="skip">—</p></div>
+      <div style="--k:var(--cl;--ki:var(--cli))"><span class="st">4 · Apps<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/client.md">Runbook</a></span><span data-h="Role"><code>client-writer</code> × 2, in parallel</span><div data-h="Does">Mobile: the app's help text names the loan period. Web: reads only <code>due_at</code>.<q>Run one client-writer agent for each app, in parallel.</q></div><p data-h="You check">Knowledge: no change. Mobile: new help text. Web: no work.</p></div>
+      <div style="--k:var(--paper)"><span class="st">5 · Review<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/check.md">Runbook</a></span><span data-h="Role"><code>reviewer</code></span><div data-h="Does">Checks each page the impact lists against BK-4, runs the checks.<q>Use the reviewer agent on the knowledge branch.</q></div><p data-h="You check">The verdict on the issue: ready, or what blocks it.</p></div>
+      <div style="--k:var(--paper)"><span class="st">6 · Approve</span><span data-h="Role">Owner of <code>lending</code>, the service that serves Books</span><p data-h="Does">Merges the knowledge branch.</p><p data-h="You check">The merge commit, for the code to cite.</p></div>
+      <div style="--k:var(--l3;--ki:var(--l3i))"><span class="st">7 · Code<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/workflow.md#steps">Workflow</a></span><span data-h="Role"><code>implementer</code> × 2, in parallel</span><div data-h="Does"><code>lending</code>: new default, test named BK-4. Mobile: help text.<q>Run one implementer agent for each part, in parallel.</q></div><p data-h="You check">Tests: name BK-4. Test check: passes.</p></div>
+      <div style="--k:var(--paper)"><span class="st">8 · Review</span><span data-h="Role"><code>reviewer</code></span><div data-h="Does">Reads the code against BK-4 and runs the tests.<q>Use the reviewer agent on the code.</q></div><p data-h="You check">Ready, or what blocks it.</p></div>
+      <div style="--k:var(--paper)"><span class="st">9 · Pull requests<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/done.md">Done</a></span><span data-h="Role">Coordinator</span><div data-h="Does">Commits and opens one pull request for each part.<q>Commit and open a pull request for each part.</q></div><p data-h="You check">Pull requests: link the issue and the knowledge merge commit.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="team-h">
+    <h2 id="team-h">Limits</h2>
+    <ul class="limits">
+      <li><b>Reviewer:</b> never reviews its own change.</li>
+      <li><b>Each role reports:</b> changes, IDs, check results, open questions.</li>
+      <li><b>A gap found in code:</b> back to the knowledge writer.</li>
+      <li><b>Commits, pushes, pull requests:</b> the coordinator, only when you ask.</li>
+      <li><b>Merges:</b> the owners.</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="try-h">
+    <h2 id="try-h">Run it with your own agent</h2>
+    <ol class="try">
+      <li>Create a workspace with the <a href="index.html#install">install command</a>.</li>
+      <li>Open your agent in it.</li>
+      <li>Give it the issue:<q>Lend books for 21 days by default, not 14. Work as the team of this workspace.</q></li>
+    </ol>
+    <h3>Check the run</h3>
+    <ul class="limits">
+      <li><b>It asks before it writes</b>, one question at a time. <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/workflow.md#questions">Questions</a></li>
+      <li><b>It changes the knowledge before the code.</b> <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/workflow.md#rules">Workflow</a></li>
+      <li><b>It runs the impact and the checks</b>, and reports what they print. <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/check.md">Check the docs</a></li>
+    </ul>
+  </section>
+
   <section aria-labelledby="gives-h">
     <h2 id="gives-h">Files in a workspace</h2>
     <div class="gives">
@@ -105,6 +149,7 @@ CLAUDE.md      <span class="cmt">@AGENTS.md</span>
     software-knowledge/SKILL.md
     defect-triage/SKILL.md
     backend-service/SKILL.md
+    plain-writing/SKILL.md
 .claude/
   agents -&gt; ../.agents/agents
   skills -&gt; ../.agents/skills</pre>
@@ -121,57 +166,15 @@ CLAUDE.md      <span class="cmt">@AGENTS.md</span>
     </div>
   </section>
 
-  <section aria-labelledby="change-h">
-    <h2 id="change-h">One change, from the issue to the pull request</h2>
-    <p>The issue: lend books for 21 days by default, not 14. In the sample, one rule holds the default: BK-4 of Books, "a borrowed book is due back 14 days later".</p>
-    <div class="change">
-      <div><span>Step</span><span>Role</span><span>Does, with a prompt</span><span>You check</span></div>
-      <div style="--k:var(--panel)"><span class="st skip">0 · Shape<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/shape.md">Runbook</a></span><span data-h="Role" class="skip">Coordinator</span><p data-h="Does" class="skip">Skipped: the issue already says 21 days.</p><p data-h="You check" class="skip">—</p></div>
-      <div style="--k:var(--panel)"><span class="st">1 · Issue</span><span data-h="Role">Coordinator</span><div data-h="Does">Reads the issue and traces the rule.<pre>python3 scripts/impact.py BK-4</pre><q>Read this issue and trace the rule it changes.</q></div><p data-h="You check">The roles it needs. The response keeps its shape, so no contract designer.</p></div>
-      <div style="--k:var(--l1;--ki:var(--l1i))"><span class="st">2 · Knowledge<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/artifact-rule.md">Runbook</a></span><span data-h="Role"><code>knowledge-writer</code></span><div data-h="Does">Changes the default in BK-4 from 14 to 21, then runs the checks and the impact again.<q>Use the knowledge-writer agent to change BK-4.</q></div><p data-h="You check">BK-4 reaches 6 criteria of Borrow a book, 14 scenarios of Borrowing and Returning, and the Books pages of both apps. The checks pass.</p></div>
-      <div style="--k:var(--paper)"><span class="st skip">3 · Contract<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/contract.md">Runbook</a></span><span data-h="Role" class="skip"><code>contract-designer</code></span><p data-h="Does" class="skip">Skipped: <code>due_at</code> is still a time, and no field changes.</p><p data-h="You check" class="skip">—</p></div>
-      <div style="--k:var(--cl;--ki:var(--cli))"><span class="st">4 · Apps<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/client.md">Runbook</a></span><span data-h="Role"><code>client-writer</code> × 2, in parallel</span><div data-h="Does">Mobile: the app's help text names the loan period. Web: reads only <code>due_at</code>.<q>Run one client-writer agent for each app, in parallel.</q></div><p data-h="You check">No knowledge page changes. The mobile app changes its help text; the web app has no work.</p></div>
-      <div style="--k:var(--paper)"><span class="st">5 · Review<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/check.md">Runbook</a></span><span data-h="Role"><code>reviewer</code></span><div data-h="Does">Checks that every page the impact lists still agrees with BK-4, and runs the checks.<q>Use the reviewer agent on the knowledge branch.</q></div><p data-h="You check">The verdict on the issue: ready, or what blocks it.</p></div>
-      <div style="--k:var(--paper)"><span class="st">6 · Approve</span><span data-h="Role">Owner of <code>lending</code>, the service that serves Books</span><p data-h="Does">Merges the knowledge branch.</p><p data-h="You check">The merge commit, for the code to cite.</p></div>
-      <div style="--k:var(--l3;--ki:var(--l3i))"><span class="st">7 · Code<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/workflow.md#steps">Workflow</a></span><span data-h="Role"><code>implementer</code> × 2, in parallel</span><div data-h="Does"><code>lending</code>: the new default, and its test named BK-4, with the <code>backend-service</code> skill. Mobile: the help text.<q>Run one implementer agent for each part, in parallel.</q></div><p data-h="You check">The tests name BK-4, and the test check passes.</p></div>
-      <div style="--k:var(--paper)"><span class="st">8 · Review</span><span data-h="Role"><code>reviewer</code></span><div data-h="Does">Reads the code against BK-4 and runs the tests.<q>Use the reviewer agent on the code.</q></div><p data-h="You check">Ready, or what blocks it.</p></div>
-      <div style="--k:var(--paper)"><span class="st">9 · Pull requests<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/done.md">Done</a></span><span data-h="Role">Coordinator</span><div data-h="Does">Commits and opens one pull request for each part.<q>Commit and open a pull request for each part.</q></div><p data-h="You check">Each pull request links the issue and the knowledge merge commit.</p></div>
-    </div>
-  </section>
-
-  <section aria-labelledby="team-h">
-    <h2 id="team-h">Limits</h2>
-    <ul class="limits">
-      <li><b>The reviewer</b> never reviews a change it wrote.</li>
-      <li><b>Each role reports</b> what changed, the IDs, the check results and the open questions. The next role starts from that report.</li>
-      <li><b>The implementer</b> sends a gap it finds in code back to the knowledge writer.</li>
-      <li><b>Only the coordinator</b> commits, pushes and opens pull requests, and only when you ask. The owners merge.</li>
-    </ul>
-  </section>
-
-  <section aria-labelledby="try-h">
-    <h2 id="try-h">Run it with your own agent</h2>
-    <ol class="try">
-      <li>Create a workspace with the <a href="index.html#install">install command</a>, and open your agent in it.</li>
-      <li>Give it the issue:<q>Lend books for 21 days by default, not 14. Work as the team of this workspace.</q></li>
-    </ol>
-    <h3>Check the run</h3>
-    <ul class="limits">
-      <li><b>It asks before it writes</b>, one question at a time. <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/workflow.md#questions">Questions</a></li>
-      <li><b>It changes the knowledge before the code.</b> <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/workflow.md#rules">Workflow</a></li>
-      <li><b>It runs the impact and the checks</b>, and reports what they print. <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/check.md">Check the docs</a></li>
-    </ul>
-  </section>
-
   <section aria-labelledby="tools-h">
-    <h2 id="tools-h">Reference: Claude Code and Codex</h2>
+    <h2 id="tools-h">Claude Code and Codex</h2>
     <div class="tools">
       <div class="tool">
         <h3 data-i="terminal">Claude Code</h3>
         <dl>
-          <dt>Reads</dt><dd><code>CLAUDE.md</code>, which imports <code>AGENTS.md</code>. <a href="https://code.claude.com/docs/en/memory">Docs</a></dd>
+          <dt>Reads</dt><dd><code>CLAUDE.md</code>, importing <code>AGENTS.md</code>. <a href="https://code.claude.com/docs/en/memory">Docs</a></dd>
           <dt>Finds</dt><dd>The agents in <code>.claude/agents</code> and the skills in <code>.claude/skills</code>, through the links. <a href="https://code.claude.com/docs/en/sub-agents">Subagents</a> · <a href="https://code.claude.com/docs/en/skills">Skills</a></dd>
-          <dt>Hands a step</dt><dd>Name the agent in the prompt. It runs with the tools and the model of its file, and reports back to the main session.</dd>
+          <dt>Hands a step</dt><dd>Name the agent in the prompt. It uses the tools and model of its file.</dd>
         </dl>
       </div>
       <div class="tool">
@@ -179,7 +182,7 @@ CLAUDE.md      <span class="cmt">@AGENTS.md</span>
         <dl>
           <dt>Reads</dt><dd><code>AGENTS.md</code>, from the repository root down to the folder it starts in. It does not read <code>CLAUDE.md</code>. <a href="https://developers.openai.com/codex/guides/agents-md">Docs</a></dd>
           <dt>Finds</dt><dd>The skills in <code>.agents/skills</code>. Type <code>$</code> or <code>/skills</code> to name one. <a href="https://developers.openai.com/codex/skills">Skills</a></dd>
-          <dt>Hands a step</dt><dd>The agent files are for Claude Code. Ask Codex for a subagent and point it at the file of its role. A subagent runs in the sandbox of the session and ignores the tools line, so tell the reviewer and the investigator to change nothing. <a href="https://developers.openai.com/codex/subagents">Subagents</a></dd>
+          <dt>Hands a step</dt><dd>Ask for a subagent, and point it at the file of its role. It ignores the tools line: tell read-only roles to change nothing. <a href="https://developers.openai.com/codex/subagents">Subagents</a></dd>
         </dl>
       </div>
     </div>
