@@ -1,20 +1,21 @@
 # Guide specification
 
-The behavior of the framework page. It holds no knowledge of any service or
+The framework reference. It holds no knowledge of any service or
 flow.
 
 ## Model
 
-The page is a few paragraphs of plain text, with one link for each part.
+The reading path introduces the framework's parts briefly. Optional details
+hold the file tree and links to the governing references.
 
 ## Rules
 
 | ID | Rule | Error |
 | --- | --- | --- |
 | GUIDE-1 | Withdrawn: moved to GUIDE-5. | — |
-| GUIDE-2 | Each part on the page links the page of the rules it stands for, and the page states nothing those rules do not state. | — |
+| GUIDE-2 | Each framework part in the reference links its governing page and states nothing that page does not support. | — |
 | GUIDE-3 | Withdrawn: moved to SYS-8. | — |
 | GUIDE-4 | Withdrawn: moved to SYS-8. | — |
-| GUIDE-5 | The page shows the files of a workspace as a tree, with a short note on each file, then lists the parts of the framework - governance, runbooks, scripts and the install script - with one line each and a short list of what is inside each. It uses no promotional words. | — |
+| GUIDE-5 | The reference shows the workspace files as a tree with short explanations, and explains the governance, runbooks, scripts and installer. It uses factual language without promotional claims. | — |
 
 Return to [Guide](README.md).

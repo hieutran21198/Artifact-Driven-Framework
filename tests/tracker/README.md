@@ -20,7 +20,8 @@ python3 -m unittest discover -s tests/tracker -t . -v
 
 - [browser.py](browser.py): Chromium and the local static-server fixture.
 - [test_frame_isolation.py](test_frame_isolation.py): frame origin, parent
-  access and sizing-message validation (TRK-14, F-VIEW-25).
+  access, size and scroll message validation, and embedded section navigation
+  (TRK-14, F-VIEW-25).
 - [test_scan_snapshots.py](test_scan_snapshots.py): captured inputs, stale
   responses, cache identity, read outcomes, local reloads, coverage parity and
   trusted Python imports (TRK-15, TRK-16, TRK-17, SYS-6).

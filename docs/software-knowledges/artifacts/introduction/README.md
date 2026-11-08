@@ -1,8 +1,8 @@
 # Introduction
 
-Owns the landing page of the framework: the story that shows how a goal
-becomes flows, rules, artifacts, clients and tests, the cards for each reader,
-and where the page leads. Rule prefix: `INTRO`.
+Owns the introduction on the canonical reading page: the sample that explains
+the knowledge, the meaning of impact and coverage, and where the reader goes
+next. Rule prefix: `INTRO`.
 
 Served by the service the [domain map](../../../architecture/domain-map.md) names.
 

@@ -5,38 +5,28 @@ info:
   description: >
     Contract of the introduction artifact. Written before the code (contract
     first); the landing service implements it. It has no HTTP endpoint; the
-    actions of a reader on the page are under x-commands.
+    actions of a reader on the page are under x-commands. These actions
+    describe the static reading interface, not installed workspace commands.
 servers:
   - url: http://localhost
     description: No server; the page runs in the browser of the reader.
 paths: {}
 x-commands:
-  playStory:
-    caller: The page when it opens, or a reader who presses play or pause.
+  openTopic:
+    caller: A reader who follows a topic link or opens its fragment URL.
     description: >
-      Starts the story from the step it shows, or stops it when it plays
-      (INTRO-1, INTRO-5).
+      Opens a topic on the canonical reading page through a native fragment
+      link (SYS-8, INTRO-10).
     input:
-      $ref: '#/components/schemas/PlayStoryInput'
+      $ref: '#/components/schemas/OpenTopicInput'
     output:
-      $ref: '#/components/schemas/StoryState'
-  showStep:
-    caller: A reader who picks a step, or the next or the previous one.
-    description: Stops the story and shows the step picked (INTRO-1, INTRO-5).
-    input:
-      $ref: '#/components/schemas/ShowStepInput'
-    output:
-      $ref: '#/components/schemas/StoryState'
-  explainBlock:
-    caller: A reader who points at a block of the story, or taps it.
-    description: Shows what the block is in the sample, in plain words (INTRO-9).
-    input:
-      $ref: '#/components/schemas/ExplainBlockInput'
-    output:
-      $ref: '#/components/schemas/ExplainBlockOutput'
+      type: object
   openFramework:
-    caller: A reader who follows the link to the framework page.
-    description: Opens the framework page, the technical guide (SYS-8).
+    caller: A reader who opens the former framework page URL.
+    description: >
+      Forwards framework.html to the canonical reading page. A known fragment
+      opens its matching topic or reference; no fragment or an unknown fragment opens
+      index.html#files (SYS-8).
     input:
       type: object
     output:
@@ -49,15 +39,21 @@ x-commands:
     output:
       $ref: '#/components/schemas/CopyInstallOutput'
   openMethod:
-    caller: A reader who follows the link to the how-we-work page.
-    description: Opens the page that shows how a requirement is broken down and who does what (SYS-8).
+    caller: A reader who opens the former how-we-work page URL.
+    description: >
+      Forwards how-we-work.html to the canonical reading page. A known fragment
+      opens its matching topic or reference; no fragment or an unknown fragment opens
+      index.html#knowledge (SYS-8).
     input:
       type: object
     output:
       type: object
   openAgents:
-    caller: A reader who follows the link to the agents page.
-    description: Opens the page that shows how a team runs its coding agents on a workspace (SYS-8).
+    caller: A reader who opens the former agents page URL.
+    description: >
+      Forwards agents.html to the canonical reading page. A known fragment
+      opens its matching topic or reference; no fragment or an unknown fragment opens
+      index.html#change (SYS-8).
     input:
       type: object
     output:
@@ -71,48 +67,14 @@ x-commands:
       $ref: '#/components/schemas/OpenTrackerOutput'
 components:
   schemas:
-    Step:
-      type: string
-      enum: [goal, flow, rule, artifact, client, scan, change]
-      description: A step of the story, in the order of INTRO-1.
-    PlayStoryInput:
+    OpenTopicInput:
       type: object
+      required: [topic]
       properties:
-        reduced_motion:
-          type: boolean
-          description: True when the system of the reader asks for reduced motion. Then the story does not play (INTRO-5).
-          default: false
-    ShowStepInput:
-      type: object
-      required: [step]
-      properties:
-        step:
-          $ref: '#/components/schemas/Step'
-    StoryState:
-      type: object
-      required: [step, playing]
-      properties:
-        step:
-          $ref: '#/components/schemas/Step'
-        playing:
-          type: boolean
-          description: True while the story goes from step to step by itself (INTRO-5).
-    ExplainBlockInput:
-      type: object
-      required: [block]
-      properties:
-        block:
+        topic:
           type: string
-          description: The block of the story the reader points at, such as the goal, a flow, a rule, a group or an app.
-          example: Borrowing
-    ExplainBlockOutput:
-      type: object
-      required: [text]
-      properties:
-        text:
-          type: string
-          description: What the block is in the sample, in plain words. On the scan step, a rule also says whether the scan found it (INTRO-9).
-          example: A borrowed book is due back 14 days later.
+          enum: [overview, knowledge, change, checks, install]
+          description: The topic fragment on index.html (SYS-8, INTRO-10).
     CopyInstallOutput:
       type: object
       required: [clipboard]

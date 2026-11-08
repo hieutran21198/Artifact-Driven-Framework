@@ -2,303 +2,38 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="How a requirement is broken down from a goal to a test, and who does what at each step.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>How we work · Artifact Driven</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&display=swap">
+<meta name="description" content="This topic is now part of the Artifact Driven reading guide.">
 <style>
-/* Layout: a quiet single column with generous space; the story sits on a soft panel, everything else is plain text. Light only, by choice: a clear white page with pale tints for each layer. */
-:root{
-  --paper:#fbfcfd; --panel:#f1f4f7; --ink:#1f2933; --muted:#5f6b78; --faint:#94a0ab; --rule:#e3e8ed;
-  --accent:#2f6db5; --soft:#d9822b; --ok:#4c9a5b;
-  --l0:#ecebfb; --l0i:#3d3a8a; --l1:#e2f3ec; --l1i:#1f6a4f; --l2:#fbe9ee; --l2i:#8a3352; --l3:#f6f3ec; --l3i:#6b5d3a; --cl:#e4f0fb; --cli:#245b8f;
-  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
-  --body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
-  --measure:60ch;
-  color-scheme:light;
-}
+:root{color-scheme:light}
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.75 var(--body);padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
-main{max-width:880px;margin:0 auto;padding-block:72px 96px;display:grid;grid-template-columns:minmax(0,1fr);gap:96px}
-h1,h2,h3{font-family:var(--serif);font-weight:400;text-wrap:balance;margin:0;line-height:1.2}
-h1{font-size:clamp(40px,7vw,64px)}
-h2{font-size:clamp(24px,3vw,28px)}
-h3{font-size:19px}
-p{margin:0;max-width:var(--measure)}
-a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}
-a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
-code{font-family:var(--mono);font-size:.88em}
-.label{font:400 13px/1.4 var(--body);color:var(--faint)}
-.lede{font-size:18px;color:var(--muted)}
-section{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}
-.hero{display:grid;gap:12px}
-.hero .lede{font-size:clamp(18px,2.2vw,21px)}
-.actions{display:flex;gap:24px;flex-wrap:wrap;align-items:center;margin-top:8px}
-.btn{font:500 15px/1 var(--body);padding:12px 20px;border-radius:999px;text-decoration:none;background:var(--ink);color:var(--paper)}
-.link{font-size:15px}
-
-/* story */
-.panel{position:relative;background:var(--panel);border-radius:20px;padding:24px;display:grid;gap:18px;min-width:0}
-.tip{position:absolute;left:0;top:0;z-index:5;max-width:260px;background:var(--ink);color:var(--paper);font-size:14px;line-height:1.5;padding:10px 12px;border-radius:10px;pointer-events:none;opacity:0;transition:opacity .2s}
-.tip.on{opacity:1}
-#stage .it,#stage .box{cursor:default}
-#stage .it:hover{box-shadow:0 0 0 1.5px var(--faint)}
-.steps{display:flex;gap:4px 18px;flex-wrap:wrap;align-items:center}
-.steps button{font:400 14px/1 var(--body);color:var(--faint);background:none;border:0;border-bottom:1px solid transparent;padding:6px 0;cursor:pointer;transition:color .4s,border-color .4s}
-.steps button[aria-current="step"]{color:var(--ink);border-bottom-color:var(--ink)}
-#wrap{position:relative;width:100%;overflow:hidden}
-#stage{position:absolute;left:0;top:0;transform-origin:0 0}
-#stage.instant *{transition:none!important}
-.it{position:absolute;left:0;top:0;border-radius:12px;padding:7px 11px;font-size:13px;line-height:1.35;transition:transform 1.2s cubic-bezier(.45,.05,.25,1),opacity 1s,box-shadow .8s}
-.it b{display:flex;align-items:center;gap:5px;font:400 11px/1.5 var(--body);opacity:.8}
-.ic{width:1.05em;height:1.05em;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.15em}
-.box{display:flex;align-items:flex-start;gap:6px}
-.steps button,.play,.btn,#copy{display:inline-flex;align-items:center;gap:7px}
-.role h3,.note h3{display:flex;align-items:center;gap:10px}
-.role h3 .ic,.note h3 .ic{width:20px;height:20px;color:var(--accent);stroke-width:1.6}
-.goal{background:var(--l0);color:var(--l0i)}
-.flow{background:var(--l1);color:var(--l1i)}
-.rule{background:var(--l2);color:var(--l2i);padding:4px 10px;font-size:12px;line-height:1.3;display:flex;align-items:center}
-.client{background:var(--cl);color:var(--cli)}
-.box{position:absolute;border-radius:16px;background:var(--l3);color:var(--l3i);font:400 12px/1 var(--body);padding:11px 13px;transition:opacity 1s}
-.chk{position:absolute;right:-6px;top:-6px;width:16px;height:16px;border-radius:50%;background:var(--ok);color:var(--paper);font-size:10px;display:flex;align-items:center;justify-content:center;transition:transform .8s ease,opacity .8s}
-#lines path{fill:none;stroke:var(--faint);stroke-width:1;transition:opacity 1s,stroke .8s}
-#lines path.hit{stroke:var(--soft);stroke-width:1.5}
-.it.hit{box-shadow:0 0 0 1.5px var(--soft)}
-#cap{font-size:17px;min-height:3.6em;max-width:none;color:var(--ink)}
-.play{justify-self:start;font:400 14px/1 var(--body);color:var(--muted);background:none;border:0;padding:4px 0;cursor:pointer}
-@media (prefers-reduced-motion:no-preference){
-  @keyframes breathe{50%{box-shadow:0 0 0 5px color-mix(in srgb,var(--soft) 25%,transparent)}}
-  @keyframes run{to{stroke-dashoffset:-20}}
-  .it.src{animation:breathe 2.4s ease-in-out infinite}
-  #lines path.hit{stroke-dasharray:4 6;animation:run 1.6s linear infinite}}
-@media (prefers-reduced-motion:reduce){.it,.box,.chk,#lines path,.steps button{transition:none}}
-
-.layers{display:grid;gap:12px;list-style:none;margin:0;padding:0;--step:36px}
-.layers li{position:relative;margin-left:calc(var(--d) * var(--step));display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;background:var(--k);color:var(--ki);border-radius:12px;padding:11px 16px;max-width:560px}
-.layers li strong{display:inline-flex;align-items:center;gap:7px;font-weight:500;font-size:15px;min-width:84px}
-.layers li span{font-size:14.5px;line-height:1.5}
-.layers li em{font-style:normal;font-size:13.5px;line-height:1.5;opacity:.65;margin-left:auto}
-.layers li+li::before{content:"";position:absolute;left:calc(var(--step) * -1 + 12px);top:-12px;width:calc(var(--step) - 12px);height:34px;border-left:1.5px solid var(--faint);border-bottom:1.5px solid var(--faint);border-bottom-left-radius:8px}
-@media (max-width:620px){.layers{--step:16px}.layers li{display:grid;gap:2px}.layers li em{margin-left:0}.layers li+li::before{left:calc(var(--step) * -1 + 6px);width:calc(var(--step) - 6px)}}
-
-@media (prefers-reduced-motion:no-preference){
-  @keyframes stepin{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
-  @keyframes drawdown{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
-  .layers li{animation:stepin .6s cubic-bezier(.3,.1,.2,1) both;animation-delay:calc(var(--d) * 260ms + 250ms)}
-  .layers li+li::before{animation:drawdown .35s ease-out both;animation-delay:calc(var(--d) * 260ms + 120ms)}}
-.howto{list-style:none;margin:0;padding:0;display:grid;gap:22px;counter-reset:s}
-.howto>li.dim{opacity:.35}
-.howto>li{display:grid;grid-template-columns:34px minmax(0,1fr);gap:4px 16px;counter-increment:s}
-.howto>li::before{content:counter(s);grid-row:1;width:30px;height:30px;border-radius:50%;background:var(--k);color:var(--ki);font:500 14px/30px var(--body);text-align:center}
-.howto h3{font-family:var(--body);font-size:16px;font-weight:500;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
-.howto h3 .ic{color:var(--ki)}
-.howto p{color:var(--muted);font-size:15px}
-.howto .eg{font-size:14px;color:var(--faint)}
-.howto>li.pre{counter-increment:none}
-.howto>li.pre::before{content:"0"}
-.howto .txt{display:grid;gap:4px;min-width:0}
-.howto .res{color:var(--ink);font-size:15px}
-.howto .rb{font-size:13px}
-.howto .who{margin:6px 0 0;display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr);gap:4px 14px;font-size:14px;line-height:1.5}
-.howto .who dt{color:var(--faint);display:flex;flex-wrap:wrap;gap:4px;align-items:baseline}
-.howto .who dd{margin:0;color:var(--muted)}
-@media (max-width:520px){.howto .who{grid-template-columns:minmax(0,1fr)}.howto .who dd{margin-bottom:4px}}
-a.tag{text-decoration:none}
-.src-note{font-size:14px;color:var(--faint);margin-top:24px}
-.split{position:relative;display:grid;gap:56px;background:var(--panel);border-radius:20px;padding:24px}
-#splitLines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
-#splitLines path{fill:none;stroke:var(--ki);stroke-opacity:.5;stroke-width:1.3;transition:opacity .3s,stroke .3s}
-.req{font-family:var(--serif);font-size:clamp(18px,2.2vw,21px);line-height:1.9;max-width:none;position:relative}
-.hl{border-radius:5px;padding:2px 5px;transition:opacity .3s;cursor:default;box-decoration-break:clone;-webkit-box-decoration-break:clone}
-.buckets{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;position:relative}
-.bucket{display:grid;gap:6px;align-content:start;transition:opacity .3s}
-.bucket b{display:flex;align-items:center;gap:6px;font-weight:500;font-size:13px;color:var(--ki);padding:6px 9px;border-radius:9px;background:var(--k)}
-.bucket b i{font-style:normal;opacity:.7}
-.bucket span{font-size:13px;line-height:1.35;color:var(--ink);background:var(--paper);border-radius:8px;padding:6px 9px}
-[data-b="1"]{--k:var(--l0);--ki:var(--l0i)} [data-b="2"]{--k:var(--l1);--ki:var(--l1i)} [data-b="3"]{--k:var(--l2);--ki:var(--l2i)}
-[data-b="4"]{--k:var(--l3);--ki:var(--l3i)} [data-b="5"]{--k:var(--cl);--ki:var(--cli)} [data-b="6"]{--k:#e7ebee;--ki:var(--ink)}
-.hl[data-b]{background:var(--k);color:var(--ki)}
-.split .dim{opacity:.25}
-.howto>li{transition:opacity .3s}
-@media (max-width:760px){.buckets{grid-template-columns:repeat(2,minmax(0,1fr))}#splitLines{display:none}.split{gap:24px}}
-.tag{font:400 11.5px/1 var(--body);color:var(--muted);border:1px solid var(--rule);border-radius:999px;padding:4px 9px;margin-left:4px;white-space:nowrap}
-.howto{gap:36px}
-.howto>li{grid-template-columns:34px minmax(0,1fr) minmax(0,330px);align-items:start}
-.howto .fig{grid-column:3;grid-row:1;align-self:start;background:var(--panel);border-radius:14px;padding:14px 16px;font-size:13px;line-height:1.5;color:var(--ink);display:grid;gap:8px;min-width:0}
-.fig .t{font-size:12px;color:var(--faint)}
-.fig ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
-.fig ul li{display:flex;gap:7px;align-items:flex-start}
-.fig ul li .ic{color:var(--ok);margin-top:3px}
-.fig svg.seq{width:100%;height:auto;color:var(--muted)}
-.fig table{border-collapse:collapse;width:100%}
-.fig td{padding:4px 0;vertical-align:top}
-.fig td:nth-child(2){color:var(--faint);padding:4px 8px}
-.fig mark{background:var(--l2);color:var(--l2i);border-radius:4px;padding:0 3px}
-.fig .doms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.fig .dom{background:var(--l3);color:var(--l3i);border-radius:10px;padding:8px;display:grid;gap:5px;align-content:start}
-.fig .dom b{font-weight:500;display:flex;gap:5px;align-items:center}
-.fig .dom span{background:var(--l2);color:var(--l2i);border-radius:6px;padding:2px 6px;font-size:12px}
-.fig .dom small{font-size:11px;opacity:.75}
-.fig pre{margin:0;padding:0;background:none;border-radius:0;font:12px/1.6 var(--mono);overflow-x:auto;white-space:pre}
-.fig pre em{font-style:normal;background:var(--cl);color:var(--cli);border-radius:3px;padding:0 2px}
-.fig .ok{color:var(--ok)}
-@media (max-width:760px){.howto>li{grid-template-columns:34px minmax(0,1fr)}.howto .fig{grid-column:2;grid-row:auto;margin-top:8px}}
-/* questions */
-.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:40px 32px}
-.role{display:grid;gap:10px;align-content:start}
-.role p{font-size:15px;color:var(--muted)}
-.role ul{margin:4px 0 0;padding:0;list-style:none;display:grid;gap:10px}
-.role li{font-size:15px;line-height:1.5}
-pre{margin:0;background:var(--panel);border-radius:14px;padding:18px 20px;overflow-x:auto;font:14px/1.7 var(--mono);color:var(--ink)}
-#cmd{white-space:pre-wrap;overflow-wrap:anywhere}
-.cmt{color:var(--faint)}
-.notes{display:grid;gap:28px}
-.note{display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:8px 32px;padding-top:24px;border-top:1px solid var(--rule)}
-.note p{color:var(--muted)}
-.note .how{font-size:14px;color:var(--faint);margin-top:6px}
-@media (max-width:620px){.note{grid-template-columns:minmax(0,1fr)}}
-.install{display:flex;gap:12px;align-items:stretch;flex-wrap:wrap}
-.install pre{flex:1 1 320px;min-width:0}
-#copy{font:400 14px/1 var(--body);border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:999px;padding:0 18px;min-height:44px;cursor:pointer;align-self:center}
-footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);padding-top:24px;border-top:1px solid var(--rule)}
-
-.top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:14px}
-.top a{text-decoration:none}
-.top .nav{display:flex;gap:16px;flex-wrap:wrap}
-main{max-width:1080px}
-.tag.s{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 35%,transparent)}
-.words{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-.words div{background:var(--panel);border-radius:14px;padding:16px 18px;display:grid;gap:8px;align-content:start}
-.words h3{font-size:17px;display:flex;align-items:center;gap:8px}
-.words h3 .ic{color:var(--accent)}
-.words dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;font-size:14.5px}
-.words dt{color:var(--muted)}
-.words dd{margin:0}
+body{margin:0;background:#fbfcfd;color:#1f2933;font:16px/1.7 "IBM Plex Sans","Helvetica Neue",Arial,sans-serif;padding:36px 20px}
+main{max-width:680px;margin:auto}
+h1{font:400 clamp(32px,7vw,48px)/1.2 "Source Serif 4",Georgia,serif}
+a{color:#245f9f;text-underline-offset:3px;overflow-wrap:anywhere}
+a:focus-visible{outline:2px solid #245f9f;outline-offset:4px}
+li{margin-block:8px}
+nav{margin-top:32px;border-top:1px solid #dce3e9;padding-top:18px;display:flex;gap:16px;flex-wrap:wrap}
 </style>
+<script>
+const aliases = {"howto-h":"knowledge","split":"knowledge","words-h":"terms","change-h":"change","team-h":"limits","try-h":"install","gives-h":"files","tools-h":"tools","install-h":"install","structure-h":"knowledge","story-h":"knowledge","helps-h":"checks"};
+const topics = ['overview', 'knowledge', 'change', 'checks', 'install', 'files', 'tools', 'terms', 'limits'];
+const hash = location.hash.slice(1);
+const topic = Object.prototype.hasOwnProperty.call(aliases, hash) ? aliases[hash] : (topics.includes(hash) ? hash : "knowledge");
+location.replace('index.html' + location.search + '#' + topic);
+</script>
 </head>
 <body>
 <main>
-  <header class="hero">
-    <nav class="top"><a href="index.html">← Artifact Driven</a><span class="nav"><a href="agents.html">Coding agents</a><a href="framework.html">Framework</a><a href="tracker/">Project tracker</a></span></nav>
-    <h1>How we work</h1>
-  </header>
-
-  <section aria-labelledby="howto-h">
-    <h2 id="howto-h">Break down the requirement</h2>
-    <div class="split" id="split">
-      <svg id="splitLines" aria-hidden="true"></svg>
-      <p class="req">Requirement: <span class="hl" data-b="1">a member reads books at home</span>, <span class="hl" data-b="2">borrows</span> <span class="hl" data-b="3">up to the loan limit</span>, <span class="hl" data-b="3">only from the shelf</span>, <span class="hl" data-b="3">for 14 days</span>, and <span class="hl" data-b="2">brings them back</span>; <span class="hl" data-b="3">a late book is overdue</span>.</p>
-      <div class="buckets">
-        <div class="bucket" data-b="1"><b data-i="goal"><i>1</i> Goal</b><span>Borrow a book</span></div>
-        <div class="bucket" data-b="2"><b data-i="flow"><i>2</i> Flows</b><span>Borrowing</span><span>Returning</span></div>
-        <div class="bucket" data-b="3"><b data-i="rule"><i>3</i> Rules</b><span>Up to the loan limit</span><span>On the shelf only</span><span>Due in 14 days</span><span>Marked overdue</span></div>
-        <div class="bucket" data-b="4"><b data-i="artifact"><i>4</i> Artifacts</b><span>Members</span><span>Books</span></div>
-        <div class="bucket" data-b="5"><b data-i="app"><i>5</i> Apps</b><span>Website</span><span>Phone app</span></div>
-        <div class="bucket" data-b="6"><b data-i="scan"><i>6</i> Tests</b><span>Up to the loan limit ✓</span><span>On the shelf only ✓</span><span>Due in 14 days ✓</span><span>Marked overdue</span></div>
-      </div>
-    </div>
-    <ol class="howto">
-      <li class="pre" data-b="0" style="--k:var(--panel);--ki:var(--ink)"><div class="txt"><h3 data-i="flag">Make the need clear</h3><p class="res">Remind members before the due date.</p><dl class="who"><dt>Product owner</dt><dd>describe the need, pick one option</dd><dt>Solution architect</dt><dd>list the rules it touches, write the options, ask about the pick</dd><dt>Developer</dt><dd>give the cost of each option</dd></dl><p class="rb"><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/shape.md">Runbook: shape a need into a goal</a></p></div><div class="fig"><span class="t">Issue · members bring books back late</span><table><tr><td>Holds today</td><td>→</td><td>Due in 14 days. A book not back by then is overdue. A member with an overdue book cannot borrow.</td></tr><tr><td>Options</td><td>→</td><td>Remind before the due date: adds a notice. Shorter loans: changes the loan period. Block borrowing: a rule does it already.</td></tr><tr><td>Chosen</td><td>→</td><td>Remind before the due date</td></tr><tr><td>Questions</td><td>→</td><td>How long before? Again when it is overdue?</td></tr></table></div></li>
-      <li style="--k:var(--l0);--ki:var(--l0i)"><div class="txt"><h3 data-i="goal">Write the goal</h3><p class="res">A member can borrow a book and sees when it is due.</p><dl class="who"><dt>Product owner</dt><dd>gather information, write the criteria, approve the goal</dd><dt>Solution architect</dt><dd>ask what is unclear, one question at a time</dd><dt>Tests</dt><dd>one end-to-end test per criterion</dd><dt>Diagram</dt><dd>a <code>flowchart</code> of its flows</dd></dl><p class="rb">Runbook: <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/goal.md">add or change a goal</a></p></div><div class="fig"><span class="t">Goal · Borrow a book</span><ul><li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>A member borrows an available book and sees when it is due.</li><li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>A book is on loan to one member at a time.</li><li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>A member never holds more books than the limit.</li></ul></div></li>
-      <li style="--k:var(--l1);--ki:var(--l1i)"><div class="txt"><h3 data-i="flow">Split it into flows <a class="tag" href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/architecture/decisions.md#flows-written-as-examples">Specs by example</a></h3><p class="res">Book already on loan: the request is refused.</p><dl class="who"><dt>Product owner</dt><dd>confirm each scenario</dd><dt>Solution architect</dt><dd>write the flows and their scenarios</dd><dt>Developer</dt><dd>approve the flows your services run</dd><dt>Tests <a class="tag s" href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/architecture/decisions.md#test-styles-are-suggested-not-required">Suggested: BDD</a></dt><dd>one test per scenario, in the service that runs the step</dd><dt>Diagram</dt><dd>a <code>sequenceDiagram</code>, one <code>alt</code> per failure</dd></dl><p class="rb">Runbook: <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/flow.md">add or change a flow</a></p></div><div class="fig"><span class="t">Flow · Borrowing</span><svg class="seq" viewBox="0 0 320 178" role="img" aria-label="Sequence: the member asks the app to borrow, the app asks the library service, which refuses a book on loan or lends it for 14 days">
-<defs><marker id="sa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="currentColor" stroke-width="1.5"/></marker></defs>
-<g font-size="11" fill="currentColor" text-anchor="middle"><text x="40" y="14">Member</text><text x="160" y="14">App</text><text x="270" y="14">Library service</text></g>
-<g stroke="currentColor" stroke-width="1" stroke-dasharray="3 4" opacity=".5"><path d="M40 22V170"/><path d="M160 22V170"/><path d="M270 22V170"/></g>
-<g stroke="currentColor" stroke-width="1.2" fill="none" marker-end="url(#sa)"><path d="M40 44H156"/><path d="M160 70H266"/></g>
-<g stroke="currentColor" stroke-width="1.2" fill="none" stroke-dasharray="4 3" marker-end="url(#sa)"><path d="M270 114H164"/><path d="M270 154H164"/></g>
-<g font-size="11" fill="currentColor" text-anchor="middle"><text x="100" y="38">Borrow this book</text><text x="215" y="64">borrow</text><text x="215" y="110">Refused</text><text x="215" y="148">On loan, due in 14 days</text></g>
-<rect x="150" y="80" width="165" height="84" rx="6" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/>
-<path d="M150 124H315" stroke="currentColor" stroke-width=".8" stroke-dasharray="3 3" opacity=".6"/>
-<g font-size="10" fill="currentColor" opacity=".8"><text x="156" y="92">if the book is on loan</text><text x="156" y="136">else</text></g>
-</svg></div></li>
-      <li style="--k:var(--l2);--ki:var(--l2i)"><div class="txt"><h3 data-i="rule">Pull out the rules</h3><p class="res">Only a book on the shelf can be lent.</p><dl class="who"><dt>Product owner</dt><dd>confirm each rule</dd><dt>Solution architect</dt><dd>write each rule</dd><dt>Tests <a class="tag s" href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/architecture/decisions.md#test-styles-are-suggested-not-required">Suggested: TDD</a></dt><dd>one unit test per rule, named after its ID</dd><dt>Diagram</dt><dd>none: the rules are a table</dd></dl><p class="rb">Runbook: <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/artifact-rule.md">change an artifact rule</a></p></div><div class="fig"><span class="t">Step → rule</span><table><tr><td>borrow <mark>only</mark> from the shelf</td><td>→</td><td>On the shelf only</td></tr><tr><td><mark>at most</mark> the loan limit</td><td>→</td><td>Up to the loan limit</td></tr><tr><td><mark>must</mark> be back in 14 days</td><td>→</td><td>Due in 14 days</td></tr></table></div></li>
-      <li style="--k:var(--l3);--ki:var(--l3i)"><div class="txt"><h3 data-i="artifact">Group the rules by topic <a class="tag" href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/architecture/decisions.md#one-artifact-for-each-domain">Strategic DDD</a></h3><p class="res">Books, members, notices. Service: <code>lending</code>, for Books and Members.</p><dl class="who"><dt>Solution architect</dt><dd>group the rules by topic</dd><dt>Developer</dt><dd>approve the artifacts your service serves</dd><dt>Tests</dt><dd>domain unit tests in that service</dd><dt>Diagram</dt><dd>a <code>classDiagram</code>, and a <code>stateDiagram-v2</code> for a lifecycle</dd></dl><p class="rb">Runbook: <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/new-artifact.md">start an artifact</a></p></div><div class="fig"><span class="t">Artifacts</span><div class="doms"><div class="dom"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>Books</b><span>On the shelf only</span><span>Due in 14 days</span><span>Marked overdue</span></div><div class="dom"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Members</b><span>Up to the loan limit</span></div><div class="dom"><b><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-9 5.7a2 2 0 0 1-2 0L2 7"/></svg>Notices</b><span>One reader each</span></div></div></div></li>
-      <li style="--k:var(--cl);--ki:var(--cli)"><div class="txt"><h3 data-i="app">Note what each app needs <a class="tag" href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/architecture/decisions.md#contracts-before-code">Contract first</a></h3><p class="res">The phone app reads the due date of a book.</p><dl class="who"><dt>Solution architect</dt><dd>write the contract before the code</dd><dt>Developer</dt><dd>note what each app reads, approve the contract</dd><dt>Tests <a class="tag s" href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/architecture/decisions.md#test-styles-are-suggested-not-required">Suggested: contract tests</a></dt><dd>one test per field an app reads</dd><dt>Diagram</dt><dd>the OpenAPI contract, with examples</dd></dl><p class="rb">Runbook: <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/contract.md">add or change a contract</a>, <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/client.md">describe what an app reads</a></p></div><div class="fig"><span class="t">Contract · what the phone app reads</span><pre>POST /v1/books/{id}/borrow
-
-{
-  "id": 1,
-  "title": "A Field Guide to Birds",
-  <em>"status"</em>: "on_loan",
-  <em>"due_at"</em>: "2030-01-15T18:00:00Z"
-}</pre></div></li>
-      <li style="--k:var(--panel);--ki:var(--ink)"><div class="txt"><h3 data-i="scan">Mention the rule in its test</h3><p class="res">Test: names BK-3, "only a book on the shelf". Scan: finds it.</p><dl class="who"><dt>Product owner</dt><dd>read the coverage on the project tracker</dd><dt>Solution architect</dt><dd>review the code against the rules</dd><dt>Developer</dt><dd>write the code, and tests that name their rule</dd><dt>Tests</dt><dd>the scan counts a failing test too: make it pass first</dd></dl><p class="rb">Runbook: <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/check.md">check the docs and the tests</a></p></div><div class="fig"><span class="t">Test and scan</span><pre>// BK-3: only a book on the shelf
-func TestLendBookOnLoan(t *testing.T) {
-  err := onLoanBook().Lend(member)
-  assert.Error(t, err)
-}</pre><span><span class="ok">✓</span> Scan: BK-3 found in lend_test.go</span></div></li>
-    </ol>
-  </section>
-
-
-  <section aria-labelledby="words-h">
-    <h2 id="words-h">Words you already use</h2>
-    <div class="words">
-      <div><h3 data-i="flag">In a product owner's words</h3><dl><dt>User story</dt><dd>The need of a goal</dd><dt>Acceptance criteria</dt><dd>The success criteria of a goal</dd></dl></div>
-      <div><h3 data-i="grid">In a solution architect's words</h3><dl><dt>Use case</dt><dd>A flow</dd><dt>Bounded context</dt><dd>An artifact</dd></dl></div>
-    </div>
-  </section>
-
-  <footer>
-    <a href="index.html">Artifact Driven</a>
-    <a href="agents.html">Coding agents</a>
-    <a href="framework.html">Framework</a>
-    <a href="tracker/">Project tracker</a>
-    <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/workflow.md">Workflow</a>
-  </footer>
+  <h1>How we work is now in one guide</h1>
+  <p><a href="index.html#knowledge">Continue to the Artifact Driven guide</a>.</p>
+  <p>If you are not redirected, choose the topic you need:</p>
+  <ul>
+    <li id="howto-h"><a href="index.html#knowledge">Knowledge and the borrowing example</a></li>
+    <li id="words-h"><a href="index.html#terms">Terms</a></li>
+  </ul>
+  <nav aria-label="Guide and tracker"><a href="index.html#overview">What it is</a><a href="index.html#knowledge">Knowledge</a><a href="index.html#change">A change</a><a href="index.html#checks">Checks</a><a href="index.html#install">Start</a><a href="tracker/">Project tracker</a></nav>
 </main>
-
-<script>
-const ICON = {
-  goal:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
-  flow:'<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>',
-  rule:'<path d="M12 3v18"/><path d="M7 21h10"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/><path d="m2 16 3-8 3 8c-.9.6-1.9 1-3 1s-2.1-.4-3-1Z"/><path d="m16 16 3-8 3 8c-.9.6-1.9 1-3 1s-2.1-.4-3-1Z"/>',
-  artifact:'<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9L9.6 3.9A2 2 0 0 0 7.9 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>',
-  app:'<rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>',
-  phone:'<rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/>',
-  test:'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
-  scan:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
-  change:'<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
-  book:'<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>',
-  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/>',
-  mail:'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-9 5.7a2 2 0 0 1-2 0L2 7"/>',
-  briefcase:'<rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
-  grid:'<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
-  flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/>',
-  code:'<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>',
-  terminal:'<path d="m4 17 6-6-6-6"/><path d="M12 19h8"/>',
-  calendar:'<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>',
-  copy:'<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2"/>',
-  play:'<path d="m6 3 14 9-14 9z"/>',
-  pause:'<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',
-  link:'<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>'
-};
-const ic = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
-document.querySelectorAll('[data-i]').forEach(e => e.insertAdjacentHTML('afterbegin', ic(e.dataset.i)));
-
-const split = document.getElementById('split'), splitLines = document.getElementById('splitLines');
-document.querySelectorAll('.howto>li:not(.pre)').forEach((li, i) => li.dataset.b = i + 1);
-function drawSplit() {
-  const s = split.getBoundingClientRect();
-  splitLines.innerHTML = [...split.querySelectorAll('.hl')].map(h => {
-    const a = h.getClientRects()[0], b = split.querySelector(`.bucket[data-b="${h.dataset.b}"] b`).getBoundingClientRect();
-    const x1 = a.left + a.width / 2 - s.left, y1 = a.bottom - s.top + 2, x2 = b.left + b.width / 2 - s.left, y2 = b.top - s.top - 2, m = (y1 + y2) / 2;
-    return `<path data-b="${h.dataset.b}" d="M${x1} ${y1} C${x1} ${m},${x2} ${m},${x2} ${y2}"/>`;
-  }).join('');
-}
-function focusStep(b) {
-  split.querySelectorAll('[data-b]').forEach(e => e.classList.toggle('dim', !!b && e.dataset.b !== b));
-  document.querySelectorAll('.howto>li').forEach(e => e.classList.toggle('dim', !!b && e.dataset.b !== b));
-}
-document.querySelectorAll('#split [data-b], .howto>li').forEach(e => {
-  e.addEventListener('mouseenter', () => focusStep(e.dataset.b));
-  e.addEventListener('mouseleave', () => focusStep(null));
-});
-new ResizeObserver(drawSplit).observe(split);
-document.fonts && document.fonts.ready.then(drawSplit);
-</script>
 </body>
 </html>

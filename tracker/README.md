@@ -59,7 +59,8 @@ opaque origin. It cannot access tracker settings, storage, tokens or the
 parent document, or navigate the parent (TRK-14).
 
 Each rendered document gets a new frame and an identifier. A small message
-exchange reports its content height and the visible viewport position. Both
+exchange reports its content height and the visible viewport position, and
+lets its section links request a scroll within that document. Both
 sides validate the sender, message type, document identifier and bounded
 numeric fields. It carries no credentials. The tracker scrolls as one page;
 the frame reports expanded controls as well as normal content.

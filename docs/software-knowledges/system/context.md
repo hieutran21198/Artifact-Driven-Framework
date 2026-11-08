@@ -45,7 +45,7 @@ flowchart LR
 
 | Part | Holds |
 | --- | --- |
-| Landing page (`index.html`) | The story of how a goal becomes flows, rules, artifacts, clients and tests, for readers who do not read the repository |
+| Reading path (`index.html`) | What the framework is, its knowledge, one change, its checks and how to start, with reference details for readers who need them |
 | `install.sh` | Creates a workspace from the shared files and the sample |
 | `scripts` | The structure, docs and test checks, impact analysis and the knowledge site |
 | Project tracker (`tracker/index.html`) | The coverage and the knowledge site of a workspace at any ref, in the browser, for readers who do not read the repository |

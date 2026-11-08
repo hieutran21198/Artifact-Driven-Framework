@@ -1,29 +1,29 @@
 # Method specification
 
-The behavior of the page that shows how a team works with the framework, from
-a goal to an artifact. It holds no knowledge of any service or flow.
+The explanation of how a team works with the framework, from a goal to an
+artifact. It holds no knowledge of any service or flow.
 
 ## Model
 
-The page has three parts in this order: the steps to break a requirement
-down, the method behind them, and who does what at each step, as one lane for
-each person - the product owner, the solution architect and the developer -
-and a column for the diagram and the tests of each step.
+The knowledge explanation and worked change show how the team turns a need
+into knowledge, code and tests. Reference details explain terms, diagrams and
+test methods when the reader needs them. People keep the decisions and
+approvals assigned by the governance.
 
 ## Rules
 
 | ID | Rule | Error |
 | --- | --- | --- |
-| MTH-1 | The page lists in order the steps to break a requirement down, from the goal to the test that names a rule, each with an example from the sample and a small diagram of that example, such as a sequence for a flow, and a diagram that splits one requirement sentence into the parts of each step. It uses only common technical words. | — |
+| MTH-1 | The page explains how to break a requirement down from a goal to flows and artifact rules, and connect those IDs to tests. A sample requirement makes the steps and their relationships concrete. Technical words have a plain explanation. | — |
 | MTH-2 | Withdrawn: moved to MTH-10. | — |
 | MTH-3 | Withdrawn: moved to MTH-11. | — |
-| MTH-4 | After the steps, the page gives the word each person already uses for a layer: a user story for a goal's need, acceptance criteria for its success criteria, a use case for a flow, and a bounded context for an artifact. | — |
+| MTH-4 | The reference relates familiar terms to the knowledge: a user story to a goal's need, acceptance criteria to its success criteria, a use case to a flow, and a bounded context to the domain an artifact describes. These comparisons do not replace the framework's definitions or add module boundaries. | — |
 | MTH-5 | Withdrawn: moved to SYS-8. | — |
 | MTH-6 | Withdrawn: moved to SYS-8. | — |
-| MTH-7 | Each step shows the diagram its layer has and the tests that prove it, as the knowledge rules and Done ask: end-to-end tests for a goal's criteria, tests in each service for a flow's scenarios, domain unit tests for an artifact's rules. A label marks a way of writing those tests that the page suggests and the rules do not ask for, such as BDD for scenarios, TDD for rules and contract tests for what an app reads. | — |
+| MTH-7 | The page identifies the diagrams and tests of each layer as the knowledge rules and Done require: end-to-end tests for goal criteria, tests in each service for flow scenarios, and domain unit tests for artifact rules. Any suggested test-writing practice, such as BDD, TDD or contract tests, is distinguished from a requirement. | — |
 | MTH-8 | Withdrawn. Each step names the known practice it uses (MTH-10); a separate list of practices added nothing. | — |
-| MTH-9 | Before the step that writes the goal, the page shows how a vague need is made clear, on the sample's example: what holds today, the options with the rules each one keeps, changes or adds, then the questions about the option chosen. Each step of the page links the runbook that holds its steps. | — |
-| MTH-10 | Each step that follows a known practice carries its name as a label, and the page links the decisions that give the reason for each. | — |
-| MTH-11 | Each step says, on the sample's example, what the product owner, the solution architect and the developer each write, read or decide in it. Who decides is who approves in the governance: the product owner a goal, the owner of each service the flows, artifacts and contracts it serves. | — |
+| MTH-9 | The worked change clarifies the need and its scope before writing knowledge, starting from the current rule. When a decision is unresolved, it compares the options and which rules they keep, change or add, then asks about the chosen option. It links the runbooks for the steps it describes. | — |
+| MTH-10 | Withdrawn. A practice badge at every step is not required to explain the method. | — |
+| MTH-11 | The sample identifies what the product owner, solution architect and developer write, read or decide. Approval follows the governance: the product owner approves a goal, and the owner of each affected part approves its share. Assigning work to an agent does not transfer that ownership. | — |
 
 Return to [Method](README.md).
