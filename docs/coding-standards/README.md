@@ -34,6 +34,9 @@ General owns the shared rule conventions used by every language standard.
 
 - Use UTF-8 text, LF line endings and a final newline. Follow
   [`.editorconfig`](../../.editorconfig).
+- Extra blank lines at the end of a file do not block review or CI. Keep
+  checks for trailing whitespace, spaces before tabs in indentation and
+  conflict markers.
 - Write short, factual explanations. Distinguish proposals from accepted
   decisions and available commands from planned capabilities.
 - Keep one authoritative copy of a rule or explanation. Link to that copy.
