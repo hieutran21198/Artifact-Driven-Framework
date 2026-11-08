@@ -48,10 +48,11 @@ each.
 | INTRO-11 | Withdrawn: moved to MTH-1. | — |
 | INTRO-12 | Withdrawn: moved to MTH-2. | — |
 | INTRO-13 | Withdrawn: moved to SYS-8. | — |
-| INTRO-14 | After the story, the page lists situations of a team's day - a rule changes, a defect is reported, someone joins, a release is near, a stakeholder asks how it goes, the docs drift from the code - each with the question it raises, what in the framework answers it, and an example from the sample. It states no cost, duration or speed. | — |
+| INTRO-14 | Withdrawn: moved to INTRO-19. | — |
 | INTRO-15 | Withdrawn: moved to SYS-8. | — |
-| INTRO-16 | Withdrawn. Each step names the known practice it uses (MTH-2); a separate list of practices added nothing. | — |
+| INTRO-16 | Withdrawn. Each step names the known practice it uses (MTH-10); a separate list of practices added nothing. | — |
 | INTRO-17 | Withdrawn: moved to SYS-8. | — |
+| INTRO-19 | After the story, the page lists situations of a team's day - a rule changes, a tester reports a defect, someone joins, a release is near, a stakeholder asks what has tests, the docs drift from the code - each with what in the framework handles it and an example from the sample. It states no cost, duration or speed. | — |
 
 ## Lifecycle
 
