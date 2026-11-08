@@ -37,4 +37,25 @@ token; a load then needs only the commit and the file tree from the API.
 An address such as `tracker/?workspace=owner/repo&ref=main` opens and loads
 that workspace. Settings lists what the browser keeps, and where.
 
+## Embedded site
+
+The knowledge site runs in a sandboxed frame with scripts enabled and an
+opaque origin. It cannot access tracker settings, storage, tokens or the
+parent document, or navigate the parent (TRK-14).
+
+Each rendered document gets a new frame and an identifier. A small message
+exchange reports its content height and the visible viewport position. Both
+sides validate the sender, message type, document identifier and bounded
+numeric fields. It carries no credentials. The tracker scrolls as one page;
+the frame reports expanded controls as well as normal content.
+
+## Check changes
+
+There is no build step or runtime package installation. See
+[browser test setup](../tests/README.md), then run:
+
+```sh
+python3 -m unittest discover -s tests/tracker -t . -v
+```
+
 Return to the [project contents](../README.md).
