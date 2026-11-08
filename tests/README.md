@@ -38,5 +38,6 @@ python3 -m unittest discover -s tests -t .
 - [install](install/README.md): `install.sh`.
 - [tracker](tracker/README.md): frame isolation, consistent scans and real
   browser/CLI coverage parity.
+- [hooks](hooks/README.md): the framework-only developer pre-push hook.
 
 Return to the [project contents](../README.md).

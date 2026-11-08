@@ -62,6 +62,8 @@ own knowledge. Every directory has a `README.md` that explains its purpose.
 10. [index.html](index.html): the landing page of the framework.
 11. [Project tracker](tracker/README.md): the coverage and the knowledge site
     of a workspace at any branch, tag or commit, in the browser.
+12. [Developer hook](.githooks/README.md): opt-in pre-push checks and whitespace
+    repair for this repository only.
 
 ## Check a change
 
@@ -76,3 +78,8 @@ cd /tmp/ad-check && git init -q && python3 scripts/check_structure.py && python3
 
 `AD_SOURCE` copies from a local copy instead of GitHub; use a clean one, since
 it copies untracked files too.
+
+## License
+
+Artifact Driven is available under the [MIT License](LICENSE).
+Third-party materials and dependencies remain subject to their own licenses.

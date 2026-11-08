@@ -101,14 +101,9 @@ Rules:
 
 The checks need Git and Python 3. They use the Python standard library and do
 not install packages or change files.
-[Check the docs](docs/governances/artifact-driven/runbooks/check.md) explains
-each one.
-
-```sh
-python3 scripts/check_structure.py
-python3 scripts/check_docs.py
-git diff --check
-```
+Follow [Check the docs](docs/governances/artifact-driven/runbooks/check.md)
+for the structure, docs and whitespace commands, including staged changes and
+the complete pull request diff in CI.
 
 For a service or client change, check that its tests name only knowledge IDs
 that exist:
@@ -128,9 +123,6 @@ To see what depends on a knowledge ID, an operation or a response field:
 ```sh
 python3 scripts/impact.py <ID|operationId|field>
 ```
-
-For staged changes, also run `git diff --cached --check`. Read new, untracked
-files during review because `git diff` does not include them.
 
 For a change to a part, run the checks in its README and the gates of its
 language standard, such as the [Go gates](docs/coding-standards/golang/README.md#gates).
