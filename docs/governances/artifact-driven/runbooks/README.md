@@ -8,6 +8,7 @@ artifacts) as a sample.
 | Runbook | Use it when |
 | --- | --- |
 | [Change the system](system.md) | A system-wide requirement, actor, service, client or term is new or changes. |
+| [Shape a need into a goal](shape.md) | A need is new or vague: nobody can yet say who needs what and how to check it. |
 | [Add or change a goal](goal.md) | A business need is new, or its success criteria change. |
 | [Add or change a flow](flow.md) | Behavior crosses artifacts, services or clients. |
 | [Change an artifact rule](artifact-rule.md) | A rule, the model or the lifecycle of one domain changes. |
