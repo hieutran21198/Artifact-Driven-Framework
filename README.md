@@ -78,3 +78,8 @@ cd /tmp/ad-check && git init -q && python3 scripts/check_structure.py && python3
 
 `AD_SOURCE` copies from a local copy instead of GitHub; use a clean one, since
 it copies untracked files too.
+
+## License
+
+Artifact Driven is available under the [MIT License](LICENSE).
+Third-party materials and dependencies remain subject to their own licenses.
