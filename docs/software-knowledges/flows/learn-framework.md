@@ -76,7 +76,7 @@ sequenceDiagram
 | F-LEARN-9 | Withdrawn: moved to F-LEARN-25. | — | — | — |
 | F-LEARN-10 | The page file served with no access to another host | The reader opens it, which calls `playStory` | The story plays through all its steps, in the fonts of the system | INTRO-8 |
 | F-LEARN-11 | The story playing at the rule step | The reader points at a rule, which calls `explainBlock` | The rule is explained in plain words, and the story does not move on until the reader points away | INTRO-9, INTRO-5 |
-| F-LEARN-12 | A solution architect on the landing page | The reader calls `openFramework` | The framework page lists its parts with one sentence each, then the files of a workspace as a tree with a note on each file the parts give it | GUIDE-5 |
+| F-LEARN-12 | A solution architect on the landing page | The reader calls `openFramework` | The framework page shows the files of a workspace as a tree with a note on each file, then lists its parts with one line each | GUIDE-5 |
 | F-LEARN-13 | The framework page | The reader calls `openFramework` and follows the link of each part | Each link leads to the rules of that part, and every name on the page exists in the framework | GUIDE-2, SYS-8 |
 | F-LEARN-14 | Withdrawn: moved to F-LEARN-25. | — | — | — |
 | F-LEARN-15 | The landing page and a workspace with the sample | The reader opens the page, which calls `playStory`, reads each situation, and runs what it names on the sample, such as `traceImpact` with the rule that only an available book can be lent | Each situation names what handles it and an example; the impact of that rule reaches both flows and the phone app's page, as the page says; no situation states a cost, a duration or a speed | INTRO-19, INTRO-2, INTRO-4 |

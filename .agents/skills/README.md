@@ -11,6 +11,8 @@ permissions. The [team](../agents/README.md) says which agent uses which skill.
 - [Backend service](backend-service/README.md): the endpoints, domain behavior,
   persistence, transactions, calls to other services and provider integration
   of a Go service, from approved knowledge.
+- [Plain writing](plain-writing/README.md): the text of a page, a picture
+  first, then results; cuts by example.
 
 Each directory contains a canonical `SKILL.md` and a navigation README.
 

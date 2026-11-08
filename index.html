@@ -129,7 +129,7 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
   </section>
 
   <section aria-labelledby="story-h">
-    <h2 id="story-h">Example: borrowing a book</h2>
+    <h2 id="story-h">Borrowing a book</h2>
     <div class="panel">
       <div class="steps" id="steps" role="group" aria-label="Steps of the story"></div>
       <div id="wrap" aria-hidden="true"><div id="stage"><svg id="lines" style="position:absolute;left:0;top:0;overflow:visible"></svg></div></div>
@@ -141,12 +141,12 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
   <section aria-labelledby="helps-h">
     <h2 id="helps-h">Situations</h2>
     <ol class="helps">
-      <li><h3 data-i="change">A rule changes</h3><p>List what relies on the rule.</p><p class="eg">BK-3, "only a book on the shelf can be lent", reaches both flows and the phone app.</p></li>
-      <li><h3 data-i="flag">A tester reports a defect</h3><p>Find the rule the defect breaks, and compare it with the product.</p><p class="eg">A member got a book that was on loan. BK-3 says the library refuses that.</p></li>
-      <li><h3 data-i="users">Someone joins the team</h3><p>Open the Books page.</p><p class="eg">It holds all 10 rules about books, BK-1 to BK-10.</p></li>
-      <li><h3 data-i="scan">A release is near</h3><p>Look at the rules with no test.</p><p class="eg">"A book not back in time is marked overdue" has no test yet.</p></li>
-      <li><h3 data-i="briefcase">A stakeholder asks what has tests</h3><p>The project tracker shows, for each goal, the share of its rules that a test names.</p><p class="eg"><a href="tracker/">Open the project tracker</a></p></li>
-      <li><h3 data-i="code">The docs drift from the code</h3><p>The docs check fails a change with a broken link, an unknown ID, or a page that cites the page above it, such as a rule that cites a flow.</p><p class="eg">A flow that cites BK-11 fails: the Books page has no BK-11.</p></li>
+      <li><h3 data-i="change">A rule changes</h3><p>List what relies on the rule.</p><p class="eg">BK-3, "only a book on the shelf": both flows and the phone app.</p></li>
+      <li><h3 data-i="flag">A tester reports a defect</h3><p>Find the rule it breaks. Compare it with the product.</p><p class="eg">Defect: a book on loan was lent again. Rule: BK-3, on the shelf only.</p></li>
+      <li><h3 data-i="users">Someone joins the team</h3><p>Open the Books page.</p><p class="eg">10 rules, BK-1 to BK-10.</p></li>
+      <li><h3 data-i="scan">A release is near</h3><p>Look at the rules with no test.</p><p class="eg">"A book not back in time is marked overdue": no test yet.</p></li>
+      <li><h3 data-i="briefcase">A stakeholder asks what has tests</h3><p>Project tracker: the share of each goal's rules with a test.</p><p class="eg"><a href="tracker/">Open the project tracker</a></p></li>
+      <li><h3 data-i="code">The docs drift from the code</h3><p>Docs check: fails a broken link, an unknown ID, or a rule citing a flow.</p><p class="eg">A flow citing BK-11 fails: no such rule.</p></li>
     </ol>
   </section>
 
@@ -202,12 +202,12 @@ const STEPS = ['Goal','Flows','Rules','Artifacts','Apps','Scan','A change'];
 const STEP_ICONS = ['goal','flow','rule','artifact','app','scan','change'];
 const CAPS = [
   'A goal: a member borrows a book and brings it back.',
-  'It splits into two flows: borrowing and returning. A flow is the steps a person goes through.',
-  'Each flow follows rules, such as "only a book on the shelf can be lent".',
-  'Each topic keeps its own rules: books, members and notices. Each topic is an artifact.',
-  'The website uses books and members. The phone app uses books.',
-  'The scan looks for each rule ID in the tests, without running them. Here 4 of the 6 rules have a test; a test found does not prove the code is right.',
-  'Change one rule: both flows and the phone app rely on it, and the website does not.'
+  'Flows: borrowing and returning.',
+  'Rules: such as "only a book on the shelf can be lent".',
+  'Artifacts: books, members and notices.',
+  'Apps: the website uses books and members. The phone app uses books.',
+  'Scan: 4 of the 6 rule IDs are in a test file. It runs no tests. A found ID proves no code.',
+  'A change: both flows and the phone app rely on the rule. The website does not.'
 ];
 const RULES = [
   ['On the shelf only','B',1],['Due in 14 days','B',1],['Loan limit','B',1],
@@ -298,20 +298,20 @@ function showStep(i) { playStory(false); show(i); }
 STEPS.forEach((n, i) => { const b = document.createElement('button'); b.type = 'button'; b.innerHTML = ic(STEP_ICONS[i]) + n; b.onclick = () => showStep(i); document.getElementById('steps').appendChild(b); });
 document.getElementById('play').onclick = () => playStory(!timer);
 const TIPS = {
-  goal: 'The goal: what a person wants to get done. Here, a member wants to borrow a book and bring it back.',
+  goal: 'Goal: a member borrows a book and brings it back.',
   fB: 'Borrowing: the steps from picking a book to taking it home.',
-  fR: 'Returning: the steps from bringing a book back to having it on the shelf again.',
-  r0: 'Only a book on the shelf can be lent. A book someone already has cannot be lent again.',
+  fR: 'Returning: from bringing a book back to the shelf.',
+  r0: 'Only a book on the shelf can be lent.',
   r1: 'A borrowed book is due back 14 days later.',
-  r2: 'A member can hold only a set number of books at once.',
-  r3: 'When a book comes back, it is free for the next person.',
-  r4: 'A book that is not back by its due date is marked overdue.',
-  r5: 'Each notice goes to one person only.',
-  aB: 'Books: everything about the books, such as whether one is on the shelf and when it is due.',
-  aM: 'Members: everything about the people who borrow, such as how many books they hold.',
-  aN: 'Notices: the messages the library sends, such as a note that a book is overdue.',
-  web: 'The website shows books and members, so it relies on both artifacts.',
-  mob: 'The phone app shows books, so it relies only on the Books artifact.'
+  r2: 'A member holds at most the loan limit of books.',
+  r3: 'A returned book can be lent again.',
+  r4: 'A book not back by its due date is overdue.',
+  r5: 'A notice goes to one member.',
+  aB: 'Books: shelf status and due dates.',
+  aM: 'Members: who borrows, and how many books they hold.',
+  aN: 'Notices: messages to members, such as an overdue note.',
+  web: 'Website: uses Books and Members.',
+  mob: 'Phone app: uses Books only.'
 };
 const panel = document.querySelector('.panel'), tip = document.createElement('div');
 tip.className = 'tip'; tip.setAttribute('role', 'tooltip'); panel.appendChild(tip);

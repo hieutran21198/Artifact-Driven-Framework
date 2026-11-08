@@ -54,7 +54,7 @@ the coordinator and hands each step to its agent in
 [.agents/agents](.agents/agents/README.md). The skills are
 [software-knowledge](.agents/skills/software-knowledge/SKILL.md) for knowledge
 and contracts, [defect-triage](.agents/skills/defect-triage/SKILL.md) for
-reported defects, and the skill of each part's stack, such as
+reported defects, [plain-writing](.agents/skills/plain-writing/SKILL.md) for the text of a page, and the skill of each part's stack, such as
 [backend-service](.agents/skills/backend-service/SKILL.md) for a Go service.
 
 ## Change and verify
