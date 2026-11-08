@@ -31,11 +31,11 @@ next.
    The reader points at a block with `explainBlock` to read what it is
    (INTRO-9).
 3. The reader reads the situations of a team's day (INTRO-14), then opens
-   the how-we-work page with `openMethod` or the project tracker with
-   `openTracker` (INTRO-15). A reader who runs coding agents opens the agents
-   page with `openAgents` (INTRO-17).
+   the how-we-work page with `openMethod`, the agents page with `openAgents`
+   or the project tracker with `openTracker`. Every reading page links the
+   others and the tracker (SYS-8).
 4. A technical reader opens the framework page with `openFramework`, and
-   reads what the framework holds (GUIDE-1 to GUIDE-4).
+   reads what the framework holds (GUIDE-1, GUIDE-2).
 5. The reader copies the install command with `copyInstall` and runs
    `installWorkspace` in a shell. The new workspace holds the sample that the
    story showed (WS-4).
@@ -73,21 +73,24 @@ sequenceDiagram
 | F-LEARN-6 | The whole page | The reader calls `showStep` with each step and reads every card | No text states the cost or the duration of a change, a plan or a status | INTRO-4 |
 | F-LEARN-7 | Withdrawn: moved to F-LEARN-17. | — | — | — |
 | F-LEARN-8 | A folder that does not exist | The reader calls `copyInstall` and runs the copied command in a shell, which calls `installWorkspace` | A workspace is created in that folder from main | WS-1, WS-2, WS-4 |
-| F-LEARN-9 | A browser 360 px wide, on a system that uses a dark theme | The reader opens the page and calls `showStep` with each step | The page stays light, every step reads, and the page needs no horizontal scrolling | INTRO-7 |
+| F-LEARN-9 | Withdrawn: moved to F-LEARN-25. | — | — | — |
 | F-LEARN-10 | The page file served with no access to another host | The reader opens it, which calls `playStory` | The story plays through all its steps, in the fonts of the system | INTRO-8 |
 | F-LEARN-11 | The story playing at the rule step | The reader points at a rule, which calls `explainBlock` | The rule is explained in plain words, and the story does not move on until the reader points away | INTRO-9, INTRO-5 |
-| F-LEARN-12 | A solution architect on the landing page | The reader calls `openFramework` | The framework page says in a few paragraphs what the framework turns the governance into, lists its parts with one sentence each, what each workspace gets from them, and the files of a workspace | INTRO-13, GUIDE-1 |
-| F-LEARN-13 | The framework page | The reader calls `openFramework` and follows the link of each part | Each link leads to the rules of that part, and every name on the page exists in the framework | GUIDE-2, GUIDE-3 |
-| F-LEARN-14 | A browser 360 px wide, on a system that uses a dark theme | The reader calls `openFramework` | The page stays light, the text reads, and the page needs no horizontal scrolling | GUIDE-4 |
+| F-LEARN-12 | A solution architect on the landing page | The reader calls `openFramework` | The framework page says in a few paragraphs what the framework turns the governance into, lists its parts with one sentence each, what each workspace gets from them, and the files of a workspace | GUIDE-1 |
+| F-LEARN-13 | The framework page | The reader calls `openFramework` and follows the link of each part | Each link leads to the rules of that part, and every name on the page exists in the framework | GUIDE-2, SYS-8 |
+| F-LEARN-14 | Withdrawn: moved to F-LEARN-25. | — | — | — |
 | F-LEARN-15 | The landing page and a workspace with the sample | The reader opens the page, which calls `playStory`, reads each situation, and runs what it names on the sample, such as `traceImpact` with the rule that only an available book can be lent | Each situation names its question, what answers it and an example; the impact of that rule lists 5 criteria, 10 scenarios, two flows and the phone app's page, as the page says; no situation states a cost, a duration or a speed | INTRO-14, INTRO-2, INTRO-4 |
-| F-LEARN-16 | The landing page | The reader calls `openMethod` | The how-we-work page lists the steps to break a requirement down in order, each with its example and diagram, then the method behind them, then who does what | INTRO-15, MTH-1, MTH-2, MTH-3 |
+| F-LEARN-16 | The landing page | The reader calls `openMethod` | The how-we-work page lists the steps to break a requirement down in order, each with its example and diagram, then the method behind them, then who does what | MTH-1, MTH-2, MTH-3 |
 | F-LEARN-17 | A product owner and a solution architect on the how-we-work page | Each calls `openMethod` and reads their own lane | The product owner's lane writes the need and the criteria, answers the open questions and approves the goal; the solution architect's lane writes the flows, rules, artifacts and contracts and checks their impact; the owner of each service approves what it serves; each finds the word of their trade for each layer | MTH-3, MTH-4 |
-| F-LEARN-18 | The landing page | The reader calls `openTracker` from its top | The project tracker opens | INTRO-15 |
-| F-LEARN-19 | A browser 360 px wide, on a system that uses a dark theme | The reader calls `openMethod` | The page stays light, the lanes read, and the page needs no horizontal scrolling | MTH-5, MTH-6 |
+| F-LEARN-18 | Withdrawn: moved to F-LEARN-25. | — | — | — |
+| F-LEARN-19 | Withdrawn: moved to F-LEARN-25. | — | — | — |
 | F-LEARN-20 | A solution architect on the how-we-work page | The reader calls `openMethod` and reads the last column of each step | Each step names the diagram its layer has and the tests that prove it as the rules say, and BDD, TDD and contract tests carry a label that says they are suggested | MTH-7 |
-| F-LEARN-21 | The landing page | The reader reads the notes, then calls `openMethod` from the note on known practices | The note says the framework invents no method and names its practices; the how-we-work page lists each practice and design idea with where it shows in the knowledge | INTRO-16, MTH-8 |
-| F-LEARN-22 | The landing page and a new workspace | The reader calls `openAgents` from the link after the situations, then lists the files of the workspace | The agents page names the project instructions, the agent of each role with its tools and model, the skills and the links for Claude Code, and each one is in the workspace | INTRO-17, AGT-1, AGT-7 |
-| F-LEARN-23 | An agent operator on the agents page, with Claude Code or with Codex | The reader calls `openAgents` and reads the part of their tool and the team | The page says what the tool reads from the workspace and how a session hands each step to the agent of its role, with a prompt for each step; the flow of the team is in the order of the team page, with its limits; each fact about the tool links the tool's own documentation | AGT-2, AGT-3, AGT-4, AGT-6 |
+| F-LEARN-21 | Withdrawn. Each step names the known practice it uses (MTH-2); a separate list of practices added nothing. | — | — | — |
+| F-LEARN-22 | The landing page and a new workspace | The reader calls `openAgents`, then lists the files of the workspace | The agents page names the project instructions, the agent of each role with its tools and model, the skills and the links for Claude Code, and each one is in the workspace | AGT-1 |
+| F-LEARN-23 | An agent operator on the agents page, with Claude Code or with Codex | The reader calls `openAgents` and reads each step of the work, the team and the part of their tool | Each step names its runbook, what the person decides, what the agent does with a prompt, and what the person checks; at the step that pulls out rules the agent only proposes; the flow of the team is in the order of the team page, with its limits; the reference says what the tool reads from the workspace and how a session hands each step to the agent of its role, and each fact about the tool links the tool's own documentation | AGT-8, AGT-9, AGT-4, AGT-6 |
 | F-LEARN-24 | The agents page and a workspace with the sample | The reader follows the change of the default loan period and runs `traceImpact` with the rule that sets the due time of a loan | Each step names its role, what it runs and what it passes on; the contract designer shows as skipped because no shape changes; the impact lists 6 criteria, 14 scenarios and the phone app's page, as the page says | AGT-5, KN-8 |
+| F-LEARN-25 | Each reading page, in a browser 360 px wide on a system that uses a dark theme | The reader opens the landing page, calls `openFramework`, `openMethod` and `openAgents`, and from the top and the foot of each calls `openTracker` | Each page stays light and needs no horizontal scrolling; its top and its foot link each other reading page and the project tracker, which opens | SYS-8 |
+| F-LEARN-26 | A product owner with a vague need, on the how-we-work page | The reader calls `openMethod`, reads the step before the goal, and follows the runbook link of each step | The step shows, on the sample's example, what holds today, the options with the IDs each one keeps, changes or adds, and the questions about the option chosen; each link leads to the runbook of its step | MTH-9 |
+| F-LEARN-28 | An agent operator with Claude Code or Codex, and a new workspace | The reader calls `openAgents`, copies the prompt of the change of the default loan period and gives it to their own agent | The page lists what to watch for, each point linked to the governance that asks for it, and states no result the agent will give; the reader judges the run by that list | AGT-10 |
 
 Return to [flows](README.md).

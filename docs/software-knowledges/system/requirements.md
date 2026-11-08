@@ -12,6 +12,7 @@ goal cites them by ID.
 | SYS-5 | A new version of the framework keeps the commands, their arguments, the configuration keys and the knowledge forms that workspaces use. Knowledge that passes the checks of one version passes the checks of the next. |
 | SYS-6 | The scripts read the knowledge and the tests as text, by the forms the knowledge rules give. They never run the code or the tests of a workspace. |
 | SYS-7 | Framework-generated HTML treats workspace content as data, including configuration, names, paths, knowledge text and diagrams. In embedded JSON, HTML text, attributes and rendered diagrams, that content cannot create executable markup, event handlers or script URLs, escape its data context, or cause requests to destinations it supplies. The knowledge site retains its controls and diagram rendering; when a diagram cannot render, its source remains readable as text. This holds both for the standalone site and for the site embedded in the tracker. |
+| SYS-8 | Every reading page of the site - the landing page, the framework page, the how-we-work page and the agents page - has a light theme only, also when the reader's system uses a dark theme. At a width of 360 px it needs no horizontal scrolling. It needs no build step and loads no script from another host. At its top and at its foot it links each other reading page and the project tracker. Every name, file and ID it shows is one the framework or its sample holds. |
 
 ## Released versions
 
