@@ -57,8 +57,6 @@ section{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}
 .ic{width:1.05em;height:1.05em;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.15em}
 .box{display:flex;align-items:flex-start;gap:6px}
 .steps button,.play,.btn,#copy{display:inline-flex;align-items:center;gap:7px}
-.role h3,.note h3{display:flex;align-items:center;gap:10px}
-.role h3 .ic,.note h3 .ic{width:20px;height:20px;color:var(--accent);stroke-width:1.6}
 .goal{background:var(--l0);color:var(--l0i)}
 .flow{background:var(--l1);color:var(--l1i)}
 .rule{background:var(--l2);color:var(--l2i);padding:4px 10px;font-size:12px;line-height:1.3;display:flex;align-items:center}
@@ -95,17 +93,11 @@ section{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}
 .helps li{display:grid;gap:6px;align-content:start;padding-top:18px;border-top:1px solid var(--rule)}
 .helps h3{display:flex;align-items:center;gap:10px;font-size:18px}
 .helps h3 .ic{width:20px;height:20px;color:var(--accent);stroke-width:1.6}
-.helps .q{font-weight:500}
 .helps p{font-size:15px}
 .helps .eg{font-size:14px;color:var(--faint)}
 pre{margin:0;background:var(--panel);border-radius:14px;padding:18px 20px;overflow-x:auto;font:14px/1.7 var(--mono);color:var(--ink)}
 #cmd{white-space:pre-wrap;overflow-wrap:anywhere}
 .cmt{color:var(--faint)}
-.notes{display:grid;gap:28px}
-.note{display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:8px 32px;padding-top:24px;border-top:1px solid var(--rule)}
-.note p{color:var(--muted)}
-.note .how{font-size:14px;color:var(--faint);margin-top:6px}
-@media (max-width:620px){.note{grid-template-columns:minmax(0,1fr)}}
 .install{display:flex;gap:12px;align-items:stretch;flex-wrap:wrap}
 .install pre{flex:1 1 320px;min-width:0}
 #copy{font:400 14px/1 var(--body);border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:999px;padding:0 18px;min-height:44px;cursor:pointer;align-self:center}
@@ -116,21 +108,20 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
 <main>
   <header class="hero">
     <h1>Artifact Driven</h1>
-    <p class="lede">Write the rules of a product before its code, and trace each rule to its tests.</p>
     <div class="actions">
       <a class="btn" href="#install" data-i="terminal">Set it up</a>
       <a class="link" href="how-we-work.html">How we work</a>
       <a class="link" href="agents.html">Coding agents</a>
       <a class="link" href="tracker/">Project tracker</a>
-      <a class="link" href="framework.html">How the framework works</a>
+      <a class="link" href="framework.html">Framework</a>
     </div>
   </header>
 
   <section aria-labelledby="structure-h">
     <h2 id="structure-h">The structure</h2>
     <ol class="layers">
-      <li style="--d:0;--k:var(--l0);--ki:var(--l0i)"><strong data-i="goal">Goal</strong><span>What someone needs.</span><em>A member borrows a book.</em></li>
-      <li style="--d:1;--k:var(--l1);--ki:var(--l1i)"><strong data-i="flow">Flow</strong><span>How it happens, step by step.</span><em>Borrowing, returning.</em></li>
+      <li style="--d:0;--k:var(--l0);--ki:var(--l0i)"><strong data-i="goal">Goal</strong><span>A need, and how to check it is met.</span><em>A member borrows a book.</em></li>
+      <li style="--d:1;--k:var(--l1);--ki:var(--l1i)"><strong data-i="flow">Flow</strong><span>The steps, in order.</span><em>Borrowing, returning.</em></li>
       <li style="--d:2;--k:var(--l2);--ki:var(--l2i)"><strong data-i="rule">Rule</strong><span>What must stay true.</span><em>Only a book on the shelf can be lent.</em></li>
       <li style="--d:3;--k:var(--l3);--ki:var(--l3i)"><strong data-i="artifact">Artifact</strong><span>One topic and its rules.</span><em>Books, members, notices.</em></li>
       <li style="--d:4;--k:var(--cl);--ki:var(--cli)"><strong data-i="app">App</strong><span>Where people do it.</span><em>Website, phone app.</em></li>
@@ -138,10 +129,7 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
   </section>
 
   <section aria-labelledby="story-h">
-    <div style="display:grid;gap:6px">
-      <h2 id="story-h">Example: borrowing a book</h2>
-      <p class="lede" style="font-size:16px">A library lends books to its members. A member picks a book from the shelf and takes it home. They bring it back within 14 days, and the book goes back on the shelf. If it is late, the library sends them a note.</p>
-    </div>
+    <h2 id="story-h">Example: borrowing a book</h2>
     <div class="panel">
       <div class="steps" id="steps" role="group" aria-label="Steps of the story"></div>
       <div id="wrap" aria-hidden="true"><div id="stage"><svg id="lines" style="position:absolute;left:0;top:0;overflow:visible"></svg></div></div>
@@ -151,26 +139,15 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
   </section>
 
   <section aria-labelledby="helps-h">
-    <h2 id="helps-h">How it helps</h2>
+    <h2 id="helps-h">Situations</h2>
     <ol class="helps">
-      <li><h3 data-i="change">A rule changes</h3><p class="q">What does it affect?</p><p>Impact lists the flows, scenarios and apps that rely on it.</p><p class="eg">BK-3, "only a book on the shelf can be lent": 5 criteria, 10 scenarios, both flows and the phone app.</p></li>
-      <li><h3 data-i="flag">A defect is reported</h3><p class="q">Is the code wrong, or the rule?</p><p>Find the rule by its ID and compare it with what the product does.</p><p class="eg">A member got a book that was on loan: BK-3 says that must be refused.</p></li>
-      <li><h3 data-i="users">Someone joins the team</h3><p class="q">Where is the rule about this?</p><p>One page for each topic, one ID for each rule, kept in one place.</p><p class="eg">Every rule about books is on the Books page: 10 rules, BK-1 to BK-10.</p></li>
-      <li><h3 data-i="scan">A release is near</h3><p class="q">What has no test yet?</p><p>The scan lists the rules that no test mentions.</p><p class="eg">In the story above, "late gets flagged" has no test yet, so the scan does not find it.</p></li>
-      <li><h3 data-i="briefcase">A stakeholder asks how it goes</h3><p class="q">How much is in the product?</p><p>The project tracker shows, for each goal, how much of it the tests mention.</p><p class="eg"><a href="tracker/">Open the project tracker</a></p></li>
-      <li><h3 data-i="code">The docs drift from the code</h3><p class="q">Who notices?</p><p>The checks fail on a broken link, an unknown ID or a rule cited the wrong way, before the change is merged.</p><p class="eg">A flow that cites BK-11 fails the check: the Books page has no such rule.</p></li>
+      <li><h3 data-i="change">A rule changes</h3><p>List what relies on the rule.</p><p class="eg">BK-3, "only a book on the shelf can be lent", reaches both flows and the phone app.</p></li>
+      <li><h3 data-i="flag">A tester reports a defect</h3><p>Find the rule the defect breaks, and compare it with the product.</p><p class="eg">A member got a book that was on loan. BK-3 says the library refuses that.</p></li>
+      <li><h3 data-i="users">Someone joins the team</h3><p>Open the Books page.</p><p class="eg">It holds all 10 rules about books, BK-1 to BK-10.</p></li>
+      <li><h3 data-i="scan">A release is near</h3><p>Look at the rules with no test.</p><p class="eg">"A book not back in time is marked overdue" has no test yet.</p></li>
+      <li><h3 data-i="briefcase">A stakeholder asks what has tests</h3><p>The project tracker shows, for each goal, the share of its rules that a test names.</p><p class="eg"><a href="tracker/">Open the project tracker</a></p></li>
+      <li><h3 data-i="code">The docs drift from the code</h3><p>The docs check fails a change with a broken link, an unknown ID, or a page that cites the page above it, such as a rule that cites a flow.</p><p class="eg">A flow that cites BK-11 fails: the Books page has no BK-11.</p></li>
     </ol>
-    <p><a href="how-we-work.html">How we work: from a goal to an artifact, and who does what</a></p>
-    <p><a href="agents.html">Work with coding agents: Claude Code, Codex and a team of agents</a></p>
-  </section>
-
-  <section aria-labelledby="mean-h">
-    <h2 id="mean-h">Good to know</h2>
-    <div class="notes">
-      <div class="note"><h3 data-i="scan">Scan</h3><div><p>The scan shows which rules are in the product. It does not show that they work.</p><p class="how">How it works: it reads the test files and looks for rule IDs, such as BK-3. It does not run the tests or read the product's code.</p></div></div>
-      <div class="note"><h3 data-i="change">Impact</h3><div><p>Find every part a change affects, in seconds.</p><p class="how">How it works: it follows the links from a rule up to its flows and goal, and across to the apps that use it. It does not estimate cost or time.</p></div></div>
-      <div class="note"><h3 data-i="calendar">Plans</h3><p>Plans and progress stay in your task tracker.</p></div>
-    </div>
   </section>
 
   <section aria-labelledby="install-h" id="install">
@@ -226,15 +203,15 @@ const STEP_ICONS = ['goal','flow','rule','artifact','app','scan','change'];
 const CAPS = [
   'A goal: a member borrows a book and brings it back.',
   'It splits into two flows: borrowing and returning. A flow is the steps a person goes through.',
-  'Each flow follows a few rules, like "only a book on the shelf can be lent".',
-  'Rules are grouped by what they are about: books, members or notices. Each group is an artifact.',
+  'Each flow follows rules, such as "only a book on the shelf can be lent".',
+  'Each topic keeps its own rules: books, members and notices. Each topic is an artifact.',
   'The website uses books and members. The phone app uses books.',
-  'A scan checks which rules are already in the product. In this example, it finds 4 of the 6.',
-  'Change one rule, and you see everything it affects: both flows and the phone app. The website is not affected.'
+  'The scan looks for each rule ID in the tests, without running them. Here 4 of the 6 rules have a test; a test found does not prove the code is right.',
+  'Change one rule: both flows and the phone app rely on it, and the website does not.'
 ];
 const RULES = [
   ['On the shelf only','B',1],['Due in 14 days','B',1],['Loan limit','B',1],
-  ['Return frees it','R',1],['Late gets flagged','R',0],['One reader each','R',0]];
+  ['Return frees it','R',1],['Marked overdue','R',0],['One reader each','R',0]];
 const L = {
   wide:{W:680,H:500,goal:[220,58,230,170,230,20],fB:[200,52,75,120],fR:[200,52,405,120],chip:[104,44],
     box:{aM:[20,255,190,140],aB:[225,255,230,140],aN:[470,255,190,140]},
@@ -328,13 +305,13 @@ const TIPS = {
   r1: 'A borrowed book is due back 14 days later.',
   r2: 'A member can hold only a set number of books at once.',
   r3: 'When a book comes back, it is free for the next person.',
-  r4: 'A book that is not back by its due date is marked late.',
+  r4: 'A book that is not back by its due date is marked overdue.',
   r5: 'Each notice goes to one person only.',
   aB: 'Books: everything about the books, such as whether one is on the shelf and when it is due.',
   aM: 'Members: everything about the people who borrow, such as how many books they hold.',
-  aN: 'Notices: the messages the library sends, such as a note that a book is late.',
-  web: 'The website shows books and members, so it relies on both groups.',
-  mob: 'The phone app shows books, so it relies only on the Books group.'
+  aN: 'Notices: the messages the library sends, such as a note that a book is overdue.',
+  web: 'The website shows books and members, so it relies on both artifacts.',
+  mob: 'The phone app shows books, so it relies only on the Books artifact.'
 };
 const panel = document.querySelector('.panel'), tip = document.createElement('div');
 tip.className = 'tip'; tip.setAttribute('role', 'tooltip'); panel.appendChild(tip);
@@ -344,7 +321,7 @@ function explainBlock(e) {
   if (!t || !stage.contains(t) || t.style.opacity === '0') return hideTip();
   hover = t;
   let text = TIPS[t.id];
-  if (t.id[0] === 'r' && step >= 5) text += RULES[+t.id.slice(1)][2] ? ' The scan found it in the product.' : ' The scan did not find it in the product.';
+  if (t.id[0] === 'r' && step >= 5) text += RULES[+t.id.slice(1)][2] ? ' A test names it.' : ' No test names it yet.';
   tip.textContent = text; tip.classList.add('on');
   const p = panel.getBoundingClientRect(), r = t.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
   const x = Math.max(8, Math.min(r.left - p.left + r.width / 2 - w / 2, p.width - w - 8));

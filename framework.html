@@ -21,6 +21,7 @@
 body{margin:0;background:var(--paper);color:var(--ink);font:18px/1.75 var(--body);padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
 main{max-width:680px;margin:0 auto;padding-block:48px 96px;display:grid;grid-template-columns:minmax(0,1fr);gap:24px}
 h1{font-family:var(--serif);font-weight:400;font-size:clamp(36px,6vw,48px);line-height:1.2;margin:0 0 8px}
+h2{font-family:var(--serif);font-weight:400;font-size:24px;line-height:1.3;margin:32px 0 12px}
 p{margin:0}
 a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}
 a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
@@ -40,62 +41,55 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
 <body>
 <main>
   <nav class="top"><a href="index.html">← Artifact Driven</a><span class="nav"><a href="how-we-work.html">How we work</a><a href="agents.html">Coding agents</a><a href="tracker/">Project tracker</a></span></nav>
-  <h1>The framework</h1>
-  <p>The framework turns the governance of Artifact Driven into tools that developers and AI agents use. It has these parts:</p>
+  <h1>Framework</h1>
+  <h2>Parts</h2>
   <ul>
-    <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/README.md">Governance</a>: the rules of the method.
+    <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/README.md">Governance</a>: what the team writes, and who approves it.
       <ul>
-        <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/knowledge.md">Knowledge</a>: the layers (system, goals, flows, artifacts), IDs, citations, contracts and diagrams.</li>
+        <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/knowledge.md">Knowledge</a>: what goes on a goal, a flow and an artifact page, and how the pages cite each other.</li>
         <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/workflow.md">Workflow</a>: the steps from an issue to merged knowledge and code.</li>
         <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/team.md">Team</a>: the parts, their owners, and the roles that do each step.</li>
         <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/done.md">Done</a>: what a change needs before it counts as done.</li>
-        <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/decisions.md">Decisions</a>: why each choice was made, and what it costs.</li>
+        <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/decisions.md">Decisions</a>: the reason for each governance choice, and what it costs.</li>
       </ul></li>
-    <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/README.md">Runbooks</a>: step-by-step procedures for each kind of change.
+    <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/README.md">Runbooks</a>: the steps for each kind of change.
       <ul>
         <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/shape.md">Shape a need into a goal</a>.</li>
-        <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/goal.md">Add or change a goal</a>,<a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/flow.md">a flow</a>, <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/artifact-rule.md">an artifact rule</a> or <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/contract.md">a contract</a>.</li>
-        <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/client.md">Describe a client</a>, <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/new-artifact.md">start an artifact</a>, <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/move.md">move or split knowledge</a>, <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/remove.md">remove an operation</a>.</li>
+        <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/goal.md">Add or change a goal</a>, <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/flow.md">a flow</a>, <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/artifact-rule.md">an artifact rule</a> or <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/contract.md">a contract</a>.</li>
+        <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/client.md">Describe what an app reads</a>, <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/new-artifact.md">start an artifact</a>, <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/move.md">move or split knowledge</a>, <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/remove.md">remove an API call</a>.</li>
         <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/defect.md">Handle a reported defect</a>, <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/data-fix.md">fix stored data</a>, <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/release.md">report a release</a>, <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/runbooks/check.md">check the docs</a>.</li>
       </ul></li>
-    <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/scripts/README.md">Scripts</a>: checks that keep the knowledge consistent, and an impact analysis.
+    <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/scripts/README.md">Scripts</a>: the checks to run before a review, and the impact of a change.
       <ul>
         <li><code>check_structure</code>: every folder has a README.</li>
-        <li><code>check_docs</code>: links, anchors, IDs, citation direction, and scenarios that name what starts them.</li>
+        <li><code>check_docs</code>: broken links, unknown IDs, a page that cites the page above it, and a scenario that names no API call or command.</li>
         <li><code>check_tests</code>: tests name only IDs the knowledge holds.</li>
-        <li><code>impact</code>: what a change touches; with <code>--down</code>, <code>--stats</code>, <code>--coverage</code>, <code>--fragile</code> and <code>--questions</code>.</li>
+        <li><code>impact</code>: what a change to a rule reaches.</li>
         <li><code>site</code>: one HTML page that shows how goals, flows and artifacts link.</li>
       </ul></li>
-    <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/install.sh">Install script</a>: creates a workspace with all of the above in one command.
+    <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/install.sh">Install script</a>: one command that creates a workspace with these parts.
       <ul>
         <li><code>install.sh &lt;folder&gt; [ref]</code>, from any branch, tag or commit of the framework.</li>
-        <li>The new workspace starts with the library sample, written from system down to client needs.</li>
+        <li>The workspace starts with the library sample.</li>
       </ul></li>
   </ul>
-  <p>From these parts, each workspace gets:</p>
-  <ul>
-    <li><code>CONTRIBUTING.md</code>: how to make and check a change.</li>
-    <li><code>AGENTS.md</code> and <code>CLAUDE.md</code>: the instructions coding agents read.</li>
-    <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/.agents/agents/README.md">Agent definitions</a>: knowledge writer, contract designer, client writer, implementer, defect investigator and reviewer.</li>
-    <li><a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/.agents/skills/README.md">Skills</a>: <code>software-knowledge</code>, <code>defect-triage</code> and <code>backend-service</code>.</li>
-  </ul>
-  <p>A developer and a coding agent then follow the same rules.</p>
-  <p>The files of a workspace:</p>
+  <h2>Files of a workspace</h2>
 <pre class="tree">my-workspace/
 ├── README.md
-├── CONTRIBUTING.md
-├── AGENTS.md
-├── CLAUDE.md
+├── CONTRIBUTING.md               <span>how to make and check a change</span>
+├── AGENTS.md                     <span>instructions for coding agents</span>
+├── CLAUDE.md                     <span>imports AGENTS.md</span>
 ├── artifact-driven.json          <span>configuration the scripts read</span>
 ├── .agents/
-│   ├── agents/                   <span>agent definitions</span>
-│   └── skills/                   <span>skills</span>
+│   ├── agents/                   <span>one agent per role</span>
+│   └── skills/                   <span>software-knowledge, defect-triage, backend-service</span>
 ├── .claude/                      <span>links to .agents</span>
 ├── docs/
 │   ├── architecture/
+│   │   ├── decisions.md          <span>why the method is shaped this way</span>
 │   │   └── domain-map.md         <span>each domain and the service that serves it</span>
 │   ├── governances/
-│   │   └── artifact-driven/      <span>governance and runbooks</span>
+│   │   └── artifact-driven/
 │   ├── coding-standards/
 │   ├── infrastructure/
 │   ├── principles/
@@ -106,16 +100,16 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
 │       └── artifacts/
 │           └── &lt;artifact&gt;/       <span>README.md, specification.md, openapi.yaml,</span>
 │                                 <span>service.md, &lt;client&gt;.md</span>
-├── scripts/                      <span>checks, impact, site</span>
+├── scripts/
 ├── services/                     <span>one clone per service</span>
-├── apps/                         <span>one clone per client</span>
+├── apps/                         <span>one clone per app</span>
 └── e2e/                          <span>end-to-end tests</span></pre>
   <footer>
     <a href="index.html">Artifact Driven</a>
     <a href="how-we-work.html">How we work</a>
     <a href="agents.html">Coding agents</a>
     <a href="tracker/">Project tracker</a>
-    <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/README.md">The rules</a>
+    <a href="https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/docs/governances/artifact-driven/README.md">Governance</a>
     <a href="https://github.com/hieutran21198/Artifact-Driven-Framework">Source</a>
   </footer>
 </main>
