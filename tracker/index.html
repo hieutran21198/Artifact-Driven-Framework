@@ -173,7 +173,7 @@ tr.all td{background:var(--panel);font-weight:500}
     <section class="site" id="site" aria-labelledby="site-h" hidden>
       <h2 id="site-h">The knowledge</h2>
       <p class="label">The knowledge site of this workspace, as <code>site.py</code> builds it.</p>
-      <iframe id="view" title="Knowledge site"></iframe>
+      <iframe id="view" title="Knowledge site" sandbox="allow-scripts" scrolling="no"></iframe>
     </section>
   </main>
 
@@ -715,26 +715,54 @@ function drawCoverage(b) {
   }
 }
 
-// The site in the frame, in its light theme, as tall as its content.
+// Only the active opaque-origin document can report its content size (TRK-14).
+const SITE_LIMIT = 10000000;
+let siteFrame = null, siteViewportPending = false;
+const siteDimension = value => typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= SITE_LIMIT;
+
+function sendSiteViewport() {
+  if (!siteFrame) return;
+  const { frame, render } = siteFrame, rect = frame.getBoundingClientRect();
+  const top = Math.min(SITE_LIMIT, Math.max(0, -rect.top));
+  const height = Math.min(SITE_LIMIT, Math.max(0, Math.min(innerHeight, rect.bottom) - Math.max(0, rect.top)));
+  frame.contentWindow.postMessage({ type: "adf:site-viewport", render, top, height }, "*");
+}
+
+function scheduleSiteViewport() {
+  if (siteViewportPending) return;
+  siteViewportPending = true;
+  requestAnimationFrame(() => { siteViewportPending = false; sendSiteViewport(); });
+}
+addEventListener("scroll", scheduleSiteViewport, { passive: true });
+addEventListener("resize", scheduleSiteViewport);
+addEventListener("message", event => {
+  if (!siteFrame || event.source !== siteFrame.frame.contentWindow || event.origin !== "null") return;
+  const data = event.data;
+  if (!data || data.type !== "adf:site-size" || data.render !== siteFrame.render || !siteDimension(data.height)) return;
+  const frame = siteFrame.frame;
+  frame.style.height = (Math.ceil(data.height) + frame.offsetHeight - frame.clientHeight) + "px";
+  scheduleSiteViewport();
+});
+
 function drawSite(html) {
   $("site").hidden = false;
-  const frame = $("view");
-  // The frame never scrolls: the page scrolls once. Its height follows the
-  // content, and an open drop-down list, which does not take room of its own.
-  frame.setAttribute("scrolling", "no");
+  // A fresh frame also gives a distinct sender for each document. A late load
+  // or queued message from a removed frame cannot affect the current build.
+  const previous = $("view"), frame = previous.cloneNode(false);
+  frame.removeAttribute("srcdoc");
+  frame.style.height = "";
+  // getRandomValues also works on an HTTP static host, unlike randomUUID.
+  const render = Array.from(crypto.getRandomValues(new Uint8Array(16)), (n, i) =>
+    ([4, 6, 8, 10].includes(i) ? "-" : "") + n.toString(16).padStart(2, "0")).join("");
+  siteFrame = { frame, render };
   frame.onload = () => {
-    const doc = frame.contentDocument;
-    doc.documentElement.style.overflow = "hidden";
-    const fit = () => {
-      const lists = [...doc.querySelectorAll("details[open] > .drop-list")].map(e => e.getBoundingClientRect().bottom + 16);
-      frame.style.height = Math.ceil(Math.max(doc.body.scrollHeight, ...lists)) + "px";
-    };
-    fit();
-    new ResizeObserver(fit).observe(doc.body);
-    doc.addEventListener("toggle", fit, true);
-    if (doc.fonts) doc.fonts.ready.then(fit);
+    if (siteFrame.frame !== frame) return;
+    frame.onload = null;
+    frame.contentWindow.postMessage({ type: "adf:site-init", render }, "*");
+    sendSiteViewport();
   };
-  frame.srcdoc = html.replace(/<html([^>]*)>/i, '<html$1 data-theme="light">');
+  frame.srcdoc = html;
+  previous.replaceWith(frame);
 }
 
 // ---- Load: read, then analyse (TRK-1, TRK-2, TRK-5) ---------------------

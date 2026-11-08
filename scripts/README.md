@@ -170,8 +170,25 @@ criteria and scenarios, an impact explorer, the blast radius table, the gaps,
 the system context and the diagrams of those goals and their flows,
 and what each client needs from the responses. It reads in English or
 Vietnamese. [site.html](site.html) is its template. It reuses `impact.py` and
-needs Python 3 only. The page loads one thing from the network, the Mermaid
-library that draws the diagrams; offline, it shows their source instead.
+needs Python 3 only. The page loads fixed versions of Mermaid and its ELK
+layout from jsDelivr, and its fixed fonts from Google Fonts. Offline, it uses
+system fonts and shows the diagram source instead.
+
+Workspace content stays data in the generated page, both standalone and in
+the tracker ([SYS-7](../docs/software-knowledges/system/requirements.md)).
+The generator escapes embedded JSON and hashes the template's scripts for
+its content security policy. The template encodes text and attributes, locks
+Mermaid's configuration, and copies rendered SVG through an element,
+attribute and style allowlist. Diagrams with configuration directives,
+markup, links or resource syntax show their original source as text. Other
+parse or rendering failures also keep that source readable. The site does
+not execute workspace code.
+
+The tracker and site exchange only a document identifier and numeric sizes
+and viewport positions. The site does not read the tracker document or
+storage. See [tracker isolation](../tracker/README.md) and the
+[script tests](../tests/scripts/README.md) for verification commands.
+
 The `--routes` folders replace the folders of
 every service; the `glob` and `pattern` come from the first service that has
 `routes`.

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="/*CSP*/">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Software Knowledge</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -196,10 +197,10 @@ vi:{
 "m.clientPages":["Trang app","trang app dựa vào chúng"],"m.inAnalysis":["Route trong phân tích",(c,t)=>`trên ${t} route service của project`],
 "inThis":"Route trong phân tích này","projectNote":"Độ phủ của toàn project; các route mà phân tích này phủ được liệt kê bên dưới."
 }};
-let lang="en";try{const s=localStorage.getItem("lang");if(s in I18N)lang=s;}catch(e){}
+let lang="en";try{const s=localStorage.getItem("lang");if(Object.hasOwn(I18N,s))lang=s;}catch(e){}
 const T=k=>I18N[lang][k];
 const $=id=>document.getElementById(id), esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const col={}, out={}, inn={};
+const col=Object.create(null),out=Object.create(null),inn=Object.create(null);
 DATA.graph.nodes.forEach(([n,c])=>{col[n]=c;out[n]=[];inn[n]=[];});
 DATA.graph.edges.forEach(([a,b])=>{out[a].push(b);inn[b].push(a);});
 const pill=id=>`<span class="pill p${col[id]??3}">${esc(id)}</span>`;
@@ -208,15 +209,19 @@ const scen=DATA.flows.flatMap(f=>f.scenarios.map(s=>({...s,flow:f.title})));
 const HAS_ROUTES=Array.isArray(DATA.routes),ROUTES=DATA.routes||[];
 const covered=ROUTES.filter(r=>r.covered).length;
 const flowByPage=Object.fromEntries(DATA.flows.map(f=>[f.page,f]));
-const bySpace={};ROUTES.forEach(r=>{(bySpace[r.space]??=[]).push(r);});
-const spaces={};Object.entries(bySpace).forEach(([s,rs])=>{(spaces[rs.length<3&&!/^\/v\d/.test(s)?"other":s]??=[]).push(...rs);});
+const bySpace=Object.create(null);ROUTES.forEach(r=>{(bySpace[r.space]??=[]).push(r);});
+const spaces=Object.create(null);Object.entries(bySpace).forEach(([s,rs])=>{(spaces[rs.length<3&&!/^\/v\d/.test(s)?"other":s]??=[]).push(...rs);});
 const covers=new Set(scen.flatMap(s=>s.covers));
 const named=new Set(scen.flatMap(s=>DATA.operations.filter(o=>s.when.includes(o.id)).map(o=>o.id)));
 const appName=DATA.clientNames||{};
 
 function render(){
 document.documentElement.lang=lang;document.title=DATA.title;
-document.querySelectorAll("[data-i]").forEach(e=>{e.innerHTML=T(e.dataset.i);});
+document.querySelectorAll("[data-i]").forEach(e=>{
+ // Only these two template-owned translations contain markup. Workspace titles are text.
+ if(["guide.partsTable","guide.numbersTable"].includes(e.dataset.i))e.innerHTML=T(e.dataset.i);
+ else e.textContent=T(e.dataset.i);
+});
 document.querySelectorAll("[data-lang]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===lang));
 $("stamp").textContent=T("stamp")(DATA.built,DATA.commit);
 const m=[["m.goals",DATA.goals.length],["m.flows",DATA.flows.length],["m.scenarios",scen.length],["m.rules",DATA.rules.length],["m.operations",DATA.operations.length]];
@@ -241,13 +246,31 @@ function openSide(key){const g=DATA.goals.find(x=>x.key===key);if(!g)return;side
  $("side-body").innerHTML=`${metricsOf(g)}<h3 style="margin:20px 0 6px">${T("criterion")}</h3><table><tr><th>${T("criterion")}</th><th></th><th class="num">${T("scenarios")}</th></tr>${crit}</table>
   <h3 style="margin:20px 0 6px">${T("flows")}</h3><ul class="tight">${g.flows.map(p=>flowByPage[p]?`<li>${esc(flowByPage[p].title)} · ${flowByPage[p].scenarios.length} ${T("scenarios").toLowerCase()}</li>`:"").join("")}</ul>`;
  $("side").hidden=$("side-back").hidden=false;placeSide();$("side-close").focus();}
-// Inside the tracker the page is as tall as its content, so the panel follows the tracker's own scroll.
-function placeSide(){const f=window.frameElement,s=$("side");if(!f||s.hidden){s.style.top="";s.style.height="";return;}
- try{const top=Math.max(0,-f.getBoundingClientRect().top);s.style.top=top+"px";s.style.height=Math.min(parent.innerHeight,document.documentElement.scrollHeight-top)+"px";}catch{}}
+// The opaque-origin frame exchanges dimensions only. It never reads its parent's DOM or storage.
+let frameRender=null,frameViewport=null,lastHeight=-1,sizePending=false;
+const frameNumber=n=>typeof n==="number"&&Number.isFinite(n)&&n>=0&&n<=10000000;
+function reportSize(){sizePending=false;if(!frameRender)return;
+ let height=document.querySelector("main").getBoundingClientRect().bottom+window.scrollY;
+ document.querySelectorAll("details[open] .drop-list").forEach(e=>{height=Math.max(height,e.getBoundingClientRect().bottom+window.scrollY+16);});
+ height=Math.ceil(height);if(frameNumber(height)&&height!==lastHeight){lastHeight=height;parent.postMessage({type:"adf:site-size",render:frameRender,height},"*");}}
+function scheduleSize(){if(!sizePending){sizePending=true;requestAnimationFrame(reportSize);}}
+window.addEventListener("message",event=>{if(window===parent||event.source!==parent)return;
+ const m=event.data;if(!m||typeof m!=="object")return;
+ if(m.type==="adf:site-init"&&!frameRender&&typeof m.render==="string"&&/^[a-f0-9-]{36}$/.test(m.render)){
+  frameRender=m.render;document.documentElement.style.overflow="hidden";document.body.style.overflow="hidden";scheduleSize();
+ }else if(m.type==="adf:site-viewport"&&frameRender&&m.render===frameRender&&frameNumber(m.top)&&frameNumber(m.height)){
+  frameViewport={top:m.top,height:m.height};placeSide();
+ }});
+new ResizeObserver(scheduleSize).observe(document.querySelector("main"));
+document.addEventListener("toggle",scheduleSize,true);window.addEventListener("resize",scheduleSize);
+if(document.fonts)document.fonts.ready.then(scheduleSize);
+function placeSide(){const s=$("side"),v=frameViewport;
+ if(!frameRender||!v||s.hidden){s.style.top="";s.style.height="";return;}
+ s.style.top=v.top+"px";s.style.height=v.height+"px";}
 function closeSide(){sideFor=null;$("side").hidden=$("side-back").hidden=true;}
 function renderPicker(){const all=chosen.has("*"),n=all?DATA.goals.length:chosen.size;
  $("drop-label").textContent=T("drop")(n);
- $("goal-options").innerHTML=`<label><input type="checkbox" value="*" ${all?"checked":""}> ${T("allGoals")}</label><hr>`+DATA.goals.map(g=>{const on=all||chosen.has(g.key),off=!all&&!on&&chosen.size>=3;return `<label class="${off?"off":""}"><input type="checkbox" value="${g.key}" ${on?"checked":""} ${off||all?"disabled":""}> ${esc(g.title)} <span class="muted">${g.key}</span></label>`;}).join("");
+ $("goal-options").innerHTML=`<label><input type="checkbox" value="*" ${all?"checked":""}> ${T("allGoals")}</label><hr>`+DATA.goals.map(g=>{const on=all||chosen.has(g.key),off=!all&&!on&&chosen.size>=3;return `<label class="${off?"off":""}"><input type="checkbox" value="${esc(g.key)}" ${on?"checked":""} ${off||all?"disabled":""}> ${esc(g.title)} <span class="muted">${esc(g.key)}</span></label>`;}).join("");
  $("goal-options").querySelectorAll("input").forEach(i=>i.onchange=()=>{if(i.value==="*"){chosen.clear();if(i.checked)chosen.add("*");}else{i.checked?chosen.add(i.value):chosen.delete(i.value);}renderPicker();});
  $("run").textContent=T("run");$("run").disabled=!n;$("run-note").textContent=n?(all?"":T("maxNote")):T("runNote");}
 function renderResults(){
@@ -258,8 +281,8 @@ function renderResults(){
  $("summary-sub").textContent=T("summary.sub")(goals.map(g=>g.title).join(", "));
  $("slice-metrics").innerHTML=metricCards([["m.goals",goals.length],["m.flows",flows.size],["m.scenarios",sc.length],["m.rules",rules.length],["m.operations",ops.length],["m.clientPages",apps.length]].concat(HAS_ROUTES?[["m.inAnalysis",routes.length]]:[]),routes.length,ROUTES.length);
  $("coverage-bars").innerHTML=`<p class="muted" style="margin:0 0 8px;font-size:13px">${T("projectNote")}</p>`+Object.entries(spaces).sort((a,b)=>b[1].length-a[1].length).map(([s,rs])=>{const c=rs.filter(r=>r.covered).length;return `<div class="row"><code>${esc(s)}</code><div class="bar"><i style="width:${pct(c,rs.length)}%"></i></div><span class="muted">${c} / ${rs.length}</span></div>`;}).join("")
- +`<details open><summary>${T("inThis")} (${routes.length})</summary><table>${routes.map(r=>`<tr><td>${r.method}</td><td><code>${esc(r.path)}</code></td><td>${pill(r.covered)}</td></tr>`).join("")}</table></details>`
- +`<details><summary>${T("withoutKnowledge")} (${ROUTES.length-covered})</summary><table>${ROUTES.filter(r=>!r.covered).map(r=>`<tr><td>${r.method}</td><td><code>${esc(r.path)}</code></td></tr>`).join("")}</table></details>`;
+ +`<details open><summary>${T("inThis")} (${routes.length})</summary><table>${routes.map(r=>`<tr><td>${esc(r.method)}</td><td><code>${esc(r.path)}</code></td><td>${pill(r.covered)}</td></tr>`).join("")}</table></details>`
+ +`<details><summary>${T("withoutKnowledge")} (${ROUTES.length-covered})</summary><table>${ROUTES.filter(r=>!r.covered).map(r=>`<tr><td>${esc(r.method)}</td><td><code>${esc(r.path)}</code></td></tr>`).join("")}</table></details>`;
  goalList=goals;goalPage=0;drawGoals();if(sideFor)openSide(sideFor);
  const radius=Object.entries(DATA.radius).filter(([id])=>S.has(id)).sort((a,b)=>b[1].scenarios-a[1].scenarios||b[1].operations-a[1].operations||a[0].localeCompare(b[0]));
  $("radius-table").innerHTML=`<tr><th>${T("item")}</th><th class="num">${T("flows")}</th><th class="num">${T("scenarios")}</th><th class="num">${T("operations")}</th><th class="num">${T("clientPages")}</th></tr>`+radius.map(([id,r])=>`<tr><td>${pill(id)}</td><td class="num">${r.flows}</td><td class="num">${r.scenarios}</td><td class="num">${r.operations}</td><td class="num">${r["client pages"]}</td></tr>`).join("");
@@ -276,7 +299,7 @@ function renderResults(){
  drawDiagrams(DATA.diagrams.map((d,i)=>({...d,i})).filter(d=>pages.has(d.page)));
  if(selected&&S.has(selected))select(selected);else $("detail").innerHTML=`<p class="muted">${T("selectNode")}</p>`;
 }
-const LAYER=["system/","goals/","flows/"],svgs={},slideAt={};let shown=[],mermaidOn=false;
+const LAYER=["system/","goals/","flows/"],svgs=Object.create(null),slideAt=Object.create(null),rendering=new Set();let shown=[],mermaidOn=false;
 // Diagrams take the colors and the font of the page: quiet cards, thin borders, muted lines.
 function mermaidTheme(){const c=getComputedStyle(document.documentElement),v=n=>c.getPropertyValue(n).trim(),dark=false;
  return{theme:"base",layout:"elk",elk:{mergeEdges:false,nodePlacementStrategy:"NETWORK_SIMPLEX"},fontFamily:getComputedStyle(document.body).fontFamily,themeVariables:{darkMode:dark,fontFamily:getComputedStyle(document.body).fontFamily,fontSize:"14px",background:v("--card"),
@@ -286,16 +309,70 @@ function mermaidTheme(){const c=getComputedStyle(document.documentElement),v=n=>
   noteBkgColor:v("--warn-bg"),noteBorderColor:v("--line"),noteTextColor:v("--ink"),activationBkgColor:v("--accent-bg"),activationBorderColor:v("--accent"),sequenceNumberColor:v("--card"),
   classText:v("--ink"),stateBkg:v("--card"),stateLabelColor:v("--ink"),transitionColor:v("--muted"),altBackground:v("--bg"),compositeBackground:v("--bg"),compositeTitleBackground:v("--bg")},
   themeCSS:".node rect,.node polygon,.node circle,.node path,.cluster rect,.actor,rect.note,.labelBox{stroke-width:1px!important}.node rect,.cluster rect{rx:8px;ry:8px}.edgePath .path,.flowchart-link,.messageLine0,.messageLine1,.transition{stroke-width:1.25px!important}.cluster-label,.cluster .nodeLabel{font-weight:600}",
-  flowchart:{curve:"linear",padding:12,htmlLabels:true},sequence:{actorMargin:48,boxMargin:8,mirrorActors:false}}}
-function mermaidReady(){mermaid.initialize({startOnLoad:false,...mermaidTheme()});mermaidOn=true;if(analysis)drawDiagrams(shown);}
+  htmlLabels:false,flowchart:{curve:"linear",padding:12,htmlLabels:false},sequence:{actorMargin:48,boxMargin:8,mirrorActors:false}}}
+function mermaidReady(){mermaid.initialize({...mermaidTheme(),startOnLoad:false,securityLevel:"strict",suppressErrorRendering:true,
+ secure:["secure","securityLevel","startOnLoad","suppressErrorRendering","maxTextSize","maxEdges","htmlLabels","flowchart","theme","themeCSS","fontFamily","layout","elk"]});mermaidOn=true;if(analysis)drawDiagrams(shown);}
+
+function diagramSourceAllowed(code){
+ // Mermaid applies directives and builds temporary DOM before returning SVG. Keep configuration
+ // and resource-bearing syntax out of that stage; the original source remains the fallback.
+ const source=code.replace(/&(?:#(x[\da-f]+|\d+)|lt|gt|amp|quot);/gi,(all,n)=>n?String.fromCodePoint(Math.min(0x10ffff,parseInt(n[0].toLowerCase()==="x"?n.slice(1):n,n[0].toLowerCase()==="x"?16:10))):({"&lt;":"<","&gt;":">","&amp;":"&","&quot;":'"'}[all.toLowerCase()]||all));
+ const markup=source.replace(/<<[\w -]+>>/g,"");
+ return /^(?:\s|%%[^\n]*\n)*(?:flowchart|sequenceDiagram|classDiagram|stateDiagram-v2)\b/.test(source)
+  && !/%%\s*\{|^\s*---|(?:https?|javascript|vbscript|data|file|blob)\s*:|\/\/|url\s*\(|@import|\\|(?:src|href)\s*=|!\[|@\{|<\/?[a-z!]/im.test(markup)
+  && !/(?:^|[;\n])\s*(?:click|link|links)\s/i.test(source);
+}
+
+const SVG_TAGS=new Set("svg g defs marker path rect circle ellipse line polyline polygon text tspan textPath title desc clipPath mask linearGradient radialGradient stop style".split(" "));
+const SVG_ATTRS=new Set("id class x y x1 x2 y1 y2 cx cy r rx ry d points width height viewBox preserveAspectRatio transform xmlns role aria-label aria-roledescription aria-labelledby aria-describedby textLength lengthAdjust dx dy rotate markerWidth markerHeight refX refY orient markerUnits clipPathUnits maskUnits gradientUnits gradientTransform offset".split(" "));
+const SVG_STYLES=new Set("fill stroke color background-color opacity fill-opacity stroke-opacity stroke-width stroke-dasharray stroke-dashoffset stroke-linecap stroke-linejoin stroke-miterlimit font-family font-size font-weight font-style text-anchor dominant-baseline alignment-baseline display visibility white-space rx ry marker-start marker-mid marker-end clip-path stop-color stop-opacity".split(" "));
+function safeSvgValue(value){
+ // Fragment references can point only to the drawing. CSS escapes, resource URLs and functions
+ // other than these local references are not needed by the supported Mermaid drawings.
+ return !/[\\<>@]/.test(value)&&!/(?:javascript|data|https?|file|blob)\s*:|expression\s*\(|\/\//i.test(value)
+  && !/url\s*\(/i.test(value.replace(/url\(#[\w-]+\)/g,""));
+}
+function svgStyle(declaration){const clean=[];
+ for(const property of declaration){const value=declaration.getPropertyValue(property);
+  if(SVG_STYLES.has(property)&&safeSvgValue(value))clean.push(property+":"+value+(declaration.getPropertyPriority(property)?" !important":""));}
+ return clean.join(";");
+}
+function safeDiagram(svg,id){
+ const source=new DOMParser().parseFromString(svg,"image/svg+xml");
+ if(source.querySelector("parsererror")||source.documentElement.localName!=="svg")throw new Error("Invalid diagram SVG");
+ function copy(node){if(node.nodeType===Node.TEXT_NODE)return document.createTextNode(node.textContent);
+  if(node.nodeType!==Node.ELEMENT_NODE||node.namespaceURI!==NS||!SVG_TAGS.has(node.localName))return null;
+  const clean=document.createElementNS(NS,node.localName);
+  if(node.localName==="style"){
+   const sheet=new CSSStyleSheet();sheet.replaceSync(node.textContent);const rules=[];
+   for(const rule of sheet.cssRules){if(rule.type!==CSSRule.STYLE_RULE||!rule.selectorText.split(",").every(s=>s.trim()===`#${id}`||s.trim().startsWith(`#${id} `)))continue;
+    if(/[\\<>@]/.test(rule.selectorText))continue;const style=svgStyle(rule.style);if(style)rules.push(rule.selectorText+"{"+style+"}");}
+   clean.textContent=rules.join("\n");return clean;
+  }
+  for(const attr of node.attributes){if(attr.name==="style"){const value=svgStyle(node.style);if(value)clean.setAttribute("style",value);}
+   else if((SVG_ATTRS.has(attr.name)||SVG_STYLES.has(attr.name))&&safeSvgValue(attr.value))clean.setAttribute(attr.name,attr.value);}
+  for(const child of node.childNodes){const result=copy(child);if(result)clean.appendChild(result);}
+  return clean;
+ }
+ const result=copy(source.documentElement);result.id=id;
+ // Mermaid's root max-width prevents narrow class/state drawings from filling the whole card.
+ // Rebuild that sizing from numeric geometry, without admitting arbitrary root CSS.
+ const box=result.viewBox.baseVal;
+ if(frameNumber(box.width)&&box.width>0&&frameNumber(box.height)&&box.height>0){
+  result.style.width="100%";result.style.maxWidth=box.width+"px";result.style.height="auto";
+ }
+ return result;
+}
 function drawDiagrams(list){shown=list.sort((a,b)=>LAYER.findIndex(l=>a.page.startsWith(l))-LAYER.findIndex(l=>b.page.startsWith(l))||a.i-b.i);
  // One card per layer; its diagrams are slides, one shown at a time.
  const groups=LAYER.map(l=>[l,shown.filter(d=>d.page.startsWith(l))]).filter(([,ds])=>ds.length);
  $("diagram-cards").innerHTML=(window.mermaid?"":`<p class="muted" style="font-size:13px">${T("diagrams.offline")}</p>`)+groups.map(([l,ds])=>{const at=Math.min(slideAt[l]||0,ds.length-1);slideAt[l]=at;
   return `<div class="card diagram slides" data-layer="${l}"><div class="slide-head"><h3>${T("layer."+l)} <span class="muted">· ${ds.length}</span></h3>${ds.length>1?`<div class="slide-nav"><button class="plain" data-slide="-1" aria-label="${T("prev")}"${at?"":" disabled"}>←</button><span>${at+1} / ${ds.length}</span><button class="plain" data-slide="1" aria-label="${T("next")}"${at<ds.length-1?"":" disabled"}>→</button></div>`:""}</div>`+
-  ds.map((d,k)=>`<div class="slide"${k===at?"":" hidden"}><p style="margin:10px 0 0;font-weight:600;font-size:15px">${esc(d.title)}${d.section?` <span class="muted" style="font-weight:400">· ${esc(d.section)}</span>`:""}</p><p class="sub" style="margin:2px 0 8px"><code>${esc(d.page)}</code></p><div id="mm${d.i}">${svgs[d.i]||`<pre>${esc(d.code)}</pre>`}</div></div>`).join("")+`</div>`;}).join("");
- shown.forEach(linkFlows);
- if(mermaidOn)shown.filter(d=>!svgs[d.i]).forEach(d=>mermaid.render("mmsvg"+d.i,d.code).then(r=>{svgs[d.i]=r.svg;const e=$("mm"+d.i);if(e){e.innerHTML=r.svg;linkFlows(d);}}).catch(()=>{}));}
+  ds.map((d,k)=>`<div class="slide"${k===at?"":" hidden"}><p style="margin:10px 0 0;font-weight:600;font-size:15px">${esc(d.title)}${d.section?` <span class="muted" style="font-weight:400">· ${esc(d.section)}</span>`:""}</p><p class="sub" style="margin:2px 0 8px"><code>${esc(d.page)}</code></p><div id="mm${d.i}"><pre>${esc(d.code)}</pre></div></div>`).join("")+`</div>`;}).join("");
+ shown.forEach(d=>{if(svgs[d.i])$("mm"+d.i).replaceChildren(svgs[d.i].cloneNode(true));linkFlows(d);});
+ if(mermaidOn)shown.filter(d=>!svgs[d.i]&&!rendering.has(d.i)&&diagramSourceAllowed(d.code)).forEach(d=>{
+  rendering.add(d.i);mermaid.render("mmsvg"+d.i,d.code).then(r=>{svgs[d.i]=safeDiagram(r.svg,"mmsvg"+d.i);const e=$("mm"+d.i);if(e){e.replaceChildren(svgs[d.i].cloneNode(true));linkFlows(d);}})
+   .catch(()=>{/* The readable source remains when parsing or sanitizing fails. */}).finally(()=>{rendering.delete(d.i);scheduleSize();});});}
 // In a goal's diagram, each node named after a flow shows that flow's slide in the Flows card.
 function linkFlows(d){if(!d.page.startsWith("goals/"))return;const e=$("mm"+d.i);if(!e)return;
  e.querySelectorAll(".node").forEach(n=>{const f=DATA.flows.find(x=>x.title===n.textContent.trim());if(!f||!shown.some(s=>s.page===f.page))return;
@@ -333,7 +410,6 @@ $("goal-cards").onclick=e=>{const b=e.target.closest("[data-goal]");if(b)openSid
 $("goal-pager").onclick=e=>{const b=e.target.closest("[data-page]");if(!b||b.disabled)return;goalPage+=+b.dataset.page;drawGoals();$("goals").scrollIntoView({block:"start"});};
 $("side-close").onclick=$("side-back").onclick=closeSide;
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&sideFor)closeSide();});
-try{if(window.frameElement)parent.addEventListener("scroll",placeSide,{passive:true});}catch{}
 $("run").onclick=()=>{analysis=new Set(chosen.has("*")?DATA.goals.map(g=>g.key):[...chosen]);$("drop").open=false;$("results").hidden=false;draw();render();$("summary").scrollIntoView({behavior:"smooth"});};
 document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>{lang=b.dataset.lang;try{localStorage.setItem("lang",lang);}catch(e){}if(analysis)draw();render();});
 const walk=(s,adj)=>{const seen=new Set(s),q=[...s];while(q.length)for(const n of adj[q.pop()]||[])if(!seen.has(n)){seen.add(n);q.push(n);}return seen;};
@@ -355,7 +431,7 @@ function draw(){const vis=slice(),svg=$("g");svg.innerHTML="";els={};edges=[];se
  $("detail").innerHTML=`<p class="muted">${T("selectNode")}</p>`;}
 function info(n){const s=scen.find(x=>x.id===n);if(s)return `<dl><dt>${T("flow")}</dt><dd>${esc(s.flow)}</dd><dt>${T("given")}</dt><dd>${esc(s.given)}</dd><dt>${T("when")}</dt><dd>${esc(s.when)}</dd><dt>${T("then")}</dt><dd>${esc(s.then)}</dd><dt>${T("covers")}</dt><dd>${s.covers.map(pill).join("")}</dd></dl>`;
  const r=DATA.rules.find(x=>x.id===n)||DATA.requirements.find(x=>x.id===n)||DATA.goals.flatMap(g=>g.criteria).find(x=>x.id===n);if(r)return `<p>${esc(r.text)}</p>`;
- const o=DATA.operations.find(x=>x.id===n);if(o)return `<dl><dt>${T("endpoint")}</dt><dd><code>${o.method} ${esc(o.path)}</code></dd><dt>${T("summary")}</dt><dd>${esc(o.summary||"")}</dd></dl>`;
+ const o=DATA.operations.find(x=>x.id===n);if(o)return `<dl><dt>${T("endpoint")}</dt><dd><code>${esc(o.method)} ${esc(o.path)}</code></dd><dt>${T("summary")}</dt><dd>${esc(o.summary||"")}</dd></dl>`;
  const c=DATA.clients["artifacts/"+n+".md"];if(c)return `<dl>${Object.entries(c).map(([k,v])=>`<dt>${k==="Every item"?T("everyItem"):esc(k)}</dt><dd>${T("needs")(v.length)}</dd>`).join("")}</dl>`;return "";}
 function select(n){if(!els[n])return;selected=n;const up=walk([n],inn),down=walk([n],out);
  Object.entries(els).forEach(([k,e])=>{e.classList.toggle("dim",!(up.has(k)||down.has(k)));e.classList.toggle("sel",k===n);});

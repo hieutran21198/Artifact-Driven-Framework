@@ -14,6 +14,8 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 import argparse
+import base64
+import hashlib
 import json
 import re
 import subprocess
@@ -27,6 +29,31 @@ ROW = re.compile(r"^\| (" + impact.ID.pattern + r") \|(.*)\|\s*$")
 TITLE = re.compile(r"^# (?:Goal|Flow): (.+)$", re.MULTILINE)
 MERMAID = re.compile(r"^```mermaid\n(.*?)^```", re.MULTILINE | re.DOTALL)
 COLUMN = {"Requirements": 0, "Goal criteria": 0, "Flow scenarios": 1, "Artifact rules": 2, "Operations": 3, "Client needs": 4}
+
+
+def html_data(data):
+    """Keep JSON inside its script element, including HTML parser sentinels."""
+    text = json.dumps(data, ensure_ascii=False)
+    for char in "<>&\u2028\u2029":
+        text = text.replace(char, f"\\u{ord(char):04x}")
+    return text
+
+
+def site_html(data):
+    """Authorize only the template scripts and its fixed diagram/font sources."""
+    html = TEMPLATE.read_text(encoding="utf-8").replace("/*DATA*/null", html_data(data))
+    hashes = ["'sha256-" + base64.b64encode(hashlib.sha256(script.encode("utf-8")).digest()).decode("ascii") + "'"
+              for script in re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", html, re.DOTALL)]
+    policy = "; ".join([
+        "default-src 'none'",
+        "script-src " + " ".join(hashes) + " https://cdn.jsdelivr.net/npm/mermaid@12.1.0/dist/ https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@1.0.1/dist/",
+        "style-src 'unsafe-inline' https://fonts.googleapis.com/css2",
+        "font-src https://fonts.gstatic.com/s/sourceserif4/ https://fonts.gstatic.com/s/ibmplexsans/ https://fonts.gstatic.com/s/ibmplexmono/",
+        "connect-src 'none'", "img-src 'none'", "object-src 'none'",
+        "base-uri 'none'", "form-action 'none'",
+    ])
+    return html.replace('<meta http-equiv="Content-Security-Policy" content="/*CSP*/">',
+                        f'<meta http-equiv="Content-Security-Policy" content="{policy}">', 1)
 
 
 def cells(rest):
@@ -222,7 +249,7 @@ def main(argv):
         "operations": operations, "clients": clients, "routes": service_routes(operations, services),
         "graph": display_graph(graph), "diagrams": diagrams(), "size": size, "radius": radius,
     }
-    html = TEMPLATE.read_text(encoding="utf-8").replace("/*DATA*/null", json.dumps(data, ensure_ascii=False))
+    html = site_html(data)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(html, encoding="utf-8")
     print(f"Wrote {output.relative_to(ROOT) if output.is_relative_to(ROOT) else output}")

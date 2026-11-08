@@ -23,6 +23,12 @@
         "folder": "tests/install",
         "glob": "**/test_*.py"
       }
+    },
+    "tracker": {
+      "tests": {
+        "folder": "tests/tracker",
+        "glob": "**/test_*.py"
+      }
     }
   },
   "site": {
