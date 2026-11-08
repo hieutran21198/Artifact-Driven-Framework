@@ -57,8 +57,6 @@ section{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}
 .ic{width:1.05em;height:1.05em;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.15em}
 .box{display:flex;align-items:flex-start;gap:6px}
 .steps button,.play,.btn,#copy{display:inline-flex;align-items:center;gap:7px}
-.role h3,.note h3{display:flex;align-items:center;gap:10px}
-.role h3 .ic,.note h3 .ic{width:20px;height:20px;color:var(--accent);stroke-width:1.6}
 .goal{background:var(--l0);color:var(--l0i)}
 .flow{background:var(--l1);color:var(--l1i)}
 .rule{background:var(--l2);color:var(--l2i);padding:4px 10px;font-size:12px;line-height:1.3;display:flex;align-items:center}
@@ -100,10 +98,6 @@ section{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}
 pre{margin:0;background:var(--panel);border-radius:14px;padding:18px 20px;overflow-x:auto;font:14px/1.7 var(--mono);color:var(--ink)}
 #cmd{white-space:pre-wrap;overflow-wrap:anywhere}
 .cmt{color:var(--faint)}
-.notes{display:grid;gap:28px}
-.note{display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:8px 32px;padding-top:24px;border-top:1px solid var(--rule)}
-.note p{color:var(--muted)}
-@media (max-width:620px){.note{grid-template-columns:minmax(0,1fr)}}
 .install{display:flex;gap:12px;align-items:stretch;flex-wrap:wrap}
 .install pre{flex:1 1 320px;min-width:0}
 #copy{font:400 14px/1 var(--body);border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:999px;padding:0 18px;min-height:44px;cursor:pointer;align-self:center}
@@ -126,8 +120,8 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
   <section aria-labelledby="structure-h">
     <h2 id="structure-h">The structure</h2>
     <ol class="layers">
-      <li style="--d:0;--k:var(--l0);--ki:var(--l0i)"><strong data-i="goal">Goal</strong><span>What someone needs.</span><em>A member borrows a book.</em></li>
-      <li style="--d:1;--k:var(--l1);--ki:var(--l1i)"><strong data-i="flow">Flow</strong><span>How it happens, step by step.</span><em>Borrowing, returning.</em></li>
+      <li style="--d:0;--k:var(--l0);--ki:var(--l0i)"><strong data-i="goal">Goal</strong><span>A need, and how to check it is met.</span><em>A member borrows a book.</em></li>
+      <li style="--d:1;--k:var(--l1);--ki:var(--l1i)"><strong data-i="flow">Flow</strong><span>The steps, in order.</span><em>Borrowing, returning.</em></li>
       <li style="--d:2;--k:var(--l2);--ki:var(--l2i)"><strong data-i="rule">Rule</strong><span>What must stay true.</span><em>Only a book on the shelf can be lent.</em></li>
       <li style="--d:3;--k:var(--l3);--ki:var(--l3i)"><strong data-i="artifact">Artifact</strong><span>One topic and its rules.</span><em>Books, members, notices.</em></li>
       <li style="--d:4;--k:var(--cl);--ki:var(--cli)"><strong data-i="app">App</strong><span>Where people do it.</span><em>Website, phone app.</em></li>
@@ -144,22 +138,14 @@ footer{display:flex;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);pa
     </div>
   </section>
 
-  <section aria-labelledby="mean-h">
-    <h2 id="mean-h">Scan and impact</h2>
-    <div class="notes">
-      <div class="note"><h3 data-i="scan">Scan</h3><div><p>The scan reads the test files for rule IDs, such as BK-3 for "only a book on the shelf can be lent", without running them. A rule it finds has a test; the code may still be wrong.</p></div></div>
-      <div class="note"><h3 data-i="change">Impact</h3><div><p>The impact follows the links from a rule up to its flows and goal, and across to the apps that read it.</p></div></div>
-    </div>
-  </section>
-
   <section aria-labelledby="helps-h">
     <h2 id="helps-h">Situations</h2>
     <ol class="helps">
-      <li><h3 data-i="change">A rule changes</h3><p>Run the impact on the rule.</p><p class="eg">BK-3, "only a book on the shelf can be lent", reaches both flows and the phone app.</p></li>
+      <li><h3 data-i="change">A rule changes</h3><p>List what relies on the rule.</p><p class="eg">BK-3, "only a book on the shelf can be lent", reaches both flows and the phone app.</p></li>
       <li><h3 data-i="flag">A tester reports a defect</h3><p>Find the rule the defect breaks, and compare it with the product.</p><p class="eg">A member got a book that was on loan. BK-3 says the library refuses that.</p></li>
       <li><h3 data-i="users">Someone joins the team</h3><p>Open the Books page.</p><p class="eg">It holds all 10 rules about books, BK-1 to BK-10.</p></li>
-      <li><h3 data-i="scan">A release is near</h3><p>Look at the rules the scan did not find.</p><p class="eg">"A late book is flagged" has no test, so the scan lists it.</p></li>
-      <li><h3 data-i="briefcase">A stakeholder asks what has tests</h3><p>The project tracker shows, for each goal, the share of its rule and scenario IDs that a test names.</p><p class="eg"><a href="tracker/">Open the project tracker</a></p></li>
+      <li><h3 data-i="scan">A release is near</h3><p>Look at the rules with no test.</p><p class="eg">"A book not back in time is marked overdue" has no test yet.</p></li>
+      <li><h3 data-i="briefcase">A stakeholder asks what has tests</h3><p>The project tracker shows, for each goal, the share of its rules that a test names.</p><p class="eg"><a href="tracker/">Open the project tracker</a></p></li>
       <li><h3 data-i="code">The docs drift from the code</h3><p>The docs check fails a change with a broken link, an unknown ID, or a page that cites the page above it, such as a rule that cites a flow.</p><p class="eg">A flow that cites BK-11 fails: the Books page has no BK-11.</p></li>
     </ol>
   </section>
@@ -220,12 +206,12 @@ const CAPS = [
   'Each flow follows rules, such as "only a book on the shelf can be lent".',
   'Each topic keeps its own rules: books, members and notices. Each topic is an artifact.',
   'The website uses books and members. The phone app uses books.',
-  'The scan looks for each rule ID in the tests. Here it finds 4 of the 6 rules.',
+  'The scan looks for each rule ID in the tests, without running them. Here 4 of the 6 rules have a test; a test found does not prove the code is right.',
   'Change one rule: both flows and the phone app rely on it, and the website does not.'
 ];
 const RULES = [
   ['On the shelf only','B',1],['Due in 14 days','B',1],['Loan limit','B',1],
-  ['Return frees it','R',1],['Late gets flagged','R',0],['One reader each','R',0]];
+  ['Return frees it','R',1],['Marked overdue','R',0],['One reader each','R',0]];
 const L = {
   wide:{W:680,H:500,goal:[220,58,230,170,230,20],fB:[200,52,75,120],fR:[200,52,405,120],chip:[104,44],
     box:{aM:[20,255,190,140],aB:[225,255,230,140],aN:[470,255,190,140]},
@@ -319,11 +305,11 @@ const TIPS = {
   r1: 'A borrowed book is due back 14 days later.',
   r2: 'A member can hold only a set number of books at once.',
   r3: 'When a book comes back, it is free for the next person.',
-  r4: 'A book that is not back by its due date is marked late.',
+  r4: 'A book that is not back by its due date is marked overdue.',
   r5: 'Each notice goes to one person only.',
   aB: 'Books: everything about the books, such as whether one is on the shelf and when it is due.',
   aM: 'Members: everything about the people who borrow, such as how many books they hold.',
-  aN: 'Notices: the messages the library sends, such as a note that a book is late.',
+  aN: 'Notices: the messages the library sends, such as a note that a book is overdue.',
   web: 'The website shows books and members, so it relies on both artifacts.',
   mob: 'The phone app shows books, so it relies only on the Books artifact.'
 };
