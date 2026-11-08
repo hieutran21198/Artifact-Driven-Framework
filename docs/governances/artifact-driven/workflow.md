@@ -33,7 +33,8 @@ does each step.
 ## Questions
 
 Ideas, options and questions stay on the issue. The knowledge takes only what
-is settled.
+is settled. For a need that is still vague, [shape](runbooks/shape.md) gives
+the steps.
 
 1. **Ask first.** Before any knowledge is written, the coordinator asks the
    person who raised the need, one question at a time, starting from one
