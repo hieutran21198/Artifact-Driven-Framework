@@ -62,6 +62,8 @@ own knowledge. Every directory has a `README.md` that explains its purpose.
 10. [index.html](index.html): the landing page of the framework.
 11. [Project tracker](tracker/README.md): the coverage and the knowledge site
     of a workspace at any branch, tag or commit, in the browser.
+12. [Developer hook](.githooks/README.md): opt-in pre-push checks and whitespace
+    repair for this repository only.
 
 ## Check a change
 

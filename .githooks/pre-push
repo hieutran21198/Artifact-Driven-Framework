@@ -1,0 +1,7 @@
+#!/bin/sh
+# Framework repository only; install explicitly as described in README.md.
+set -eu
+command -v git >/dev/null 2>&1 || { echo 'pre-push: Git is required' >&2; exit 1; }
+command -v python3 >/dev/null 2>&1 || { echo 'pre-push: Python 3 is required' >&2; exit 1; }
+root=$(git rev-parse --show-toplevel) || exit 1
+exec python3 "$root/.githooks/pre_push.py" "$@"
