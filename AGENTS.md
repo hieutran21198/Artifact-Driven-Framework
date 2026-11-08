@@ -66,7 +66,7 @@ README navigation when adding content.
 Before changing an existing knowledge ID, operation or field, run
 `python3 scripts/impact.py <it>` to see what depends on it.
 
-Run `python3 scripts/check_structure.py`, `git diff --check` and the checks
+Run the [docs checks](docs/governances/artifact-driven/runbooks/check.md) and the checks
 appropriate to the changed behavior. Report actual results and limits;
 distinguish static checks, runtime observations and human approval.
 
