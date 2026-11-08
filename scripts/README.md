@@ -186,8 +186,8 @@ not execute workspace code.
 
 The tracker and site exchange only a document identifier and numeric sizes
 and viewport positions. The site does not read the tracker document or
-storage. See [tracker isolation](../tracker/README.md) and the
-[script tests](../tests/scripts/README.md) for verification commands.
+storage. See [tracker isolation](https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/tracker/README.md) and the
+[script tests](https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/tests/scripts/README.md) for verification commands.
 
 The `--routes` folders replace the folders of
 every service; the `glob` and `pattern` come from the first service that has
