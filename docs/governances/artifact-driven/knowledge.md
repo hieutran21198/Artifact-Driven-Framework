@@ -81,6 +81,26 @@ names its ID.
 - Nothing cites a withdrawn ID except the row that withdraws it.
   `check_docs.py` reports an ID defined twice and a withdrawn ID still cited.
 
+### Before adding a fact
+
+Add a new ID only when the fact passes all four questions. Otherwise leave it
+out, or change the ID that already holds it.
+
+1. **Can a break be seen?** A test, a check or a reviewer can show that the
+   product breaks it. A fact that nothing can show broken is design and stays
+   out of the knowledge.
+2. **Is it behavior?** It states what the product does or promises, not where
+   something sits on a page or a screen. "The page links the guide" is
+   behavior; "the link is the second item of the menu" is layout.
+3. **Does it have no owner yet?** When another page owns it, cite that ID. A
+   fact that holds for every service, client or page is a system requirement.
+4. **Can no ID be widened to hold it?** Widen an existing ID when the change
+   keeps its meaning. When the meaning changes, add the new ID and withdraw the
+   old one.
+
+The report of the change names, for each new ID, the IDs it was checked
+against.
+
 ## Rules with values
 
 - A value the business sets, such as a duration, a fee or a limit, is part of
@@ -140,6 +160,10 @@ Any knowledge page may end with `## Open questions`: behavior the page does not
 define yet, or a decision it waits for. Each question names the IDs it
 touches, and holds behavior only, never status or plans. A page above must not
 answer a question that a page below leaves open.
+
+Except for a conflict with running code (above), a question is asked before it
+is written: it reaches a page only when its branch merges with it still open
+([questions](workflow.md#questions)).
 
 ## Artifact files
 

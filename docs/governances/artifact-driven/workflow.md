@@ -8,8 +8,9 @@ does each step.
 1. **Issue.** An issue states the need: a new goal, a change to one, a
    defect, a change the owner of a part reports, a change an external system forces,
    a production incident, a data fix, or a change that keeps behavior. It
-   links the knowledge it touches. Status: Todo. The last four follow their
-   own sections below.
+   links the knowledge it touches. The coordinator asks the person who
+   raised it before any knowledge is written ([questions](#questions)).
+   Status: Todo. The last four follow their own sections below.
 2. **Knowledge.** On a branch of the knowledge repository, write the change
    from the top down: goal criteria, then flows, then artifact rules and
    contracts. When the area has no goal or flow yet, write a minimal goal and
@@ -28,6 +29,24 @@ does each step.
    its owner decides.
 5. **Close.** When the change meets [Done](done.md), close the issue. Status:
    Done.
+
+## Questions
+
+Ideas, options and questions stay on the issue. The knowledge takes only what
+is settled.
+
+1. **Ask first.** Before any knowledge is written, the coordinator asks the
+   person who raised the need, one question at a time, starting from one
+   concrete situation. An answer becomes a draft criterion, scenario or rule,
+   not a question.
+2. **Then list what is left.** What that person cannot settle now, or what
+   another owner must decide, goes on the issue as a checklist item: the
+   question, the IDs it touches and who answers it. When it is answered, tick
+   it, write the answer under it, and change the knowledge.
+3. **At the merge.** An item still open that names a criterion of a goal, or
+   an ID or operation the goal relies on, holds that goal: the branch is not
+   merged until it is answered. Every other open item moves to
+   `## Open questions` of the page it touches ([open questions](knowledge.md#open-questions)).
 
 ## Release report
 

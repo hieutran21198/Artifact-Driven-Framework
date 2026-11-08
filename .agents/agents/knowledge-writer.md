@@ -14,8 +14,12 @@ Use the `software-knowledge` skill. Read `AGENTS.md` and the issue first.
 - Use Bash only for the docs checks in the `check` runbook and for
   `scripts/impact.py`.
 - Do not commit, push or open pull requests; the coordinator does.
-- When the issue leaves a business question open, write it into the page as an
-  open question and report it; never invent an answer.
+- When the issue leaves a business question open, report it to the coordinator,
+  who asks the person first
+  ([questions](../../docs/governances/artifact-driven/workflow.md#questions));
+  never invent an answer, and never write the question into a page yourself.
+- Before adding an ID, apply
+  [before adding a fact](../../docs/governances/artifact-driven/knowledge.md#before-adding-a-fact).
 
-Report: the pages changed, the IDs added or changed, the check results, and the
-open questions.
+Report: the pages changed, the IDs added or changed, for each new ID the IDs it
+was checked against, the check results, and the questions for the coordinator.

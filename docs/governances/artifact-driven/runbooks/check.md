@@ -55,6 +55,9 @@ npx @redocly/cli lint <knowledge folder>/<path>.yaml
 Then read the changed pages once more for what the scripts cannot see:
 
 - a rule restated instead of cited, or a layer citing a layer above it;
+- a new ID that fails a question of [before adding a fact](../knowledge.md#before-adding-a-fact),
+  such as a rule about layout, or one that another ID could hold;
+- an open item on the issue that holds a goal ([questions](../workflow.md#questions));
 - a diagram that adds a fact the text does not hold;
 - a page that answers an open question a page below it leaves open;
 - a flow step or scenario that states a condition no cited ID holds, such as
