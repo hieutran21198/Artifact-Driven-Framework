@@ -15,6 +15,8 @@ General owns the shared rule conventions used by every language standard.
 - [ASD-STE-100 principles](asd-ste-100/README.md): clear English technical
   writing that preserves meaning. It does not certify formal ASD-STE100
   compliance.
+- [Landing pages](landing-pages/README.md): from a concrete idea to an outline,
+  section copy and explanatory visuals, then review.
 - [Diagrams](diagrams/README.md): which diagrams the documentation carries and
   how to draw them.
 

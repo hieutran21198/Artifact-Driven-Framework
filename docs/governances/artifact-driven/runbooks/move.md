@@ -16,9 +16,12 @@ artifact to a new one, or when a goal, a flow or an artifact splits in two.
 2. For each fact, add it to its new owner with a new ID, and turn the old row
    into `Withdrawn: moved to <new ID>.`
    ([the life of an ID](../knowledge.md#the-life-of-an-id)).
-3. Check each moved rule against [the layers](../knowledge.md#layers). A rule
-   that needs the data of another artifact becomes a flow step and scenario,
-   not an artifact rule.
+3. Check each moved rule against [the layers](../knowledge.md#layers) and
+   [Flow rules](../knowledge.md#flow-rules). Choose ownership by business
+   responsibility and decision authority, not by where inputs come from.
+   Settle unclear boundaries with the owners before moving a fact. Keep
+   domain policy separate from coordination, and do not allocate a Flow-rule
+   ID until its adoption checks pass.
 4. Run impact on each old ID and point every citation at the new ID: flows,
    contracts, client pages and diagrams.
 5. Open an issue for the tests that name an old ID. They are renamed in the

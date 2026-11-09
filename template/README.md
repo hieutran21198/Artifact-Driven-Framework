@@ -10,8 +10,7 @@ knowledge around them: software knowledge, architecture, standards and agent
 guidance.
 
 Write and agree the knowledge first, then build the code that implements it,
-and keep the code traceable to the knowledge. The knowledge has four layers,
-each citing only the layers below it:
+and keep the code traceable to the knowledge. The knowledge has four layers:
 
 | Layer | Holds | ID |
 | --- | --- | --- |
@@ -20,9 +19,11 @@ each citing only the layers below it:
 | Flow | Behavior across artifacts, as testable scenarios that each name an operation, a trigger or a command | `F-<FLOW>-n` |
 | Artifact | One domain: model, rules, lifecycle, OpenAPI contract, and what each client needs | `<PREFIX>-n` |
 
-Every fact has one owner and an ID; other pages cite the ID. Because every
-citation points down, scripts can trace a change in both directions: what a
-rule affects, and what a goal relies on.
+Every fact has one owner and an ID; other pages cite the ID. Follow the
+[knowledge rules](docs/governances/artifact-driven/knowledge.md#citations) for
+dependency direction and Flow-rule adoption prerequisites. The scripts trace
+supported knowledge IDs in both directions: what a rule affects,
+and what a goal relies on.
 
 ## Read the repository
 

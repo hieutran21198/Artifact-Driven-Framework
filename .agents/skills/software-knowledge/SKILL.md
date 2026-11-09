@@ -33,10 +33,15 @@ contract, client.
    `python3 scripts/impact.py <it>` to see what depends on it.
 2. Ask the person who raised the need before writing; what they cannot settle
    goes on the issue ([questions](../../../docs/governances/artifact-driven/workflow.md#questions)).
-3. Follow the runbook step by step. Before adding an ID, apply
+3. For cross-boundary rules, follow
+   [Flow rules](../../../docs/governances/artifact-driven/knowledge.md#flow-rules)
+   to settle ownership and check adoption before allocating a Flow-rule ID.
+   For visual references, follow
+   [design links](../../../docs/governances/artifact-driven/knowledge.md#design-links).
+4. Follow the runbook step by step. Before adding an ID, apply
    [before adding a fact](../../../docs/governances/artifact-driven/knowledge.md#before-adding-a-fact).
-4. Run [Check the docs](../../../docs/governances/artifact-driven/runbooks/check.md) and report each check's result.
-5. Report what changed, the IDs added or changed, for each new ID the IDs it
+5. Run [Check the docs](../../../docs/governances/artifact-driven/runbooks/check.md) and report each check's result.
+6. Report what changed, the IDs added or changed, for each new ID the IDs it
    was checked against, and the questions still open on the issue.
 
 Do not commit to client repositories, and do not push, merge or deploy.

@@ -54,7 +54,13 @@ npx @redocly/cli lint <knowledge folder>/<path>.yaml
 
 Then read the changed pages once more for what the scripts cannot see:
 
-- a rule restated instead of cited, or a layer citing a layer above it;
+- a rule restated instead of cited, or an invalid dependency under
+  [Citations](../knowledge.md#citations), including Flow-rule chains or goals
+  and scenarios used as reusable rules;
+- policy ownership inferred only from data sources, or an unresolved owner
+  decision written as settled knowledge;
+- a design navigation link treated as a rule dependency or execution evidence,
+  or copied visual detail that belongs to a client;
 - a new ID that fails a question of [before adding a fact](../knowledge.md#before-adding-a-fact),
   such as a rule about layout, or one that another ID could hold;
 - an open item on the issue that holds a goal ([questions](../workflow.md#questions));
@@ -62,5 +68,34 @@ Then read the changed pages once more for what the scripts cannot see:
 - a page that answers an open question a page below it leaves open;
 - a flow step or scenario that states a condition no cited ID holds, such as
   a region, a role or a limit.
+
+## Flow-rule adoption
+
+Before allocating any `FR-<SCOPE>-<n>` product ID, verify all of these on the
+exact tool version the workspace uses. Record results on the issue:
+
+1. Docs checks recognize local and shared Flow-rule definitions and permitted
+   citations, and reject missing, duplicate and withdrawn IDs. They reject
+   forbidden dependencies, including Flow-rule chains.
+2. Impact analysis follows the rule's dependencies and its consumers in both
+   directions without treating links to client-owned design outside the knowledge graph
+   as rule dependencies. Preserve dependency handling for links between
+   software-knowledge pages.
+3. Test-reference checks recognize Flow-rule IDs and reject missing or
+   withdrawn references.
+4. The knowledge viewer distinguishes rules from scenarios and shows their
+   permitted dependencies without turning design references into execution
+   evidence.
+5. Inventory existing ID forms and namespace collisions, including `FR` used
+   as an artifact prefix. Preserve previously accepted workspaces under the
+   existing compatibility contract, or obtain the required owner decision
+   before enforcement. Do not assume the proposed prefix is globally free.
+6. Existing framework and installed-template samples still pass unchanged.
+
+A passing check that does not recognize the proposed namespace is not support.
+A docs-only proposal does not establish tool support. If any item is missing
+or unverified, keep product IDs and contracts unchanged and report the gap for
+separate tooling work. Review the method in prose; do not add temporary IDs,
+relax a gate, or rewrite samples to make it appear supported.
 
 Return to [runbooks](README.md).

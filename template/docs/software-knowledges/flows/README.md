@@ -1,7 +1,8 @@
 # Flows
 
-Knowledge that crosses artifacts. Artifacts are the nodes; a flow is the
-edges between them. Anything that touches two or more artifacts lives here.
+Behavior that coordinates artifacts, services or clients. Choose rule
+ownership using [Knowledge](../../governances/artifact-driven/knowledge.md#layers),
+not the number of artifacts or data sources involved.
 
 
 The folder lists them; the [knowledge site](../../../scripts/README.md#knowledge-site)
