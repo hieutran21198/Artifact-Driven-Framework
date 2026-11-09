@@ -253,7 +253,7 @@ tr.all td{background:var(--panel);font-weight:500}
 // except the calls to api.github.com.
 const API = "https://api.github.com";
 const FRAMEWORK = "hieutran21198/Artifact-Driven-Framework";
-const SCRIPTS = ["project.py", "impact.py", "site.py", "site.html"];
+const SCRIPTS = ["project.py", "flow_rules.py", "impact.py", "site.py", "site.html"];
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const store = {
@@ -779,10 +779,10 @@ try:
     for target, text in staged.items():
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(text, encoding="utf-8")
-    for name, text in {"project.py": _project_py, "impact.py": _impact_py, "site.py": _site_py, "site.html": _site_html}.items():
+    for name, text in {"project.py": _project_py, "flow_rules.py": _flow_rules_py, "impact.py": _impact_py, "site.py": _site_py, "site.html": _site_html}.items():
         (scripts / name).write_text(text, encoding="utf-8")
     os.chdir(root)
-    for name in ("project", "impact"):
+    for name in ("project", "flow_rules", "impact"):
         sys.modules.pop(name, None)
     spec = importlib.util.spec_from_file_location("knowledge_site", scripts / "site.py")
     knowledge_site = importlib.util.module_from_spec(spec)

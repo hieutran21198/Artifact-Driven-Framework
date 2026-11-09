@@ -84,6 +84,16 @@ citation direction: a flow names no goal criterion, and an artifact names no
 goal criterion or flow scenario. It lists the problems and exits with status 1
 when it finds any.
 
+Flow rules are explicit rows under `## Coordination rules` in
+`flows/<flow>.md` or `flows/contracts/<interaction>.md`. Their table has
+`ID`, `Rule` and `Dependencies` columns. The check validates the
+`FR-<SCOPE>-<n>` ID, nonempty rule and dependencies, one home per scope, and
+citations to artifact rules or system requirements. Dependencies are IDs or
+`None`. A Flow rule cannot prove an operation or appear as a goal's
+`Proven by` scenario. [flow_rules.py](flow_rules.py) shares this classification
+with impact analysis and the viewer. Other definitions keep their existing
+classification, including FR-shaped artifact IDs. No setting is needed.
+
 ## Test check
 
 Run [check_tests.py](check_tests.py) on the checkout of a code change:
@@ -123,7 +133,9 @@ pages it relies on) and the blast radius of each requirement, rule and
 operation (the flows, scenarios, operations and client pages a change to it
 affects), largest first. With an argument it prints both counts for that goal
 (such as `G-BORROW`), ID or operation. A rule with no scenario shows 0
-scenarios: a gap in the flows.
+scenarios: a gap in the flows. Detailed traces show a Flow rules group only
+when present. Rule counts and coverage aggregate artifact and Flow rules;
+Flow rules do not count as scenarios or artifacts.
 
 `--fragile [tests folder]` ranks the 20 nodes a change would break most and
 that are proved least: requirements, rules, operations and schemas, by reach
@@ -168,7 +180,9 @@ only, the counts, the API coverage of each service (when it has `routes`),
 each goal with its
 criteria and scenarios, an impact explorer, the blast radius table, the gaps,
 the system context and the diagrams of those goals and their flows,
-and what each client needs from the responses. It reads in English or
+and what each client needs from the responses. When Flow rules are present,
+a separate group shows their scope, owner and dependencies. Rules totals
+include both artifact and Flow rules. It reads in English or
 Vietnamese. [site.html](site.html) is its template. It reuses `impact.py` and
 needs Python 3 only. The page loads fixed versions of Mermaid and its ELK
 layout from jsDelivr, and its fixed fonts from Google Fonts. Offline, it uses

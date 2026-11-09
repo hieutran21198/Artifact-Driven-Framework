@@ -5,6 +5,7 @@ import re
 import sys
 
 from project import ID, KNOWLEDGE, ROOT, SKIP
+from flow_rules import read_flow_rules, table_cells
 
 LINK = re.compile(r"\]\(([^)#\s]*)(?:#([^)\s]*))?\)")
 HEADING = re.compile(r"^#+ (.*)$", re.MULTILINE)
@@ -128,8 +129,53 @@ def check_direction():
     return problems
 
 
+def check_flow_rules():
+    """Validate explicit Flow definitions and their lower-layer citations."""
+    rules, problems, scopes = {}, [], {}
+    for path in sorted(KNOWLEDGE.rglob("*.md")):
+        page = path.relative_to(KNOWLEDGE)
+        found, errors = read_flow_rules(page, path.read_text(encoding="utf-8"))
+        problems.extend(errors)
+        for name, rule in found.items():
+            scope, owner = rule["scope"], rule["owner"]
+            if scope in scopes and scopes[scope] != owner:
+                problems.append(f"{owner}: {name} scope {scope} is also defined in {scopes[scope]}")
+            scopes.setdefault(scope, owner)
+        rules.update(found)
+    defined, _ = knowledge_ids()
+    for name, rule in rules.items():
+        if re.match(r"Withdrawn\b", rule["rule"]):
+            continue
+        for dependency in set(rule["dependencies"]) | set(ID.findall(rule["rule"])):
+            if dependency not in defined:
+                continue  # KN-4 reports undefined citations.
+            home = defined[dependency].relative_to(KNOWLEDGE.relative_to(ROOT)).parts[0]
+            allowed = (home == "artifacts" and not dependency.startswith(("F-", "G-", "SYS-")) or
+                       home == "system" and dependency.startswith("SYS-"))
+            if dependency in rules or not allowed:
+                problems.append(f'{rule["owner"]}: {name} depends on {dependency}, not an artifact rule or system requirement')
+    for path in sorted((KNOWLEDGE / "artifacts").rglob("*")):
+        if path.suffix in {".md", ".yaml"}:
+            for name in sorted(set(ID.findall(path.read_text(encoding="utf-8"))) & rules.keys()):
+                problems.append(f"{path.relative_to(ROOT)}: cites {name}, a layer above")
+    for path in sorted((KNOWLEDGE / "goals").rglob("*.md")):
+        columns = []
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if not line.startswith("|"):
+                columns = []
+                continue
+            cells = table_cells(line)
+            if cells[0] == "ID":
+                columns = cells
+            elif "Proven by" in columns:
+                proof = dict(zip(columns, cells)).get("Proven by", "")
+                for name in sorted(set(ID.findall(proof)) & rules.keys()):
+                    problems.append(f"{path.relative_to(ROOT)}: {name} is a Flow rule, not scenario proof")
+    return problems
+
+
 def main():
-    problems = check_links() + check_ids() + check_scenarios() + check_direction()
+    problems = check_links() + check_ids() + check_scenarios() + check_direction() + check_flow_rules()
     for problem in problems:
         print(problem, file=sys.stderr)
     if problems:

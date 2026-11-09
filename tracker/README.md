@@ -41,7 +41,9 @@ For a local folder it identifies working-copy files, with any Git label as
 context only. These details belong to the displayed build, not pending picks.
 
 The tracker keeps downloaded workspace files separate from its trusted Python
-analyzer and generated output. Workspace Python files are read as test text,
+analyzer and generated output. Its analyzer identity includes the shared
+Flow-rule parser. Local and shared Flow rules appear separately in the site;
+coverage counts them with artifact rules, never as tested scenarios. Workspace Python files are read as test text,
 not imported. File paths that escape the workspace or alias another staged
 file stop that load.
 

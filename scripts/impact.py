@@ -13,6 +13,7 @@ from collections import defaultdict
 import re
 import sys
 
+from flow_rules import read_flow_rules
 from project import CLIENTS, ID, KNOWLEDGE, ROOT, TEST_GLOB, TESTS
 
 ID_ROW = re.compile(r"^\| (" + ID.pattern + r") \|")
@@ -26,6 +27,7 @@ CLIENT_PAGES = tuple(f"/{name}.md" for name in CLIENTS)
 
 class Graph:
     def __init__(self):
+        self.flow_rules = {}             # ID -> declared scope, owner, rule and dependencies
         self.text = defaultdict(list)    # unit -> lines
         self.file = {}                   # unit -> file
         self.fields = defaultdict(set)   # unit -> schema property names
@@ -48,7 +50,10 @@ def layer(path):
 def read_markdown(graph, path):
     page = rel(path)
     section = page
-    for line in path.read_text(encoding="utf-8").splitlines():
+    text = path.read_text(encoding="utf-8")
+    rules, _ = read_flow_rules(path.relative_to(KNOWLEDGE), text)
+    graph.flow_rules.update(rules)
+    for line in text.splitlines():
         heading = re.match(r"^### `?([\w-]+)`?$", line)
         if line.startswith("#"):
             section = f"{page}#{heading.group(1)}" if heading else page
@@ -142,7 +147,9 @@ def starts(graph, term):
     return {u for u, lines in graph.text.items() if term in graph.fields[u] or any(tick in l for l in lines)}
 
 
-def kind(unit):
+def kind(unit, graph=None):
+    if graph is not None and unit in graph.flow_rules:
+        return "Flow rules"
     if unit.startswith("SYS-"):
         return "Requirements"
     if unit.startswith("G-"):
@@ -163,9 +170,9 @@ def kind(unit):
 def report(graph, units, pages):
     groups = defaultdict(set)
     for unit in units:
-        if kind(unit):
-            groups[kind(unit)].add(unit.split("#")[0] + "#" + unit.split("#")[1].split("/")[-1] if "#" in unit else unit)
-    order = ["Requirements", "Goal criteria", "Flow scenarios", "Artifact rules", "Operations", "Contract schemas", "Client needs"]
+        if kind(unit, graph):
+            groups[kind(unit, graph)].add(unit.split("#")[0] + "#" + unit.split("#")[1].split("/")[-1] if "#" in unit else unit)
+    order = ["Requirements", "Goal criteria", "Flow scenarios", "Flow rules", "Artifact rules", "Operations", "Contract schemas", "Client needs"]
     for name in order:
         if groups[name]:
             print(f"{name}: {', '.join(sorted(groups[name]))}")
@@ -192,19 +199,19 @@ def affected(graph, start):
 
 def with_client_needs(graph, units):
     """Add the client needs on any operation the units reach."""
-    return units | {u for u in graph.file if kind(u) == "Client needs" and graph.edges[u] & units}
+    return units | {u for u in graph.file if kind(u, graph) == "Client needs" and graph.edges[u] & units}
 
 
 def counts(graph, units, pages):
     flows = {graph.file[u] for u in units if u.startswith("F-")}
     artifacts = {p.split("/")[1] for p in pages if p.startswith("artifacts/")}
-    clients = {u.split("#")[0] for u in units if kind(u) == "Client needs"}
+    clients = {u.split("#")[0] for u in units if kind(u, graph) == "Client needs"}
     by_kind = defaultdict(int)
     for u in units:
-        by_kind[kind(u)] += 1
+        by_kind[kind(u, graph)] += 1
     return {
         "criteria": by_kind["Goal criteria"], "flows": len(flows),
-        "scenarios": by_kind["Flow scenarios"], "rules": by_kind["Artifact rules"],
+        "scenarios": by_kind["Flow scenarios"], "rules": by_kind["Artifact rules"] + by_kind["Flow rules"],
         "operations": by_kind["Operations"], "artifacts": len(artifacts),
         "client pages": len(clients),
     }
@@ -232,7 +239,7 @@ def stats(graph, term):
         units, pages = relies_on(graph, start)
         print("  " + line(goal, counts(graph, with_client_needs(graph, units), pages)))
     print("Blast radius of each rule and operation (what a change affects):")
-    nodes = [u for u in graph.file if kind(u) in ("Requirements", "Artifact rules", "Operations")]
+    nodes = [u for u in graph.file if kind(u, graph) in ("Requirements", "Flow rules", "Artifact rules", "Operations")]
     rows = []
     for node in nodes:
         units, pages = affected(graph, {node})
@@ -285,7 +292,7 @@ def fragile(graph, folders, limit=20):
             open_questions |= set(ID.findall(section)) | set(TICKED.findall(section))
     rows = []
     for node in graph.file:
-        if kind(node) not in ("Requirements", "Artifact rules", "Operations", "Contract schemas"):
+        if kind(node, graph) not in ("Requirements", "Flow rules", "Artifact rules", "Operations", "Contract schemas"):
             continue
         units, pages = affected(graph, {node})
         numbers = counts(graph, with_client_needs(graph, units), pages)
@@ -330,13 +337,18 @@ def coverage(graph, folders):
         return 1
     tests = tested_ids(folders)
     kinds = ("Goal criteria", "Flow scenarios", "Artifact rules")
+
+    def coverage_kind(unit):
+        value = kind(unit, graph)
+        return "Artifact rules" if value == "Flow rules" else value
+
     print("Test coverage by ID: the criteria, scenarios and rules of each goal that a test names.")
     total = defaultdict(lambda: [0, 0])
     for goal in goal_keys(graph):
-        ids = {u for u in goal_units(graph, goal) if kind(u) in kinds and not withdrawn(graph, u)}
+        ids = {u for u in goal_units(graph, goal) if coverage_kind(u) in kinds and not withdrawn(graph, u)}
         parts, missing = [], []
         for k in kinds:
-            mine = sorted((u for u in ids if kind(u) == k), key=natural)
+            mine = sorted((u for u in ids if coverage_kind(u) == k), key=natural)
             done = [u for u in mine if tests.get(u)]
             parts.append(f"{k.split()[1]} {len(done)}/{len(mine)}")
             missing += [u for u in mine if not tests.get(u)]
@@ -345,13 +357,13 @@ def coverage(graph, folders):
         print(f"  {goal:12} {percent:3}%  " + "  ".join(parts))
         if missing:
             print(f"               untested: {', '.join(missing)}")
-    every = {u for u in graph.file if kind(u) in kinds and not withdrawn(graph, u)}
+    every = {u for u in graph.file if coverage_kind(u) in kinds and not withdrawn(graph, u)}
     for u in every:
-        total[kind(u)][0] += 1 if tests.get(u) else 0
-        total[kind(u)][1] += 1
+        total[coverage_kind(u)][0] += 1 if tests.get(u) else 0
+        total[coverage_kind(u)][1] += 1
     print("  all          " + "  ".join(f"{k.split()[1]} {total[k][0]}/{total[k][1]}" for k in kinds))
     # System requirements are not in any goal's share; they get a line of their own (TST-4).
-    reqs = sorted((u for u in graph.file if kind(u) == "Requirements" and not withdrawn(graph, u)), key=natural)
+    reqs = sorted((u for u in graph.file if coverage_kind(u) == "Requirements" and not withdrawn(graph, u)), key=natural)
     if reqs:
         print(f"  system       requirements {sum(1 for u in reqs if tests.get(u))}/{len(reqs)}")
         untested = [u for u in reqs if not tests.get(u)]
