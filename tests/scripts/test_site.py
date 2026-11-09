@@ -114,5 +114,57 @@ class Site(unittest.TestCase):
             self.assertIn("'sha256-" + digest + "'", policy)
 
 
+def flow_rule_workspace():
+    """Local/shared rule definitions plus an FR-shaped artifact and design data."""
+    ws = site_workspace()
+    base = "docs/software-knowledges/"
+    ws.write(base + "flows/safe.md", "# Flow: Safe flow\n\n## Coordination rules\n\n"
+             "| ID | Rule | Dependencies |\n| --- | --- | --- |\n"
+             "| FR-LOCAL-1 | " + HOSTILE + " | TH-1, SYS-1 |\n\n"
+             "## Scenarios\n\n| ID | Given | When | Then | Rules |\n| --- | --- | --- | --- | --- |\n"
+             "| F-SAFE-1 | Files | `getThing` | Read | FR-LOCAL-1, FR-SHARED-1, FR-LEGACY-1 |\n\n"
+             "[Thing](../artifacts/thing/specification.md)\n"
+             "[Design](../../../apps/web/design/FR-DESIGN-1.md)\n"
+             '[Hostile design](https://workspace.invalid/FR-DESIGN-2?x="<img>)\n')
+    ws.write(base + "flows/contracts/shared.md", "# Shared interaction\n\n## Coordination rules\n\n"
+             "| ID | Rule | Dependencies |\n| --- | --- | --- |\n"
+             "| FR-SHARED-1 | Share safely. | TH-1 |\n")
+    ws.write(base + "artifacts/thing/specification.md", "# Thing\n\n"
+             "| TH-1 | An artifact rule. | — |\n| FR-LEGACY-1 | A legacy artifact rule. | — |\n")
+    ws.write(base + "goals/other.md", "# Goal: Other\n\n| G-OTHER-1 | Share | F-OTHER-1 |\n")
+    ws.write(base + "flows/other.md", "# Flow: Other\n\n"
+             "| F-OTHER-1 | Files | `getThing` | Read | FR-SHARED-1 |\n")
+    ws.write("apps/web/design/FR-DESIGN-1.md", "# Design\n\n| FR-DESIGN-1 | Navigation only. |\n")
+    return ws
+
+
+class FlowRuleSite(unittest.TestCase):
+    def test_KN_13_F_VIEW_30_generated_data_distinguishes_rules(self):
+        """KN-13, F-VIEW-30, SYS-7: classified definitions, dependencies and safe data."""
+        ws = flow_rule_workspace()
+        self.addCleanup(ws.close)
+        run = ws.run("site.py")
+        self.assertEqual(run.returncode, 0, run.stderr)
+        page = Page((ws.root / "build/site.html").read_text())
+        source = next(s for s in page.scripts if s.startswith("const DATA="))
+        data = json.loads(source.removeprefix("const DATA=").removesuffix(";"))
+        rules = {r["id"]: r for r in data["flowRules"]}
+        self.assertEqual(set(rules), {"FR-LOCAL-1", "FR-SHARED-1"})
+        self.assertEqual(rules["FR-LOCAL-1"]["text"], HOSTILE)
+        self.assertEqual(rules["FR-LOCAL-1"]["owner"], "flows/safe.md")
+        self.assertEqual(set(rules["FR-LOCAL-1"]["dependencies"]), {"TH-1", "SYS-1"})
+        self.assertEqual({r["id"] for r in data["rules"]}, {"TH-1", "FR-LEGACY-1"})
+        self.assertEqual({s["id"] for f in data["flows"] for s in f["scenarios"]}, {"F-SAFE-1", "F-OTHER-1"})
+        nodes = dict(data["graph"]["nodes"])
+        self.assertNotEqual(nodes["FR-LOCAL-1"], nodes["FR-LEGACY-1"])
+        self.assertNotEqual(nodes["FR-LOCAL-1"], nodes["F-SAFE-1"])
+        self.assertNotIn("FR-DESIGN-1", nodes)
+        self.assertNotIn("FR-DESIGN-2", nodes)
+        self.assertIn(["FR-LOCAL-1", "TH-1"], data["graph"]["edges"])
+        self.assertEqual(data["size"]["G-SAFE"]["rules"], 4)
+        self.assertEqual(data["size"]["G-SAFE"]["scenarios"], 1)
+        self.assertFalse([tag for tag, _ in page.tags if tag == "img"])
+
+
 if __name__ == "__main__":
     unittest.main()

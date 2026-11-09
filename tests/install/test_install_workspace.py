@@ -1,7 +1,10 @@
 """Scenarios of the flow Install a workspace."""
 
 from pathlib import Path
+import json
 import os
+import re
+import sys
 import shutil
 import subprocess
 import tempfile
@@ -38,6 +41,62 @@ class InstallWorkspace(unittest.TestCase):
         run = install(source, self.out / "ws")
         self.assertNotEqual(run.returncode, 0)
         self.assertEqual(list(self.out.iterdir()), [])
+
+    @unittest.skipUnless(shutil.which("git"), "needs git")
+    def test_F_START_6_flow_rule_sample_runs_with_installed_tools(self):
+        """F-START-6, WS-3, WS-4, KN-13: installed tools read the sample rule."""
+        ws = self.out / "ws"
+        run = install(FRAMEWORK, ws)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        subprocess.run(["git", "init", "-q"], cwd=ws, check=True)
+        for name in ("scripts/flow_rules.py",
+                     "docs/coding-standards/landing-pages/README.md",
+                     ".agents/skills/landing-page/SKILL.md"):
+            self.assertEqual((ws / name).read_bytes(), (FRAMEWORK / name).read_bytes())
+
+        def command(script, *args, status=0):
+            result = subprocess.run([sys.executable, "scripts/" + script, *args],
+                                    cwd=ws, capture_output=True, text=True)
+            self.assertEqual(result.returncode, status, result.stdout + result.stderr)
+            return result.stdout + result.stderr
+
+        command("check_structure.py")
+        command("check_docs.py")
+        down = command("impact.py", "--down", "FR-RETURN-1")
+        self.assertIn("Flow rules: FR-RETURN-1", down)
+        self.assertIn("Artifact rules: BK-6, NTC-1", down)
+        self.assertIn("SYS-8", down)
+        up = command("impact.py", "FR-RETURN-1")
+        for name in ("G-BORROW-5", "G-BORROW-7", "F-RETURN-3", "F-RETURN-8",
+                     "F-RETURN-9", "F-RETURN-10"):
+            self.assertIn(name, up)
+
+        checks = ws / "checks"
+        checks.mkdir()
+        test = checks / "rule_test.py"
+        test.write_text("# FR-RETURN-1\n")
+        command("check_tests.py", "checks")
+        coverage = command("impact.py", "--coverage", "checks")
+        self.assertRegex(coverage, r"all +criteria 0/\d+ +scenarios 0/\d+ +rules 1/\d+")
+        self.assertNotIn("FR-RETURN-1", coverage)
+        test.write_text("# FR-RETURN-99\n")
+        self.assertIn("FR-RETURN-99", command("check_tests.py", "checks", status=1))
+        test.write_text("# FR-UNKNOWN-1\n")
+        command("check_tests.py", "checks")
+
+        command("site.py")
+        html = (ws / "build/site/index.html").read_text()
+        data = json.loads(re.search(r"<script>const DATA=(.*?);</script>", html).group(1))
+        self.assertEqual(len(data["flowRules"]), 1)
+        rule = data["flowRules"][0]
+        self.assertEqual(rule["id"], "FR-RETURN-1")
+        self.assertEqual(rule["owner"], "flows/return-book.md")
+        self.assertEqual(rule["dependencies"], ["BK-6", "NTC-1", "SYS-8"])
+        scenarios = [scenario for flow in data["flows"] for scenario in flow["scenarios"]]
+        self.assertNotIn("FR-RETURN-1", [scenario["id"] for scenario in scenarios])
+        self.assertEqual({scenario["id"] for scenario in scenarios
+                          if "FR-RETURN-1" in scenario["covers"]},
+                         {"F-RETURN-3", "F-RETURN-8", "F-RETURN-9", "F-RETURN-10"})
 
     @unittest.skipUnless(shutil.which("git"), "needs git")
     def test_F_START_11_git_copy_gives_no_ignored_file(self):

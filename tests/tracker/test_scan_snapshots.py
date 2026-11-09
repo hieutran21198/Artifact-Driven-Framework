@@ -443,6 +443,33 @@ class CoverageParityTests(BrowserTestCase):
         self.assertEqual(result['b']['provenance']['parts'][0]['status'],'failed')
         self.assertTrue(result['b']['provenance']['analyzer']['digest'].startswith('sha256:'))
 
+    def test_F_VIEW_30_TST_4_flow_rule_browser_cli_parity(self):
+        """F-VIEW-30, TST-4, TRK-17: real trusted parser counts rules, not scenario proof."""
+        from tests.scripts.test_site import flow_rule_workspace
+        ws = flow_rule_workspace()
+        self.addCleanup(ws.close)
+        configuration = {"services": {"web": {"tests": {"folder": "tests", "glob": "*.py"}}}}
+        ws.write("artifact-driven.json", json.dumps(configuration))
+        ws.write("tests/rules.py", "# FR-LOCAL-1 FR-SHARED-1 FR-LEGACY-1 TH-1\n")
+        files = {str(p.relative_to(ws.root)): p.read_text() for p in ws.root.rglob("*") if p.is_file()}
+        # A workspace's parser-shaped module must never enter the trusted closure.
+        files["flow_rules.py"] = "raise RuntimeError('untrusted parser executed')"
+        self.open_tracker()
+        result = self.page.evaluate("""async files => {
+          const [html,coverage]=await run(files,'flow-rules');
+          const runtime=await python();
+          return {html,coverage,sources:SCRIPTS,
+            parser:runtime.runPython('import flow_rules; flow_rules.__file__')};
+        }""", files)
+        cli = ws.run("impact.py", "--coverage")
+        self.assertEqual(cli.returncode, 0, cli.stderr)
+        self.assertEqual(result["coverage"], cli.stdout)
+        self.assertIn("rules 4/4", cli.stdout)
+        self.assertIn("scenarios 0/1", cli.stdout)
+        self.assertIn("flow_rules.py", result["sources"])
+        self.assertEqual(result["parser"], "/analyzer/flow_rules.py")
+        self.assertIn('"flowRules":', result["html"])
+
     def test_TRK_17_HTTP_real_hashlib_bootstrap_and_failed_runtime_retry(self):
         """TRK-5, TRK-10, TRK-17: real stdlib hashing matches Web Crypto on HTTP."""
         self.open_tracker()
@@ -476,6 +503,7 @@ class CoverageParityTests(BrowserTestCase):
         files['artifact-driven.json']=json.dumps({'services':{'untrusted':{'tests':{'folder':'scripts','glob':'**/*.py'}}}})
         files['scripts/datetime.py']="import js\njs.window.qaExecutionMarker='workspace-module-executed'\n# TRK-1 G-VIEW-1 F-VIEW-1\n"
         files['scripts/project.py']='# TRK-2\n'
+        files['scripts/flow_rules.py']="import js\njs.window.qaExecutionMarker='workspace-parser-executed'\n"
         result=self.page.evaluate(r"""async files => {
           delete window.qaExecutionMarker;
           const [html,coverage]=await run(files,'seed');

@@ -28,7 +28,7 @@ TEMPLATE = Path(__file__).with_name("site.html")
 ROW = re.compile(r"^\| (" + impact.ID.pattern + r") \|(.*)\|\s*$")
 TITLE = re.compile(r"^# (?:Goal|Flow): (.+)$", re.MULTILINE)
 MERMAID = re.compile(r"^```mermaid\n(.*?)^```", re.MULTILINE | re.DOTALL)
-COLUMN = {"Requirements": 0, "Goal criteria": 0, "Flow scenarios": 1, "Artifact rules": 2, "Operations": 3, "Client needs": 4}
+COLUMN = {"Requirements": 0, "Goal criteria": 0, "Flow scenarios": 1, "Flow rules": 5, "Artifact rules": 2, "Operations": 3, "Client needs": 4}
 
 
 def html_data(data):
@@ -96,7 +96,7 @@ def knowledge(graph):
         page = impact.rel(path)
         scenarios = []
         for i, c in read_rows(text):
-            if len(c) >= 4:
+            if i not in graph.flow_rules and len(c) >= 4:
                 scenarios.append({"id": i, "given": plain(c[0]), "when": plain(c[1]), "then": plain(c[2]),
                                   "covers": impact.ID.findall(c[3])})
         flows.append({"page": page, "title": (TITLE.search(text) or [None, page])[1], "scenarios": scenarios})
@@ -123,7 +123,7 @@ def knowledge(graph):
                 operations[-1]["summary"] = m.group(1)
     clients = defaultdict(lambda: defaultdict(list))
     for unit, lines in graph.text.items():
-        if impact.kind(unit) == "Client needs" or (unit.endswith(impact.CLIENT_PAGES)):
+        if impact.kind(unit, graph) == "Client needs" or (unit.endswith(impact.CLIENT_PAGES)):
             page = unit.split("#")[0]
             section = unit.split("#")[1] if "#" in unit else "Every item"
             needs = [plain(l[2:]) for l in lines if l.startswith("- ")]
@@ -172,7 +172,7 @@ def service_routes(operations, services):
 
 def display_graph(graph):
     def show(unit):
-        kind = impact.kind(unit)
+        kind = impact.kind(unit, graph)
         if kind == "Client needs":
             parts = unit.split("#")[0].split("/")
             return parts[1] + "/" + parts[2].removesuffix(".md")
@@ -183,7 +183,7 @@ def display_graph(graph):
         name = show(unit)
         if not name:
             continue
-        nodes[name] = COLUMN[impact.kind(unit)]
+        nodes[name] = COLUMN[impact.kind(unit, graph)]
         seen, todo = set(), list(graph.edges[unit])
         while todo:
             other = todo.pop()
@@ -207,7 +207,7 @@ def metrics(graph):
         size[goal] = impact.counts(graph, impact.with_client_needs(graph, units), pages)
     radius = {}
     for node in graph.file:
-        if impact.kind(node) in ("Requirements", "Artifact rules", "Operations"):
+        if impact.kind(node, graph) in ("Requirements", "Artifact rules", "Flow rules", "Operations"):
             units, pages = impact.affected(graph, {node})
             radius[node] = impact.counts(graph, impact.with_client_needs(graph, units), pages)
     return size, radius
@@ -246,6 +246,7 @@ def main(argv):
         "commit": commit(),
         "built": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "requirements": requirements, "goals": goals, "flows": flows, "rules": rules,
+        "flowRules": [{"id": i, **r, "text": plain(r["rule"])} for i, r in sorted(graph.flow_rules.items())],
         "operations": operations, "clients": clients, "routes": service_routes(operations, services),
         "graph": display_graph(graph), "diagrams": diagrams(), "size": size, "radius": radius,
     }

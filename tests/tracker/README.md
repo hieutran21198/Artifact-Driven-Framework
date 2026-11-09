@@ -5,10 +5,11 @@ executes the tracker and the generated site. Repository responses are fixtures;
 the tests do not need GitHub accounts or tokens.
 
 The 18 `ScanSnapshotTests` use fixed analyzer results and block external
-requests. The three `CoverageParityTests` run the real analyzer with
+requests. The four `CoverageParityTests` run the real analyzer with
 Pyodide 0.26.4. They compare browser coverage with the CLI, verify HTTP hashing
-and initialization recovery, and check that workspace modules stay data.
-These three tests require Chromium to reach
+and initialization recovery, check Flow-rule classification and aggregate coverage against the CLI,
+and check that workspace modules, including a parser-shaped module, stay data.
+These four tests require Chromium to reach
 `https://cdn.jsdelivr.net/pyodide/v0.26.4/full/` for the pinned runtime files.
 Other external requests remain blocked.
 
