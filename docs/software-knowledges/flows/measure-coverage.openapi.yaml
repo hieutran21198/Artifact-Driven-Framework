@@ -62,7 +62,8 @@ components:
             by a line of the IDs no test file names, in the order of their
             numbers. Then one line for the whole knowledge, and one for the
             system requirements with the ones no test file names (F-COVER-1,
-            F-COVER-3, F-COVER-11).
+            F-COVER-3, F-COVER-11). The rules totals include both artifact
+            rules and Flow rules under the same label (F-COVER-12).
           example: ['  G-GATE        60%  criteria 1/2  scenarios 2/4  rules 3/4']
         stderr:
           allOf:

@@ -66,5 +66,6 @@ sequenceDiagram
 | F-COVER-9 | Any workspace and its tests | The person runs `measureCoverage` or `rankFragile` | No test runs and no file changes | SYS-4, SYS-6 |
 | F-COVER-10 | Two parts whose tests folders are `tests/a` and `tests/b`, each with its own glob, and test files that only those globs match | The person runs `measureCoverage` with `tests` | It reads the test files of both parts, each with its part's glob | CFG-8, CFG-4 |
 | F-COVER-11 | Three system requirements, and test files that name one of them | The person runs `measureCoverage` | The goals' shares are as before, and a line for the requirements shows 1/3 and the two no test names | TST-4 |
+| F-COVER-12 | A goal relies on 1 criterion, 1 scenario, 1 artifact rule and 2 Flow rules; tests name only one Flow rule; another Flow rule is withdrawn | The person runs `measureCoverage` with those tests | The goal shows 20%, criteria 0/1, scenarios 0/1 and rules 1/3; the withdrawn rule is excluded from the whole-knowledge count, and naming a Flow rule supplies no scenario proof | TST-3, TST-4, KN-9, KN-13 |
 
 Return to [flows](README.md).

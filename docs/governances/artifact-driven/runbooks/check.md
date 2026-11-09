@@ -81,8 +81,10 @@ exact tool version the workspace uses. Record results on the issue:
    directions without treating links to client-owned design outside the knowledge graph
    as rule dependencies. Preserve dependency handling for links between
    software-knowledge pages.
-3. Test-reference checks recognize Flow-rule IDs and reject missing or
-   withdrawn references.
+3. Test-reference checks recognize Flow-rule IDs within their documented
+   prefix scope and reject missing or withdrawn references there. Verify and
+   report how unknown scopes are handled; a pass does not prove that an
+   excluded prefix exists.
 4. The knowledge viewer distinguishes rules from scenarios and shows their
    permitted dependencies without turning design references into execution
    evidence.

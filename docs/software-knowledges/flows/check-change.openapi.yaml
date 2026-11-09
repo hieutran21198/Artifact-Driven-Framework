@@ -17,7 +17,9 @@ x-commands:
     description: >
       python3 scripts/check_docs.py. Checks links, anchors, knowledge IDs,
       citation direction, and scenarios and their operations (F-CHECK-5 to
-      F-CHECK-12, F-CHECK-18).
+      F-CHECK-12, F-CHECK-18). Validates explicitly declared local and shared
+      Flow rules and their citations while preserving existing artifact ID
+      forms (F-CHECK-25 to F-CHECK-28).
     input:
       $ref: '#/components/schemas/CheckDocsInput'
     output:
@@ -26,8 +28,9 @@ x-commands:
     caller: A person or CI, on the checkout of a code change.
     description: >
       python3 scripts/check_tests.py [folder]. Checks that test files name
-      only knowledge IDs that exist and are not withdrawn (F-CHECK-13 to
-      F-CHECK-17).
+      only knowledge IDs that exist and are not withdrawn when their complete
+      prefix occurs in the knowledge. An unknown complete prefix is ignored,
+      including an unknown Flow-rule scope (F-CHECK-13 to F-CHECK-17).
     input:
       $ref: '#/components/schemas/CheckTestsInput'
     output:
