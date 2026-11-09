@@ -75,9 +75,10 @@ components:
             - $ref: '../../system/openapi.yaml#/components/schemas/Lines'
           description: >
             One line for each kind that has units, in this order - Requirements,
-            Goal criteria, Flow scenarios, Artifact rules, Operations, Contract
-            schemas, Client needs - each followed by its units in sorted order;
-            then one line of Pages.
+            Goal criteria, Flow scenarios, Flow rules, Artifact rules,
+            Operations, Contract schemas, Client needs - each followed by its
+            units in sorted order; then one line of Pages. Flow rules are
+            classified by their declaration, not by ID spelling (KN-13).
           example: ['Operations: checkDocs', 'Pages: flows/check-change.openapi.yaml']
         stderr:
           allOf:
@@ -105,7 +106,9 @@ components:
             Without a name, the size of each goal, then the blast radius of
             each requirement, rule and operation, the most scenarios first,
             then the most operations (KN-11). With a name, one line of what it
-            relies on and one line of what a change to it affects.
+            relies on and one line of what a change to it affects. The rules
+            count includes both artifact rules and Flow rules under the same
+            label (KN-11).
         stderr:
           allOf:
             - $ref: '../../system/openapi.yaml#/components/schemas/Lines'

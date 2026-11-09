@@ -60,5 +60,6 @@ sequenceDiagram
 | F-TRACE-9 | A rule that no scenario cites | The person runs `countImpact` with no name | The rule shows 0 scenarios | KN-11 |
 | F-TRACE-10 | An open question that names a rule one goal relies on, and one that names nothing in the knowledge | The person runs `listQuestions` | The first is listed under that goal only, the second under the questions that name nothing | KN-12 |
 | F-TRACE-11 | Any workspace | The person runs `traceImpact`, `traceDown`, `countImpact` or `listQuestions` | No file of the workspace changes | SYS-4 |
+| F-TRACE-12 | A criterion is proved by scenarios that cite local and shared Flow rules with artifact and system dependencies; a flow links to client-owned design outside the knowledge folder; an FR-shaped artifact rule is also defined outside the Flow-rule form | The person runs `traceImpact` on a Flow rule, `traceDown` on the criterion and `countImpact` on the criterion | Traces follow the rule's consumers up and its dependencies down, distinguish Flow rules from artifact rules and scenarios, and exclude the design link from dependencies; counts aggregate both rule types without adding scenarios or artifacts for Flow rules; a trace with no Flow rules has no Flow rules group | KN-7, KN-8, KN-9, KN-11, KN-13 |
 
 Return to [flows](README.md).
