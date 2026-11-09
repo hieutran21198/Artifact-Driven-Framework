@@ -1,9 +1,8 @@
 # Software knowledge
 
-The knowledge of Artifact Driven itself, in four layers. System is shared:
-every layer may cite it. Among goals, flows and artifacts, a layer cites only
-the layers below it. The rules are in
-[Artifact Driven](../governances/artifact-driven/knowledge.md).
+The knowledge of Artifact Driven itself, in four layers. Follow
+[Artifact Driven](../governances/artifact-driven/knowledge.md) for ownership,
+citation direction and Flow-rule adoption prerequisites.
 
 A new workspace gets the sample instead: a small library lending service,
 written from system down to client needs, in

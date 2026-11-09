@@ -2,7 +2,7 @@
 
 A framework for a whole team building software from knowledge: each person
 owns their part, a service or a client, and people and AI agents do the work
-together. The knowledge has four layers, each citing only the layers below it:
+together. The knowledge has four layers:
 
 | Layer | Holds | ID |
 | --- | --- | --- |
@@ -11,9 +11,11 @@ together. The knowledge has four layers, each citing only the layers below it:
 | Flow | Behavior across artifacts, as testable scenarios that each name an operation, a trigger or a command | `F-<FLOW>-n` |
 | Artifact | One domain: model, rules, lifecycle, OpenAPI contract, and what each client needs | `<PREFIX>-n` |
 
-Every fact has one owner and an ID; other pages cite the ID. Because every
-citation points down, scripts can trace a change in both directions: what a
-rule affects, and what a goal relies on.
+Every fact has one owner and an ID; other pages cite the ID. Follow the
+[knowledge rules](docs/governances/artifact-driven/knowledge.md#citations) for
+dependency direction and Flow-rule adoption prerequisites. The scripts trace
+supported knowledge IDs in both directions: what a rule affects,
+and what a goal relies on.
 
 ## Create a workspace
 

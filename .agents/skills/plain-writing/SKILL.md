@@ -1,9 +1,18 @@
 ---
 name: plain-writing
-description: Write or review the text of a page - a site page, a README, the prose around knowledge - so a reader gets its value in five seconds. A picture first, then results and "Label: value" lines; no lead-ins, stories, selling, comparisons or lists that only show breadth. Use before showing or publishing any page, and when asked to review or shorten its text.
+description: >-
+  Write or review the text of a page - a site page, a README, the prose around
+  knowledge - so a reader gets its value in five seconds. A picture first,
+  then results and "Label: value" lines; no lead-ins, stories, selling,
+  comparisons or lists that only show breadth. Use before showing or
+  publishing other pages, and when asked to review or shorten their text. For
+  landing-page work, use the landing-page skill instead.
 ---
 
 # Plain writing
+
+For landing-page work, use [landing-page](../landing-page/SKILL.md) instead
+of the form and cuts below.
 
 The language rules are in [Files and prose](../../../docs/coding-standards/README.md#files-and-prose)
 and [ASD-STE-100](../../../docs/coding-standards/asd-ste-100/README.md). This

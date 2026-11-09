@@ -9,7 +9,7 @@
 - [Infrastructure](infrastructure/README.md): where the software runs and how it
   gets there.
 - [Coding standards](coding-standards/README.md): repository conventions and
-  the General, Go, writing and diagram standards.
+  the General, Go, writing, landing-page and diagram standards.
 - [Principles](principles/README.md): principles that guide decisions.
 
 Return to the [project contents](../README.md).

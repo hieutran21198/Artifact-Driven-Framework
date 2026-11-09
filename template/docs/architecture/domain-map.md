@@ -12,6 +12,11 @@ moves to another service, is an architecture change first.
 | `member` | `lending` | The reference pass: members and whether they may borrow | — |
 | `notice` | `notification` | The reference pass: messages sent to members, once each | — |
 
+These sample boundaries demonstrate document shape, not mandatory product
+boundaries. The split between loans and borrowing eligibility is not evidence
+that a real product must separate those responsibilities. Choose the project's
+boundaries through [knowledge ownership](../governances/artifact-driven/knowledge.md#choose-the-owner).
+
 Replace the reference rows with the project's domains. Where code predates
 this structure, name the packages that move into each domain.
 

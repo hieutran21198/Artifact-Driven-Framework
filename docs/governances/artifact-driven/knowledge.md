@@ -2,7 +2,7 @@
 
 How [software knowledge](../../software-knowledges/README.md) is organized.
 The [reference pass](https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/template/docs/software-knowledges/goals/borrow-a-book.md), from system
-down to the `book` and `member` artifacts, shows every rule on this page. Where
+down to the `book` and `member` artifacts, shows the established scenario format. Where
 this page names a `SYS` ID, it is the ID of the reference pass; a project
 keeps the same requirements under its own IDs.
 
@@ -16,7 +16,11 @@ keeps the same requirements under its own IDs.
 | Artifact | One domain: model, rules, lifecycle, contract, and what each client needs from it | The domain package of the service that serves it | Domain unit tests |
 
 - Artifacts are the nodes and flows the edges between them. Knowledge that
-  touches two or more artifacts belongs to a flow.
+  coordinates artifacts belongs to a flow. Choose a business policy owner by
+  responsibility and decision authority, not by the number of data sources.
+  Reading external facts alone neither assigns a policy to an artifact nor
+  moves it to a flow. Separate the policy from its orchestration; ask the
+  affected owners when that boundary is unresolved.
 - A goal is a set of flows that reach one outcome. "Goal" means a product goal;
   delivery goals stay on issues.
 - An artifact is one business domain from the
@@ -45,12 +49,15 @@ The knowledge holds for one service or for many.
 ## Citations
 
 - System is shared: every layer may cite it.
-- Among goals, flows and artifacts, a layer cites only the layers below it: a
-  goal cites flows, a flow cites artifacts. An artifact never mentions a flow or
-  a goal, and a flow never mentions a goal.
+- Rule dependencies normally point down: a goal cites flows, a flow cites
+  artifacts. An artifact never depends on a flow or a goal, and a flow never
+  depends on a goal. Same-layer Flow-rule citations are limited
+  to [Flow rules](#flow-rules) and require the adoption checks there.
 - A goal criterion names the flow scenarios that prove it, in the Proven by
-  column of its row. A scenario names only the artifact rules and system
-  requirements it covers.
+  column of its row. A scenario names the artifact rules and system
+  requirements it covers. It may also cover
+  Flow rules after the adoption checks pass. Scenarios prove behavior; they
+  are not reusable rule definitions.
 - Each fact has one owner. Other pages cite it by ID and never restate it.
 - A contract description cites the rule ID behind a value; it never states a
   rule that has no ID.
@@ -100,6 +107,80 @@ out, or change the ID that already holds it.
 
 The report of the change names, for each new ID, the IDs it was checked
 against.
+
+## Flow rules
+
+Before using this authoring method to allocate product IDs, complete the
+[adoption checks](runbooks/check.md#flow-rule-adoption) for docs checks, impact
+analysis, test references and the knowledge viewer. Keep existing scenarios,
+contracts and IDs unchanged until those checks pass. Record an
+unsupported rule need on the issue; do not hide it in a scenario or bypass a
+check.
+
+### Choose the owner
+
+First state the business decision and identify who has authority to change
+it. Keep domain meaning separate from how the application obtains facts and
+coordinates work. A cross-boundary policy does not automatically belong to
+Flow; using external facts does not automatically make it an artifact rule
+either. Ask the affected owners to settle an unclear boundary on the issue
+before writing it as established knowledge.
+
+Choosing a rule owner does not require code or model extraction. Conditions
+specific to a use case may stay with their legitimate Flow owner. A separate
+policy artifact, service or function needs an actual domain responsibility;
+an external input alone does not justify it.
+
+Flow owns coordination promises: ordering, atomicity within one service,
+retry and recovery across steps. Cite existing domain rules instead of moving
+or copying their business meaning into coordination. A goal states the
+outcome, not a reusable rule.
+
+### Choose the home and scope
+
+- Start with `## Coordination rules` in `flows/<flow>.md` for rules owned by
+  that flow.
+- Use `flows/contracts/<interaction>.md` only when multiple flows genuinely
+  reuse the same coordination promise. Reuse an existing suitable page first.
+  This is a shared Flow specification, not an OpenAPI transport contract.
+  Do not create the directory or extract a page for hypothetical reuse.
+- State the scope and responsible owner. Each rule row has an ID, a testable
+  rule statement and explicit dependencies. Name the interaction or steps the
+  scope covers, including limits and failure outcomes when they matter.
+- The ID form is `FR-<SCOPE>-<n>`, separate from scenario IDs
+  `F-<FLOW>-<n>`. A scope names one local flow or shared interaction, not a
+  goal. Check that the scope is unique before allocation; after adoption,
+  apply [the life of an ID](#the-life-of-an-id).
+
+### Citations and proof
+
+After adoption, a flow's steps and scenarios may cite local Flow rules or
+shared Flow rules at the same layer. A scenario's Covers column names the
+rules it proves. This exception does not allow one flow to treat another
+flow's scenario as a reusable rule.
+
+A Flow rule may depend on artifact rules and system requirements. It must
+not depend on another Flow rule, a scenario or a goal. Do not build Flow-rule
+chains. Keep the dependency list explicit and cite facts without restating
+them. Goals continue to name scenarios in Proven by; a rule definition alone
+is not proof. Tests name the rule or scenario they prove.
+
+## Design links
+
+When relevant design exists, a Flow links to the client-owned design material
+outside the software-knowledge graph for navigation. Name the
+owning client and, when useful, the step or scenario it illustrates. Screens,
+copy and layout stay with that client's owner at their actual location, such
+as the client repository or a design tool. Do not copy them into knowledge,
+require a new design folder or ID namespace, or require design for every Flow.
+Technical choices and their rationale stay in architecture decisions.
+
+Such a design link is not a rule dependency, an approval or execution
+evidence. Keep it separate from Covers, Proven by and rule dependency lists.
+Verify that it points to the intended design; if access or location is unknown,
+ask the owner on the issue rather than inventing a link. This does not change
+how links between software-knowledge pages establish dependencies or the
+citation direction those pages must follow ([Citations](#citations)).
 
 ## Rules with values
 
@@ -178,8 +259,8 @@ is written: it reaches a page only when its branch merges with it still open
 An artifact is never split per service or per client. Client pages cite rule IDs and
 `operationId`s; they never restate rules. Which client calls which operation,
 and when, belongs to the flow: each step names its actor and the operation it
-calls. Screens belong to the client's owner, in the client's repository, not
-to the knowledge. A need on a flow
+calls. Screens belong to the client's owner at their actual design location,
+not to the knowledge ([design links](#design-links)). A need on a flow
 operation goes on the client page of the artifact that owns the response
 schema. A need on a flow payload goes on the client page of the artifact the
 payload is about, under the name of the payload schema.

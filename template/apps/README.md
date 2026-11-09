@@ -25,4 +25,9 @@ owner keeps its client pages ([client](../docs/governances/artifact-driven/runbo
 When the branch where work happens changes, switch the clone and update the
 table.
 
+For design ownership and links from a Flow, follow
+[Design links](../docs/governances/artifact-driven/knowledge.md#design-links).
+After cloning, record the actual design location in each client's README.
+Do not link to a sample design path in a client that has not been cloned.
+
 Return to the [project contents](../README.md).
