@@ -16,8 +16,7 @@ people on the team, named in the README that lists the part
 | Part | Who keeps it | Who approves a change to it |
 | --- | --- | --- |
 | Knowledge: system, goals and flows | The whole team; the product owner decides on goals | The product owner for a goal; the owners of the services a flow crosses for a flow; the whole team for the system |
-| An artifact: specification, contract, service page | The owner of the service that serves it | That owner |
-| A client page | The owner of that client | That owner; the owner of the serving service is told on the issue, because a new need binds the service (SYS-4) |
+| An artifact: specification and contract | The owner of the service that serves it | That owner; for a change to an existing operation, also the owner of each client and service that calls it ([contracts](knowledge.md#contracts)) |
 | A service: code, tests, deploy | Its owner | Its owner |
 | A client: code, tests, release | Its owner | Its owner |
 | Shared contract components (`system/openapi.yaml`) | The owners of the services | Every service owner, because every service follows them |
@@ -39,7 +38,6 @@ decides. The decision and its reasons go on the issue.
 | Coordinator | Takes the issue, asks the person who raised the need first ([questions](workflow.md#questions)), hands each step to its role, gathers results, asks the owners for decisions, commits and opens pull requests when asked | — | Commits and pull requests |
 | Knowledge writer | Goals, flows and artifact rules | `software-knowledge` | Knowledge pages, not contracts |
 | Contract designer | OpenAPI contracts, before the code | `software-knowledge` | Contracts |
-| Client writer | What one client needs from the responses. The client's owner writes it, or an analyst who reads the client's code writes it and the owner reviews it | `software-knowledge` | Client pages |
 | Implementer | Code and tests of one part from approved knowledge | The skill of the part's stack, such as `backend-service` | The part's code, on its own branch |
 | Defect investigator | Evidence for a reported defect and the ID it breaks | `defect-triage` | Nothing; reports |
 | Reviewer | Knowledge, contract, code and tests agree; [Done](done.md) holds | `software-knowledge` | Nothing; reports |
@@ -55,8 +53,7 @@ flowchart TB
     coordinator --> writer[Knowledge writer]
     writer --> designer[Contract designer]
     designer -- operationIds --> writer
-    designer --> clients[Client writers, one per client]
-    clients --> review_k[Reviewer: knowledge]
+    designer --> review_k[Reviewer: knowledge]
     review_k --> approve_k{{Owners: merge the knowledge branch}}
     approve_k --> services[Implementers, one per service]
     approve_k --> apps[Implementers, one per client]
@@ -69,7 +66,7 @@ flowchart TB
 | Workflow step | Roles |
 | --- | --- |
 | 1. Issue | Coordinator; defect investigator for a defect |
-| 2. Knowledge | Knowledge writer, contract designer, client writers, reviewer, owners |
+| 2. Knowledge | Knowledge writer, contract designer, reviewer, owners |
 | 3. Code | One implementer per part the change touches, reviewer, owners |
 | 4. Merge, deploy and release | Coordinator, when the owners ask |
 | 5. Close | Coordinator, when [Done](done.md) holds |
@@ -77,11 +74,10 @@ flowchart TB
 ## Passing work
 
 - A role skips its step when the change does not need it: no endpoint,
-  payload or trigger, no contract designer; no client receives a response or
-  a payload, no client writer; a part the change does not touch, no
-  implementer.
-- Client writers run in parallel, one per client. Implementers run in
-  parallel, one per part, each in the repository of its part.
+  payload or trigger, no contract designer; a part the change does not touch,
+  no implementer.
+- Implementers run in parallel, one per part, each in the repository of its
+  part.
 - Each issue has one coordinator and one knowledge branch. When several issues
   are in progress, the owners of the parts they touch order the merges
   ([parallel branches](workflow.md#parallel-branches)).

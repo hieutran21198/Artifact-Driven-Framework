@@ -23,7 +23,7 @@ artifact to a new one, or when a goal, a flow or an artifact splits in two.
    domain policy separate from coordination, and do not allocate a Flow-rule
    ID until its adoption checks pass.
 4. Run impact on each old ID and point every citation at the new ID: flows,
-   contracts, client pages and diagrams.
+   contracts and diagrams.
 5. Open an issue for the tests that name an old ID. They are renamed in the
    same release as the move.
 6. The reviewer checks that each withdrawn ID's meaning is carried, unchanged,

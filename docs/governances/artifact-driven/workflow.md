@@ -20,8 +20,8 @@ does each step.
    Status: In Progress.
 3. **Code.** In the repository of each part the change touches, implement the
    approved knowledge: each service its contract, the rules of the artifacts
-   it serves and its steps of the flows; each client the needs on its client
-   pages. Tests name the IDs they prove. Each part opens its own pull request
+   it serves and its steps of the flows; each client its steps of the flows,
+   against the contracts of the operations they call. Tests name the IDs they prove. Each part opens its own pull request
    that links the issue and the knowledge merge commit.
 4. **Merge, deploy and release.** Merge each pull request and deploy each
    service, following its deploy procedure: a service that others call first,
@@ -103,7 +103,7 @@ When production leaks personal or internal data, or is down, fix it first:
 2. The fix starts from the commit that runs in production. Its test names the
    closest existing ID. The knowledge change, if one is needed, and the code
    are reviewed in one round.
-3. Within two working days, write any missing rule, scenario and client need,
+3. Within two working days, write any missing rule, scenario and contract,
    and record on the issue what was done out of order.
 4. After a data leak, record on the issue which data and which users were
    exposed. The product owner decides whether users or a regulator must be

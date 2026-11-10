@@ -8,8 +8,9 @@ Sample: [book artifact](https://github.com/hieutran21198/Artifact-Driven-Framewo
 
 1. `artifacts/<artifact>/README.md` in the knowledge folder
 2. `artifacts/<artifact>/specification.md`
-3. `artifacts/<artifact>/service.md`
-4. `artifacts/<artifact>/openapi.yaml`, when it has endpoints
+3. `artifacts/<artifact>/openapi.yaml`, when it has endpoints
+
+An artifact has no other file ([artifact files](../knowledge.md#artifact-files)).
 
 ## Steps
 
@@ -21,13 +22,10 @@ Sample: [book artifact](https://github.com/hieutran21198/Artifact-Driven-Framewo
    and a link to the domain map for the service that serves it.
 3. Write `specification.md`: model, rules with IDs, lifecycle
    ([artifact rule](artifact-rule.md)).
-4. When the serving service has `Writer` and `Reader` interfaces for the
-   domain, write `service.md`: those interfaces and their operations. Name no
-   packages, types or tables.
-5. Add a contract when the artifact has its own endpoints
-   ([contract](contract.md)), and client pages for the clients that use it
-   ([client](client.md)).
-6. When code already exists, start from what it does today. Ask about anything
+4. Add a contract when the artifact has its own endpoints
+   ([contract](contract.md)). The flows say which client calls each
+   operation.
+5. When code already exists, start from what it does today. Ask about anything
    not yet confirmed instead of guessing ([questions](../workflow.md#questions)), and
    settle each conflict with the intended behavior as
    [knowledge and running code](../knowledge.md#knowledge-and-running-code)
