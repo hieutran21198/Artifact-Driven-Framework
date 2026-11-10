@@ -33,9 +33,12 @@ Samples: [book contract](https://github.com/hieutran21198/Artifact-Driven-Framew
    object, the naming case and the time format, and the requirement on what
    each response and payload may carry to whom (SYS-5 in the reference pass).
 4. Before changing an existing operation or a response field, run [impact](../../../../scripts/README.md#impact) on
-   it (`python3 scripts/impact.py <operationId|field>`) to see the scenarios
-   and flow steps that name it. Their actors are the clients and services that
-   call it.
+   it (`python3 scripts/impact.py <operationId|field>`) to see the operations,
+   scenarios and flows it reaches. A field name also matches other schemas
+   with a key of that name; for one schema, name it in full
+   (`artifacts/<artifact>/openapi.yaml#schemas/<Schema>`). The callers are
+   the clients and services that the steps, trigger and diagram of those flows
+   name for each operation.
 5. Decide whether the change is breaking. Every visible change to an existing
    operation is breaking, as [contracts](../knowledge.md#contracts) lists:
    for example a removed key, a changed type or meaning, a new enum value, a
@@ -43,16 +46,14 @@ Samples: [book contract](https://github.com/hieutran21198/Artifact-Driven-Framew
    is not breaking.
 6. Do not make a breaking change in place. Add a new key beside the old one
    when that serves the need; a new optional key is not breaking. Otherwise
-   add a new version of the
-   path (`/v2/...`) with an `operationId` that ends in its version
-   (`getBookV2`). Both versions serve the same rules and differ only in shape.
+   add a new version of the path (`/v2/...`) with an `operationId` that ends
+   in its version (`getBookV2`). Both versions serve the same rules and differ only in shape.
    Mark the old operation `deprecated: true` and keep it until
    [remove an operation](remove.md) allows its removal. A breaking change has
    its own issue, a sub-issue of the one that needs it.
-7. Name on the issue the owner of each client and service that calls the
-   operation, from the flow steps of step 4. Each of them reviews the pull
-   request that changes the contract, and checks the decoding of their own
-   part in its repository ([contracts](../knowledge.md#contracts)).
+7. Name on the issue the owner of each caller of step 4. Each of them reviews
+   the pull request that changes the contract, and checks the decoding of
+   their own part in its repository ([contracts](../knowledge.md#contracts)).
 8. Lint the changed files:
 
    ```sh
