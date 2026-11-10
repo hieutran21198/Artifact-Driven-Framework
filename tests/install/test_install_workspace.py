@@ -104,8 +104,8 @@ class InstallWorkspace(unittest.TestCase):
         self.assertEqual(len(data["flowRules"]), 1)
         rule = data["flowRules"][0]
         self.assertEqual(rule["id"], "FR-RETURN-1")
-        self.assertEqual(rule["owner"], "flows/return-book.md")
-        self.assertEqual(rule["dependencies"], ["BK-6", "NTC-1", "SYS-8"])
+        edges = data["graph"]["edges"]
+        self.assertLessEqual({"BK-6", "NTC-1", "SYS-8"}, {b for a, b in edges if a == "FR-RETURN-1"})
         scenarios = [scenario for flow in data["flows"] for scenario in flow["scenarios"]]
         self.assertNotIn("FR-RETURN-1", [scenario["id"] for scenario in scenarios])
         self.assertEqual({scenario["id"] for scenario in scenarios

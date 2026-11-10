@@ -443,8 +443,8 @@ class CoverageParityTests(BrowserTestCase):
         self.assertEqual(result['b']['provenance']['parts'][0]['status'],'failed')
         self.assertTrue(result['b']['provenance']['analyzer']['digest'].startswith('sha256:'))
 
-    def test_F_VIEW_30_TST_4_flow_rule_browser_cli_parity(self):
-        """F-VIEW-30, TST-4, TRK-17: real trusted parser counts rules, not scenario proof."""
+    def test_F_VIEW_31_TST_4_flow_rule_browser_cli_parity(self):
+        """F-VIEW-31, TST-4, TRK-17: real trusted parser counts rules, not scenario proof."""
         from tests.scripts.test_site import flow_rule_workspace
         ws = flow_rule_workspace()
         self.addCleanup(ws.close)

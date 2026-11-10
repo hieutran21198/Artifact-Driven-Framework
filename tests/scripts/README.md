@@ -7,7 +7,7 @@ Each test makes a small workspace in a temporary folder and runs a script of
 configuration, knowledge text, paths and route data. It verifies the embedded
 JSON and script hashes with the Python standard library. Flow-rule fixtures
 check separate kinds, shared-rule deduplication, dependencies, aggregate
-counts and design-link exclusion (KN-13, F-VIEW-30):
+counts and design-link exclusion (KN-13, F-VIEW-31):
 
 ```sh
 python3 -m unittest tests.scripts.test_site -v

@@ -175,11 +175,9 @@ It writes the `site.output` file, which should be ignored by Git. The page
 shows the overview of the whole project and a guide to reading it. Pick up to
 three goals, or all goals, and analyze: the page then shows, for those goals
 only, the counts, the API coverage of each service (when it has `routes`),
-each goal with its
-criteria and scenarios, an impact explorer, the blast radius table, the gaps,
-and the system context and the diagrams of those goals and their flows. When Flow rules are present,
-a separate group shows their scope, owner and dependencies. Rules totals
-include both artifact and Flow rules. It reads in English or
+each goal with its criteria and scenarios, the gaps, and the system context
+and the diagrams of those goals and their flows. Rules totals include both
+artifact and Flow rules. To trace a change, run [impact](#impact). It reads in English or
 Vietnamese. [site.html](site.html) is its template. It reuses `impact.py` and
 needs Python 3 only. The page loads fixed versions of Mermaid and its ELK
 layout from jsDelivr, and its fixed fonts from Google Fonts. Offline, it uses

@@ -192,12 +192,13 @@ def metrics(graph):
         start = {u for u in graph.file if u.startswith(goal + "-") and impact.ID.fullmatch(u)}
         units, pages = impact.relies_on(graph, start)
         size[goal] = impact.counts(graph, units, pages)
-    radius = {}
+    # What a change to each requirement affects: Gaps lists one that reaches no scenario or operation.
+    reach = {}
     for node in graph.file:
-        if impact.kind(node, graph) in ("Requirements", "Artifact rules", "Flow rules", "Operations"):
+        if impact.kind(node, graph) == "Requirements":
             units, pages = impact.affected(graph, {node})
-            radius[node] = impact.counts(graph, units, pages)
-    return size, radius
+            reach[node] = impact.counts(graph, units, pages)
+    return size, reach
 
 
 def commit():
@@ -227,15 +228,15 @@ def main(argv):
         services = {"routes": {**first, "folders": args.routes}}
     graph = impact.build()
     requirements, goals, flows, rules, operations = knowledge(graph)
-    size, radius = metrics(graph)
+    size, reach = metrics(graph)
     data = {
         "title": SITE["title"],
         "commit": commit(),
         "built": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "requirements": requirements, "goals": goals, "flows": flows, "rules": rules,
-        "flowRules": [{"id": i, **r, "text": plain(r["rule"])} for i, r in sorted(graph.flow_rules.items())],
+        "flowRules": [{"id": i} for i in sorted(graph.flow_rules)],
         "operations": operations, "routes": service_routes(operations, services),
-        "graph": display_graph(graph), "diagrams": diagrams(), "size": size, "radius": radius,
+        "graph": display_graph(graph), "diagrams": diagrams(), "size": size, "reach": reach,
     }
     html = site_html(data)
     output.parent.mkdir(parents=True, exist_ok=True)
