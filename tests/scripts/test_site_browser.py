@@ -44,15 +44,14 @@ class SiteBrowser(BrowserTestCase):
     def assert_no_workspace_requests(self):
         self.assertFalse([url for url in self.requests if "workspace.invalid" in url])
 
-    def test_KN_13_F_VIEW_30_flow_rules_selection_dependencies_and_safety(self):
-        """KN-13, F-VIEW-30, SYS-7: real DOM groups rules and keeps text inert."""
+    def test_KN_13_F_VIEW_31_flow_rules_counts_and_safety(self):
+        """KN-13, F-VIEW-31, SYS-7: real DOM counts rules apart and keeps text inert."""
         ws = flow_rule_workspace()
         self.addCleanup(ws.close)
         run = ws.run("site.py")
         self.assertEqual(run.returncode, 0, run.stderr)
         self.open_site((ws.root / "build/site.html").read_text())
         self.analyze()
-        self.assertIn("Flow rules", self.page.locator("#legend").inner_text())
         self.assertEqual(self.page.locator("#metrics .v").nth(3).inner_text(), "4")
         for goal, expected in (("G-SAFE", "4"), ("G-OTHER", "2"), ("G-SAFE", "4")):
             self.page.locator("#drop summary").click()
@@ -63,24 +62,15 @@ class SiteBrowser(BrowserTestCase):
             self.page.locator("#run").click()
             self.assertEqual(self.page.locator("#slice-metrics .v").nth(3).inner_text(), expected)
             self.assertEqual(self.page.locator("#slice-metrics .v").nth(2).inner_text(), "1")
-            self.page.locator("#g .node").filter(has_text="FR-SHARED-1").click()
-            self.assertIn("Flow rules", self.page.locator("#detail").inner_text())
-            self.assertIn("flows/contracts/shared.md", self.page.locator("#detail").inner_text())
-            self.assertIn("TH-1", self.page.locator("#detail").inner_text())
-        self.page.locator("#g .node").filter(has_text="FR-LOCAL-1").click()
-        self.assertIn(HOSTILE, self.page.locator("#detail").inner_text())
         self.page.locator('[data-lang="vi"]').click()
-        self.page.locator("#g .node").filter(has_text="FR-LOCAL-1").click()
-        self.assertIn("Phụ thuộc", self.page.locator("#detail").inner_text())
         self.assertEqual(self.page.locator("img,[onerror],[onload]").count(), 0)
-        self.assertNotIn("FR-DESIGN", self.page.locator("#g").text_content())
+        self.assertNotIn("FR-DESIGN", self.page.locator("#results").text_content())
         self.assertIsNone(self.page.evaluate("window.injected"))
         self.assert_no_workspace_requests()
 
     def test_SYS_7_F_VIEW_24_text_attributes_and_controls(self):
         """SYS-7, F-VIEW-24: every generated data kind stays text while controls work."""
         self.open_site(self.build())
-        self.assertNotIn("Flow rules", self.page.locator("#legend").inner_text())
         self.assertEqual(self.page.locator("h1").inner_text(), HOSTILE + " & \u2028\u2029")
         # The path without a criterion becomes a goal key. Attribute quotes must stay in it.
         keys = self.page.locator("#goal-options input").evaluate_all("els => els.map(e => e.value)")
@@ -129,6 +119,8 @@ class SiteBrowser(BrowserTestCase):
                 self.assertEqual(self.page.locator('[data-layer="system/"] .slide pre').inner_text(), source + "\n")
                 self.assertNotIn(source + "\n", self.page.evaluate("window.diagramCalls"))
                 self.assertEqual(self.page.locator('[data-layer="system/"] .slide svg').count(), 0)
+                self.assertEqual(self.page.locator("#guide-system pre").inner_text(), source + "\n")
+                self.assertEqual(self.page.locator("#guide-system svg").count(), 0)
         self.assert_no_workspace_requests()
 
     def test_SYS_7_F_VIEW_24_rendered_svg_drops_executable_and_resource_markup(self):
@@ -151,6 +143,9 @@ class SiteBrowser(BrowserTestCase):
         self.assertIn(HOSTILE, self.page.locator('[data-layer="system/"] .slide > p').first.text_content())
         self.assertNotIn("body", self.page.locator('[data-layer="system/"] .slide style').text_content())
         self.assertTrue(self.page.evaluate("window.diagramConfig.securityLevel==='strict' && window.diagramConfig.htmlLabels===false"))
+        self.page.locator("#guide-system svg").wait_for()
+        self.assertEqual(self.page.locator("#guide-system script,#guide-system image,#guide-system a,#guide-system foreignObject,#guide-system [onclick]").count(), 0)
+        self.assertNotIn("workspace.invalid", self.page.locator("#guide-system svg").evaluate("svg => svg.outerHTML"))
         self.page.locator('[data-layer="goals/"] .to-flow').click()
         self.assertTrue(self.page.locator('[data-layer="flows/"]').is_visible())
         self.assert_no_workspace_requests()

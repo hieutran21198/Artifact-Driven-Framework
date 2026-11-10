@@ -14,7 +14,7 @@ import re
 import sys
 
 from flow_rules import read_flow_rules
-from project import CLIENTS, ID, KNOWLEDGE, ROOT, TEST_GLOB, TESTS
+from project import ID, KNOWLEDGE, ROOT, TEST_GLOB, TESTS
 
 ID_ROW = re.compile(r"^\| (" + ID.pattern + r") \|")
 TICKED = re.compile(r"`([A-Za-z_][A-Za-z0-9_]*)`")
@@ -22,7 +22,6 @@ LINK = re.compile(r"\]\(([^)#\s]+\.md)(?:#[^)\s]*)?\)")
 REF = re.compile(r"\$ref: '([^'#]*)#/components/([A-Za-z]+)/([A-Za-z0-9_]+)'")
 OPERATION_ID = re.compile(r"^\s+operationId: (\w+)")
 LAYER = {"goals": 1, "flows": 2, "artifacts": 3}
-CLIENT_PAGES = tuple(f"/{name}.md" for name in CLIENTS)
 
 
 class Graph:
@@ -49,16 +48,12 @@ def layer(path):
 
 def read_markdown(graph, path):
     page = rel(path)
-    section = page
     text = path.read_text(encoding="utf-8")
     rules, _ = read_flow_rules(path.relative_to(KNOWLEDGE), text)
     graph.flow_rules.update(rules)
     for line in text.splitlines():
-        heading = re.match(r"^### `?([\w-]+)`?$", line)
-        if line.startswith("#"):
-            section = f"{page}#{heading.group(1)}" if heading else page
         row = ID_ROW.match(line)
-        graph.add(row.group(1) if row else section, page, line)
+        graph.add(row.group(1) if row else page, page, line)
         for target in LINK.findall(line):
             linked = (path.parent / target).resolve()
             if KNOWLEDGE in linked.parents and 0 < layer(path) < layer(linked):
@@ -104,19 +99,11 @@ def build():
         elif path.suffix == ".yaml":
             read_contract(graph, path)
     operations = {u for u in graph.file if "#" not in u and "/" not in u and not ID.fullmatch(u)}
-    schemas = {u.rsplit("/", 1)[1]: u for u in graph.file if "#schemas/" in u}
     for unit, lines in graph.text.items():
         body = "\n".join(lines)
         cited = set(ID.findall(body))
         if graph.file[unit].endswith(".md"):
             cited |= set(TICKED.findall(body)) & operations
-        if unit.endswith(tuple(f"#{op}" for op in operations)):
-            cited.add(unit.rsplit("#", 1)[1])
-        heading = unit.rsplit("#", 1)[1] if "#" in unit and graph.file[unit].endswith(".md") else None
-        if heading in schemas:
-            cited.add(schemas[heading])
-        if heading and ID.fullmatch(heading):
-            cited.add(heading)
         for target, kind, name in REF.findall(body):
             base = graph.file[unit] if not target else rel((KNOWLEDGE / graph.file[unit]).parent.joinpath(target).resolve())
             cited.add(f"{base}#{kind}/{name}")
@@ -162,8 +149,6 @@ def kind(unit, graph=None):
         return "Contract schemas"
     if "#" not in unit and not unit.endswith((".md", ".yaml")):
         return "Operations"
-    if "#" in unit and unit.split("#")[0].endswith(CLIENT_PAGES):
-        return "Client needs"
     return None
 
 
@@ -172,7 +157,7 @@ def report(graph, units, pages):
     for unit in units:
         if kind(unit, graph):
             groups[kind(unit, graph)].add(unit.split("#")[0] + "#" + unit.split("#")[1].split("/")[-1] if "#" in unit else unit)
-    order = ["Requirements", "Goal criteria", "Flow scenarios", "Flow rules", "Artifact rules", "Operations", "Contract schemas", "Client needs"]
+    order = ["Requirements", "Goal criteria", "Flow scenarios", "Flow rules", "Artifact rules", "Operations", "Contract schemas"]
     for name in order:
         if groups[name]:
             print(f"{name}: {', '.join(sorted(groups[name]))}")
@@ -197,15 +182,9 @@ def affected(graph, start):
     return units, walk(back, {graph.file[u] for u in units})
 
 
-def with_client_needs(graph, units):
-    """Add the client needs on any operation the units reach."""
-    return units | {u for u in graph.file if kind(u, graph) == "Client needs" and graph.edges[u] & units}
-
-
 def counts(graph, units, pages):
     flows = {graph.file[u] for u in units if u.startswith("F-")}
     artifacts = {p.split("/")[1] for p in pages if p.startswith("artifacts/")}
-    clients = {u.split("#")[0] for u in units if kind(u, graph) == "Client needs"}
     by_kind = defaultdict(int)
     for u in units:
         by_kind[kind(u, graph)] += 1
@@ -213,7 +192,6 @@ def counts(graph, units, pages):
         "criteria": by_kind["Goal criteria"], "flows": len(flows),
         "scenarios": by_kind["Flow scenarios"], "rules": by_kind["Artifact rules"] + by_kind["Flow rules"],
         "operations": by_kind["Operations"], "artifacts": len(artifacts),
-        "client pages": len(clients),
     }
 
 
@@ -228,22 +206,21 @@ def stats(graph, term):
             print(f"Nothing in the knowledge cites {term}.", file=sys.stderr)
             return 1
         units, pages = relies_on(graph, start)
-        print(line("relies on", counts(graph, with_client_needs(graph, units), pages)))
+        print(line("relies on", counts(graph, units, pages)))
         units, pages = affected(graph, start)
-        print(line("affected by a change", counts(graph, with_client_needs(graph, units), pages)))
+        print(line("affected by a change", counts(graph, units, pages)))
         return 0
     goals = sorted({u.rsplit("-", 1)[0] for u in graph.file if u.startswith("G-") and ID.fullmatch(u)})
     print("Size of each goal (what it relies on):")
     for goal in goals:
         start = {u for u in graph.file if u.startswith(goal + "-") and ID.fullmatch(u)}
         units, pages = relies_on(graph, start)
-        print("  " + line(goal, counts(graph, with_client_needs(graph, units), pages)))
+        print("  " + line(goal, counts(graph, units, pages)))
     print("Blast radius of each rule and operation (what a change affects):")
     nodes = [u for u in graph.file if kind(u, graph) in ("Requirements", "Flow rules", "Artifact rules", "Operations")]
     rows = []
     for node in nodes:
         units, pages = affected(graph, {node})
-        units = with_client_needs(graph, units)
         rows.append((node, counts(graph, units, pages)))
     rows.sort(key=lambda r: (-r[1]["scenarios"], -r[1]["operations"], r[0]))
     for node, numbers in rows:
@@ -295,8 +272,8 @@ def fragile(graph, folders, limit=20):
         if kind(node, graph) not in ("Requirements", "Flow rules", "Artifact rules", "Operations", "Contract schemas"):
             continue
         units, pages = affected(graph, {node})
-        numbers = counts(graph, with_client_needs(graph, units), pages)
-        reach = numbers["scenarios"] + numbers["criteria"] + 2 * numbers["operations"] + 3 * numbers["client pages"]
+        numbers = counts(graph, units, pages)
+        reach = numbers["scenarios"] + numbers["criteria"] + 2 * numbers["operations"]
         is_id = bool(ID.fullmatch(node))
         direct = sum(1 for unit, cited in graph.edges.items() if unit.startswith("F-") and node in cited)
         weak = (is_id and direct == 0) + (is_id and bool(folders) and tests.get(node, 0) == 0)
@@ -304,11 +281,11 @@ def fragile(graph, folders, limit=20):
         rows.append((score, node, numbers, direct, tests.get(node, 0) if is_id and folders else "-", node in open_questions))
     rows.sort(key=lambda r: (-r[0], r[1]))
     print("The most fragile nodes: reach times weakness. Reach counts scenarios and criteria,")
-    print("operations twice and client pages three times; weakness adds 1 for a rule with no")
-    print("scenario citing it and 1 for a rule no test names.")
+    print("and operations twice; weakness adds 1 for a rule with no scenario citing it and 1")
+    print("for a rule no test names.")
     for i, (score, node, numbers, direct, named, question) in enumerate(rows[:limit], 1):
         print(f"{i:3}  {score:4}  {node.split('#')[-1]:28} scenarios {numbers['scenarios']}  operations {numbers['operations']}"
-              f"  client pages {numbers['client pages']}  cited by {direct}  tests {named}" + ("  open question" if question else ""))
+              f"  cited by {direct}  tests {named}" + ("  open question" if question else ""))
     return 0
 
 

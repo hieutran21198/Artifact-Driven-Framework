@@ -70,8 +70,6 @@ ID = re.compile(r"\b(?!(?:" + "|".join(map(re.escape, STANDARDS + _standards)) +
 
 KNOWLEDGE = ROOT / CONFIG["knowledge"]
 SKIP = set(CONFIG["skip"])
-# A client is a display name, or an object with a name and its tests.
-CLIENTS = {name: (c if isinstance(c, str) else c.get("name", name)) for name, c in CONFIG["clients"].items()}
 SERVICES = {name: {"routes": s.get("routes"), "tests": tests_of(s)} for name, s in CONFIG["services"].items()}
 SITE = CONFIG["site"]
 # Every part with tests, end-to-end tests included: (part name, tests setting).

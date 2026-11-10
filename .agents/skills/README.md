@@ -5,7 +5,7 @@ does not restate rules, establish product contracts or grant publication
 permissions. The [team](../agents/README.md) says which agent uses which skill.
 
 - [Software knowledge](software-knowledge/README.md): add or change goals,
-  flows, artifact rules, contracts and client pages, then check the docs.
+  flows, artifact rules and contracts, then check the docs.
 - [Defect triage](defect-triage/README.md): evidence first, then the knowledge
   ID a defect breaks.
 - [Backend service](backend-service/README.md): the endpoints, domain behavior,

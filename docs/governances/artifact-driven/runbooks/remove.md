@@ -7,8 +7,7 @@ Removing an operation is breaking (SYS-6 in the reference pass).
 ## Files
 
 1. The contract that holds the operation
-2. The flows whose scenarios name it, and the client pages that list needs for
-   it
+2. The flows whose scenarios name it
 
 ## Steps
 
@@ -22,7 +21,7 @@ Removing an operation is breaking (SYS-6 in the reference pass).
    ([supported client versions](../../../software-knowledges/system/context.md#supported-client-versions))
    and the logs show no call for the last 30 days.
 4. Remove it from the contract. Run [impact](../../../../scripts/README.md#impact)
-   on it, and update every scenario and client page it lists: a scenario left
+   on it, and update every scenario it lists: a scenario left
    with no operation is withdrawn.
 5. After the deploy, watch the responses for the removed path, and record on
    the issue that nothing still calls it.

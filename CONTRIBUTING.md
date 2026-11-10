@@ -22,7 +22,7 @@ own repository and approved by its owner.
 
 1. Branch from the latest default branch. Use `<type>/<issue>-<short-name>`,
    for example `fix/123-return-overdue-book`.
-2. Before changing an endpoint, read its client pages and how the
+2. Before changing an endpoint, read the flow steps that name it and how the
    [clients](apps/README.md) and other services call it: request shape,
    response decoding, error handling and API version.
 3. Add a test for the changed behavior, named after the knowledge ID it

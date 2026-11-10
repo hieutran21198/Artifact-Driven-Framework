@@ -14,11 +14,12 @@ change is made blind.
 
 | ID | Criterion | Proven by |
 | --- | --- | --- |
-| G-TRACE-1 | Before changing a requirement, a rule, an operation or a field, a person sees every criterion, scenario, rule, operation, schema, client need and page that the change affects. | F-TRACE-1, F-TRACE-2, F-TRACE-3, F-TRACE-4, F-TRACE-12 |
+| G-TRACE-1 | Withdrawn: moved to G-TRACE-6. | — |
 | G-TRACE-2 | Before building a criterion, a scenario or a page, a person sees every scenario, rule, operation and page it relies on. | F-TRACE-5, F-TRACE-12 |
 | G-TRACE-3 | A person sees the size of each goal, and which requirements, rules and operations a change would affect most. | F-TRACE-7, F-TRACE-8, F-TRACE-9, F-TRACE-12 |
 | G-TRACE-4 | A person sees which open questions hold a goal. | F-TRACE-10 |
 | G-TRACE-5 | A name the knowledge does not hold is reported as unknown, never as a change that affects nothing. Tracing changes no file. | F-TRACE-6, F-TRACE-11 |
+| G-TRACE-6 | Before changing a requirement, a rule, an operation or a field, a person sees every criterion, scenario, rule, operation, schema and page that the change affects. | F-TRACE-1, F-TRACE-2, F-TRACE-3, F-TRACE-4, F-TRACE-12 |
 
 ## Flows
 

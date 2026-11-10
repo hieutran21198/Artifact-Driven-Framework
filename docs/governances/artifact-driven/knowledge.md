@@ -13,7 +13,7 @@ keeps the same requirements under its own IDs.
 | System | Purpose, actors, services, clients, external systems, system-wide requirements, glossary, shared contract components | — | — |
 | Goal | A business outcome: the need, the actor, success criteria and constraints. No behavior. | The product | End-to-end tests, starting at the trigger: a request, a webhook or a worker run |
 | Flow | Behavior that crosses artifacts, services or clients: trigger, steps, failure branches, each transaction, the outcome | Application commands and queries, in each service the flow crosses | Command and unit of work tests in each service |
-| Artifact | One domain: model, rules, lifecycle, contract, and what each client needs from it | The domain package of the service that serves it | Domain unit tests |
+| Artifact | One domain: model, rules, lifecycle and contract | The domain package of the service that serves it | Domain unit tests |
 
 - Artifacts are the nodes and flows the edges between them. Knowledge that
   coordinates artifacts belongs to a flow. Choose a business policy owner by
@@ -59,8 +59,8 @@ The knowledge holds for one service or for many.
   Flow rules after the adoption checks pass. Scenarios prove behavior; they
   are not reusable rule definitions.
 - Each fact has one owner. Other pages cite it by ID and never restate it.
-- A contract description cites the rule ID behind a value; it never states a
-  rule that has no ID.
+- A scenario links a rule to an operation: the rule in its Covers column,
+  the operation in its When column. A contract need not cite rule IDs.
 - Every statement a test or a data fix can break has an ID. An invariant of
   the model, such as who holds a record, is a row in the rules table, not prose.
 - A flow step or scenario states no condition of its own, such as a region,
@@ -208,16 +208,9 @@ written before the code exists.
   measured once is evidence.
 - Never write status or plans into knowledge: no "for now", "not implemented
   yet", "later" or "when the app ships". Those belong on the issue.
-- A client page says what a service promises in a response, never what the
-  client does with it: "`due_at` is an RFC 3339 time", not "a null hides the
-  reminder".
 - Evidence goes to the issue or the pull request that the change belongs to.
   Evidence never holds personal data: mask names, emails, phone numbers,
   addresses and user IDs before writing it there.
-- When evidence shows that a client depends on something, write the
-  dependency as an expectation on the client page, for example
-  "`getBook`: `status` is one of the listed values", not where the client
-  reads it.
 
 ## Knowledge and running code
 
@@ -253,17 +246,18 @@ is written: it reaches a page only when its branch merges with it still open
 | `README.md` | What the artifact owns, its rule prefix, a link to the domain map for the service that serves it, and links |
 | `specification.md` | Model, rules and lifecycle; no service, client or flow |
 | `openapi.yaml` | The HTTP contract of the artifact's own endpoints, internal ones included |
-| `service.md` | The domain contract the serving service provides: the `Writer` and `Reader` interfaces and their operations; no packages, types or tables. Only when the service has such interfaces, as a service with a database does |
-| `<client>.md`, one per client in the [configuration](../../../scripts/README.md#configuration) | What that client needs from the artifact, by `operationId`, by payload schema, or by rule ID for a need no response carries; only when it uses the artifact |
 
-An artifact is never split per service or per client. Client pages cite rule IDs and
-`operationId`s; they never restate rules. Which client calls which operation,
-and when, belongs to the flow: each step names its actor and the operation it
-calls. Screens belong to the client's owner at their actual design location,
-not to the knowledge ([design links](#design-links)). A need on a flow
-operation goes on the client page of the artifact that owns the response
-schema. A need on a flow payload goes on the client page of the artifact the
-payload is about, under the name of the payload schema.
+An artifact has no other file and is never split per service or per client.
+
+- Which client calls which `operationId`, when, and what happens when the call
+  fails belongs to the flow: each step names its actor and the operation it
+  calls. The knowledge tracks a client's use at that level only, not field by
+  field.
+- The use cases of the serving service and its `Writer` and `Reader`
+  interfaces live in its code, as the
+  [architecture](../../architecture/README.md) says, not in the knowledge.
+- Screens belong to the client's owner at their actual design location, not
+  to the knowledge ([design links](#design-links)).
 
 ## Contracts
 
@@ -306,6 +300,26 @@ that implements it.
   documents; it is agreed with that documentation, not designed, and the
   issue links the vendor's version of it.
 - A flow contract with no endpoint has `paths: {}`.
+- A change to an existing operation keeps what released clients and calling
+  services see (SYS-4, SYS-6 in the reference pass). Every visible change is
+  breaking:
+  - removing a key or a value, changing a type, or changing the meaning of a
+    value;
+  - adding an enum value;
+  - adding a required request key, removing an accepted value, or tightening
+    the validation of a request key;
+  - changing who may call the operation, the state changes it allows, or the
+    status codes and errors it returns, including a new status such as `429`;
+  - removing the operation ([remove an operation](runbooks/remove.md)).
+
+  Only a new optional key is not breaking. Removing data a client must not
+  see is not breaking when the key stays with a value its schema already
+  allows. Instead of a breaking change, add a new key beside the old one, or a
+  new version of the path (`/v2/...`) with an `operationId` that ends in its
+  version (`getBookV2`) ([contract](runbooks/contract.md)).
+- The owner of each client and service that calls an operation reviews a pull
+  request that changes the operation's contract. The flows name those callers.
+  Each client owner checks their own decoding in the client's repository.
 - Check with `npx @redocly/cli lint` on the changed files.
 
 ## Diagrams

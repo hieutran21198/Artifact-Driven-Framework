@@ -6,8 +6,8 @@ Read the [repository README](README.md), [contributing guide](CONTRIBUTING.md)
 and the README of each directory you change. For the code of a service or a
 client, also read its own agent instructions under
 [services](services/README.md) or [applications](apps/README.md). Before
-changing an endpoint, read the client pages of its artifact, and how the
-[client applications](apps/README.md) and other services call it. Inspect nearby code and existing checks before choosing a design. Reload
+changing an endpoint, read the flow steps that name its `operationId`, and how
+the [client applications](apps/README.md) and other services call it. Inspect nearby code and existing checks before choosing a design. Reload
 affected instructions after context loss or source changes.
 
 The [architecture](docs/architecture/README.md) is the agreed direction.

@@ -1,6 +1,6 @@
 ---
 name: implementer
-description: Implements approved knowledge in one part - a service or a client - with tests named after the IDs they prove. For a Go service, domain rules, repositories, commands through the unit of work, and handlers that match the OpenAPI contract; for a client, the needs on its client pages.
+description: Implements approved knowledge in one part - a service or a client - with tests named after the IDs they prove. For a Go service, domain rules, repositories, commands through the unit of work, and handlers that match the OpenAPI contract; for a client, its steps of the flows against the contracts of the operations it calls.
 tools: Read, Grep, Glob, Edit, Write, Bash
 ---
 

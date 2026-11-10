@@ -14,7 +14,7 @@ that file. Every key is optional.
 | --- | --- | --- |
 | `knowledge` | The knowledge folder, relative to the root | `docs/software-knowledges` |
 | `skip` | Folder names whose Markdown the docs check skips, such as cloned service or client code | `.git`, `node_modules`, `build` |
-| `clients` | The client pages an artifact may have: file name without `.md`, mapped to the name the site shows, or to an object with `name` and `tests` | none |
+| `clients` | The clients, by directory name in `apps/`: each mapped to a display name, or to an object with `name` and `tests` | none |
 | `services` | The services, by name as in the domain map: each with `routes` and `tests` | none |
 | `e2e` | Where the end-to-end tests live: `folder` and `glob` | none |
 | `site` | `title` of the site and `output`, the file it writes | `Software Knowledge`, `build/site/index.html` |
@@ -128,10 +128,9 @@ from a flow to its artifacts. `--down` lists what a goal criterion, a scenario
 or a page relies on instead.
 
 `--stats` counts instead of listing. With no argument it prints the size of
-each goal (criteria, flows, scenarios, rules, operations, artifacts and client
-pages it relies on) and the blast radius of each requirement, rule and
-operation (the flows, scenarios, operations and client pages a change to it
-affects), largest first. With an argument it prints both counts for that goal
+each goal (criteria, flows, scenarios, rules, operations and artifacts it
+relies on) and the blast radius of each requirement, rule and operation (the
+flows, scenarios, operations and artifacts a change to it affects), largest first. With an argument it prints both counts for that goal
 (such as `G-BORROW`), ID or operation. A rule with no scenario shows 0
 scenarios: a gap in the flows. Detailed traces show a Flow rules group only
 when present. Rule counts and coverage aggregate artifact and Flow rules;
@@ -159,8 +158,7 @@ python3 scripts/impact.py --questions
 ```
 
 A worker trigger under `x-triggers` and a command under `x-commands` count
-as operations, a client page heading that names a payload schema cites that schema, and a heading that
-names a rule ID (`### BK-4`) cites that rule. A scenario that names no
+as operations. A scenario that names no
 operation, trigger, command or rule is invisible to it.
 
 ## Knowledge site
@@ -177,12 +175,17 @@ It writes the `site.output` file, which should be ignored by Git. The page
 shows the overview of the whole project and a guide to reading it. Pick up to
 three goals, or all goals, and analyze: the page then shows, for those goals
 only, the counts, the API coverage of each service (when it has `routes`),
-each goal with its
-criteria and scenarios, an impact explorer, the blast radius table, the gaps,
-the system context and the diagrams of those goals and their flows,
-and what each client needs from the responses. When Flow rules are present,
-a separate group shows their scope, owner and dependencies. Rules totals
-include both artifact and Flow rules. It reads in English or
+each goal with its criteria and scenarios, the story of one goal, and the
+system context and the diagrams of those goals and their flows. The story
+plays in four steps - goal, flows, rules, artifacts - from the goal page, the
+`Crosses` line of each flow and the rules the goal relies on. A block opens its source page in the side panel: the page of a goal or a
+flow, the specification of an artifact, or the page that defines a rule, with
+the rule's row marked. The page is rendered as text (headings, paragraphs,
+lists, tables, code, emphasis and links; no HTML), its diagrams go through the
+same checks as the Diagrams section, a link to another knowledge page opens it
+in the panel, and a link out must be `https`. The guide to reading it shows the
+first system diagram, such as the context. Rules totals include both
+artifact and Flow rules. To trace a change, run [impact](#impact). It reads in English or
 Vietnamese. [site.html](site.html) is its template. It reuses `impact.py` and
 needs Python 3 only. The page loads fixed versions of Mermaid and its ELK
 layout from jsDelivr, and its fixed fonts from Google Fonts. Offline, it uses

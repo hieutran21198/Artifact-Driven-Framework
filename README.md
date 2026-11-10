@@ -9,7 +9,7 @@ together. The knowledge has four layers:
 | System | Purpose, actors, services, clients, system-wide requirements, glossary, shared contract parts | `SYS-n` |
 | Goal | A business outcome and its success criteria | `G-<GOAL>-n` |
 | Flow | Behavior across artifacts, as testable scenarios that each name an operation, a trigger or a command | `F-<FLOW>-n` |
-| Artifact | One domain: model, rules, lifecycle, OpenAPI contract, and what each client needs | `<PREFIX>-n` |
+| Artifact | One domain: model, rules, lifecycle and OpenAPI contract | `<PREFIX>-n` |
 
 Every fact has one owner and an ID; other pages cite the ID. Follow the
 [knowledge rules](docs/governances/artifact-driven/knowledge.md#citations) for
@@ -36,7 +36,7 @@ sh install.sh my-workspace <ref>
 
 The new workspace holds the shared files of this repository and, in place of
 its knowledge, the sample of [template](template/README.md): a small library
-lending service written from system down to client needs. Its README says what
+lending service written from system down to contracts. Its README says what
 to do next.
 
 ## Read the repository

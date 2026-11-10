@@ -1,6 +1,6 @@
 ---
 name: software-knowledge
-description: Add or change software knowledge - a goal, a flow, an artifact rule, an OpenAPI contract, a client page, or a new artifact - and check it. Use whenever a change touches requirements, specifications or contracts, before any code is written for it.
+description: Add or change software knowledge - a goal, a flow, an artifact rule, an OpenAPI contract, or a new artifact - and check it. Use whenever a change touches requirements, specifications or contracts, before any code is written for it.
 ---
 
 # Software knowledge
@@ -18,13 +18,12 @@ runbooks. This skill picks the runbook and does not restate either.
 | Behavior that crosses artifacts, services or clients | [flow](../../../docs/governances/artifact-driven/runbooks/flow.md) |
 | A rule, the model or the lifecycle of one domain | [artifact rule](../../../docs/governances/artifact-driven/runbooks/artifact-rule.md) |
 | An endpoint | [contract](../../../docs/governances/artifact-driven/runbooks/contract.md) |
-| What a client needs from an artifact's responses | [client](../../../docs/governances/artifact-driven/runbooks/client.md) |
 | A system-wide requirement, actor or term | [system](../../../docs/governances/artifact-driven/runbooks/system.md) |
 | A release report for the client | [release](../../../docs/governances/artifact-driven/runbooks/release.md) |
 | The first knowledge of a domain | [new artifact](../../../docs/governances/artifact-driven/runbooks/new-artifact.md) |
 
 A change that spans several rows runs them top down: goal, flow, artifact rule,
-contract, client.
+contract.
 
 ## Always
 

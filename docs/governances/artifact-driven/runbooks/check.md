@@ -85,9 +85,8 @@ exact tool version the workspace uses. Record results on the issue:
    prefix scope and reject missing or withdrawn references there. Verify and
    report how unknown scopes are handled; a pass does not prove that an
    excluded prefix exists.
-4. The knowledge viewer distinguishes rules from scenarios and shows their
-   permitted dependencies without turning design references into execution
-   evidence.
+4. The knowledge viewer counts rules apart from scenarios and does not turn
+   design references into execution evidence.
 5. Inventory existing ID forms and namespace collisions, including `FR` used
    as an artifact prefix. Preserve previously accepted workspaces under the
    existing compatibility contract, or obtain the required owner decision

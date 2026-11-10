@@ -4,9 +4,16 @@ import base64
 import hashlib
 from html.parser import HTMLParser
 import json
+import re
+import subprocess
+import shutil
 import unittest
 
+from pathlib import Path
+
 from tests.scripts.workspace import Workspace
+
+ROOT = Path(__file__).resolve().parents[2]
 
 
 HOSTILE = '</ScRiPt><img src="https://workspace.invalid/leak" onerror="window.injected=1">'
@@ -29,7 +36,6 @@ def site_workspace():
     ws.write(base + 'goals/odd" onfocus="window.injected=2.md', "# Goal: Odd key\n")
     ws.write(base + "flows/safe.md", "# Flow: Safe flow\n\n| F-SAFE-1 | " + HOSTILE + " | `getThing` | " + HOSTILE + " | TH-1, SYS-1 |\n\n[Thing](../artifacts/thing/specification.md)\n\n```mermaid\nsequenceDiagram\n Reader->>Workspace: Read\n Workspace-->>Reader: Knowledge\n```\n")
     ws.write(base + "artifacts/thing/specification.md", "# Thing\n\n| TH-1 | " + HOSTILE + " | — |\n")
-    ws.write(base + "artifacts/thing/web.md", "# Web\n\n## `getThing`\n\n- " + HOSTILE + "\n")
     ws.write(base + "artifacts/thing/openapi.yaml", "openapi: 3.0.3\npaths:\n  /thing:\n    get:\n      operationId: getThing\n      summary: " + HOSTILE + "\n")
     ws.write("routes/routes.txt", '<img src="https://workspace.invalid/method">|/unsafe"<svg onload="window.injected=3">\nGET|/thing\n')
     return ws
@@ -79,7 +85,8 @@ class Site(unittest.TestCase):
         data = json.loads(source.removeprefix("const DATA=").removesuffix(";"))
         self.assertEqual(data["title"], HOSTILE + " & \u2028\u2029")
         self.assertEqual(data["requirements"][0]["text"], HOSTILE)
-        self.assertEqual(data["clientNames"]["web"], HOSTILE)
+        self.assertNotIn("clientNames", data)
+        self.assertNotIn("clients", data)
         self.assertIn('" onfocus="', data["goals"][0]["key"])
         for unsafe in ("<", ">", "&", "\u2028", "\u2029"):
             self.assertNotIn(unsafe, source)
@@ -114,6 +121,55 @@ class Site(unittest.TestCase):
             self.assertIn("'sha256-" + digest + "'", policy)
 
 
+RENDER = r"""
+const fs = require("fs");
+const html = fs.readFileSync(process.argv[2], "utf8");
+const code = html.split("/* markdown:start */")[1].split("/* markdown:end */")[0];
+const renderMarkdown = new Function(code + "; return renderMarkdown;")();
+const page = process.argv[3], text = fs.readFileSync(process.argv[4], "utf8");
+process.stdout.write(renderMarkdown(text, page, {has: p => p === "system/context.md", source: "../../docs/"}));
+"""
+
+
+@unittest.skipUnless(shutil.which("node"), "needs node")
+class MarkdownPanel(unittest.TestCase):
+    """KN-16, F-VIEW-32, SYS-7: the side panel renders source pages as escaped text."""
+
+    def render(self, page, text):
+        ws = site_workspace()
+        self.addCleanup(ws.close)
+        self.assertEqual(ws.run("site.py").returncode, 0)
+        source = ws.write("page.md", text)
+        script = ws.write("render.js", RENDER)
+        run = subprocess.run(["node", str(script), str(ws.root / "build/site.html"), page, str(source)],
+                             capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        return run.stdout
+
+    def test_KN_16_F_VIEW_32_goal_page_renders_table_and_diagram(self):
+        text = (ROOT / "template/docs/software-knowledges/goals/borrow-a-book.md").read_text()
+        out = self.render("goals/borrow-a-book.md", text)
+        self.assertIn('<tr data-row="G-BORROW-1"><td>G-BORROW-1</td>', out)
+        self.assertIn('<div class="diagram" data-md-dg="0"><pre>flowchart LR', out)
+        self.assertIn('data-page="system/context.md"', out)
+        tags = set(re.findall(r"</?([a-z0-9]+)", out))
+        self.assertLessEqual(tags, {"h2", "h3", "p", "ul", "ol", "li", "div", "table", "tr", "th", "td",
+                                    "pre", "code", "button", "a", "strong", "em", "span"})
+
+    def test_SYS_7_F_VIEW_32_raw_html_and_unsafe_links_stay_text(self):
+        out = self.render("flows/hostile.md", "# T\n\n<script>alert(1)</script> <img src=x onerror=alert(1)>\n\n"
+                          "[a](javascript:alert(1)) [b](http://example.com) [c](https://example.com/x)\n\n"
+                          "| ID | Rule |\n| --- | --- |\n| X-1 | <b onclick=x>bold</b> |\n\n```\n<svg onload=x>\n```\n")
+        self.assertNotIn("<script", out)
+        self.assertNotIn("<img", out)
+        self.assertNotIn("<b ", out)
+        self.assertNotIn("<svg", out)
+        self.assertIn("&lt;script&gt;alert(1)&lt;/script&gt;", out)
+        self.assertIn("&lt;img src=x onerror=alert(1)&gt;", out)
+        self.assertEqual(re.findall(r'href="([^"]*)"', out), ["https://example.com/x"])
+        self.assertIn('rel="noopener noreferrer"', out)
+
+
 def flow_rule_workspace():
     """Local/shared rule definitions plus an FR-shaped artifact and design data."""
     ws = site_workspace()
@@ -139,8 +195,8 @@ def flow_rule_workspace():
 
 
 class FlowRuleSite(unittest.TestCase):
-    def test_KN_13_F_VIEW_30_generated_data_distinguishes_rules(self):
-        """KN-13, F-VIEW-30, SYS-7: classified definitions, dependencies and safe data."""
+    def test_KN_13_F_VIEW_31_generated_data_distinguishes_rules(self):
+        """KN-13, F-VIEW-31, SYS-7: classified definitions, dependencies and safe data."""
         ws = flow_rule_workspace()
         self.addCleanup(ws.close)
         run = ws.run("site.py")
@@ -148,11 +204,7 @@ class FlowRuleSite(unittest.TestCase):
         page = Page((ws.root / "build/site.html").read_text())
         source = next(s for s in page.scripts if s.startswith("const DATA="))
         data = json.loads(source.removeprefix("const DATA=").removesuffix(";"))
-        rules = {r["id"]: r for r in data["flowRules"]}
-        self.assertEqual(set(rules), {"FR-LOCAL-1", "FR-SHARED-1"})
-        self.assertEqual(rules["FR-LOCAL-1"]["text"], HOSTILE)
-        self.assertEqual(rules["FR-LOCAL-1"]["owner"], "flows/safe.md")
-        self.assertEqual(set(rules["FR-LOCAL-1"]["dependencies"]), {"TH-1", "SYS-1"})
+        self.assertEqual({r["id"] for r in data["flowRules"]}, {"FR-LOCAL-1", "FR-SHARED-1"})
         self.assertEqual({r["id"] for r in data["rules"]}, {"TH-1", "FR-LEGACY-1"})
         self.assertEqual({s["id"] for f in data["flows"] for s in f["scenarios"]}, {"F-SAFE-1", "F-OTHER-1"})
         nodes = dict(data["graph"]["nodes"])

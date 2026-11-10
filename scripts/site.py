@@ -10,10 +10,10 @@ service's folders with one set read by the first service's pattern. With no
 routes setting, the page leaves API coverage out.
 """
 
-from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 import argparse
+import os
 import base64
 import hashlib
 import json
@@ -22,13 +22,13 @@ import subprocess
 import sys
 
 import impact
-from project import CLIENTS, KNOWLEDGE, ROOT, SERVICES, SITE
+from project import KNOWLEDGE, ROOT, SERVICES, SITE
 
 TEMPLATE = Path(__file__).with_name("site.html")
 ROW = re.compile(r"^\| (" + impact.ID.pattern + r") \|(.*)\|\s*$")
 TITLE = re.compile(r"^# (?:Goal|Flow): (.+)$", re.MULTILINE)
 MERMAID = re.compile(r"^```mermaid\n(.*?)^```", re.MULTILINE | re.DOTALL)
-COLUMN = {"Requirements": 0, "Goal criteria": 0, "Flow scenarios": 1, "Flow rules": 5, "Artifact rules": 2, "Operations": 3, "Client needs": 4}
+COLUMN = {"Requirements": 0, "Goal criteria": 0, "Flow scenarios": 1, "Flow rules": 5, "Artifact rules": 2, "Operations": 3}
 
 
 def html_data(data):
@@ -71,6 +71,34 @@ def pages(folder):
             yield path, path.read_text(encoding="utf-8")
 
 
+def section(text, name):
+    """The text under a ## heading, up to the next one."""
+    part = re.split(r"^## " + re.escape(name) + r"\s*$", text, maxsplit=1, flags=re.MULTILINE)
+    return re.split(r"^#{1,2} ", part[1], maxsplit=1, flags=re.MULTILINE)[0] if len(part) > 1 else ""
+
+
+def blocks(text):
+    """The paragraphs and list items of a Markdown passage, as plain text."""
+    found, current = [], []
+    for line in text.splitlines() + [""]:
+        if line.startswith(("- ", "```")) or not line.strip() or re.match(r"^\d+\. ", line):
+            if current:
+                found.append(plain(" ".join(current)))
+            current = [line[2:]] if line.startswith("- ") else []
+        else:
+            current.append(line.strip())
+    return [b for b in found if b]
+
+
+def head_item(text, label):
+    """The text of a "- Label: value" item before the first ## heading."""
+    head = re.split(r"^## ", text, maxsplit=1, flags=re.MULTILINE)[0]
+    for item in blocks(head):
+        if item.startswith(label + ": "):
+            return item[len(label) + 2:]
+    return ""
+
+
 def read_rows(text):
     for line in text.splitlines():
         row = ROW.match(line)
@@ -91,6 +119,7 @@ def knowledge(graph):
             "page": page,
             "criteria": criteria,
             "flows": sorted(graph.links.get(page, ())),
+            "need": blocks(section(text, "Need")),
         })
     for path, text in pages("flows"):
         page = impact.rel(path)
@@ -99,7 +128,11 @@ def knowledge(graph):
             if i not in graph.flow_rules and len(c) >= 4:
                 scenarios.append({"id": i, "given": plain(c[0]), "when": plain(c[1]), "then": plain(c[2]),
                                   "covers": impact.ID.findall(c[3])})
-        flows.append({"page": page, "title": (TITLE.search(text) or [None, page])[1], "scenarios": scenarios})
+        head = re.split(r"^## ", text, maxsplit=1, flags=re.MULTILINE)[0]
+        crosses = next((line for line in re.split(r"\n(?=- )", head) if line.startswith("- Crosses:")), "")
+        flows.append({"page": page, "title": (TITLE.search(text) or [None, page])[1], "scenarios": scenarios,
+                      "trigger": head_item(text, "Trigger"), "outcome": head_item(text, "Outcome"),
+                      "crosses": list(dict.fromkeys(re.findall(r"\(\.\./artifacts/([^/)]+)/", crosses)))})
     for path, text in pages("artifacts"):
         if path.name == "specification.md":
             artifact = path.parent.name
@@ -121,15 +154,7 @@ def knowledge(graph):
             m = re.match(r"^\s+summary: (.+)$", line)
             if m and operations and operations[-1]["contract"] == impact.rel(path) and "summary" not in operations[-1]:
                 operations[-1]["summary"] = m.group(1)
-    clients = defaultdict(lambda: defaultdict(list))
-    for unit, lines in graph.text.items():
-        if impact.kind(unit, graph) == "Client needs" or (unit.endswith(impact.CLIENT_PAGES)):
-            page = unit.split("#")[0]
-            section = unit.split("#")[1] if "#" in unit else "Every item"
-            needs = [plain(l[2:]) for l in lines if l.startswith("- ")]
-            if needs:
-                clients[page][section].extend(needs)
-    return requirements, goals, flows, rules, operations, {p: dict(s) for p, s in clients.items()}
+    return requirements, goals, flows, rules, operations
 
 
 def diagrams():
@@ -172,11 +197,7 @@ def service_routes(operations, services):
 
 def display_graph(graph):
     def show(unit):
-        kind = impact.kind(unit, graph)
-        if kind == "Client needs":
-            parts = unit.split("#")[0].split("/")
-            return parts[1] + "/" + parts[2].removesuffix(".md")
-        return unit if kind in COLUMN else None
+        return unit if impact.kind(unit, graph) in COLUMN else None
 
     nodes, edges = {}, set()
     for unit in graph.file:
@@ -204,13 +225,43 @@ def metrics(graph):
     for goal in goals:
         start = {u for u in graph.file if u.startswith(goal + "-") and impact.ID.fullmatch(u)}
         units, pages = impact.relies_on(graph, start)
-        size[goal] = impact.counts(graph, impact.with_client_needs(graph, units), pages)
-    radius = {}
-    for node in graph.file:
-        if impact.kind(node, graph) in ("Requirements", "Artifact rules", "Flow rules", "Operations"):
-            units, pages = impact.affected(graph, {node})
-            radius[node] = impact.counts(graph, impact.with_client_needs(graph, units), pages)
-    return size, radius
+        size[goal] = impact.counts(graph, units, pages)
+    return size
+
+
+def natural(unit):
+    return [int(p) if p.isdigit() else p for p in re.split(r"(\d+)", unit)]
+
+
+def stories(graph, goals, flows):
+    """For each goal: its flows, each with the rules it reaches, and the
+    artifacts that hold those rules or that the flows cross. A rule is listed
+    once, under the first flow that reaches it."""
+    crosses = {f["page"]: f["crosses"] for f in flows}
+    found = {}
+    for goal in goals:
+        start = {c["id"] for c in goal["criteria"]}
+        units, _ = impact.relies_on(graph, start)
+        rules = {u for u in units if impact.kind(u, graph) in ("Artifact rules", "Flow rules")}
+        text = (KNOWLEDGE / goal["page"]).read_text(encoding="utf-8")
+        pages = sorted((p for p in goal["flows"] if p.startswith("flows/")),
+                       key=lambda p: (text.find(p.split("/")[-1]), p))
+        story, placed, artifacts = [], set(), {}
+        for page in pages:
+            mine = {u for u in units if graph.file.get(u) == page and u.startswith("F-")}
+            reached = impact.relies_on(graph, mine)[0] & rules - placed
+            placed |= reached
+            story.append({"page": page, "rules": sorted(reached, key=natural)})
+            for name in crosses.get(page, []):
+                artifacts.setdefault(name, [])
+        if rules - placed:
+            story.append({"page": None, "rules": sorted(rules - placed, key=natural)})
+        for rule in sorted(rules, key=natural):
+            home = graph.file[rule].split("/")
+            if home[0] == "artifacts":
+                artifacts.setdefault(home[1], []).append(rule)
+        found[goal["key"]] = {"flows": story, "artifacts": artifacts}
+    return found
 
 
 def commit():
@@ -239,16 +290,21 @@ def main(argv):
             return 2
         services = {"routes": {**first, "folders": args.routes}}
     graph = impact.build()
-    requirements, goals, flows, rules, operations, clients = knowledge(graph)
-    size, radius = metrics(graph)
+    requirements, goals, flows, rules, operations = knowledge(graph)
+    size = metrics(graph)
     data = {
-        "title": SITE["title"], "clientNames": CLIENTS,
+        "title": SITE["title"],
         "commit": commit(),
         "built": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "requirements": requirements, "goals": goals, "flows": flows, "rules": rules,
-        "flowRules": [{"id": i, **r, "text": plain(r["rule"])} for i, r in sorted(graph.flow_rules.items())],
-        "operations": operations, "clients": clients, "routes": service_routes(operations, services),
-        "graph": display_graph(graph), "diagrams": diagrams(), "size": size, "radius": radius,
+        "flowRules": [{"id": i, "owner": r["owner"], "text": plain(r["rule"])} for i, r in sorted(graph.flow_rules.items())],
+        "stories": stories(graph, goals, flows),
+        # The Markdown of every knowledge page, which the side panel renders as text.
+        "pages": {impact.rel(path): path.read_text(encoding="utf-8") for path in sorted(KNOWLEDGE.rglob("*.md"))},
+        # Story links open the source pages, relative to the written page.
+        "source": Path(os.path.relpath(KNOWLEDGE, output.resolve().parent)).as_posix() + "/",
+        "operations": operations, "routes": service_routes(operations, services),
+        "graph": display_graph(graph), "diagrams": diagrams(), "size": size,
     }
     html = site_html(data)
     output.parent.mkdir(parents=True, exist_ok=True)

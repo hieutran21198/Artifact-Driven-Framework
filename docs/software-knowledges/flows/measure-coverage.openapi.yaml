@@ -82,7 +82,7 @@ components:
             - $ref: '../system/openapi.yaml#/components/schemas/Lines'
           description: >
             How the score is made, then one line for each of the 20 most
-            fragile units - rank, score, name, scenarios, operations, client
-            pages, the scenarios that cite it, the test files that name it or
+            fragile units - rank, score, name, scenarios, operations, the
+            scenarios that cite it, the test files that name it or
             - when no test files are read, and whether an open question names
             it (F-COVER-7, F-COVER-8).

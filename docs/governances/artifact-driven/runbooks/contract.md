@@ -23,9 +23,9 @@ Samples: [book contract](https://github.com/hieutran21198/Artifact-Driven-Framew
 
 1. Start from the flow steps that call a service, from a client or from
    another service. Add one path per call
-   with an `operationId` in camelCase and a summary that cites the IDs it
-   serves: artifact rules in an artifact contract, flow scenarios in a flow
-   contract. Report the `operationId`s; the knowledge writer names them in
+   with an `operationId` in camelCase and a summary of what it does. The
+   summary need not cite IDs: the scenarios that name the operation link it to
+   its rules ([citations](../knowledge.md#citations)). Report the `operationId`s; the knowledge writer names them in
    the flow steps.
 2. Reuse schemas with `$ref`: errors and security from `system/openapi.yaml`,
    artifact schemas from the artifact's file. Do not copy a schema.
@@ -33,33 +33,27 @@ Samples: [book contract](https://github.com/hieutran21198/Artifact-Driven-Framew
    object, the naming case and the time format, and the requirement on what
    each response and payload may carry to whom (SYS-5 in the reference pass).
 4. Before changing an existing operation or a response field, run [impact](../../../../scripts/README.md#impact) on
-   it (`python3 scripts/impact.py <operationId|field>`) to see the scenarios,
-   the client pages and the steps of other services that depend on it.
-5. For a change to an existing endpoint, keep what supported client versions
-   and the calling services rely on (SYS-4, SYS-6). A change is breaking when
-   it:
-   - removes a key a client page or a calling service's flow step needs, changes a type or the meaning of a
-     value, or adds an enum value a client decodes strictly;
-   - adds a required request key, removes an accepted value, or tightens the
-     validation of a key a released client sends;
-   - changes who may call the operation, the state changes it allows, or the
-     status codes and errors it returns, including a new status such as `429`;
-   - removes the operation ([remove an operation](remove.md)).
-
-   A new optional key is not breaking. Removing data a client must not see is
-   not breaking either, when the key stays in a minimal form (null, empty or a
-   default) that the client pages allow.
-6. Before a breaking change, check whether a new key beside the old one serves
-   the need; a new key is not breaking. Otherwise add a new version of the
-   path (`/v2/...`) with an `operationId` that ends in its version
-   (`getBookV2`). Both versions serve the same rules and differ only in shape.
+   it (`python3 scripts/impact.py <operationId|field>`) to see the operations,
+   scenarios and flows it reaches. A field name also matches other schemas
+   with a key of that name; for one schema, name it in full
+   (`artifacts/<artifact>/openapi.yaml#schemas/<Schema>`). The callers are
+   the clients and services that the steps, trigger and diagram of those flows
+   name for each operation.
+5. Decide whether the change is breaking. Every visible change to an existing
+   operation is breaking, as [contracts](../knowledge.md#contracts) lists:
+   for example a removed key, a changed type or meaning, a new enum value, a
+   new required request key or a tighter validation. Only a new optional key
+   is not breaking.
+6. Do not make a breaking change in place. Add a new key beside the old one
+   when that serves the need; a new optional key is not breaking. Otherwise
+   add a new version of the path (`/v2/...`) with an `operationId` that ends
+   in its version (`getBookV2`). Both versions serve the same rules and differ only in shape.
    Mark the old operation `deprecated: true` and keep it until
    [remove an operation](remove.md) allows its removal. A breaking change has
    its own issue, a sub-issue of the one that needs it.
-7. When a response shape changes, check the client pages that list needs for
-   the `operationId` and the flow steps of other services that call it, and
-   tell the owners of those clients and services on the issue
-   ([client](client.md)).
+7. Name on the issue the owner of each caller of step 4. Each of them reviews
+   the pull request that changes the contract, and checks the decoding of
+   their own part in its repository ([contracts](../knowledge.md#contracts)).
 8. Lint the changed files:
 
    ```sh

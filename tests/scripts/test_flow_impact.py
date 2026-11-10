@@ -16,7 +16,7 @@ class FlowImpact(unittest.TestCase):
         return run.stdout
 
     def test_F_TRACE_12_up_down_counts_and_design_boundary(self):
-        """F-TRACE-12, KN-7, KN-11, KN-13: rule kinds and dependency edges."""
+        """F-TRACE-12, KN-14, KN-15, KN-13: rule kinds and dependency edges."""
         self.ws.write('apps/client/design.md', '# Design\n')
         path = self.ws.root / (K + 'flows/run.md')
         path.write_text(path.read_text() + '\n[Design](../../../apps/client/design.md)\n[Artifact](../artifacts/book/specification.md)\n')
@@ -39,7 +39,7 @@ class FlowImpact(unittest.TestCase):
             self.assertNotIn('Flow rules:', out)
 
     def test_KN_7_links_and_shared_rule_deduplication(self):
-        """KN-7, KN-11, KN-13: ordinary downward links and shared dedup remain."""
+        """KN-14, KN-15, KN-13: ordinary downward links and shared dedup remain."""
         self.ws.write(K + 'flows/other.md', '| F-OTHER-1 | `run` | FR-SHARED-1 |\n')
         self.ws.write(K + 'goals/run.md', '| G-RUN-1 | F-RUN-1, F-OTHER-1 |\n'
                       + '[Other](../flows/other.md)\n')
