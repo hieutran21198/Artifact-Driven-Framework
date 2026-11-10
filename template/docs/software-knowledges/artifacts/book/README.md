@@ -7,7 +7,5 @@ Served by the service the [domain map](../../../architecture/domain-map.md) name
 
 - [Specification](specification.md): rules, model and lifecycle.
 - [Contract](openapi.yaml): the OpenAPI contract, written before the code.
-- [Service](service.md): the domain contract the serving service provides.
-- Client pages: [web](web.md), [mobile app](mobile.md).
 
 Return to [artifacts](../README.md).

@@ -17,7 +17,7 @@ and keep the code traceable to the knowledge. The knowledge has four layers:
 | System | Purpose, actors, services, clients, system-wide requirements, glossary, shared contract parts | `SYS-n` |
 | Goal | A business outcome and its success criteria | `G-<GOAL>-n` |
 | Flow | Behavior across artifacts, as testable scenarios that each name an operation, a trigger or a command | `F-<FLOW>-n` |
-| Artifact | One domain: model, rules, lifecycle, OpenAPI contract, and what each client needs | `<PREFIX>-n` |
+| Artifact | One domain: model, rules, lifecycle and OpenAPI contract | `<PREFIX>-n` |
 
 Every fact has one owner and an ID; other pages cite the ID. Follow the
 [knowledge rules](docs/governances/artifact-driven/knowledge.md#citations) for
@@ -92,7 +92,7 @@ python3 scripts/site.py
    in [Contributing](CONTRIBUTING.md).
 4. **Write the first goal** by the
    [runbooks](docs/governances/artifact-driven/runbooks/README.md): the goal,
-   its flows, the artifacts they cross, their contracts and the client pages.
+   its flows, the artifacts they cross and their contracts.
    Run the checks after each step.
 5. **Remove the reference pass** once the first real goal, flow and artifact
    exist: delete the `book`, `member` and `notice` artifacts, the `Borrow a

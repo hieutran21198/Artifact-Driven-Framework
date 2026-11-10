@@ -6,7 +6,6 @@ Served by the service the [domain map](../../../architecture/domain-map.md) name
 
 - [Specification](specification.md): rules, model and lifecycle.
 - [Contract](openapi.yaml): the OpenAPI contract, written before the code.
-- [Service](service.md): the domain contract the serving service provides.
 
 No client calls this artifact; other services do.
 

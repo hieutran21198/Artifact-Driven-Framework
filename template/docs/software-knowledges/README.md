@@ -5,7 +5,7 @@ Established knowledge of the software, in four layers. Follow
 citation direction and Flow-rule adoption prerequisites.
 
 This folder holds the sample: a small library lending
-service, written from system down to client needs. A project replaces it with
+service, written from system down to contracts. A project replaces it with
 its own knowledge and keeps the shape.
 
 - [System](system/README.md): purpose, actors, services, clients, system-wide
