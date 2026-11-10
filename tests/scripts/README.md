@@ -7,7 +7,9 @@ Each test makes a small workspace in a temporary folder and runs a script of
 configuration, knowledge text, paths and route data. It verifies the embedded
 JSON and script hashes with the Python standard library. Flow-rule fixtures
 check separate kinds, shared-rule deduplication, dependencies, aggregate
-counts and design-link exclusion (KN-13, F-VIEW-31):
+counts and design-link exclusion (KN-13, F-VIEW-31). When `node` is
+installed, it also runs the side panel's Markdown renderer from the generated
+page on a goal page and on raw HTML and unsafe links (F-VIEW-32, SYS-7):
 
 ```sh
 python3 -m unittest tests.scripts.test_site -v

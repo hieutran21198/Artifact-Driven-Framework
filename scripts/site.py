@@ -299,6 +299,8 @@ def main(argv):
         "requirements": requirements, "goals": goals, "flows": flows, "rules": rules,
         "flowRules": [{"id": i, "owner": r["owner"], "text": plain(r["rule"])} for i, r in sorted(graph.flow_rules.items())],
         "stories": stories(graph, goals, flows),
+        # The Markdown of every knowledge page, which the side panel renders as text.
+        "pages": {impact.rel(path): path.read_text(encoding="utf-8") for path in sorted(KNOWLEDGE.rglob("*.md"))},
         # Story links open the source pages, relative to the written page.
         "source": Path(os.path.relpath(KNOWLEDGE, output.resolve().parent)).as_posix() + "/",
         "operations": operations, "routes": service_routes(operations, services),

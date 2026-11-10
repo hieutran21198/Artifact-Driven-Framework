@@ -63,7 +63,13 @@ button.primary{border:1px solid var(--ink);background:var(--ink);color:var(--car
 .stage [data-from]{display:none}.stage .on{display:revert}.stage .chips.on,.stage .srow.on{display:flex}.stage .sart.on{display:grid}
 @media (prefers-reduced-motion:no-preference){.stage .on{animation:rise .6s ease both}@keyframes rise{from{opacity:0;transform:translateY(6px)}}.stage path{transition:opacity .6s}}
 #story-cap{margin:10px 0 0;font-size:15px}.side h3{margin:20px 0 6px}.side dl{margin:0}.side dt{color:var(--muted);font-size:13px;margin-top:8px}.side dd{margin:0}
-button.pill{border:0;cursor:pointer;font-family:var(--mono)}.src{font-size:13px;margin-top:20px}
+button.pill{border:0;cursor:pointer;font-family:var(--mono)}.src{font-size:13px;margin:0 0 12px}
+/* Source pages in the side panel: plain text styles; wide tables scroll inside the panel. */
+.md{font-size:14px;overflow-wrap:anywhere}.md .md-h{margin:18px 0 6px}.md h2.md-h{font-size:20px}.md h3.md-h{font-size:17px}.md h4.md-h,.md h5.md-h,.md h6.md-h{font-size:15px}
+.md p{margin:0 0 8px}.md ul,.md ol{margin:0 0 8px;padding-left:20px}.md code{font-family:var(--mono);font-size:.9em;background:var(--panel);border-radius:4px;padding:0 4px}
+.md pre.md-code{background:var(--panel);border-radius:8px;padding:10px 12px;overflow-x:auto;font-size:12px}.md pre.md-code code{background:none;padding:0}
+.md-table{overflow-x:auto;margin:0 0 10px}.md-table table{min-width:480px}.md-table td,.md-table th{overflow-wrap:normal}.md-id{white-space:nowrap}.md tr.hit td{background:var(--c2)}
+.md-link,.md-id{border:0;background:none;padding:0;font:inherit;color:var(--accent);cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}.md-id{font-family:var(--mono);font-size:.92em}
 .goal-card .open{margin-top:auto;align-self:flex-start}
 .pager{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:14px;font-size:14px;color:var(--muted)}.pager:empty{display:none}
 .side-back{position:fixed;inset:0;background:rgba(31,41,51,.28);z-index:20}
@@ -136,7 +142,7 @@ en:{
 "m.goals":["Goals","business outcomes"],"m.flows":["Flows","behaviors across domains"],"m.scenarios":["Scenarios","testable cases"],"m.rules":["Rules","artifact and Flow rules"],"m.operations":["Operations","API operations with a contract"],"m.coverage":["API coverage",(c,t)=>`${c} of ${t} service routes`],
 "withKnowledge":"Routes with knowledge","withoutKnowledge":"Routes without knowledge",
 
-"flowRules":"Flow rules","flows":"Flows","scenarios":"Scenarios","operations":"Operations","criterion":"Criterion","none":"none","None":"None","details":"Criteria and flows","close":"Close","story.open":"Show the story","story.hint":"Click a block to read it.","story.steps":["Goal","Flows","Rules","Artifacts"],"story.caps":[(t)=>`Goal: ${t}`,n=>`Flows: ${n}`,n=>`Rules: ${n}, by flow`,n=>`Artifacts: ${n}, each with its rules`],"play":"Play","pause":"Pause","need":"Need","trigger":"Trigger","outcome":"Outcome","given":"Given","when":"When","then":"Then","provenBy":"Proven by","artifact":"Artifact","flow":"Flow","rule":"Rule","goal":"Goal","source":"Source","otherRules":"Other rules","rulesHere":"Rules in this goal","prev":"Previous","next":"Next","layer.system/":"System","layer.goals/":"Goals","layer.flows/":"Flows",
+"flowRules":"Flow rules","flows":"Flows","scenarios":"Scenarios","operations":"Operations","none":"none","None":"None","close":"Close","story.open":"Show the story","story.hint":"Click a block to read it.","story.steps":["Goal","Flows","Rules","Artifacts"],"story.caps":[(t)=>`Goal: ${t}`,n=>`Flows: ${n}`,n=>`Rules: ${n}, by flow`,n=>`Artifacts: ${n}, each with its rules`],"play":"Play","pause":"Pause","flow":"Flow","goal":"Goal","openSource":"Open the source","otherRules":"Other rules","prev":"Previous","next":"Next","layer.system/":"System","layer.goals/":"Goals","layer.flows/":"Flows",
 
 "showAll":"Show all",
 
@@ -169,7 +175,7 @@ vi:{
 "m.goals":["Goal","kết quả nghiệp vụ"],"m.flows":["Flow","hành vi qua nhiều domain"],"m.scenarios":["Scenario","ca test"],"m.rules":["Rule","rule của artifact và Flow"],"m.operations":["Operation","operation API có contract"],"m.coverage":["Độ phủ API",(c,t)=>`${c} trên ${t} route service`],
 "withKnowledge":"Route đã có knowledge","withoutKnowledge":"Route chưa có knowledge",
 
-"flows":"Flow","scenarios":"Scenario","operations":"Operation","criterion":"Criterion","none":"chưa có","None":"Không có","details":"Criterion và flow","close":"Đóng","story.open":"Xem story","story.hint":"Bấm vào một khối để đọc.","story.steps":["Goal","Flow","Rule","Artifact"],"story.caps":[(t)=>`Goal: ${t}`,n=>`Flow: ${n}`,n=>`Rule: ${n}, theo flow`,n=>`Artifact: ${n}, kèm rule của nó`],"play":"Chạy","pause":"Dừng","need":"Nhu cầu","trigger":"Kích hoạt","outcome":"Kết quả","given":"Given","when":"When","then":"Then","provenBy":"Chứng minh bởi","artifact":"Artifact","flow":"Flow","rule":"Rule","goal":"Goal","source":"Nguồn","otherRules":"Rule khác","rulesHere":"Rule trong goal này","prev":"Trước","next":"Sau","layer.system/":"System","layer.goals/":"Goal","layer.flows/":"Flow",
+"flows":"Flow","scenarios":"Scenario","operations":"Operation","none":"chưa có","None":"Không có","close":"Đóng","story.open":"Xem story","story.hint":"Bấm vào một khối để đọc.","story.steps":["Goal","Flow","Rule","Artifact"],"story.caps":[(t)=>`Goal: ${t}`,n=>`Flow: ${n}`,n=>`Rule: ${n}, theo flow`,n=>`Artifact: ${n}, kèm rule của nó`],"play":"Chạy","pause":"Dừng","flow":"Flow","goal":"Goal","openSource":"Mở file gốc","otherRules":"Rule khác","prev":"Trước","next":"Sau","layer.system/":"System","layer.goals/":"Goal","layer.flows/":"Flow",
 
 "showAll":"Xem tất cả",
 
@@ -221,6 +227,51 @@ const metricsOf=g=>{const z=DATA.size[g.key]||{};return `<div class="grid" style
 function drawGoals(){const pages=Math.max(1,Math.ceil(goalList.length/PER_PAGE));goalPage=Math.min(goalPage,pages-1);
  $("goal-cards").innerHTML=goalList.slice(goalPage*PER_PAGE,(goalPage+1)*PER_PAGE).map(g=>`<div class="card goal-card"><h3>${esc(g.title)} <span class="muted">${esc(g.key)}</span></h3>${metricsOf(g)}<button class="plain open" data-goal="${esc(g.key)}">${T("story.open")}</button></div>`).join("");
  $("goal-pager").innerHTML=pages>1?`<button class="plain" data-page="-1"${goalPage?"":" disabled"}>← ${T("prev")}</button><span>${goalPage+1} / ${pages}</span><button class="plain" data-page="1"${goalPage<pages-1?"":" disabled"}>${T("next")} →</button>`:"";}
+
+/* markdown:start */
+// A small Markdown renderer for knowledge pages. Workspace text is data: every character is
+// escaped, raw HTML stays text, and links point only to embedded pages, relative files or https.
+function renderMarkdown(text,page,ctx){
+ const E=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ const dir=page.split("/").slice(0,-1);
+ const resolve=href=>{const parts=[...dir];for(const p of href.split("/")){if(p===".."){if(parts.length&&parts[parts.length-1]!=="..")parts.pop();else parts.push("..");}else if(p&&p!==".")parts.push(p);}return parts.join("/");};
+ const link=(label,href)=>{
+  if(/^https:\/\/[^\s"'<>]+$/i.test(href))return `<a href="${E(href)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+  if(/^[^:\s"'<>\\]*$/.test(href)&&!href.startsWith("//")){const [path,frag=""]=href.split("#");
+   if(!path)return `<span class="md-anchor">${label}</span>`;const to=resolve(path);
+   if(ctx.has(to))return `<button type="button" class="md-link" data-page="${E(to)}" data-frag="${E(frag)}">${label}</button>`;
+   return `<a href="${E(ctx.source+to)}" target="_blank" rel="noopener noreferrer">${label}</a>`;}
+  return label;};
+ const emph=s=>E(s).replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>").replace(/(^|[^\w*])\*([^*\s][^*]*)\*(?!\w)/g,"$1<em>$2</em>").replace(/(^|[^\w])_([^_\s][^_]*)_(?!\w)/g,"$1<em>$2</em>");
+ const plainPart=s=>{let out="",at=0;const re=/\[([^\]]+)\]\(([^)\s]+)\)/g;let m;
+  while((m=re.exec(s))){out+=emph(s.slice(at,m.index))+link(emph(m[1]),m[2]);at=m.index+m[0].length;}
+  return out+emph(s.slice(at));};
+ const inline=s=>s.split(/(`[^`]+`)/).map(p=>/^`[^`]+`$/.test(p)?`<code>${E(p.slice(1,-1))}</code>`:plainPart(p)).join("");
+ const cells=l=>l.trim().replace(/^\|/,"").replace(/\|$/,"").split("|").map(c=>c.trim());
+ const lines=text.replace(/\r\n?/g,"\n").split("\n"),out=[];let i=0,diagram=0,para=[],list=[];
+ const flushPara=()=>{if(para.length)out.push(`<p>${inline(para.join(" "))}</p>`);para=[];};
+ const flushList=()=>{if(!list.length)return;let html="",stack=[];
+  for(const it of list){while(stack.length&&it.indent<stack[stack.length-1].indent){html+=`</li></${stack.pop().tag}>`;}
+   const top=stack[stack.length-1];
+   if(!top||it.indent>top.indent){stack.push({indent:it.indent,tag:it.tag});html+=`<${it.tag}><li>`;}else html+="</li><li>";
+   html+=inline(it.text);}
+  while(stack.length)html+=`</li></${stack.pop().tag}>`;out.push(html);list=[];};
+ const flush=()=>{flushPara();flushList();};
+ while(i<lines.length){const l=lines[i];let m;
+  if((m=l.match(/^\s*```\s*([\w-]*)\s*$/))){flush();const lang=m[1],code=[];i++;
+   while(i<lines.length&&!/^\s*```\s*$/.test(lines[i]))code.push(lines[i++]);i++;
+   if(lang==="mermaid")out.push(`<div class="diagram" data-md-dg="${diagram++}"><pre>${E(code.join("\n"))}</pre></div>`);
+   else out.push(`<pre class="md-code"><code>${E(code.join("\n"))}</code></pre>`);continue;}
+  if((m=l.match(/^(#{1,6})\s+(.*)$/))){flush();const n=Math.min(6,m[1].length+1);out.push(`<h${n} class="md-h">${inline(m[2])}</h${n}>`);i++;continue;}
+  if(/^\s*\|/.test(l)&&i+1<lines.length&&/^\s*\|?\s*:?-{3,}/.test(lines[i+1])){flush();const head=cells(l);i+=2;const rows=[];
+   while(i<lines.length&&/^\s*\|/.test(lines[i]))rows.push(cells(lines[i++]));
+   out.push(`<div class="md-table"><table><tr>${head.map(c=>`<th>${inline(c)}</th>`).join("")}</tr>${rows.map(r=>`<tr data-row="${E(r[0]||"")}">${r.map(c=>`<td>${inline(c)}</td>`).join("")}</tr>`).join("")}</table></div>`);continue;}
+  if((m=l.match(/^(\s*)([-*]|\d+\.)\s+(.*)$/))){flushPara();list.push({indent:m[1].length,tag:/\d/.test(m[2])?"ol":"ul",text:m[3]});i++;continue;}
+  if(!l.trim()){flush();i++;continue;}
+  if(list.length&&/^\s+\S/.test(l)){list[list.length-1].text+=" "+l.trim();i++;continue;}
+  flushList();para.push(l.trim());i++;}
+ flush();return out.join("\n");}
+/* markdown:end */
 // The story and the side panel. A node is [kind, id]: goal key, flow page, rule ID or artifact name.
 const STEPS=4,reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;let storyGoal=null,storyStep=reduce?STEPS-1:0,storyTimer=null,sideNode=null;
 const ruleText=id=>(DATA.rules.find(r=>r.id===id)||flowRules.find(r=>r.id===id)||{}).text||"";
@@ -228,9 +279,7 @@ const isFlowRule=id=>flowRules.some(r=>r.id===id);
 const label=id=>{const w=ruleText(id).split(/\s+/).filter(Boolean);return w.length>4?w.slice(0,4).join(" ")+"…":w.join(" ");};
 const nodeBtn=(kind,id,cls,html,from)=>`<button type="button" class="node ${cls}" data-node="${kind}" data-id="${esc(id)}"${from!==undefined?` data-from="${from}"`:""}>${html}</button>`;
 const ruleChip=id=>nodeBtn("rule",id,"n-rule",`${esc(id)}${label(id)?" · "+esc(label(id)):""}`);
-const idLink=(kind,id,cls)=>`<button type="button" class="pill ${cls}" data-node="${kind}" data-id="${esc(id)}">${esc(id)}</button>`;
 const scenFlow=id=>DATA.flows.find(f=>f.scenarios.some(s=>s.id===id));
-const scenLink=id=>{const f=scenFlow(id);return f?idLink("flow",f.page,"p1").replace(`>${esc(f.page)}<`,`>${esc(id)}<`):pill(id);};
 function showStory(key){const g=DATA.goals.find(x=>x.key===key),s=DATA.stories[key];if(!g||!s)return;storyGoal=key;$("story").hidden=false;
  $("story-title").textContent=g.title;
  $("story-goal").innerHTML=nodeBtn("goal",key,"n-goal",`<b>${T("goal")}</b>${esc(g.title)}`);
@@ -262,40 +311,48 @@ function playStory(on){clearInterval(storyTimer);storyTimer=on?setInterval(()=>s
 new ResizeObserver(()=>drawLines()).observe($("story-stage"));
 // Diagrams in the side panel go through the same source check and SVG copy as the Diagrams section.
 const sideSvgs=Object.create(null);let sideQueue=Promise.resolve();
-const sideDiagram=i=>`<div class="diagram" data-dg="${i}"><pre>${esc(DATA.diagrams[i].code)}</pre></div>`;
 function fillSideDiagrams(){$("side-body").querySelectorAll("[data-dg]").forEach(e=>{const i=+e.dataset.dg,d=DATA.diagrams[i];
  if(sideSvgs[i]){e.replaceChildren(sideSvgs[i].cloneNode(true));return;}
  if(!mermaidOn||!diagramSourceAllowed(d.code))return;
  sideQueue=sideQueue.then(()=>sideSvgs[i]?null:mermaid.render("sdsvg"+i,d.code).then(r=>{sideSvgs[i]=safeDiagram(r.svg,"sdsvg"+i);}).catch(()=>{/* The readable source remains. */}))
   .then(()=>{const now=$("side-body").querySelector(`[data-dg="${i}"]`);if(now&&sideSvgs[i])now.replaceChildren(sideSvgs[i].cloneNode(true));scheduleSize();});});}
-const diagramsOf=(test,re)=>DATA.diagrams.map((d,i)=>[d,i]).filter(([d])=>test(d.page)&&re.test(d.code)).map(([,i])=>sideDiagram(i)).join("");
-const srcLink=page=>`<p class="src">${T("source")}: <a href="${esc(DATA.source+page)}" target="_blank" rel="noopener noreferrer">${esc(page)}</a></p>`;
-function openNode(kind,id){const s=DATA.stories[storyGoal]||{flows:[],artifacts:{}};let title="",body="";
- if(kind==="goal"){const g=DATA.goals.find(x=>x.key===id);if(!g)return;
-  title=`${esc(g.title)} <span class="muted" style="font-size:16px">${esc(g.key)}</span>`;
-  const crit=g.criteria.map(c=>`<tr><td>${pill(c.id)}</td><td>${esc(c.text)}</td><td>${c.proven.length?c.proven.map(scenLink).join(""):`<span class="pill gap">${T("none")}</span>`}</td></tr>`).join("");
-  body=`${metricsOf(g)}${g.need.length?`<h3>${T("need")}</h3>${g.need.map(x=>`<p style="margin:0 0 6px">${esc(x)}</p>`).join("")}`:""}
-   <h3>${T("criterion")}</h3><table><tr><th>${T("criterion")}</th><th></th><th>${T("provenBy")}</th></tr>${crit}</table>
-   <h3>${T("flows")}</h3><p>${g.flows.filter(p=>flowByPage[p]).map(p=>idLink("flow",p,"p1").replace(`>${esc(p)}<`,`>${esc(flowByPage[p].title)}<`)).join("")}</p>${srcLink(g.page)}`;}
- else if(kind==="flow"){const f=flowByPage[id];if(!f)return;title=esc(f.title);
-  const rows=f.scenarios.map(x=>`<tr><td>${pill(x.id)}</td><td>${esc(x.given)}</td><td>${esc(x.when)}</td><td>${esc(x.then)}</td><td>${x.covers.filter(c=>ruleText(c)).map(c=>idLink("rule",c,"p2")).join("")}</td></tr>`).join("");
-  body=`<dl>${f.trigger?`<dt>${T("trigger")}</dt><dd>${esc(f.trigger)}</dd>`:""}${f.outcome?`<dt>${T("outcome")}</dt><dd>${esc(f.outcome)}</dd>`:""}</dl>
-   ${diagramsOf(p=>p===f.page,/^\s*(?:%%[^\n]*\n\s*)*sequenceDiagram\b/)}
-   <h3>${T("scenarios")}</h3><div style="overflow-x:auto"><table><tr><th></th><th>${T("given")}</th><th>${T("when")}</th><th>${T("then")}</th><th>${T("rule")}</th></tr>${rows}</table></div>${srcLink(f.page)}`;}
- else if(kind==="rule"){const text=ruleText(id);if(!text)return;const fr=flowRules.find(r=>r.id===id),art=(DATA.rules.find(r=>r.id===id)||{}).artifact;
-  title=`${esc(id)} <span class="muted" style="font-size:16px">${T("rule")}</span>`;
-  const by=scen.filter(x=>x.covers.includes(id)).map(x=>scenLink(x.id)).join("");
-  body=`<p>${esc(text)}</p><dl><dt>${T("provenBy")}</dt><dd>${by||`<span class="pill gap">${T("none")}</span>`}</dd>
-   ${art?`<dt>${T("artifact")}</dt><dd>${idLink("art",art,"p3")}</dd>`:""}${fr&&flowByPage[fr.owner]?`<dt>${T("flow")}</dt><dd>${idLink("flow",fr.owner,"p1").replace(`>${esc(fr.owner)}<`,`>${esc(flowByPage[fr.owner].title)}<`)}</dd>`:""}</dl>
-   ${srcLink(fr?fr.owner:`artifacts/${art}/specification.md`)}`;}
- else if(kind==="art"){title=`${esc(id)} <span class="muted" style="font-size:16px">${T("artifact")}</span>`;
-  const rs=s.artifacts[id]||[];
-  body=`<h3>${T("rulesHere")}</h3><table>${rs.map(x=>`<tr><td>${idLink("rule",x,"p2")}</td><td>${esc(ruleText(x))}</td></tr>`).join("")||`<tr><td>${T("None")}</td></tr>`}</table>
-   ${diagramsOf(p=>p.startsWith(`artifacts/${id}/`),/^\s*(?:%%[^\n]*\n\s*)*(?:stateDiagram-v2|stateDiagram|classDiagram)\b/)}${srcLink(`artifacts/${id}/README.md`)}`;}
- else return;
- sideNode=[kind,id];$("side-title").innerHTML=title;$("side-close").textContent=T("close")+" ×";$("side-body").innerHTML=body;
- $("story-stage").querySelectorAll(".node").forEach(e=>e.classList.toggle("sel",e.dataset.node===kind&&e.dataset.id===id));
- const wasOpen=!$("side").hidden;$("side").hidden=$("side-back").hidden=false;placeSide();fillSideDiagrams();if(!wasOpen)$("side-close").focus();}
+const srcLink=page=>`<p class="src"><a href="${esc(DATA.source+page)}" target="_blank" rel="noopener noreferrer">${T("openSource")}: ${esc(page)}</a></p>`;
+const ID_LIST=[...DATA.rules,...flowRules,...scen,...DATA.goals.flatMap(g=>g.criteria)].map(x=>x.id),ID_COUNT=ID_LIST.length;
+const ID_RE=new RegExp("\\b(?:"+ID_LIST.map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).sort((a,b)=>b.length-a.length).join("|")+")\\b","g");
+// Where an ID is defined: the page and the row to mark.
+function home(id){const r=DATA.rules.find(x=>x.id===id);if(r)return `artifacts/${r.artifact}/specification.md`;
+ const fr=flowRules.find(x=>x.id===id);if(fr)return fr.owner;const f=scenFlow(id);if(f)return f.page;
+ const g=DATA.goals.find(x=>x.criteria.some(c=>c.id===id));return g?g.page:null;}
+// Knowledge IDs in the rendered text become buttons that open the page that defines them.
+function linkIds(root){if(!ID_COUNT)return;
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement.closest("pre,code,svg,button,a,.diagram")?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT}),texts=[];
+ while(walker.nextNode())texts.push(walker.currentNode);
+ texts.forEach(n=>{const s=n.textContent;ID_RE.lastIndex=0;if(!ID_RE.test(s))return;ID_RE.lastIndex=0;const frag=document.createDocumentFragment();let at=0,m;
+  while((m=ID_RE.exec(s))){frag.append(s.slice(at,m.index));const b=document.createElement("button");b.type="button";b.className="md-id";b.dataset.goto=m[0];b.textContent=m[0];frag.append(b);at=m.index+m[0].length;}
+  frag.append(s.slice(at));n.replaceWith(frag);});}
+function openPage(page,mark,title){const text=DATA.pages[page];if(text===undefined)return false;
+ const html=renderMarkdown(text,page,{has:p=>p in DATA.pages,source:DATA.source});
+ $("side-title").textContent=title||page;$("side-close").textContent=T("close")+" ×";
+ $("side-body").innerHTML=srcLink(page)+`<div class="md">${html}</div>`;
+ const body=$("side-body"),first=body.querySelector(".md > h2:first-child");if(first&&!title){$("side-title").textContent=first.textContent;}if(first)first.remove();
+ // Each mermaid block of the page is the diagram the site already read from it, in the same order.
+ const ofPage=DATA.diagrams.map((d,i)=>[d,i]).filter(([d])=>d.page===page).map(([,i])=>i);
+ body.querySelectorAll("[data-md-dg]").forEach(e=>{const i=ofPage[+e.dataset.mdDg];if(i!==undefined)e.dataset.dg=i;});
+ linkIds(body.querySelector(".md"));
+ if(mark){const row=[...body.querySelectorAll("tr[data-row]")].find(r=>r.dataset.row===mark);
+  if(row){row.classList.add("hit");requestAnimationFrame(()=>row.scrollIntoView({block:"center"}));}}
+ else $("side").scrollTop=0;
+ const wasOpen=!$("side").hidden;$("side").hidden=$("side-back").hidden=false;placeSide();fillSideDiagrams();if(!wasOpen)$("side-close").focus();
+ return true;}
+function openNode(kind,id){let page=null,mark=null,title=null;
+ if(kind==="goal"){const g=DATA.goals.find(x=>x.key===id);if(g){page=g.page;title=g.title;}}
+ else if(kind==="flow"){const f=flowByPage[id];if(f){page=f.page;title=f.title;}}
+ else if(kind==="art"){page=`artifacts/${id}/specification.md`;}
+ else if(kind==="rule"){page=home(id);mark=id;}
+ else if(kind==="page"){page=id;}
+ if(!page||!openPage(page,mark,title))return;
+ sideNode=[kind,id];
+ $("story-stage").querySelectorAll(".node").forEach(e=>e.classList.toggle("sel",e.dataset.node===kind&&e.dataset.id===id));}
 function openGoal(key){showStory(key);openNode("goal",key);}
 // The opaque-origin frame exchanges dimensions only. It never reads its parent's DOM or storage.
 let frameRender=null,frameViewport=null,lastHeight=-1,sizePending=false;
@@ -457,7 +514,9 @@ $("diagram-cards").onclick=e=>{const b=e.target.closest("[data-slide]");if(!b||b
 $("goal-cards").onclick=e=>{const b=e.target.closest("[data-goal]");if(b)openGoal(b.dataset.goal);};
 $("story-steps").onclick=e=>{const b=e.target.closest("[data-step]");if(b){playStory(false);showStep(+b.dataset.step);}};
 $("story-play").onclick=()=>playStory(!storyTimer);
-$("story-stage").onclick=$("side-body").onclick=e=>{const b=e.target.closest("[data-node]");if(b)openNode(b.dataset.node,b.dataset.id);};
+$("story-stage").onclick=e=>{const b=e.target.closest("[data-node]");if(b)openNode(b.dataset.node,b.dataset.id);};
+$("side-body").onclick=e=>{const b=e.target.closest("[data-page],[data-goto]");if(!b)return;
+ if(b.dataset.goto)openNode("rule",b.dataset.goto);else openNode("page",b.dataset.page);};
 $("goal-pager").onclick=e=>{const b=e.target.closest("[data-page]");if(!b||b.disabled)return;goalPage+=+b.dataset.page;drawGoals();$("goals").scrollIntoView({block:"start"});};
 $("side-close").onclick=$("side-back").onclick=closeSide;
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&sideNode)closeSide();});

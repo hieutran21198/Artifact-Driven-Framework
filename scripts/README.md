@@ -178,10 +178,12 @@ only, the counts, the API coverage of each service (when it has `routes`),
 each goal with its criteria and scenarios, the story of one goal, and the
 system context and the diagrams of those goals and their flows. The story
 plays in four steps - goal, flows, rules, artifacts - from the goal page, the
-`Crosses` line of each flow and the rules the goal relies on. A block opens its details: the need and criteria of a goal, the trigger,
-outcome, sequence diagram and scenarios of a flow, the text and proof of a
-rule, and the rules and diagrams of an artifact, each with a link to its
-source page. The guide to reading it shows the
+`Crosses` line of each flow and the rules the goal relies on. A block opens its source page in the side panel: the page of a goal or a
+flow, the specification of an artifact, or the page that defines a rule, with
+the rule's row marked. The page is rendered as text (headings, paragraphs,
+lists, tables, code, emphasis and links; no HTML), its diagrams go through the
+same checks as the Diagrams section, a link to another knowledge page opens it
+in the panel, and a link out must be `https`. The guide to reading it shows the
 first system diagram, such as the context. Rules totals include both
 artifact and Flow rules. To trace a change, run [impact](#impact). It reads in English or
 Vietnamese. [site.html](site.html) is its template. It reuses `impact.py` and
