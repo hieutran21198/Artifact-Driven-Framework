@@ -10,7 +10,7 @@ A person creates a workspace with one command and checks it.
   [workspace contract](../artifacts/workspace/openapi.yaml), `checkStructure`
   in the [repository contract](../artifacts/repository/openapi.yaml), and
   `checkDocs` in the
-  [Check a change contract](check-change.openapi.yaml).
+  [knowledge contract](../artifacts/knowledge/openapi.yaml).
 - Trigger: a person who starts a project runs `installWorkspace` in a shell.
 - Outcome: a new workspace that holds the shared files and the sample, or
   nothing at all.

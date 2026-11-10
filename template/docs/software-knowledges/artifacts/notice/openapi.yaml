@@ -53,7 +53,7 @@ components:
           example: 7
         template:
           type: string
-          description: The name of the payload schema the notice carries, from the flow that sends it.
+          description: The name of a template schema of this contract, such as OverdueEmail.
           example: OverdueEmail
         fields:
           type: object
@@ -76,3 +76,19 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/Notice'
+    OverdueEmail:
+      type: object
+      description: >
+        The template of the notice that the overdue worker asks for. Not an
+        HTTP response. An HTML email with these fields, in order: book_title,
+        due_at. It names no other member.
+      required: [book_title, due_at]
+      properties:
+        book_title:
+          type: string
+          example: A Field Guide to Birds
+        due_at:
+          type: string
+          format: date-time
+          description: The due time that passed.
+          example: '2030-01-15T18:00:00Z'

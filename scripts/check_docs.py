@@ -4,7 +4,7 @@ from pathlib import Path
 import re
 import sys
 
-from project import ID, KNOWLEDGE, ROOT, SKIP
+from project import ID, KNOWLEDGE, ROOT, SKIP, contracts
 from flow_rules import read_flow_rules, table_cells
 
 LINK = re.compile(r"\]\(([^)#\s]*)(?:#([^)\s]*))?\)")
@@ -97,9 +97,16 @@ def triggers(text):
             for name in re.findall(r"^  (\w+):", block.group(1), re.MULTILINE)}
 
 
+def check_contracts():
+    """Every YAML file in the knowledge folder is the contract of an artifact or of the system."""
+    allowed = set(contracts())
+    return [f"{path.relative_to(ROOT)}: a contract belongs in artifacts/<artifact>/openapi.yaml or system/openapi.yaml"
+            for path in sorted(KNOWLEDGE.rglob("*.yaml")) if path not in allowed]
+
+
 def check_scenarios():
     operations = set()
-    for path in KNOWLEDGE.rglob("*.yaml"):
+    for path in contracts():
         text = path.read_text(encoding="utf-8")
         operations.update(re.findall(r"operationId: (\w+)", text))
         operations.update(triggers(text))
@@ -175,12 +182,12 @@ def check_flow_rules():
 
 
 def main():
-    problems = check_links() + check_ids() + check_scenarios() + check_direction() + check_flow_rules()
+    problems = check_links() + check_ids() + check_contracts() + check_scenarios() + check_direction() + check_flow_rules()
     for problem in problems:
         print(problem, file=sys.stderr)
     if problems:
         return 1
-    print("Docs check passed: links, anchors, knowledge IDs, citation direction, and scenarios and the operations, triggers or commands they name.")
+    print("Docs check passed: links, anchors, knowledge IDs, citation direction, contract homes, and scenarios and the operations, triggers or commands they name.")
     return 0
 
 

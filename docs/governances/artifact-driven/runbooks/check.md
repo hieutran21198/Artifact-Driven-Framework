@@ -47,7 +47,7 @@ npx @redocly/cli lint <knowledge folder>/<path>.yaml
 | Check | Finds |
 | --- | --- |
 | `check_structure.py` | A directory without a README |
-| `check_docs.py` | A broken link, a missing heading anchor, a knowledge ID that is cited but not defined, defined twice, or withdrawn and still cited; a scenario that names no operation, trigger or command, and one that no scenario names |
+| `check_docs.py` | A broken link, a missing heading anchor, a knowledge ID that is cited but not defined, defined twice, or withdrawn and still cited; a YAML file in the knowledge folder that is not the contract of an artifact or of the system; a scenario that names no operation, trigger or command, and one that no scenario names |
 | `check_tests.py` | A test that names an ID the knowledge does not define, or a withdrawn ID |
 | Git whitespace check above | Trailing whitespace, spaces before tabs in indentation and conflict markers |
 | Redocly lint | An invalid contract or a broken `$ref` |

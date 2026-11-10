@@ -15,7 +15,7 @@ flows and artifacts link.
   `exportSettings` and `importSettings` in the
   [tracker contract](../artifacts/tracker/openapi.yaml), and
   `measureCoverage` in the
-  [measure coverage contract](measure-coverage.openapi.yaml).
+  [test contract](../artifacts/test/openapi.yaml).
 - Trigger: a reader follows a link to the tracker, such as the one on the
   landing page (`openTracker`) or one a team sends with the workspace and the
   ref in it.

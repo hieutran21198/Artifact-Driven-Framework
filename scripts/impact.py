@@ -14,7 +14,7 @@ import re
 import sys
 
 from flow_rules import read_flow_rules
-from project import ID, KNOWLEDGE, ROOT, TEST_GLOB, TESTS
+from project import ID, KNOWLEDGE, ROOT, TEST_GLOB, TESTS, contracts
 
 ID_ROW = re.compile(r"^\| (" + ID.pattern + r") \|")
 TICKED = re.compile(r"`([A-Za-z_][A-Za-z0-9_]*)`")
@@ -93,11 +93,10 @@ def read_contract(graph, path):
 
 def build():
     graph = Graph()
-    for path in sorted(KNOWLEDGE.rglob("*")):
-        if path.suffix == ".md":
-            read_markdown(graph, path)
-        elif path.suffix == ".yaml":
-            read_contract(graph, path)
+    for path in sorted(KNOWLEDGE.rglob("*.md")):
+        read_markdown(graph, path)
+    for path in contracts():
+        read_contract(graph, path)
     operations = {u for u in graph.file if "#" not in u and "/" not in u and not ID.fullmatch(u)}
     for unit, lines in graph.text.items():
         body = "\n".join(lines)

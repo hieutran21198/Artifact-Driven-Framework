@@ -7,10 +7,10 @@ with broken knowledge or broken tests fails them.
   [repository](../artifacts/repository/README.md),
   [knowledge](../artifacts/knowledge/README.md) and
   [test](../artifacts/test/README.md), served by the `scripts` service.
-- Contract: `checkDocs` and `checkTests` in
-  [check-change.openapi.yaml](check-change.openapi.yaml), and
-  `checkStructure` in the
-  [repository contract](../artifacts/repository/openapi.yaml).
+- Contract: `checkStructure` in the
+  [repository contract](../artifacts/repository/openapi.yaml), `checkDocs` in
+  the [knowledge contract](../artifacts/knowledge/openapi.yaml), and
+  `checkTests` in the [test contract](../artifacts/test/openapi.yaml).
 - Trigger: the author runs the checks before review, and CI runs them on each
   pull request into the default branch.
 - Outcome: the change passes every check, or each check lists every problem
@@ -28,8 +28,10 @@ with broken knowledge or broken tests fails them.
       each one is defined once (KN-2), not withdrawn where it is cited
       (KN-3), and defined where it is named (KN-4);
    3. classifies Flow-rule definitions and checks their scope, owner and
-      required content (KN-13), then checks citation direction (KN-5);
-   4. checks that each scenario names an operation and each operation has a
+      required content (KN-13), then checks citation direction (KN-18);
+   4. checks that each contract is the contract of an artifact or of the
+      system (KN-19);
+   5. checks that each scenario names an operation and each operation has a
       scenario (KN-6).
 3. For a change to the code of a part, the author, or CI, runs `checkTests`
    with the tests of every part (CFG-4, CFG-5), or with the folder of the
@@ -80,7 +82,7 @@ sequenceDiagram
 | F-CHECK-7 | A page in the knowledge folder that names an ID no row defines, including a Flow-rule reference with a known or unknown scope | The author runs `checkDocs` | It exits with 1 and names the page and the ID | KN-1, KN-4 |
 | F-CHECK-8 | One ID defined by rows on two pages, including duplicate local or shared Flow-rule definitions | The author runs `checkDocs` | It exits with 1 and names both pages | KN-2 |
 | F-CHECK-9 | A withdrawn ID that another row names, including a withdrawn Flow rule | The author runs `checkDocs` | It exits with 1 and names the page and the ID | KN-3 |
-| F-CHECK-10 | A flow that names a goal criterion, and an artifact that names a flow scenario | The author runs `checkDocs` | It exits with 1 and names each page and what it cites | KN-5 |
+| F-CHECK-10 | A flow that names a goal criterion, and an artifact that names a flow scenario | The author runs `checkDocs` | It exits with 1 and names each page and what it cites | KN-18 |
 | F-CHECK-11 | A scenario that names no operation, and a command under `x-commands` that no scenario names | The author runs `checkDocs` | It exits with 1 and names the scenario and the command | KN-6 |
 | F-CHECK-12 | A broken link in a page under a folder that the configuration skips | The author runs `checkDocs` | It exits with 0 | REPO-2, CFG-3 |
 | F-CHECK-13 | A test file that names an ID with a full prefix the knowledge uses, including a known Flow-rule scope, and no row defines the ID | The author runs `checkTests` | It exits with 1 and names the file and the ID | TST-1, TST-2 |
@@ -95,9 +97,10 @@ sequenceDiagram
 | F-CHECK-22 | A page with two headings `Rules`, and links to `#rules`, `#rules-1` and `#rules-2` | The author runs `checkDocs` | It names only the link to `#rules-2` as a missing anchor | REPO-3 |
 | F-CHECK-23 | A configuration that gives no part a tests setting | The author runs `checkTests` with no folder | It exits with 0 and says there are no tests to check | TST-6 |
 | F-CHECK-24 | A page that writes `EN-301549`, the name of a standard, and no row that defines it | The author runs `checkDocs`, then lists `EN` under `standards` and runs it again | The first run names `EN-301549` as cited and not defined; the second passes | KN-1, CFG-9, KN-4 |
-| F-CHECK-25 | Valid local and shared Flow-rule sections with distinct scopes, owners and explicit dependencies on artifact rules and system requirements; scenarios cite their local or shared rules and name operations | The author runs `checkDocs`, then `checkTests` on tests that name the defined rules | Both checks pass without a new configuration setting; the rules need no operation of their own | KN-2, KN-5, KN-6, KN-13, TST-2 |
+| F-CHECK-25 | Valid local and shared Flow-rule sections with distinct scopes, owners and explicit dependencies on artifact rules and system requirements; scenarios cite their local or shared rules and name operations | The author runs `checkDocs`, then `checkTests` on tests that name the defined rules | Both checks pass without a new configuration setting; the rules need no operation of their own | KN-2, KN-6, KN-13, KN-18, TST-2 |
 | F-CHECK-26 | Coordination rules in a valid Flow home with a missing required column, an invalid Flow-rule ID, an empty rule or dependency cell, or the same scope defined in different homes | The author runs `checkDocs` | It exits with 1 and identifies each invalid definition and its page | KN-13, SYS-3 |
-| F-CHECK-27 | A Flow rule depends on another Flow rule, a scenario or a goal; an artifact cites a Flow rule; a goal uses a Flow rule as Proven by; or an operation is named only by a Flow rule | The author runs `checkDocs` | It exits with 1 and identifies each forbidden dependency or missing scenario proof | KN-5, KN-6, SYS-3 |
+| F-CHECK-27 | A Flow rule depends on another Flow rule, a scenario or a goal; an artifact cites a Flow rule; a goal uses a Flow rule as Proven by; or an operation is named only by a Flow rule | The author runs `checkDocs` | It exits with 1 and identifies each forbidden dependency or missing scenario proof | KN-18, KN-6, SYS-3 |
 | F-CHECK-28 | A previously valid workspace with FR-shaped artifact definitions outside the Flow-rule form, including a Coordination rules heading on an artifact page | The author runs `checkDocs` and `checkTests` with its existing tests | Both retain their previous result; no definition is reclassified as a Flow rule and no migration is required | KN-2, KN-13, TST-2 |
+| F-CHECK-29 | A contract in `flows/`, such as `flows/borrow-book.openapi.yaml` | The author runs `checkDocs` | It exits with 1 and names the file as a contract that belongs to an artifact or the system | KN-19, SYS-3 |
 
 Return to [flows](README.md).

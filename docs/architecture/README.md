@@ -57,7 +57,7 @@ internal/
 | `adapter/db/unitofwork` | The transaction and the writers bound to it | `adapter/db/repo`, `app/command`, domain, the database library |
 | `adapter/<vendor>` | One external system behind an interface | Domain, the vendor SDK |
 | `adapter/<service>` | Calls to another service's operations, behind an interface, from that service's contract | Domain, the HTTP client |
-| `adapter/<broker>` | Publishing messages to a queue or a topic, behind an interface, from the publishing flow's contract | Domain, the broker SDK |
+| `adapter/<broker>` | Publishing messages to a queue or a topic, behind an interface, from the contract of the artifact that receives the message | Domain, the broker SDK |
 
 The same rules as a diagram; an arrow means "imports":
 

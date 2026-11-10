@@ -15,6 +15,12 @@ keeps the same requirements under its own IDs.
 | Flow | Behavior that crosses artifacts, services or clients: trigger, steps, failure branches, each transaction, the outcome | Application commands and queries, in each service the flow crosses | Command and unit of work tests in each service |
 | Artifact | One domain: model, rules, lifecycle and contract | The domain package of the service that serves it | Domain unit tests |
 
+| Language | Answers | Home |
+| --- | --- | --- |
+| Domain rules | When is the domain right? | `specification.md` of the artifact |
+| In and out | What does the outside send and get back? | `openapi.yaml` of the artifact that receives it; shared parts in `system/openapi.yaml` |
+| Domain to domain | Which domain calls or tells which, and why? | The steps of the flow; the signatures stay in code |
+
 - Artifacts are the nodes and flows the edges between them. Knowledge that
   coordinates artifacts belongs to a flow. Choose a business policy owner by
   responsibility and decision authority, not by the number of data sources.
@@ -245,7 +251,7 @@ is written: it reaches a page only when its branch merges with it still open
 | --- | --- |
 | `README.md` | What the artifact owns, its rule prefix, a link to the domain map for the service that serves it, and links |
 | `specification.md` | Model, rules and lifecycle; no service, client or flow |
-| `openapi.yaml` | The HTTP contract of the artifact's own endpoints, internal ones included |
+| `openapi.yaml` | Every operation the artifact's code receives: endpoints, internal ones included, triggers and commands |
 
 An artifact has no other file and is never split per service or per client.
 
@@ -268,38 +274,41 @@ that implements it.
   ([decision](decisions.md#openapi-holds-every-contract-also-what-is-not-http)).
 - `system/openapi.yaml` holds the shared components: the error shape and
   authentication.
-- An artifact's `openapi.yaml` holds endpoints of that artifact only; the
-  service that serves the artifact serves them. An endpoint only other
-  services may call carries `x-internal: true`.
-- An endpoint that crosses artifacts belongs to its flow, in
-  `flows/<flow>.openapi.yaml`, and reuses artifact schemas with `$ref`.
+- Every operation belongs to the `openapi.yaml` of the artifact whose code
+  receives the call; the service that serves the artifact serves it. A flow
+  has no contract. An endpoint only other services may call carries
+  `x-internal: true`.
+- An endpoint whose use case crosses domains, such as a checkout, belongs to
+  the artifact that owns its handler and use case, and reuses the schemas of
+  other artifacts with `$ref`.
 - A payload that is not an HTTP response, such as a push notification, an
-  email or a deep link, is a schema under `components` of the flow that sends
-  it. An email or a file names its format (HTML, CSV) and its fields in order
-  in the schema description.
-- A trigger that starts a worker, such as a timer, a schedule or a message
-  another service publishes, is declared
-  under `x-triggers` of the flow it starts, by name in camelCase, with its
-  schedule or time and its input schema. A scenario names the trigger as it
-  names an operation. A change keeps the input that triggers already
-  scheduled will deliver (SYS-4).
-- A message a service publishes to a queue or a topic is a schema under
-  `components` of the flow that publishes it, and names its topic in its
-  description. Each flow it starts in another service declares it under
-  `x-triggers`, by the same name. The publisher sends it after its
-  transaction and retries when the send fails; a consumer that receives it
-  twice gets the same result (SYS-8). A change keeps what the consumers read
-  (SYS-4).
+  email or a deep link, is a schema under `components` of the artifact that
+  sends it to the outside. An email or a file names its format (HTML, CSV)
+  and its fields in order in the schema description.
+- A trigger that starts a worker, such as a timer or a schedule, is declared
+  under `x-triggers` of the artifact whose worker handles it, by name in
+  camelCase, with its schedule or time and its input schema. A scenario names
+  the trigger as it names an operation. A change keeps the input that
+  triggers already scheduled will deliver (SYS-4).
+- A message a service receives from a queue or a topic is declared under
+  `x-commands` of the artifact that receives it, with its topic and its input
+  schema. The publisher sends it after its transaction and retries when the
+  send fails; a consumer that receives it twice gets the same result (SYS-8).
+  A change keeps what the consumers read (SYS-4).
 - A command that is not an HTTP request, such as a CLI command or an action
-  in a client's interface, is declared under `x-commands` of the contract of
-  the artifact or flow it belongs to, by name in camelCase, with its caller
-  and its input and output schemas. A scenario names the command as it names
-  an operation. A change keeps what callers pass and read (SYS-4).
+  in a client's interface, is declared under `x-commands` of the artifact it
+  belongs to, by name in camelCase, with its caller and its input and output
+  schemas. A scenario names the command as it names an operation. A change
+  keeps what callers pass and read (SYS-4).
 - An endpoint an external system calls, such as a payment webhook, belongs to
-  the flow it starts. Its contract copies the request the external system
-  documents; it is agreed with that documentation, not designed, and the
-  issue links the vendor's version of it.
-- A flow contract with no endpoint has `paths: {}`.
+  the artifact that receives and translates its payload. Its contract copies
+  the request the external system documents; it is agreed with that
+  documentation, not designed, and the issue links the vendor's version of
+  it.
+- A call or a notice from one domain to another in the same service is a step
+  of the flow; its signature stays in code, not in a contract.
+- A contract with no endpoint has `paths: {}`.
+- `flows/` holds no `openapi.yaml`.
 - A change to an existing operation keeps what released clients and calling
   services see (SYS-4, SYS-6 in the reference pass). Every visible change is
   breaking:

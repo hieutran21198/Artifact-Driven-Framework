@@ -12,7 +12,7 @@ HEADER = '## Coordination rules\n\n| ID | Rule | Dependencies |\n| --- | --- | -
 def fixture(ws):
     ws.write(K + 'system/requirements.md', '| SYS-1 | Safe. |\n')
     ws.write(K + 'artifacts/book/specification.md', '| BK-1 | Valid. |\n')
-    ws.write(K + 'flows/run.yaml', 'x-commands:\n  run:\n    description: Run\n')
+    ws.write(K + 'artifacts/book/openapi.yaml', 'x-commands:\n  run:\n    description: Run\n')
     ws.write(K + 'flows/run.md', HEADER + '| FR-RUN-1 | Coordinate. | BK-1, SYS-1 |\n'
              + '\n## Scenarios\n| F-RUN-1 | `run` | FR-RUN-1, FR-SHARED-1 |\n')
     ws.write(K + 'flows/contracts/shared.md', HEADER + '| FR-SHARED-1 | Retry. | None |\n')
@@ -50,7 +50,7 @@ class FlowRules(unittest.TestCase):
                 self.assertIn('flows/bad.md', self.check(1))
 
     def test_F_CHECK_27_dependencies_are_lower_actual_definitions(self):
-        """F-CHECK-27, KN-5: no chains, scenarios, goals or pseudo-artifacts."""
+        """F-CHECK-27, KN-18: no chains, scenarios, goals or pseudo-artifacts."""
         for dependency in ['FR-SHARED-1', 'F-RUN-1', 'G-RUN-1', 'MISC-1']:
             with self.subTest(dependency=dependency):
                 self.ws.write(K + 'flows/other.md', '| MISC-1 | Legacy flow row. |\n')
@@ -58,7 +58,7 @@ class FlowRules(unittest.TestCase):
                 self.assertIn(dependency, self.check(1))
 
     def test_F_CHECK_27_artifact_and_goal_cannot_use_rule_as_proof(self):
-        """F-CHECK-27, KN-5, KN-6: actual Flow rules are not proof."""
+        """F-CHECK-27, KN-18, KN-6: actual Flow rules are not proof."""
         self.ws.write(K + 'artifacts/book/specification.md', '| BK-1 | FR-RUN-1 |\n')
         self.ws.write(K + 'goals/run.md', '| ID | Criterion | Proven by |\n| --- | --- | --- |\n| G-RUN-1 | Works. | FR-SHARED-1 |\n')
         errors = self.check(1)
@@ -106,7 +106,7 @@ class FlowRules(unittest.TestCase):
         self.check()
 
     def test_KN_5_legacy_artifact_id_is_valid_dependency(self):
-        """KN-5, KN-13: dependencies use actual homes, not an FR prefix ban."""
+        """KN-18, KN-13: dependencies use actual homes, not an FR prefix ban."""
         self.ws.write(K + 'artifacts/legacy/specification.md', HEADER + '| FR-RETRY-1 | Legacy. | None |\n')
         self.ws.write(K + 'flows/more.md', HEADER + '| FR-MORE-1 | Coordinate. | FR-RETRY-1 |\n')
         self.check()
@@ -121,7 +121,7 @@ class FlowRules(unittest.TestCase):
         self.check()
 
     def test_KN_13_extra_cells_cannot_hide_dependencies(self):
-        """KN-13, KN-5, KN-17: all row citations must be explicit and permitted."""
+        """KN-13, KN-18, KN-17: all row citations must be explicit and permitted."""
         header = '## Coordination rules\n| ID | Rule | Dependencies | Notes |\n| --- | --- | --- | --- |\n'
         for reference in ['FR-SHARED-1', 'F-RUN-1', 'BK-1']:
             with self.subTest(reference=reference):

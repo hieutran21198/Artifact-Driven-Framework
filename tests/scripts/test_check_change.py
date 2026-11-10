@@ -82,6 +82,24 @@ class CheckChange(unittest.TestCase):
                 if status:
                     self.assertIn("EN-301549 is cited but not defined", run.stderr)
 
+    def test_F_CHECK_29_a_flow_contract_fails_and_is_not_read(self):
+        """F-CHECK-29, KN-19, SYS-3: a contract in flows/ fails the check, and
+        its operations are not operations."""
+        ws = Workspace({})
+        self.addCleanup(ws.close)
+        k = "docs/software-knowledges/"
+        ws.write(k + "artifacts/book/openapi.yaml", "x-commands:\n  lend:\n    description: Lend\n")
+        ws.write(k + "flows/lend.md", "| F-LEND-1 | A book | `lend` | Lent | BK-1 |\n")
+        ws.write(k + "artifacts/book/specification.md", "| BK-1 | Lend. | — |\n")
+        ws.write(k + "flows/lend.openapi.yaml", "x-commands:\n  borrow:\n    description: Borrow\n")
+        run = ws.run("check_docs.py")
+        self.assertEqual(run.returncode, 1)
+        self.assertEqual(run.stderr.strip().splitlines(), [
+            k + "flows/lend.openapi.yaml: a contract belongs in artifacts/<artifact>/openapi.yaml or system/openapi.yaml"])
+        self.assertEqual(ws.run("impact.py", "borrow").returncode, 1)
+        (ws.root / k / "flows/lend.openapi.yaml").unlink()
+        self.assertEqual(ws.run("check_docs.py").returncode, 0)
+
     def test_CFG_9_standards_must_be_a_list(self):
         """CFG-9, CFG-7: standards that is not a list of prefixes stops the
         check with status 2."""

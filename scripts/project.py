@@ -69,6 +69,13 @@ if not isinstance(_standards, list) or not all(isinstance(s, str) for s in _stan
 ID = re.compile(r"\b(?!(?:" + "|".join(map(re.escape, STANDARDS + _standards)) + r")-)[A-Z]{1,6}(?:-[A-Z]{1,8})?-\d+\b")
 
 KNOWLEDGE = ROOT / CONFIG["knowledge"]
+
+
+def contracts():
+    """The contracts of the knowledge: the system's and each artifact's; a flow has none (KN-19)."""
+    found = [KNOWLEDGE / "system/openapi.yaml", *sorted(KNOWLEDGE.glob("artifacts/*/openapi.yaml"))]
+    return [path for path in found if path.is_file()]
+
 SKIP = set(CONFIG["skip"])
 SERVICES = {name: {"routes": s.get("routes"), "tests": tests_of(s)} for name, s in CONFIG["services"].items()}
 SITE = CONFIG["site"]

@@ -25,6 +25,7 @@ without a second look.
 | G-GATE-6 | A test that names a knowledge ID that does not exist, or a withdrawn one, fails the gate. | F-CHECK-13, F-CHECK-14, F-CHECK-15 |
 | G-GATE-7 | A change that breaks no rule passes the gate, so the gate stops only broken changes. | F-CHECK-1, F-CHECK-4, F-CHECK-12, F-CHECK-16, F-CHECK-20, F-CHECK-23, F-CHECK-24, F-CHECK-25, F-CHECK-28, F-START-6 |
 | G-GATE-8 | One run of a check lists every problem it finds, and running it changes nothing. | F-CHECK-17, F-CHECK-18, F-CHECK-19, F-CHECK-21 |
+| G-GATE-9 | A contract that is not the contract of an artifact or of the system fails the gate. | F-CHECK-29 |
 
 ## Flows
 
