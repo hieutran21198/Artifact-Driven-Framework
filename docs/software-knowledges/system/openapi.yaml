@@ -22,7 +22,7 @@ components:
       description: >
         The problems a check found, one per line on standard error. A line
         starts with the path of the file, relative to the root, when the
-        problem has one (SYS-3).
+        problem has one.
       items:
         type: string
         example: 'docs/README.md: missing guide.md'

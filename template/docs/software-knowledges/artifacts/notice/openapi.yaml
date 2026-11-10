@@ -15,7 +15,7 @@ paths:
   /internal/v1/notices:
     post:
       operationId: sendNotice
-      summary: Send a notice to a member once per key (NTC-1, NTC-2).
+      summary: Send a notice to a member once per key.
       x-internal: true
       requestBody:
         required: true
@@ -25,7 +25,7 @@ paths:
               $ref: '#/components/schemas/SendNoticeRequest'
       responses:
         '200':
-          description: The notice, sent, or pending when the send failed and a later request with the same key may try again (NTC-1).
+          description: The notice, sent, or pending when the send failed and a later request with the same key may try again.
           content:
             application/json:
               schema:
@@ -45,11 +45,11 @@ components:
       properties:
         key:
           type: string
-          description: Chosen by the calling service; the same key sends at most once (NTC-1).
+          description: Chosen by the calling service; the same key sends at most once.
           example: overdue-12-2030-01-15T18:00:00Z
         member_id:
           type: integer
-          description: The one member the notice goes to (NTC-2).
+          description: The one member the notice goes to.
           example: 7
         template:
           type: string
@@ -58,7 +58,7 @@ components:
         fields:
           type: object
           additionalProperties: true
-          description: The fields of the template, and nothing else (NTC-2, SYS-5).
+          description: The fields of the template, and nothing else.
     Notice:
       type: object
       required: [key, status]

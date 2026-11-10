@@ -14,29 +14,28 @@ x-commands:
   playStory:
     caller: The page when it opens, or a reader who presses play or pause.
     description: >
-      Starts the story from the step it shows, or stops it when it plays
-      (INTRO-1, INTRO-5).
+      Starts the story from the step it shows, or stops it when it plays.
     input:
       $ref: '#/components/schemas/PlayStoryInput'
     output:
       $ref: '#/components/schemas/StoryState'
   showStep:
     caller: A reader who picks a step, or the next or the previous one.
-    description: Stops the story and shows the step picked (INTRO-1, INTRO-5).
+    description: Stops the story and shows the step picked.
     input:
       $ref: '#/components/schemas/ShowStepInput'
     output:
       $ref: '#/components/schemas/StoryState'
   explainBlock:
     caller: A reader who points at a block of the story, or taps it.
-    description: Shows what the block is in the sample, in plain words (INTRO-9).
+    description: Shows what the block is in the sample, in plain words.
     input:
       $ref: '#/components/schemas/ExplainBlockInput'
     output:
       $ref: '#/components/schemas/ExplainBlockOutput'
   openFramework:
     caller: A reader who follows the link to the framework page.
-    description: Opens the framework page, the technical guide (SYS-8).
+    description: Opens the framework page, the technical guide.
     input:
       type: object
     output:
@@ -50,21 +49,21 @@ x-commands:
       $ref: '#/components/schemas/CopyInstallOutput'
   openMethod:
     caller: A reader who follows the link to the how-we-work page.
-    description: Opens the page that shows how a requirement is broken down and who does what (SYS-8).
+    description: Opens the page that shows how a requirement is broken down and who does what.
     input:
       type: object
     output:
       type: object
   openAgents:
     caller: A reader who follows the link to the agents page.
-    description: Opens the page that shows how a team runs its coding agents on a workspace (SYS-8).
+    description: Opens the page that shows how a team runs its coding agents on a workspace.
     input:
       type: object
     output:
       type: object
   openTracker:
     caller: A reader who follows the link to the project tracker.
-    description: Opens the project tracker (SYS-8).
+    description: Opens the project tracker.
     input:
       type: object
     output:
@@ -74,13 +73,13 @@ components:
     Step:
       type: string
       enum: [goal, flow, rule, artifact, client, scan, change]
-      description: A step of the story, in the order of INTRO-1.
+      description: A step of the story, in story order.
     PlayStoryInput:
       type: object
       properties:
         reduced_motion:
           type: boolean
-          description: True when the system of the reader asks for reduced motion. Then the story does not play (INTRO-5).
+          description: True when the system of the reader asks for reduced motion. Then the story does not play.
           default: false
     ShowStepInput:
       type: object
@@ -96,7 +95,7 @@ components:
           $ref: '#/components/schemas/Step'
         playing:
           type: boolean
-          description: True while the story goes from step to step by itself (INTRO-5).
+          description: True while the story goes from step to step by itself.
     ExplainBlockInput:
       type: object
       required: [block]
@@ -111,7 +110,7 @@ components:
       properties:
         text:
           type: string
-          description: What the block is in the sample, in plain words. On the scan step, a rule also says whether the scan found it (INTRO-9).
+          description: What the block is in the sample, in plain words. On the scan step, a rule also says whether the scan found it.
           example: A borrowed book is due back 14 days later.
     CopyInstallOutput:
       type: object
@@ -127,5 +126,5 @@ components:
       properties:
         url:
           type: string
-          description: The address of the project tracker, relative to the page. It names no workspace, so the tracker opens the repository of the framework (TRK-1).
+          description: The address of the project tracker, relative to the page. It names no workspace, so the tracker opens the repository of the framework.
           example: tracker/

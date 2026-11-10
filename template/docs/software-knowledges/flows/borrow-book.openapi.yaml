@@ -14,12 +14,12 @@ paths:
   /v1/books/{id}/borrow:
     post:
       operationId: borrowBook
-      summary: Lend an available book to the signed-in member (F-BORROW-1 to F-BORROW-6).
+      summary: Lend an available book to the signed-in member.
       parameters:
         - $ref: '../artifacts/book/openapi.yaml#/components/parameters/BookID'
       responses:
         '200':
-          description: The book, now on loan, with its due time (F-BORROW-1).
+          description: The book, now on loan, with its due time.
           content:
             application/json:
               schema:

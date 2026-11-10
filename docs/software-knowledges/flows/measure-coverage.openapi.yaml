@@ -17,7 +17,7 @@ x-commands:
     description: >
       python3 scripts/impact.py --coverage [folder]. Prints, for each goal,
       the share of its criteria, scenarios and rules that test files name, and
-      the ones no test file names (F-COVER-1 to F-COVER-6).
+      the ones no test file names.
     input:
       $ref: '#/components/schemas/TestsFolderInput'
     output:
@@ -26,7 +26,7 @@ x-commands:
     caller: A person, in any folder of a workspace.
     description: >
       python3 scripts/impact.py --fragile [folder]. Prints the 20 most fragile
-      requirements, rules, operations and schemas (F-COVER-7, F-COVER-8).
+      requirements, rules, operations and schemas.
     input:
       $ref: '#/components/schemas/TestsFolderInput'
     output:
@@ -43,7 +43,7 @@ components:
             tests folder to read instead of the tests of every part. The
             tests folder of each part that is that folder or under it is read
             with that part's glob; a folder with no part's tests folder, with
-            the default glob (F-COVER-6, F-COVER-10).
+            the default glob.
           example: tests/scripts
     MeasureCoverageOutput:
       type: object
@@ -52,7 +52,7 @@ components:
         exit_status:
           type: integer
           enum: [0, 1]
-          description: 0 when measured, 1 when the folder does not exist or there are no test files to read (F-COVER-4).
+          description: 0 when measured, 1 when the folder does not exist or there are no test files to read.
         stdout:
           allOf:
             - $ref: '../system/openapi.yaml#/components/schemas/Lines'
@@ -61,14 +61,13 @@ components:
             and criteria, scenarios and rules as tested out of all - followed
             by a line of the IDs no test file names, in the order of their
             numbers. Then one line for the whole knowledge, and one for the
-            system requirements with the ones no test file names (F-COVER-1,
-            F-COVER-3, F-COVER-11). The rules totals include both artifact
-            rules and Flow rules under the same label (F-COVER-12).
+            system requirements with the ones no test file names. The rules totals include both artifact
+            rules and Flow rules under the same label.
           example: ['  G-GATE        60%  criteria 1/2  scenarios 2/4  rules 3/4']
         stderr:
           allOf:
             - $ref: '../system/openapi.yaml#/components/schemas/Lines'
-          description: Why nothing was measured (F-COVER-4).
+          description: Why nothing was measured.
     RankFragileOutput:
       type: object
       required: [exit_status, stdout]
@@ -85,4 +84,4 @@ components:
             fragile units - rank, score, name, scenarios, operations, the
             scenarios that cite it, the test files that name it or
             - when no test files are read, and whether an open question names
-            it (F-COVER-7, F-COVER-8).
+            it.

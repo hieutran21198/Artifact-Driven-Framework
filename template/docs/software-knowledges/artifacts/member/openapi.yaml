@@ -14,7 +14,7 @@ paths:
   /v1/me:
     get:
       operationId: getMyMember
-      summary: Read the signed-in member and whether they may borrow (MBR-2, MBR-3, MBR-4, MBR-5).
+      summary: Read the signed-in member and whether they may borrow.
       responses:
         '200':
           description: The member.
@@ -40,22 +40,22 @@ components:
           example: 7
         name:
           type: string
-          description: Not empty after trimming spaces (MBR-1).
+          description: Not empty after trimming spaces.
           example: Sam Lee
         status:
           type: string
           enum: [active, suspended]
         loan_count:
           type: integer
-          description: Books on loan or overdue to the member (MBR-2).
+          description: Books on loan or overdue to the member.
           example: 1
         loan_limit:
           type: integer
-          description: The loan limit of the member's home region (MBR-2).
+          description: The loan limit of the member's home region.
           example: 3
         can_borrow:
           type: boolean
-          description: False when MBR-2, MBR-3 or MBR-4 refuses a loan.
+          description: False when the member may not borrow.
     MemberResponse:
       type: object
       required: [data]

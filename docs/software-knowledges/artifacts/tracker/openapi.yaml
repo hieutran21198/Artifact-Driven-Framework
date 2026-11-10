@@ -16,17 +16,16 @@ x-commands:
     description: >
       Captures the load's inputs before asynchronous reads, resolves each
       repository ref, and reads the files selected by the effective
-      configuration (TRK-1, TRK-2, TRK-4, TRK-15). Shows the build with its
-      provenance and each part's read outcome (TRK-3, TRK-16, TRK-17).
+      configuration. Shows the build with its
+      provenance and each part's read outcome.
       Reuses a build only with matching repositories, full resolved commits,
       effective configuration and analyzer identity, and no failed or
       unresolved required source read. Confirmed missing tests do not
       prevent reuse. Requested refs, configuration source and read outcomes
-      remain those of the current load; a later load retries failed reads
-      (TRK-5).
+      remain those of the current load; a later load retries failed reads.
       A superseded load cannot replace a newer result or its status, warnings
-      or controls (TRK-15). A failed configuration or knowledge read shows no
-      new build (TRK-9). The site follows SYS-7 and TRK-14.
+      or controls. A failed configuration or knowledge read shows no
+      new build. The site treats workspace content as data and runs sandboxed.
     input:
       $ref: '#/components/schemas/OpenWorkspaceInput'
     output:
@@ -34,30 +33,29 @@ x-commands:
   listRefs:
     caller: A reader who opens the ref field of a repository or of a part.
     description: >
-      Lists the branches and tags of the repository, the default branch first
-      (TRK-1, TRK-4). A response applies only to the workspace, part, source,
-      configuration and token selection that requested it (TRK-15).
+      Lists the branches and tags of the repository, the default branch first. A response applies only to the workspace, part, source,
+      configuration and token selection that requested it.
     input:
       $ref: '#/components/schemas/ListRefsInput'
     output:
       $ref: '#/components/schemas/ListRefsOutput'
   setToken:
     caller: A reader who sets or removes a token in the settings.
-    description: Keeps a read-only token under a name until the tab closes, or removes it (TRK-6).
+    description: Keeps a read-only token under a name until the tab closes, or removes it.
     input:
       $ref: '#/components/schemas/SetTokenInput'
     output:
       type: object
   addWorkspace:
     caller: A reader who adds a repository in the settings.
-    description: Adds the repository with its branch and the token picked, or none, and checks it (TRK-6, TRK-7, TRK-11).
+    description: Adds the repository with its branch and the token picked, or none, and checks it.
     input:
       $ref: '#/components/schemas/AddWorkspaceInput'
     output:
       $ref: '#/components/schemas/CheckSettingsOutput'
   removeWorkspace:
     caller: A reader who removes a workspace in the settings.
-    description: Removes the workspace from the settings and the workspace picker (TRK-7).
+    description: Removes the workspace from the settings and the workspace picker.
     input:
       type: object
       required: [workspace]
@@ -69,21 +67,21 @@ x-commands:
       type: object
   checkSettings:
     caller: The page the first time the settings open in a page load, for what it has not checked yet, or a reader who asks to check again.
-    description: Checks each workspace, each part its configuration names and each token, with one call to GitHub for each repository and each token (TRK-11).
+    description: Checks each workspace, each part its configuration names and each token, with one call to GitHub for each repository and each token.
     input:
       type: object
     output:
       $ref: '#/components/schemas/CheckSettingsOutput'
   changeConfiguration:
     caller: A reader who edits the configuration of a workspace in the settings.
-    description: Validates the configuration given and, when it is valid, keeps it for the workspace in this browser and uses it in place of the workspace's (TRK-12).
+    description: Validates the configuration given and, when it is valid, keeps it for the workspace in this browser and uses it in place of the workspace's.
     input:
       $ref: '#/components/schemas/ChangeConfigurationInput'
     output:
       $ref: '#/components/schemas/ChangeConfigurationOutput'
   restoreConfiguration:
     caller: A reader who goes back to the configuration of the workspace.
-    description: Drops the configuration changed in this browser for the workspace (TRK-12).
+    description: Drops the configuration changed in this browser for the workspace.
     input:
       type: object
       required: [workspace]
@@ -94,7 +92,7 @@ x-commands:
       type: object
   copyCloneScript:
     caller: A reader who copies the clone script of a workspace in the settings.
-    description: Puts on the clipboard a shell script that clones the workspace and the repository of each part at the refs picked (TRK-13).
+    description: Puts on the clipboard a shell script that clones the workspace and the repository of each part at the refs picked.
     input:
       type: object
       required: [workspace]
@@ -107,23 +105,23 @@ x-commands:
   addFolder:
     caller: A reader who adds a folder on their computer as a workspace.
     description: >
-      Adds the folder to the workspaces and opens it (TRK-8). The build has
+      Adds the folder to the workspaces and opens it. The build has
       the load's read outcomes and working-copy provenance, not an atomic
-      disk or Git snapshot (TRK-15, TRK-16, TRK-17).
+      disk or Git snapshot.
     input:
       type: object
     output:
       $ref: '#/components/schemas/Build'
   exportSettings:
     caller: A reader who presses Export.
-    description: Saves the settings as a JSON file, without tokens (TRK-6, TRK-7).
+    description: Saves the settings as a JSON file, without tokens.
     input:
       type: object
     output:
       $ref: '#/components/schemas/Settings'
   importSettings:
     caller: A reader who presses Import and picks a JSON file.
-    description: Reads settings from the file, migrating an older version (TRK-7).
+    description: Reads settings from the file, migrating an older version.
     input:
       $ref: '#/components/schemas/Settings'
     output:
@@ -135,8 +133,7 @@ components:
       description: >
         Before reading, the load captures these choices, the configuration
         override or choice to use the workspace configuration, and the token
-        selections. Token values stay private and are absent from the output
-        (TRK-6, TRK-15).
+        selections. Token values stay private and are absent from the output.
       required: [workspace]
       properties:
         workspace:
@@ -145,13 +142,13 @@ components:
           example: hieutran21198/Artifact-Driven-Framework
         ref:
           type: string
-          description: A branch, a tag or a commit SHA. The default branch when not given. Not used for a folder (TRK-8).
+          description: A branch, a tag or a commit SHA. The default branch when not given. Not used for a folder.
           example: main
         parts:
           $ref: '#/components/schemas/PartChoices'
     PartChoices:
       type: object
-      description: For each part whose tests setting names a repository, by part name, the ref and the token picked (TRK-4, TRK-6).
+      description: For each part whose tests setting names a repository, by part name, the ref and the token picked.
       additionalProperties:
         type: object
         properties:
@@ -173,7 +170,7 @@ components:
           description: The branch shown. The default branch when not given.
         token:
           type: string
-          description: The name of the token to read it with, or none (TRK-6).
+          description: The name of the token to read it with, or none.
           example: team
     ChangeConfigurationInput:
       type: object
@@ -191,7 +188,7 @@ components:
       properties:
         valid:
           type: boolean
-          description: True when it is kept and used (TRK-12).
+          description: True when it is kept and used.
         problems:
           type: array
           description: One line for each problem, with the line of the JSON or the key it is in.
@@ -204,7 +201,7 @@ components:
       properties:
         clipboard:
           type: string
-          description: The script. It names no token; git uses the access of the reader (TRK-13).
+          description: The script. It names no token; git uses the access of the reader.
           example: |
             git clone https://github.com/hieutran21198/Artifact-Driven-Framework.git Artifact-Driven-Framework
             git -C Artifact-Driven-Framework checkout main
@@ -214,7 +211,7 @@ components:
       properties:
         items:
           type: array
-          description: One line for each workspace, each part with a repository, and each token (TRK-11).
+          description: One line for each workspace, each part with a repository, and each token.
           items:
             type: object
             required: [kind, name, connected]
@@ -235,7 +232,7 @@ components:
       type: object
       description: >
         A build and its provenance belong to one load. Later changes to the
-        selected inputs cannot relabel it (TRK-15, TRK-17).
+        selected inputs cannot relabel it.
       required: [workspace, coverage, unread, provenance]
       properties:
         workspace:
@@ -245,22 +242,21 @@ components:
           description: >
             The ref shown. For a folder, the available branch or
             detached-commit label from .git/HEAD is context only; it does
-            not identify the contents read (TRK-8, TRK-17).
+            not identify the contents read.
         commit:
           type: string
           description: >
-            The commit SHA the repository ref pointed to when it was read
-            (TRK-5). Absent for a folder, whose files are read from the
-            working copy rather than a resolved commit (TRK-8, TRK-17).
+            The commit SHA the repository ref pointed to when it was read. Absent for a folder, whose files are read from the
+            working copy rather than a resolved commit.
         coverage:
           type: array
-          description: One line for each goal, as measureCoverage prints it (TRK-3).
+          description: One line for each goal, as measureCoverage prints it.
           items:
             type: string
           example: ['  G-GATE        60%  criteria 1/2  scenarios 2/4  rules 3/4']
         unread:
           type: array
-          description: Each part, repository or file that could not be read, with the reason (TRK-4, TRK-9).
+          description: Each part, repository or file that could not be read, with the reason.
           items:
             type: string
           example: ['lending: needs a token']
@@ -271,14 +267,13 @@ components:
       additionalProperties: false
       description: >
         The sources and identities of this load, with no token values.
-        The part list comes from its effective configuration (TRK-6,
-        TRK-15, TRK-16, TRK-17).
+        The part list comes from its effective configuration.
       required: [workspace, parts, configuration, analyzer]
       properties:
         workspace:
           description: >
             The workspace source. A repository workspace has a resolved
-            commit when a build is produced (TRK-9, TRK-17).
+            commit when a build is produced.
           oneOf:
             - $ref: '#/components/schemas/RepositorySource'
             - $ref: '#/components/schemas/WorkingCopySource'
@@ -286,7 +281,7 @@ components:
           type: array
           description: >
             One outcome for each service, each client and e2e when declared
-            in the effective configuration (TRK-16).
+            in the effective configuration.
           items:
             $ref: '#/components/schemas/PartRead'
         configuration:
@@ -297,12 +292,12 @@ components:
             source:
               type: string
               enum: [workspace, browser_override]
-              description: Where this load's effective configuration came from (TRK-12, TRK-17).
+              description: Where this load's effective configuration came from.
             value:
               $ref: '../configuration/openapi.yaml#/components/schemas/Configuration'
             digest:
               type: string
-              description: Content identity of the complete effective configuration (TRK-17).
+              description: Content identity of the complete effective configuration.
         analyzer:
           type: object
           additionalProperties: false
@@ -310,10 +305,10 @@ components:
           properties:
             digest:
               type: string
-              description: Content identity of the analysis scripts and site template used (TRK-17).
+              description: Content identity of the analysis scripts and site template used.
             python_version:
               type: string
-              description: Version of the Python runtime used for the analysis (TRK-17).
+              description: Version of the Python runtime used for the analysis.
     RepositorySource:
       type: object
       additionalProperties: false
@@ -324,14 +319,13 @@ components:
           enum: [repository]
         repository:
           type: string
-          description: The full owner/repo identity of the source (TRK-17).
+          description: The full owner/repo identity of the source.
           example: hieutran21198/Artifact-Driven-Framework
         requested_ref:
           type: string
           description: >
-            The branch, tag or commit requested for this source after the
-            choice in TRK-4; an empty string means its default branch
-            (TRK-17).
+            The branch, tag or commit the reader chose for this source; an
+            empty string means its default branch.
           example: main
         commit:
           type: string
@@ -340,15 +334,14 @@ components:
             The full resolved commit SHA, never an abbreviated label. Null
             only when resolution failed, with the reason in the part's read
             outcome. Tests in the workspace repository use its resolved
-            commit (TRK-17).
+            commit.
     WorkingCopySource:
       type: object
       additionalProperties: false
       description: >
         Source context for a working-copy read set, not an atomic disk
         snapshot or the contents of a Git commit. The folder and Git label
-        do not fingerprint the files read. Each load reads the folder again
-        (TRK-8, TRK-17).
+        do not fingerprint the files read. Each load reads the folder again.
       required: [kind, folder]
       properties:
         kind:
@@ -356,10 +349,10 @@ components:
           enum: [working_copy]
         folder:
           type: string
-          description: The identity of the workspace folder read (TRK-17).
+          description: The identity of the workspace folder read.
         git_label:
           type: string
-          description: The available branch or detached-commit label, for context only (TRK-8, TRK-17).
+          description: The available branch or detached-commit label, for context only.
     PartRead:
       type: object
       additionalProperties: false
@@ -368,15 +361,14 @@ components:
         group:
           type: string
           enum: [service, client, e2e]
-          description: Together with name, identifies the part in the effective configuration (TRK-16).
+          description: Together with name, identifies the part in the effective configuration.
         name:
           type: string
-          description: The service or client name, or e2e for the end-to-end tests (TRK-16).
+          description: The service or client name, or e2e for the end-to-end tests.
         source:
           description: >
             The source of this part's tests. A part with no tests setting
-            names the workspace source, not an inferred repository (TRK-4,
-            TRK-16, TRK-17).
+            names the workspace source, not an inferred repository.
           oneOf:
             - $ref: '#/components/schemas/RepositorySource'
             - $ref: '#/components/schemas/WorkingCopySource'
@@ -385,14 +377,13 @@ components:
           enum: [complete, failed, missing]
           description: >
             The test-read outcome, not a test result or coverage score.
-            Only complete parts contribute their files (TRK-16).
+            Only complete parts contribute their files.
         reason:
           type: string
           nullable: true
           description: >
             Null for complete; the specific missing-tests or read-failure
-            reason otherwise, including an unresolved source (TRK-16,
-            TRK-17).
+            reason otherwise, including an unresolved source.
     ListRefsInput:
       type: object
       required: [repository]
@@ -420,7 +411,7 @@ components:
       properties:
         name:
           type: string
-          description: The name the reader gives the token, which the settings keep (TRK-6).
+          description: The name the reader gives the token, which the settings keep.
           example: team
         value:
           type: string
@@ -431,7 +422,7 @@ components:
       properties:
         version:
           type: integer
-          description: The version of the settings (TRK-7).
+          description: The version of the settings.
           example: 2
         workspaces:
           type: array
@@ -446,7 +437,7 @@ components:
                 type: string
               token:
                 type: string
-                description: The name of the token picked, never its value (TRK-6).
+                description: The name of the token picked, never its value.
               parts:
                 $ref: '#/components/schemas/PartChoices'
               configuration:
@@ -457,4 +448,4 @@ components:
       properties:
         stored:
           type: boolean
-          description: False when the file is of a newer version, which is shown with a warning and not stored (TRK-7).
+          description: False when the file is of a newer version, which is shown with a warning and not stored.

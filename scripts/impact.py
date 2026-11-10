@@ -101,13 +101,22 @@ def build():
     operations = {u for u in graph.file if "#" not in u and "/" not in u and not ID.fullmatch(u)}
     for unit, lines in graph.text.items():
         body = "\n".join(lines)
-        cited = set(ID.findall(body))
+        # Contracts cite no knowledge ID; a scenario links an operation to its rules.
+        cited = set()
         if graph.file[unit].endswith(".md"):
-            cited |= set(TICKED.findall(body)) & operations
+            cited = set(ID.findall(body)) | set(TICKED.findall(body)) & operations
         for target, kind, name in REF.findall(body):
             base = graph.file[unit] if not target else rel((KNOWLEDGE / graph.file[unit]).parent.joinpath(target).resolve())
             cited.add(f"{base}#{kind}/{name}")
         graph.edges[unit] = {c for c in cited if c != unit and c in graph.file}
+    # An operation, trigger or command in the When of a scenario relies on the
+    # rules and requirements in its Covers.
+    for unit, lines in graph.text.items():
+        cells = [c.strip() for c in lines[0].strip().strip("|").split("|")] if unit.startswith("F-") else []
+        if len(cells) >= 5:
+            rules = {i for i in ID.findall(cells[-1]) if i in graph.file and not i.startswith(("F-", "G-"))}
+            for operation in set(TICKED.findall(cells[2])) & operations:
+                graph.edges[operation] |= rules
     return graph
 
 
@@ -175,6 +184,10 @@ def affected(graph, start):
         for c in cited:
             reverse[c].add(unit)
     units = walk(reverse, start)
+    # The schemas that the affected operations use change with them; the
+    # shared components of the system contract do not.
+    used = walk(graph.edges, {u for u in units if kind(u, graph) == "Operations"})
+    units |= {u for u in used if kind(u, graph) == "Contract schemas" and not graph.file[u].startswith("system/")}
     back = defaultdict(set)
     for page, linked in graph.links.items():
         for l in linked:

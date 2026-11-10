@@ -12,7 +12,7 @@ paths:
   /staff/v1/books:
     post:
       operationId: createBook
-      summary: Add a book to the collection (BK-1, BK-2).
+      summary: Add a book to the collection.
       security:
         - staffBearer: []
       requestBody:
@@ -35,7 +35,7 @@ paths:
   /staff/v1/books/{id}/withdraw:
     post:
       operationId: withdrawBook
-      summary: Take a book out of the collection for good (BK-7, BK-8).
+      summary: Take a book out of the collection for good.
       security:
         - staffBearer: []
       parameters:
@@ -56,7 +56,7 @@ paths:
   /v1/books/{id}:
     get:
       operationId: getBook
-      summary: Read one book as a member (BK-8, BK-9).
+      summary: Read one book as a member.
       security:
         - memberBearer: []
       parameters:
@@ -93,7 +93,7 @@ components:
       properties:
         title:
           type: string
-          description: Not empty after trimming spaces (BK-1).
+          description: Not empty after trimming spaces.
           example: A Field Guide to Birds
     Book:
       type: object
@@ -112,11 +112,11 @@ components:
           type: string
           format: date-time
           nullable: true
-          description: Set while the book is on loan or overdue, null otherwise (BK-4, BK-5, SYS-3).
+          description: Set while the book is on loan or overdue, null otherwise.
           example: '2030-01-15T18:00:00Z'
         borrowed_by_me:
           type: boolean
-          description: True when the reader is the borrower. The response names no other borrower (BK-9).
+          description: True when the reader is the borrower. The response names no other borrower.
     BookResponse:
       type: object
       required: [data]

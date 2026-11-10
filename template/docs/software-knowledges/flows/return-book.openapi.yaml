@@ -6,7 +6,7 @@ info:
     Contract of the Return a book flow: the return endpoint and the trigger of
     the overdue worker, served by the lending service, and the overdue email,
     which the lending service asks the notification service to send. A change keeps
-    the input of triggers already scheduled (SYS-4).
+    the input of triggers already scheduled.
 servers:
   - url: http://localhost:8080
     description: Local API gateway
@@ -16,12 +16,12 @@ paths:
   /v1/books/{id}/return:
     post:
       operationId: returnBook
-      summary: End the loan of a book the signed-in member holds (F-RETURN-1, F-RETURN-2, F-RETURN-4, F-RETURN-6).
+      summary: End the loan of a book the signed-in member holds.
       parameters:
         - $ref: '../artifacts/book/openapi.yaml#/components/parameters/BookID'
       responses:
         '200':
-          description: The book, available again (F-RETURN-1).
+          description: The book, available again.
           content:
             application/json:
               schema:
@@ -38,8 +38,7 @@ x-triggers:
   overdueCheck:
     description: >
       Fires every day at 02:00 in the library's time zone and starts the
-      overdue worker (F-RETURN-3, F-RETURN-7 to F-RETURN-10). The same trigger
-      can arrive twice (SYS-8).
+      overdue worker. The same trigger can arrive twice.
     input:
       $ref: '#/components/schemas/OverdueCheckInput'
 components:
@@ -54,15 +53,15 @@ components:
         run_at:
           type: string
           format: date-time
-          description: The time the scheduler fired the trigger; a loan is overdue when its due time is before it (BK-6, SYS-3).
+          description: The time the scheduler fired the trigger; a loan is overdue when its due time is before it.
           example: '2030-01-16T02:00:00Z'
     OverdueEmail:
       type: object
       description: >
         The email the overdue worker asks the notification service to send to
-        the member, as the template of a notice (F-RETURN-3, NTC-2). Not an
-        HTTP response. An HTML email with these fields, in order: book_title,
-        due_at. It names no other member (SYS-5).
+        the member, as the template of a notice. Not an HTTP response. An HTML
+        email with these fields, in order: book_title, due_at. It names no
+        other member.
       required: [book_title, due_at]
       properties:
         book_title:
@@ -71,5 +70,5 @@ components:
         due_at:
           type: string
           format: date-time
-          description: The due time that passed (BK-4, SYS-3).
+          description: The due time that passed.
           example: '2030-01-15T18:00:00Z'

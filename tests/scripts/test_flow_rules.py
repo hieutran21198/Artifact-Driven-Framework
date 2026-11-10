@@ -112,7 +112,7 @@ class FlowRules(unittest.TestCase):
         self.check()
 
     def test_KN_13_statement_citations_are_explicit_dependencies(self):
-        """KN-13, KN-14: graph citations must not disappear from dependency metadata."""
+        """KN-13, KN-17: graph citations must not disappear from dependency metadata."""
         self.ws.write(K + 'flows/more.md', HEADER + '| FR-MORE-1 | Applies BK-1. | None |\n')
         self.assertIn('BK-1', self.check(1))
         self.ws.write(K + 'flows/more.md', HEADER + '| FR-MORE-1 | Applies BK-1. | BK-1 |\n')
@@ -121,7 +121,7 @@ class FlowRules(unittest.TestCase):
         self.check()
 
     def test_KN_13_extra_cells_cannot_hide_dependencies(self):
-        """KN-13, KN-5, KN-14: all row citations must be explicit and permitted."""
+        """KN-13, KN-5, KN-17: all row citations must be explicit and permitted."""
         header = '## Coordination rules\n| ID | Rule | Dependencies | Notes |\n| --- | --- | --- | --- |\n'
         for reference in ['FR-SHARED-1', 'F-RUN-1', 'BK-1']:
             with self.subTest(reference=reference):
