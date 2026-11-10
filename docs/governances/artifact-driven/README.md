@@ -10,6 +10,7 @@ traceable to the knowledge it implements.
 - [Team](team.md): the parts the team builds and their owners, the roles that
   do each step, and how work passes between them.
 - [Done](done.md): what a change needs before it counts as done.
+- [Develop with agents](develop-with-agents.md): from a need to code, and how to read what exists.
 - [Decisions](decisions.md): why the framework is shaped the way it is, and
   what each choice costs.
 - [Runbooks](runbooks/README.md): step-by-step ways to change the knowledge.
