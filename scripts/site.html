@@ -41,8 +41,8 @@ ul.tight{margin:6px 0 0;padding-left:18px;font-size:13px}
 .drop{position:relative;min-width:280px;margin:0}.drop summary{list-style:none;border:1px solid var(--line);border-radius:8px;padding:8px 12px;color:var(--ink);background:var(--card);font-size:14px}.drop summary::-webkit-details-marker{display:none}.drop summary::after{content:"▾";float:right;margin-left:12px;color:var(--muted)}
 .drop-list{position:absolute;z-index:5;top:42px;left:0;right:0;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px;max-height:320px;overflow:auto}
 .drop-list label{display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:6px;font-size:14px;cursor:pointer}.drop-list label:hover{background:var(--panel)}.drop-list label.off{opacity:.45;cursor:not-allowed}.drop-list label .muted{white-space:nowrap;margin-left:auto;font-family:var(--mono);font-size:12px}.drop-list hr{border:0;border-top:1px solid var(--line);margin:4px 0}
-/* The system diagram is wide: it takes its own row and scrolls inside its card on a phone. */
-.stack{display:grid;gap:12px}.stack>.card{min-width:0}#guide-system{overflow-x:auto}#guide-system svg{min-width:640px}
+/* The system diagram takes its own row and scrolls inside its card on a phone. */
+.stack{display:grid;gap:12px}.stack>.card{min-width:0}#guide-system{overflow-x:auto}
 button.primary{border:1px solid var(--ink);background:var(--ink);color:var(--card);border-radius:999px;padding:8px 18px;font:500 14px var(--body);cursor:pointer}button.primary[disabled]{opacity:.45;cursor:not-allowed}
 #run-note{font-size:13px;align-self:center}
 /* Wide drawings scroll inside their card, so the page never scrolls sideways. */
@@ -95,13 +95,13 @@ if (window.mermaidReady) mermaidReady();
 <div class="sub" id="stamp"></div>
 <nav><a href="#overview" data-i="nav.overview"></a><a href="#guide" data-i="nav.guide"></a><a href="#analyze" data-i="nav.analyze"></a><a href="#coverage" data-i="nav.coverage"></a><a href="#goals" data-i="nav.goals"></a><a href="#diagrams" data-i="nav.diagrams"></a></nav>
 
-<section id="overview"><h2 data-i="nav.overview"></h2><p class="sub" data-i="overview.sub"></p><div class="grid" id="metrics"></div></section>
+<section id="overview"><h2 data-i="nav.overview"></h2><div class="grid" id="metrics"></div></section>
 
-<section id="guide"><h2 data-i="nav.guide"></h2><p class="sub" data-i="guide.sub"></p>
-<div class="card" style="margin-bottom:12px"><h3 data-i="map.title"></h3><p class="sub" data-i="map.sub"></p><div style="overflow-x:auto"><svg id="map" width="100%" style="min-width:640px" role="img" aria-labelledby="map-title"><title id="map-title">Knowledge layers</title></svg></div></div>
+<section id="guide"><h2 data-i="nav.guide"></h2>
+<div class="card" style="margin-bottom:12px"><h3 data-i="map.title"></h3><div style="overflow-x:auto"><svg id="map" width="100%" style="min-width:640px" role="img" aria-labelledby="map-title"><title id="map-title">Knowledge layers</title></svg></div></div>
 <div class="stack"><div class="card"><h3 data-i="guide.parts"></h3><table data-i="guide.partsTable"></table></div><div class="card"><h3 data-i="guide.system"></h3><div id="guide-system"></div></div></div></section>
 
-<section id="analyze"><h2 data-i="nav.analyze"></h2><p class="sub" data-i="analyze.sub"></p>
+<section id="analyze"><h2 data-i="nav.analyze"></h2>
 <div class="card picker"><details class="drop" id="drop"><summary id="drop-label"></summary><div class="drop-list" id="goal-options"></div></details><button class="primary" id="run"></button><span class="muted" id="run-note"></span></div></section>
 
 <div id="results" hidden>
@@ -109,12 +109,12 @@ if (window.mermaidReady) mermaidReady();
 
 <section id="coverage"><h2 data-i="nav.coverage"></h2><p class="sub" data-i="coverage.sub"></p><div class="card" id="coverage-bars"></div></section>
 
-<section id="goals"><h2 data-i="nav.goals"></h2><p class="sub" data-i="goals.sub"></p><div class="two" id="goal-cards"></div><div class="pager" id="goal-pager"></div>
+<section id="goals"><h2 data-i="nav.goals"></h2><div class="two" id="goal-cards"></div><div class="pager" id="goal-pager"></div>
 <div class="card story" id="story" hidden><div class="story-head"><h3 id="story-title"></h3><div class="steps" id="story-steps" role="group"></div><button class="plain" id="story-play" type="button"></button></div>
 <div class="stage" id="story-stage"><svg id="story-lines" aria-hidden="true"></svg><div class="srow" id="story-goal"></div><div class="srow" id="story-flows"></div><div class="srow" id="story-arts" data-from="3"></div></div>
-<p id="story-cap" aria-live="polite"></p><p class="sub" style="margin:0" data-i="story.hint"></p></div></section>
+<p id="story-cap" aria-live="polite"></p></div></section>
 
-<section id="diagrams"><h2 data-i="nav.diagrams"></h2><p class="sub" data-i="diagrams.sub"></p><div id="diagram-cards"></div></section>
+<section id="diagrams"><h2 data-i="nav.diagrams"></h2><div id="diagram-cards"></div></section>
 
 </div>
 </main>
@@ -125,68 +125,50 @@ if (window.mermaidReady) mermaidReady();
 const I18N={
 en:{
 "title":DATA.title,
-"stamp":(b,c)=>`Built ${b} from commit ${c}`,
-"nav.overview":"Overview","nav.diagrams":"Diagrams","diagrams.sub":"The system context, then the diagrams of the chosen goals and of their flows, drawn from the knowledge pages.","diagrams.offline":"The diagram library did not load, so the source is shown. It loads from the network.","nav.guide":"How to read this","nav.coverage":"API coverage","nav.goals":"Goals",
-"overview.sub":"What the knowledge describes today: goals, the flows that reach them, the rules they rely on, and the API operations that serve them.",
-"guide.sub":"The knowledge is written top down, from what the business needs to the API contract. Every part has an ID, and every part cites the parts it relies on, so a change can be traced in both directions.",
-"guide.parts":"The parts","guide.system":"The system",
-"guide.partsTable":`<tr><td><span class="pill p0">SYS-n</span></td><td><b>Requirement.</b> A rule for the whole system, such as "a JSON response is always a root object".</td></tr>
-<tr><td><span class="pill p0">G-…-n</span></td><td><b>Goal and its criteria.</b> A business outcome, such as "Borrow a book", and the checks that say it is reached.</td></tr>
-<tr><td><span class="pill p1">F-…-n</span></td><td><b>Flow and its scenarios.</b> How the outcome happens across apps and services. Each scenario is one testable case: given, when, then. Testers and the client test by these.</td></tr>
-<tr><td><span class="pill p2">PREFIX-n</span></td><td><b>Rule.</b> A business rule of one domain, true whatever screen uses it.</td></tr>
-<tr><td><span class="pill p3">operation</span></td><td><b>Operation.</b> One API call in the agreed contract (OpenAPI). It is written before the code.</td></tr>`,
-"coverage.sub":"Service routes that have an agreed contract and flows behind them, by service and namespace. A route without knowledge is behavior nobody has written down yet.",
-"goals.sub":"Each goal is a business outcome. Size counts what the goal relies on: the bigger it is, the more there is to test when it changes.",
-
-
-"m.goals":["Goals","business outcomes"],"m.flows":["Flows","behaviors across domains"],"m.scenarios":["Scenarios","testable cases"],"m.rules":["Rules","artifact and Flow rules"],"m.operations":["Operations","API operations with a contract"],"m.coverage":["API coverage",(c,t)=>`${c} of ${t} service routes`],
-"withKnowledge":"Routes with knowledge","withoutKnowledge":"Routes without knowledge",
-
-"flowRules":"Flow rules","flows":"Flows","scenarios":"Scenarios","operations":"Operations","none":"none","None":"None","close":"Close","story.open":"Show the story","story.hint":"Click a block to read it.","story.steps":["Goal","Flows","Rules","Artifacts"],"story.caps":[(t)=>`Goal: ${t}`,n=>`Flows: ${n}`,n=>`Rules: ${n}, by flow`,n=>`Artifacts: ${n}, each with its rules`],"play":"Play","pause":"Pause","flow":"Flow","goal":"Goal","openSource":"Open the source","otherRules":"Other rules","prev":"Previous","next":"Next","layer.system/":"System","layer.goals/":"Goals","layer.flows/":"Flows",
-
-"showAll":"Show all",
-
-"map.title":"From the outside in","map.sub":"Each layer sits inside the one above it and cites it. The example on the right follows one real path, from a system requirement down to an operation of the contract. Click a layer to jump to it.",
-"layers":[["System","requirements for everything"],["Goals","business outcomes and their criteria"],["Flows","how an outcome happens, as testable scenarios"],["Artifacts","domain rules and the API contract"]],
+"stamp":(b,c)=>`Built: ${b} · Commit: ${c}`,
+"nav.overview":"Overview","nav.diagrams":"Diagrams","diagrams.offline":"Diagram library not loaded: showing the source.","nav.guide":"How to read this","nav.coverage":"API coverage","nav.goals":"Goals",
+"guide.parts":"Parts","guide.system":"System",
+"guide.partsTable":`<tr><td><span class="pill p0">SYS-n</span></td><td><b>Requirement:</b> a rule for the whole system.</td></tr>
+<tr><td><span class="pill p0">G-…-n</span></td><td><b>Criterion:</b> a check that a goal is reached.</td></tr>
+<tr><td><span class="pill p1">F-…-n</span></td><td><b>Scenario:</b> one testable case of a flow: given, when, then.</td></tr>
+<tr><td><span class="pill p2">PREFIX-n</span></td><td><b>Rule:</b> a business rule of one domain.</td></tr>
+<tr><td><span class="pill p3">operation</span></td><td><b>Operation:</b> one API call in the OpenAPI contract.</td></tr>`,
+"coverage.sub":"Service routes with a contract and a scenario, by service and namespace.",
+"m.goals":["Goals",""],"m.flows":["Flows",""],"m.scenarios":["Scenarios",""],"m.rules":["Rules","artifact and Flow rules"],"m.operations":["Operations","with a contract"],"m.coverage":["API coverage",(c,t)=>`${c} of ${t} routes`],
+"withoutKnowledge":"Routes without knowledge",
+"flowRules":"Flow rules","criteria":"Criteria","rules":"Rules","flows":"Flows","scenarios":"Scenarios","operations":"Operations","close":"Close","story.open":"Show story","story.steps":["Goal","Flows","Rules","Artifacts"],"story.caps":[(t)=>`Goal: ${t}`,n=>`Flows: ${n}`,n=>`Rules: ${n}`,n=>`Artifacts: ${n}`],"play":"Play","pause":"Pause","flow":"Flow","goal":"Goal","openSource":"Source","otherRules":"Other rules","prev":"Previous","next":"Next","layer.system/":"System","layer.goals/":"Goals","layer.flows/":"Flows",
+"map.title":"Layers",
+"layers":[["System","rules for the whole system"],["Goals","outcomes and criteria"],["Flows","scenarios across domains"],["Artifacts","domain rules and contracts"]],
 "example":"Example",
-"nav.analyze":"Analyze","analyze.sub":"Pick the goals a sprint or a release works on, up to three, then analyze. Every section below is then counted for those goals only. Pick all goals for the whole project.",
-"drop":n=>n?`${n} goal${n>1?"s":""} picked`:"Pick goals","allGoals":"All goals (whole project)","run":"Analyze","runNote":"Pick at least one goal.","maxNote":"Up to three goals; pick all goals for the whole project.",
-"summary.title":"Analysis","summary.sub":g=>`For: ${g}`,
-"m.inAnalysis":["Routes in this analysis",(c,t)=>`of ${t} service routes in the project`],
-"inThis":"Routes in this analysis","projectNote":"Coverage of the whole project; the routes this analysis covers are listed below."
+"nav.analyze":"Analyze",
+"drop":n=>n?`${n} goal${n>1?"s":""} picked`:"Pick goals","allGoals":"All goals","run":"Analyze","runNote":"Pick at least one goal.","maxNote":"Up to three goals, or all.",
+"summary.title":"Analysis","summary.sub":g=>`Goals: ${g}`,
+"m.inAnalysis":["Routes in this analysis",(c,t)=>`of ${t} routes`],
+"inThis":"Routes in this analysis","projectNote":"Bars: the whole project."
 },
 vi:{
 "title":DATA.title,
-"stamp":(b,c)=>`Dựng lúc ${b} từ commit ${c}`,
-"nav.overview":"Tổng quan","nav.diagrams":"Diagram","diagrams.sub":"Context của hệ thống, rồi diagram của các goal đã chọn và của các flow của chúng, vẽ từ các trang knowledge.","diagrams.offline":"Không tải được thư viện vẽ diagram nên hiện mã nguồn. Thư viện tải từ mạng.","nav.guide":"Cách đọc","nav.coverage":"Độ phủ API","nav.goals":"Goal",
-"overview.sub":"Knowledge hiện mô tả những gì: các goal, các flow để đạt goal, các rule mà chúng dựa vào, và các operation API phục vụ chúng.",
-"guide.sub":"Knowledge được viết từ trên xuống, từ nhu cầu nghiệp vụ tới contract API. Mỗi thành phần có một ID và trích các thành phần nó dựa vào, nên một thay đổi lần được theo cả hai chiều.",
-"guide.parts":"Các thành phần","guide.system":"Hệ thống",
-"guide.partsTable":`<tr><td><span class="pill p0">SYS-n</span></td><td><b>Requirement (yêu cầu hệ thống).</b> Luật áp dụng cho toàn hệ thống, ví dụ "response JSON luôn là một object gốc".</td></tr>
-<tr><td><span class="pill p0">G-…-n</span></td><td><b>Goal và criteria.</b> Một kết quả nghiệp vụ, ví dụ "Mượn sách", và các tiêu chí để biết đã đạt được.</td></tr>
-<tr><td><span class="pill p1">F-…-n</span></td><td><b>Flow và scenario.</b> Cách kết quả diễn ra qua các app và service. Mỗi scenario là một ca test: given, when, then. Tester và client test theo các scenario này.</td></tr>
-<tr><td><span class="pill p2">PREFIX-n</span></td><td><b>Rule (luật nghiệp vụ).</b> Luật của một domain, đúng bất kể màn hình nào dùng nó.</td></tr>
-<tr><td><span class="pill p3">operation</span></td><td><b>Operation.</b> Một lời gọi API trong contract đã thống nhất (OpenAPI), được viết trước khi có code.</td></tr>`,
-"coverage.sub":"Các route của service đã có contract và flow đứng sau, theo service và namespace. Route chưa có knowledge là hành vi chưa ai viết ra.",
-"goals.sub":"Mỗi goal là một kết quả nghiệp vụ. Độ lớn đếm những gì goal dựa vào: càng lớn thì khi thay đổi càng phải test nhiều.",
-
-
-"flowRules":"Flow rule",
-"m.goals":["Goal","kết quả nghiệp vụ"],"m.flows":["Flow","hành vi qua nhiều domain"],"m.scenarios":["Scenario","ca test"],"m.rules":["Rule","rule của artifact và Flow"],"m.operations":["Operation","operation API có contract"],"m.coverage":["Độ phủ API",(c,t)=>`${c} trên ${t} route service`],
-"withKnowledge":"Route đã có knowledge","withoutKnowledge":"Route chưa có knowledge",
-
-"flows":"Flow","scenarios":"Scenario","operations":"Operation","none":"chưa có","None":"Không có","close":"Đóng","story.open":"Xem story","story.hint":"Bấm vào một khối để đọc.","story.steps":["Goal","Flow","Rule","Artifact"],"story.caps":[(t)=>`Goal: ${t}`,n=>`Flow: ${n}`,n=>`Rule: ${n}, theo flow`,n=>`Artifact: ${n}, kèm rule của nó`],"play":"Chạy","pause":"Dừng","flow":"Flow","goal":"Goal","openSource":"Mở file gốc","otherRules":"Rule khác","prev":"Trước","next":"Sau","layer.system/":"System","layer.goals/":"Goal","layer.flows/":"Flow",
-
-"showAll":"Xem tất cả",
-
-"map.title":"Từ ngoài vào trong","map.sub":"Mỗi lớp nằm trong lớp bên trên và trích lớp đó. Ví dụ bên phải đi theo một đường thật, từ một requirement của hệ thống xuống tới một operation của contract. Bấm vào một lớp để tới mục đó.",
-"layers":[["System","yêu cầu cho toàn hệ thống"],["Goal","kết quả nghiệp vụ và tiêu chí"],["Flow","cách kết quả diễn ra, thành các ca test"],["Artifact","luật của domain và contract API"]],
+"stamp":(b,c)=>`Dựng: ${b} · Commit: ${c}`,
+"nav.overview":"Tổng quan","nav.diagrams":"Diagram","diagrams.offline":"Chưa tải được thư viện diagram: đang hiện mã nguồn.","nav.guide":"Cách đọc","nav.coverage":"Độ phủ API","nav.goals":"Goal",
+"guide.parts":"Thành phần","guide.system":"Hệ thống",
+"guide.partsTable":`<tr><td><span class="pill p0">SYS-n</span></td><td><b>Requirement:</b> luật cho toàn hệ thống.</td></tr>
+<tr><td><span class="pill p0">G-…-n</span></td><td><b>Criterion:</b> tiêu chí cho thấy đã đạt goal.</td></tr>
+<tr><td><span class="pill p1">F-…-n</span></td><td><b>Scenario:</b> một ca test của flow: given, when, then.</td></tr>
+<tr><td><span class="pill p2">PREFIX-n</span></td><td><b>Rule:</b> luật nghiệp vụ của một domain.</td></tr>
+<tr><td><span class="pill p3">operation</span></td><td><b>Operation:</b> một lời gọi API trong contract OpenAPI.</td></tr>`,
+"coverage.sub":"Route của service có contract và scenario, theo service và namespace.",
+"flowRules":"Flow rule","criteria":"Criterion","rules":"Rule",
+"m.goals":["Goal",""],"m.flows":["Flow",""],"m.scenarios":["Scenario",""],"m.rules":["Rule","rule của artifact và Flow"],"m.operations":["Operation","có contract"],"m.coverage":["Độ phủ API",(c,t)=>`${c} trên ${t} route`],
+"withoutKnowledge":"Route chưa có knowledge",
+"flows":"Flow","scenarios":"Scenario","operations":"Operation","close":"Đóng","story.open":"Xem story","story.steps":["Goal","Flow","Rule","Artifact"],"story.caps":[(t)=>`Goal: ${t}`,n=>`Flow: ${n}`,n=>`Rule: ${n}`,n=>`Artifact: ${n}`],"play":"Chạy","pause":"Dừng","flow":"Flow","goal":"Goal","openSource":"Nguồn","otherRules":"Rule khác","prev":"Trước","next":"Sau","layer.system/":"System","layer.goals/":"Goal","layer.flows/":"Flow",
+"map.title":"Các lớp",
+"layers":[["System","luật cho toàn hệ thống"],["Goal","kết quả và tiêu chí"],["Flow","scenario qua nhiều domain"],["Artifact","luật của domain và contract"]],
 "example":"Ví dụ",
-"nav.analyze":"Phân tích","analyze.sub":"Chọn các goal mà một sprint hay một release làm, tối đa ba, rồi bấm phân tích. Mọi mục bên dưới khi đó chỉ tính cho các goal đó. Chọn tất cả goal để xem toàn project.",
-"drop":n=>n?`Đã chọn ${n} goal`:"Chọn goal","allGoals":"Tất cả goal (toàn project)","run":"Phân tích","runNote":"Chọn ít nhất một goal.","maxNote":"Tối đa ba goal; chọn tất cả goal để xem toàn project.",
-"summary.title":"Kết quả phân tích","summary.sub":g=>`Cho: ${g}`,
-"m.inAnalysis":["Route trong phân tích",(c,t)=>`trên ${t} route service của project`],
-"inThis":"Route trong phân tích này","projectNote":"Độ phủ của toàn project; các route mà phân tích này phủ được liệt kê bên dưới."
+"nav.analyze":"Phân tích",
+"drop":n=>n?`Đã chọn ${n} goal`:"Chọn goal","allGoals":"Tất cả goal","run":"Phân tích","runNote":"Chọn ít nhất một goal.","maxNote":"Tối đa ba goal, hoặc tất cả.",
+"summary.title":"Kết quả phân tích","summary.sub":g=>`Goal: ${g}`,
+"m.inAnalysis":["Route trong phân tích",(c,t)=>`trên ${t} route`],
+"inThis":"Route trong phân tích này","projectNote":"Thanh: toàn project."
 }};
 let lang="en";try{const s=localStorage.getItem("lang");if(Object.hasOwn(I18N,s))lang=s;}catch(e){}
 const T=k=>I18N[lang][k];
@@ -392,7 +374,7 @@ function renderResults(){
  +`<details open><summary>${T("inThis")} (${routes.length})</summary><table>${routes.map(r=>`<tr><td>${esc(r.method)}</td><td><code>${esc(r.path)}</code></td><td>${pill(r.covered)}</td></tr>`).join("")}</table></details>`
  +`<details><summary>${T("withoutKnowledge")} (${ROUTES.length-covered})</summary><table>${ROUTES.filter(r=>!r.covered).map(r=>`<tr><td>${esc(r.method)}</td><td><code>${esc(r.path)}</code></td></tr>`).join("")}</table></details>`;
  goalList=goals;goalPage=0;drawGoals();showStory(goals.some(g=>g.key===storyGoal)?storyGoal:goals[0]&&goals[0].key);if(sideNode)openNode(...sideNode);
- const pages=new Set(["system/context.md",...goals.flatMap(g=>[g.page,...g.flows])]);
+ const pages=new Set([...goals.flatMap(g=>[g.page,...g.flows])]);
  drawDiagrams(DATA.diagrams.map((d,i)=>({...d,i})).filter(d=>pages.has(d.page)));
 }
 const LAYER=["system/","goals/","flows/"],svgs=Object.create(null),slideAt=Object.create(null),rendering=new Set();let shown=[],mermaidOn=false;
@@ -473,10 +455,13 @@ function drawDiagrams(list){shown=list.sort((a,b)=>LAYER.findIndex(l=>a.page.sta
 let guideSvg=null,guideRendering=false;
 function drawGuideSystem(){const d=DATA.diagrams.find(x=>x.page.startsWith("system/")),e=$("guide-system");
  if(!d){e.closest(".card").hidden=true;return;}
- if(guideSvg){e.replaceChildren(guideSvg.cloneNode(true));return;}
- e.innerHTML=`<p class="sub" style="margin:2px 0 8px"><code>${esc(d.page)}</code></p><pre>${esc(d.code)}</pre>`;
+ const head=`<p style="margin:0;font-weight:600">${esc(d.title)}${d.section?` <span class="muted" style="font-weight:400">· ${esc(d.section)}</span>`:""}</p><p class="sub" style="margin:2px 0 8px"><code>${esc(d.page)}</code></p>`;
+ // A wide drawing keeps a readable width and scrolls inside the card; a narrow one keeps its own.
+ const show=()=>{const s=guideSvg.cloneNode(true),w=guideSvg.viewBox.baseVal.width;if(w>0)s.style.minWidth=Math.min(640,w)+"px";e.innerHTML=head;e.appendChild(s);};
+ if(guideSvg){show();return;}
+ e.innerHTML=head+`<pre>${esc(d.code)}</pre>`;
  if(!mermaidOn||guideRendering||!diagramSourceAllowed(d.code))return;guideRendering=true;
- mermaid.render("guidesvg",d.code).then(r=>{guideSvg=safeDiagram(r.svg,"guidesvg");e.replaceChildren(guideSvg.cloneNode(true));})
+ mermaid.render("guidesvg",d.code).then(r=>{guideSvg=safeDiagram(r.svg,"guidesvg");show();})
   .catch(()=>{/* The readable source remains when parsing or sanitizing fails. */}).finally(()=>{guideRendering=false;scheduleSize();});}
 // In a goal's diagram, each node named after a flow shows that flow's slide in the Flows card.
 function linkFlows(d){if(!d.page.startsWith("goals/"))return;const e=$("mm"+d.i);if(!e)return;
@@ -500,7 +485,7 @@ function examplePath(){
 const HREF=["#guide-system","#goals","#diagrams","#summary"];
 function drawMap(){const svg=$("map");[...svg.querySelectorAll("g,rect,text")].forEach(e=>e.remove());
  const L=T("layers"),ex=examplePath()||[],W=1000,B=58,I=26,H=B*4+10;svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
- const nums=[DATA.requirements.length+" SYS",`${DATA.goals.length} · ${DATA.goals.flatMap(g=>g.criteria).length} criteria`,`${DATA.flows.length} · ${scen.length} scenarios${flowRules.length?` · ${flowRules.length} ${T("flowRules")}`:""}`,`${DATA.rules.length} rules · ${DATA.operations.length} operations`];
+ const low=k=>T(k).toLowerCase(),nums=[DATA.requirements.length+" SYS",`${DATA.goals.length} · ${DATA.goals.flatMap(g=>g.criteria).length} ${low("criteria")}`,`${DATA.flows.length} · ${scen.length} ${low("scenarios")}${flowRules.length?` · ${flowRules.length} ${T("flowRules")}`:""}`,`${DATA.rules.length} ${low("rules")} · ${DATA.operations.length} ${low("operations")}`];
  L.forEach(([name,desc],i)=>{const x=i*I,y=i*B,g=document.createElementNS(NS,"a");g.setAttribute("href",HREF[i]);
   const r=document.createElementNS(NS,"rect");r.setAttribute("x",x+1);r.setAttribute("y",y+1);r.setAttribute("width",W-2*x-2);r.setAttribute("height",H-y-2);r.setAttribute("rx",12);r.setAttribute("fill",`var(${CV[i]})`);r.setAttribute("stroke",`var(${CI[i]})`);r.setAttribute("stroke-opacity",".35");
   const t=(tx,ty,txt,size,weight,anchor)=>{const e=document.createElementNS(NS,"text");e.setAttribute("x",tx);e.setAttribute("y",ty);e.setAttribute("text-anchor",anchor||"start");e.style.cssText=`font-family:inherit;font-size:${size}px;font-weight:${weight};fill:var(${CI[i]})`;e.textContent=txt;return e;};

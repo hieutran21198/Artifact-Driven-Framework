@@ -176,7 +176,7 @@ shows the overview of the whole project and a guide to reading it. Pick up to
 three goals, or all goals, and analyze: the page then shows, for those goals
 only, the counts, the API coverage of each service (when it has `routes`),
 each goal with its criteria and scenarios, the story of one goal, and the
-system context and the diagrams of those goals and their flows. The story
+diagrams of those goals and their flows. The story
 plays in four steps - goal, flows, rules, artifacts - from the goal page, the
 `Crosses` line of each flow and the rules the goal relies on. A block opens its source page in the side panel: the page of a goal or a
 flow, the specification of an artifact, or the page that defines a rule, with
@@ -184,7 +184,7 @@ the rule's row marked. The page is rendered as text (headings, paragraphs,
 lists, tables, code, emphasis and links; no HTML), its diagrams go through the
 same checks as the Diagrams section, a link to another knowledge page opens it
 in the panel, and a link out must be `https`. The guide to reading it shows the
-first system diagram, such as the context. Rules totals include both
+first system diagram, such as the context, once. Rules totals include both
 artifact and Flow rules. To trace a change, run [impact](#impact). It reads in English or
 Vietnamese. [site.html](site.html) is its template. It reuses `impact.py` and
 needs Python 3 only. The page loads fixed versions of Mermaid and its ELK
