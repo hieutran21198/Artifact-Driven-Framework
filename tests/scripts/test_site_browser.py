@@ -52,7 +52,7 @@ class SiteBrowser(BrowserTestCase):
         self.assertEqual(run.returncode, 0, run.stderr)
         self.open_site((ws.root / "build/site.html").read_text())
         self.analyze()
-        self.assertIn("Flow rules", self.page.locator("#legend").inner_text())
+        self.assertEqual(self.page.locator('#pick-ids option[value="FR-SHARED-1"]').count(), 1)
         self.assertEqual(self.page.locator("#metrics .v").nth(3).inner_text(), "4")
         for goal, expected in (("G-SAFE", "4"), ("G-OTHER", "2"), ("G-SAFE", "4")):
             self.page.locator("#drop summary").click()
@@ -63,24 +63,28 @@ class SiteBrowser(BrowserTestCase):
             self.page.locator("#run").click()
             self.assertEqual(self.page.locator("#slice-metrics .v").nth(3).inner_text(), expected)
             self.assertEqual(self.page.locator("#slice-metrics .v").nth(2).inner_text(), "1")
-            self.page.locator("#g .node").filter(has_text="FR-SHARED-1").click()
+            self.page.locator("#pick").fill("FR-SHARED-1")
             self.assertIn("Flow rules", self.page.locator("#detail").inner_text())
             self.assertIn("flows/contracts/shared.md", self.page.locator("#detail").inner_text())
             self.assertIn("TH-1", self.page.locator("#detail").inner_text())
-        self.page.locator("#g .node").filter(has_text="FR-LOCAL-1").click()
+        self.page.locator("#pick").fill("FR-LOCAL-1")
         self.assertIn(HOSTILE, self.page.locator("#detail").inner_text())
+        target = self.page.locator("#trace [data-id]").first
+        picked = target.get_attribute("data-id")
+        target.click()
+        self.assertEqual(self.page.locator("#pick").input_value(), picked)
         self.page.locator('[data-lang="vi"]').click()
-        self.page.locator("#g .node").filter(has_text="FR-LOCAL-1").click()
+        self.page.locator("#pick").fill("FR-LOCAL-1")
         self.assertIn("Phụ thuộc", self.page.locator("#detail").inner_text())
         self.assertEqual(self.page.locator("img,[onerror],[onload]").count(), 0)
-        self.assertNotIn("FR-DESIGN", self.page.locator("#g").text_content())
+        self.assertNotIn("FR-DESIGN", self.page.locator("#explorer").text_content())
         self.assertIsNone(self.page.evaluate("window.injected"))
         self.assert_no_workspace_requests()
 
     def test_SYS_7_F_VIEW_24_text_attributes_and_controls(self):
         """SYS-7, F-VIEW-24: every generated data kind stays text while controls work."""
         self.open_site(self.build())
-        self.assertNotIn("Flow rules", self.page.locator("#legend").inner_text())
+        self.assertEqual(self.page.locator("#pick-ids option").count(), 0)
         self.assertEqual(self.page.locator("h1").inner_text(), HOSTILE + " & \u2028\u2029")
         # The path without a criterion becomes a goal key. Attribute quotes must stay in it.
         keys = self.page.locator("#goal-options input").evaluate_all("els => els.map(e => e.value)")
