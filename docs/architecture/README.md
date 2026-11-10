@@ -98,8 +98,8 @@ domain map.
   application layer, and transfer objects.
 - [Repositories and unit of work](repositories.md): how commands and queries
   reach the database, and how a command runs in one transaction.
-- [Decisions](decisions.md): why the knowledge and the code are shaped this
-  way, and what each choice costs.
+- [Decisions](decisions.md): this project's architecture decisions, and what
+  each one costs.
 - [Domain map](domain-map.md): the domains, and the existing code that moves
   into each one.
 
