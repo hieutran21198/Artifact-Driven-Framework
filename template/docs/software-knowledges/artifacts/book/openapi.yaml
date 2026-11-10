@@ -72,6 +72,58 @@ paths:
           $ref: '../../system/openapi.yaml#/components/responses/Unauthorized'
         '404':
           $ref: '../../system/openapi.yaml#/components/responses/NotFound'
+  /v1/books/{id}/borrow:
+    post:
+      operationId: borrowBook
+      summary: Lend an available book to the signed-in member.
+      security:
+        - memberBearer: []
+      parameters:
+        - $ref: '#/components/parameters/BookID'
+      responses:
+        '200':
+          description: The book, now on loan, with its due time.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+        '401':
+          $ref: '../../system/openapi.yaml#/components/responses/Unauthorized'
+        '404':
+          $ref: '../../system/openapi.yaml#/components/responses/NotFound'
+        '422':
+          $ref: '../../system/openapi.yaml#/components/responses/UnprocessableEntity'
+  /v1/books/{id}/return:
+    post:
+      operationId: returnBook
+      summary: End the loan of a book the signed-in member holds.
+      security:
+        - memberBearer: []
+      parameters:
+        - $ref: '#/components/parameters/BookID'
+      responses:
+        '200':
+          description: The book, available again.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+        '401':
+          $ref: '../../system/openapi.yaml#/components/responses/Unauthorized'
+        '403':
+          $ref: '../../system/openapi.yaml#/components/responses/Forbidden'
+        '404':
+          $ref: '../../system/openapi.yaml#/components/responses/NotFound'
+        '422':
+          $ref: '../../system/openapi.yaml#/components/responses/UnprocessableEntity'
+x-triggers:
+  overdueCheck:
+    description: >
+      Fires every day at 02:00 in the library's time zone and starts the
+      overdue worker. The same trigger can arrive twice. A change keeps the
+      input of triggers already scheduled.
+    input:
+      $ref: '#/components/schemas/OverdueCheckInput'
 components:
   securitySchemes:
     staffBearer:
@@ -123,3 +175,12 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/Book'
+    OverdueCheckInput:
+      type: object
+      required: [run_at]
+      properties:
+        run_at:
+          type: string
+          format: date-time
+          description: The time the scheduler fired the trigger; a loan is overdue when its due time is before it.
+          example: '2030-01-16T02:00:00Z'

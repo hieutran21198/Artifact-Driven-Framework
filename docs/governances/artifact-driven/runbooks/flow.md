@@ -7,10 +7,10 @@ Sample: [Borrow a book](https://github.com/hieutran21198/Artifact-Driven-Framewo
 ## Files
 
 1. `flows/<flow>.md` in the knowledge folder
-2. `flows/<flow>.openapi.yaml`, when the flow owns an endpoint, sends a
-   payload that is not an HTTP response, or is started by a trigger
-   ([contract](contract.md))
-3. The goals that use the flow
+2. The goals that use the flow
+
+The operations the flow calls go in the contract of the artifact that receives
+each call ([contract](contract.md)).
 
 ## Steps
 
@@ -21,8 +21,8 @@ Sample: [Borrow a book](https://github.com/hieutran21198/Artifact-Driven-Framewo
    [Flow-rule adoption](check.md#flow-rule-adoption). Use the local
    Coordination rules section first; extract a shared specification only for
    established reuse. Keep scenarios as proof, not rule definitions.
-2. Write the header: the artifacts it crosses, its contract, its trigger and
-   its outcome. The header names no goal: the goal names the flow. A flow a
+2. Write the header: the artifacts it crosses, the contracts of the
+   operations it calls, its trigger and its outcome. The header names no goal: the goal names the flow. A flow a
    worker runs names its
    trigger in backticks, as the contract declares it (`overdueCheck`), and for
    a schedule its time and time zone.

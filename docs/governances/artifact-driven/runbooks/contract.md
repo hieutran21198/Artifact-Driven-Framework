@@ -4,19 +4,22 @@ Use when an endpoint, a payload that is not an HTTP response, or a worker
 trigger is new or changes. The contract is written and agreed before the code.
 
 Samples: [book contract](https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/template/docs/software-knowledges/artifacts/book/openapi.yaml),
-[Borrow a book contract](https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/template/docs/software-knowledges/flows/borrow-book.openapi.yaml).
+[notice contract](https://github.com/hieutran21198/Artifact-Driven-Framework/blob/main/template/docs/software-knowledges/artifacts/notice/openapi.yaml).
 
 ## Choose the file
 
 | The endpoint | Goes in |
 | --- | --- |
-| Touches one artifact | `artifacts/<artifact>/openapi.yaml` |
-| Crosses artifacts | `flows/<flow>.openapi.yaml` |
-| Is called by an external system, such as a webhook | `flows/<flow>.openapi.yaml` of the flow it starts |
-| A push, email or deep link a flow sends | `components/schemas` of that flow's contract |
-| A timer or schedule that starts a worker | `x-triggers` of the flow it starts, with its input under `components/schemas` |
-| A CLI command or an action in a client's interface | `x-commands` of the artifact or flow it belongs to, with its input and output under `components/schemas` |
-| A message a service publishes to a queue or a topic | `components/schemas` of the flow that publishes it, and `x-triggers` of each flow it starts in another service |
+| An endpoint | `artifacts/<artifact>/openapi.yaml` of the artifact whose code receives it |
+| An endpoint whose use case crosses domains, such as a checkout | `openapi.yaml` of the artifact that owns its handler and use case |
+| Is called by an external system, such as a webhook | `openapi.yaml` of the artifact that receives and translates the payload |
+| A push, email or deep link sent to the outside | `components/schemas` of the artifact that sends it |
+| A timer or schedule that starts a worker | `x-triggers` of the artifact whose worker handles it, with its input under `components/schemas` |
+| A CLI command or an action in a client's interface | `x-commands` of the artifact it belongs to, with its input and output under `components/schemas` |
+| A command addressed to a receiver through a queue or a topic | `x-commands` of the receiving artifact, with its input under `components/schemas` |
+| A published event | `components/schemas` of the publishing artifact, with its topic in the description |
+| A handler of that event | `x-triggers` of the receiving artifact; its input references the publisher's schema with `$ref` |
+| A call or a notice from one domain to another in the same service | No contract: a step of the flow; the signature stays in code |
 | Shared parts: errors, authentication | `system/openapi.yaml` |
 
 ## Steps

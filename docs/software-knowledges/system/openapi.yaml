@@ -5,7 +5,7 @@ info:
   description: >
     Components every contract of the framework uses: the lines a command
     prints. The framework has no HTTP endpoint; its commands are under
-    x-commands of artifact and flow contracts. This file has no paths.
+    x-commands of artifact contracts. This file has no paths.
 servers:
   - url: http://localhost
     description: No server; the commands run on the machine of the caller.
@@ -26,3 +26,20 @@ components:
       items:
         type: string
         example: 'docs/README.md: missing guide.md'
+    CheckOutput:
+      type: object
+      description: What a check command returns.
+      required: [exit_status, stdout, stderr]
+      properties:
+        exit_status:
+          type: integer
+          enum: [0, 1, 2]
+          description: 0 when the check finds no problem, 1 when it finds one, 2 when it cannot run, such as a folder that does not exist or a configuration that is not valid JSON.
+        stdout:
+          allOf:
+            - $ref: '#/components/schemas/Lines'
+          description: On success, one line that says what passed, or that there are no tests to check.
+        stderr:
+          allOf:
+            - $ref: '#/components/schemas/Problems'
+          description: Every problem found in the run.

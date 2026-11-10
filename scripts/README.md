@@ -76,7 +76,9 @@ python3 scripts/check_docs.py
 
 It checks every Markdown file outside the `skip` folders for broken relative
 links and missing heading anchors. In the knowledge folder it checks that
-every cited ID is defined, once, and not withdrawn; that every scenario that is
+every cited ID is defined, once, and not withdrawn; that every YAML file is
+`system/openapi.yaml` or `artifacts/<artifact>/openapi.yaml`, so a flow has no
+contract; that every scenario that is
 not withdrawn names an `operationId`, a trigger under `x-triggers` or a
 command under `x-commands`; and that every one of them is named by a
 scenario. It also checks the
@@ -125,7 +127,8 @@ python3 scripts/impact.py --stats MBR-4
 It follows the citations in the pages: IDs in tables and text, and
 `operationId`s in backticks. Contracts cite no knowledge ID: an operation
 belongs to a rule or a requirement through a scenario, when the scenario names
-the operation in its When and the rule in its Covers. A contract adds its
+the operation in its When and the rule in its Covers. Each contract, the
+`openapi.yaml` of an artifact or `system/openapi.yaml`, adds its
 `$ref`s and schema properties, so the schemas an affected operation uses show
 with it, except the shared components of `system/openapi.yaml`. Links from a
 goal to its flows and from a flow to its artifacts add their pages. `--down`

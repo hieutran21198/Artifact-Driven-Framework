@@ -6,8 +6,8 @@ and which units are proved least.
 - Crosses: [configuration](../artifacts/configuration/README.md),
   [knowledge](../artifacts/knowledge/README.md) and
   [test](../artifacts/test/README.md), served by the `scripts` service.
-- Contract: `measureCoverage` and `rankFragile` in
-  [measure-coverage.openapi.yaml](measure-coverage.openapi.yaml).
+- Contract: `measureCoverage` and `rankFragile` in the
+  [test contract](../artifacts/test/openapi.yaml).
 - Trigger: a person wants to know how much of the knowledge the tests name,
   such as before a release or when choosing what to test next.
 - Outcome: for each goal, the share of its IDs that tests name and the IDs no

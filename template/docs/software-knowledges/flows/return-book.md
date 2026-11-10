@@ -7,9 +7,9 @@ schedule starts and that calls another service after its transaction.
   [member](../artifacts/member/README.md), served by the `lending` service;
   [notice](../artifacts/notice/README.md), served by the `notification`
   service.
-- Contract: `returnBook`, the trigger `overdueCheck` and the overdue email
-  payload, in [return-book.openapi.yaml](return-book.openapi.yaml), and
-  `sendNotice` in the [notice contract](../artifacts/notice/openapi.yaml).
+- Contract: `returnBook` and the trigger `overdueCheck` in the
+  [book contract](../artifacts/book/openapi.yaml); `sendNotice` and the
+  overdue email in the [notice contract](../artifacts/notice/openapi.yaml).
 - Trigger: a member returns a book on the web or the mobile app, or
   `overdueCheck`, which the scheduler fires every day at 02:00 in the
   library's time zone.

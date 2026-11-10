@@ -22,7 +22,7 @@ import subprocess
 import sys
 
 import impact
-from project import KNOWLEDGE, ROOT, SERVICES, SITE
+from project import KNOWLEDGE, ROOT, SERVICES, SITE, contracts
 
 TEMPLATE = Path(__file__).with_name("site.html")
 ROW = re.compile(r"^\| (" + impact.ID.pattern + r") \|(.*)\|\s*$")
@@ -139,7 +139,7 @@ def knowledge(graph):
             for i, c in read_rows(text):
                 rules.append({"id": i, "artifact": artifact, "text": plain(c[0])})
     operations = []
-    for path in sorted(KNOWLEDGE.rglob("*.yaml")):
+    for path in contracts():
         route = method = None
         for line in path.read_text(encoding="utf-8").splitlines():
             m = re.match(r"^  (/\S*):$", line)

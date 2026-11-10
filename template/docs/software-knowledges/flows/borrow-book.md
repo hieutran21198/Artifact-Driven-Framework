@@ -4,8 +4,8 @@ Reference flow. It shows how a flow is written.
 
 - Crosses: [book](../artifacts/book/README.md) and
   [member](../artifacts/member/README.md).
-- Contract: `borrowBook` in [borrow-book.openapi.yaml](borrow-book.openapi.yaml),
-  and `getBook` in the [book contract](../artifacts/book/openapi.yaml).
+- Contract: `getBook` and `borrowBook` in the
+  [book contract](../artifacts/book/openapi.yaml).
 - Trigger: a member asks to borrow a book on the web or the mobile app.
 - Outcome: the book is on loan to the member, or nothing changes.
 

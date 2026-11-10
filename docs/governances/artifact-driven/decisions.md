@@ -187,8 +187,8 @@ checks and the impact analysis can trace it.
 
 | Option | For | Against |
 | --- | --- | --- |
-| OpenAPI with `x-` keys (chosen) | One file format and one parser for the scripts; one place per flow or artifact for everything that crosses it; payloads stay JSON Schema | The `x-` keys are this framework's own: other OpenAPI tools ignore them, and a reader must learn them |
-| A standard per kind: OpenAPI, AsyncAPI for messages, a format of our own for commands | Each kind in the format made for it; AsyncAPI tools work on the messages | Two or three formats to learn, lint and parse; a flow's contract split over several files; still no standard for commands |
+| OpenAPI with `x-` keys (chosen) | One file format and one parser for the scripts; one place per artifact for everything that crosses it; payloads stay JSON Schema | The `x-` keys are this framework's own: other OpenAPI tools ignore them, and a reader must learn them |
+| A standard per kind: OpenAPI, AsyncAPI for messages, a format of our own for commands | Each kind in the format made for it; AsyncAPI tools work on the messages | Two or three formats to learn, lint and parse; an artifact's contract split over several files; still no standard for commands |
 | Plain text in the flow, no contract | Nothing to declare | The checks cannot tell a named command from a typo, and impact cannot trace it |
 
 **Costs.** OpenAPI tools, such as a generated client or the documentation
@@ -198,6 +198,41 @@ them. Redocly lint accepts them. The framework's scripts read them.
 **Revisit when** a project needs the tools of another standard for one kind,
 such as AsyncAPI code generation for its messages. Then that kind moves to its
 standard, and the scripts learn to read it.
+
+## Each operation in the contract of the artifact that receives it
+
+**Decision.** An operation, a trigger or a command belongs to the
+`openapi.yaml` of the artifact whose code receives the call. A flow has no
+contract. A public event schema belongs to the publishing artifact; each
+receiver owns its handling operation and references that schema as input.
+A command sent to a specific receiver belongs to that receiver. A call or a
+notice from one domain to another in the same service is a step of the flow;
+its signature stays in code.
+
+| Language | Home |
+| --- | --- |
+| Domain rules | `specification.md` of the artifact |
+| In and out of the service | The owning artifact's `openapi.yaml`; shared parts in `system/openapi.yaml` |
+| Domain to domain | The steps of the flow |
+
+**Context.** A flow contract held the endpoints that crossed artifacts. The
+code of such an endpoint is still one handler and one use case in one
+artifact's service, so the contract and the code that serves it were in two
+places.
+
+**Options.**
+
+| Option | For | Against |
+| --- | --- | --- |
+| The artifact that receives the call (chosen) | One owner for each operation, next to the code that serves it; one contract file to read per artifact | The artifact to choose is not always clear for a use case that crosses domains |
+| A contract for each flow that crosses artifacts | The flow page and its endpoints sit side by side | Two homes for the same kind of operation; an endpoint moves when a flow changes |
+| A contract for each call between domains, such as `x-events` | The checks see every call | A second contract for what the code already states |
+
+**Costs.** A flow page lists the contracts of the artifacts it calls instead of
+one file of its own.
+
+**Revisit when** two artifacts both claim the handler of one operation. Then
+the domain map decides, as an architecture change.
 
 ## Ask first, and write only what is settled
 
