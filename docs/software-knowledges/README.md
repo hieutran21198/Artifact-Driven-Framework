@@ -5,7 +5,7 @@ The knowledge of Artifact Driven itself, in four layers. Follow
 citation direction and Flow-rule adoption prerequisites.
 
 A new workspace gets the sample instead: a small library lending service,
-written from system down to client needs, in
+written from system down to contracts, in
 [template](../../template/README.md).
 
 - [System](system/README.md): purpose, actors, the parts of the framework,

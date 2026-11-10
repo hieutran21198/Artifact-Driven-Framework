@@ -34,11 +34,11 @@ components:
           example: [EN]
         clients:
           type: object
-          description: The client pages an artifact may have, by file name without .md.
+          description: The clients, by directory name in apps/ (CFG-4).
           additionalProperties:
             oneOf:
               - type: string
-                description: The name the site shows.
+                description: A display name of the client; the client has no tests.
               - $ref: '#/components/schemas/Client'
           default: {}
         services:
@@ -65,7 +65,7 @@ components:
       properties:
         name:
           type: string
-          description: The name the site shows; the file name when not given.
+          description: A display name of the client.
         tests:
           $ref: '#/components/schemas/Tests'
     Service:
