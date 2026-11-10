@@ -10,25 +10,29 @@ Samples: [book contract](https://github.com/hieutran21198/Artifact-Driven-Framew
 
 | The endpoint | Goes in |
 | --- | --- |
-| Touches one artifact | `artifacts/<artifact>/openapi.yaml` |
-| Crosses artifacts | `flows/<flow>.openapi.yaml` |
+| Is called in a flow step | `flows/<flow>.openapi.yaml` of that flow |
+| Is called by several flows | The flow that defined it first; the others name its `operationId` |
+| Is still in `artifacts/<artifact>/openapi.yaml` | Moves to its flow with this change, same `operationId` |
 | Is called by an external system, such as a webhook | `flows/<flow>.openapi.yaml` of the flow it starts |
 | A push, email or deep link a flow sends | `components/schemas` of that flow's contract |
 | A timer or schedule that starts a worker | `x-triggers` of the flow it starts, with its input under `components/schemas` |
-| A CLI command or an action in a client's interface | `x-commands` of the artifact or flow it belongs to, with its input and output under `components/schemas` |
+| A CLI command or an action in a client's interface | `x-commands` of the flow it belongs to, with its input and output under `components/schemas` |
 | A message a service publishes to a queue or a topic | `components/schemas` of the flow that publishes it, and `x-triggers` of each flow it starts in another service |
+| The model of a domain, or a reduced form of it | `components/schemas` of `artifacts/<artifact>/openapi.yaml` |
+| A request or response that combines domains | `components/schemas` of the flow, with `$ref` to the artifact schemas |
 | Shared parts: errors, authentication | `system/openapi.yaml` |
 
 ## Steps
 
 1. Start from the flow steps that call a service, from a client or from
    another service. Add one path per call
-   with an `operationId` in camelCase and a summary that cites the IDs it
-   serves: artifact rules in an artifact contract, flow scenarios in a flow
-   contract. Report the `operationId`s; the knowledge writer names them in
+   with an `operationId` in camelCase and a summary that cites the flow
+   scenarios it serves. Report the `operationId`s; the knowledge writer names them in
    the flow steps.
 2. Reuse schemas with `$ref`: errors and security from `system/openapi.yaml`,
-   artifact schemas from the artifact's file. Do not copy a schema.
+   domain schemas from the artifact's file. Do not copy a schema. A schema
+   the domain lacks, such as a summary, is added to the artifact, not made up
+   in the flow.
 3. Follow the system requirements that govern response shapes, such as a root
    object, the naming case and the time format, and the requirement on what
    each response and payload may carry to whom (SYS-5 in the reference pass).

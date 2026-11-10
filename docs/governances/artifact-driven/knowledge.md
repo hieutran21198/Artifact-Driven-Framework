@@ -43,8 +43,8 @@ The knowledge holds for one service or for many.
   leaves the work for the next run. The called operation gives the same
   result when it receives the same call twice (SYS-8 in the reference pass).
 - A call between services has a contract, like a call from a client: its
-  operation is in the contract of the artifact it serves, marked as internal
-  when no client may call it.
+  operation is in the contract of the flow whose step makes the call, marked
+  as internal when no client may call it ([contracts](#contracts)).
 
 ## Citations
 
@@ -252,7 +252,7 @@ is written: it reaches a page only when its branch merges with it still open
 | --- | --- |
 | `README.md` | What the artifact owns, its rule prefix, a link to the domain map for the service that serves it, and links |
 | `specification.md` | Model, rules and lifecycle; no service, client or flow |
-| `openapi.yaml` | The HTTP contract of the artifact's own endpoints, internal ones included |
+| `openapi.yaml` | The schemas of the domain: its model and any reduced form a flow reuses, such as a summary. Endpoints written here before contracts moved to flows stay until a change touches them ([contracts](#contracts)) |
 | `service.md` | The domain contract the serving service provides: the `Writer` and `Reader` interfaces and their operations; no packages, types or tables. Only when the service has such interfaces, as a service with a database does |
 | `<client>.md`, one per client in the [configuration](../../../scripts/README.md#configuration) | What that client needs from the artifact, by `operationId`, by payload schema, or by rule ID for a need no response carries; only when it uses the artifact |
 
@@ -274,11 +274,19 @@ that implements it.
   ([decision](decisions.md#openapi-holds-every-contract-also-what-is-not-http)).
 - `system/openapi.yaml` holds the shared components: the error shape and
   authentication.
-- An artifact's `openapi.yaml` holds endpoints of that artifact only; the
-  service that serves the artifact serves them. An endpoint only other
+- An endpoint belongs to the flow whose step calls it, in
+  `flows/<flow>.openapi.yaml`; the service that step names serves it. An
+  endpoint that several flows call belongs to the flow that defined it
+  first, and the others name its `operationId`. An endpoint only other
   services may call carries `x-internal: true`.
-- An endpoint that crosses artifacts belongs to its flow, in
-  `flows/<flow>.openapi.yaml`, and reuses artifact schemas with `$ref`.
+- A domain's schemas stay in its artifact's `openapi.yaml`: its model and
+  any reduced form, such as a summary. A flow's request and response schemas
+  belong to the flow. They reuse artifact schemas with `$ref`, only the parts
+  that may be shown to that caller, and never copy them. When two flows need
+  the same composed schema, one flow holds it and the other refers to it.
+- An endpoint still in an artifact's `openapi.yaml` moves to its flow when a
+  change touches it, with the same `operationId`
+  ([move or split knowledge](runbooks/move.md)).
 - A payload that is not an HTTP response, such as a push notification, an
   email or a deep link, is a schema under `components` of the flow that sends
   it. An email or a file names its format (HTML, CSV) and its fields in order
@@ -297,8 +305,8 @@ that implements it.
   twice gets the same result (SYS-8). A change keeps what the consumers read
   (SYS-4).
 - A command that is not an HTTP request, such as a CLI command or an action
-  in a client's interface, is declared under `x-commands` of the contract of
-  the artifact or flow it belongs to, by name in camelCase, with its caller
+  in a client's interface, is declared under `x-commands` of the flow it
+  belongs to, by name in camelCase, with its caller
   and its input and output schemas. A scenario names the command as it names
   an operation. A change keeps what callers pass and read (SYS-4).
 - An endpoint an external system calls, such as a payment webhook, belongs to
