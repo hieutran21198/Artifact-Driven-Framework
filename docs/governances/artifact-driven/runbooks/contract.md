@@ -23,9 +23,9 @@ Samples: [book contract](https://github.com/hieutran21198/Artifact-Driven-Framew
 
 1. Start from the flow steps that call a service, from a client or from
    another service. Add one path per call
-   with an `operationId` in camelCase and a summary that cites the IDs it
-   serves: artifact rules in an artifact contract, flow scenarios in a flow
-   contract. Report the `operationId`s; the knowledge writer names them in
+   with an `operationId` in camelCase and a summary of what it does. The
+   summary need not cite IDs: the scenarios that name the operation link it to
+   its rules ([citations](../knowledge.md#citations)). Report the `operationId`s; the knowledge writer names them in
    the flow steps.
 2. Reuse schemas with `$ref`: errors and security from `system/openapi.yaml`,
    artifact schemas from the artifact's file. Do not copy a schema.

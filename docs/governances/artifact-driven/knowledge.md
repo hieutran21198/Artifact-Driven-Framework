@@ -59,8 +59,8 @@ The knowledge holds for one service or for many.
   Flow rules after the adoption checks pass. Scenarios prove behavior; they
   are not reusable rule definitions.
 - Each fact has one owner. Other pages cite it by ID and never restate it.
-- A contract description cites the rule ID behind a value; it never states a
-  rule that has no ID.
+- A scenario links a rule to an operation: the rule in its Covers column,
+  the operation in its When column. A contract need not cite rule IDs.
 - Every statement a test or a data fix can break has an ID. An invariant of
   the model, such as who holds a record, is a row in the rules table, not prose.
 - A flow step or scenario states no condition of its own, such as a region,
