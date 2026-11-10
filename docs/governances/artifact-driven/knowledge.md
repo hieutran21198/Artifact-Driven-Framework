@@ -18,7 +18,7 @@ keeps the same requirements under its own IDs.
 | Language | Answers | Home |
 | --- | --- | --- |
 | Domain rules | When is the domain right? | `specification.md` of the artifact |
-| In and out | What does the outside send and get back? | `openapi.yaml` of the artifact that receives it; shared parts in `system/openapi.yaml` |
+| In and out | What does the outside send and get back? | The owning artifact's `openapi.yaml`; shared parts in `system/openapi.yaml` |
 | Domain to domain | Which domain calls or tells which, and why? | The steps of the flow; the signatures stay in code |
 
 - Artifacts are the nodes and flows the edges between them. Knowledge that
@@ -251,7 +251,7 @@ is written: it reaches a page only when its branch merges with it still open
 | --- | --- |
 | `README.md` | What the artifact owns, its rule prefix, a link to the domain map for the service that serves it, and links |
 | `specification.md` | Model, rules and lifecycle; no service, client or flow |
-| `openapi.yaml` | Every operation the artifact's code receives: endpoints, internal ones included, triggers and commands |
+| `openapi.yaml` | Operations the artifact receives and public payloads it publishes |
 
 An artifact has no other file and is never split per service or per client.
 
@@ -290,11 +290,20 @@ that implements it.
   camelCase, with its schedule or time and its input schema. A scenario names
   the trigger as it names an operation. A change keeps the input that
   triggers already scheduled will deliver (SYS-4).
-- A message a service receives from a queue or a topic is declared under
-  `x-commands` of the artifact that receives it, with its topic and its input
-  schema. The publisher sends it after its transaction and retries when the
-  send fails; a consumer that receives it twice gets the same result (SYS-8).
-  A change keeps what the consumers read (SYS-4).
+- A command sent to a specific receiver through a queue or a topic belongs
+  to that receiver's artifact, under `x-commands`, with its topic and input
+  schema.
+- A published event describes a fact of the publishing domain. Its public
+  payload schema belongs to the publisher's artifact under
+  `components/schemas`, with its topic in the description. Each receiver
+  declares its handling operation under `x-triggers` in its own artifact
+  and uses `$ref` to that schema as input; it does not copy the payload.
+  The flow describes what each receiver does. For example, Order owns
+  `OrderPlaced`; Billing and Notification each own their handler and
+  reference Order's schema. Adding a consumer does not move the event.
+- For both kinds of message, the publisher sends after its transaction and
+  retries when the send fails; a consumer that receives it twice gets the
+  same result (SYS-8). A change keeps what the consumers read (SYS-4).
 - A command that is not an HTTP request, such as a CLI command or an action
   in a client's interface, is declared under `x-commands` of the artifact it
   belongs to, by name in camelCase, with its caller and its input and output

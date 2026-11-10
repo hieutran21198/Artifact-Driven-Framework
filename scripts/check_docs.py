@@ -101,7 +101,8 @@ def check_contracts():
     """Every YAML file in the knowledge folder is the contract of an artifact or of the system."""
     allowed = set(contracts())
     return [f"{path.relative_to(ROOT)}: a contract belongs in artifacts/<artifact>/openapi.yaml or system/openapi.yaml"
-            for path in sorted(KNOWLEDGE.rglob("*.yaml")) if path not in allowed]
+            for path in sorted(KNOWLEDGE.rglob("*"))
+            if path.is_file() and path.suffix in {".yaml", ".yml"} and path not in allowed]
 
 
 def check_scenarios():

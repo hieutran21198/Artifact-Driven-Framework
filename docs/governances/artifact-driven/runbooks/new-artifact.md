@@ -8,8 +8,8 @@ Sample: [book artifact](https://github.com/hieutran21198/Artifact-Driven-Framewo
 
 1. `artifacts/<artifact>/README.md` in the knowledge folder
 2. `artifacts/<artifact>/specification.md`
-3. `artifacts/<artifact>/openapi.yaml`, when its code receives calls:
-   endpoints, triggers or commands
+3. `artifacts/<artifact>/openapi.yaml`, when it receives calls or publishes payloads:
+   endpoints, triggers, commands or public event schemas
 
 An artifact has no other file ([artifact files](../knowledge.md#artifact-files)).
 

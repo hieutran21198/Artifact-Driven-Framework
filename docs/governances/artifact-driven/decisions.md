@@ -203,13 +203,16 @@ standard, and the scripts learn to read it.
 
 **Decision.** An operation, a trigger or a command belongs to the
 `openapi.yaml` of the artifact whose code receives the call. A flow has no
-contract. A call or a notice from one domain to another in the same service is
-a step of the flow; its signature stays in code.
+contract. A public event schema belongs to the publishing artifact; each
+receiver owns its handling operation and references that schema as input.
+A command sent to a specific receiver belongs to that receiver. A call or a
+notice from one domain to another in the same service is a step of the flow;
+its signature stays in code.
 
 | Language | Home |
 | --- | --- |
 | Domain rules | `specification.md` of the artifact |
-| In and out of the service | `openapi.yaml` of the artifact that receives it; shared parts in `system/openapi.yaml` |
+| In and out of the service | The owning artifact's `openapi.yaml`; shared parts in `system/openapi.yaml` |
 | Domain to domain | The steps of the flow |
 
 **Context.** A flow contract held the endpoints that crossed artifacts. The

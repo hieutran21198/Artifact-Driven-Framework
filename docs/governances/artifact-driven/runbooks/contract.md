@@ -16,7 +16,9 @@ Samples: [book contract](https://github.com/hieutran21198/Artifact-Driven-Framew
 | A push, email or deep link sent to the outside | `components/schemas` of the artifact that sends it |
 | A timer or schedule that starts a worker | `x-triggers` of the artifact whose worker handles it, with its input under `components/schemas` |
 | A CLI command or an action in a client's interface | `x-commands` of the artifact it belongs to, with its input and output under `components/schemas` |
-| A message from a queue or a topic | `x-commands` of the artifact that receives it, with its input under `components/schemas` |
+| A command addressed to a receiver through a queue or a topic | `x-commands` of the receiving artifact, with its input under `components/schemas` |
+| A published event | `components/schemas` of the publishing artifact, with its topic in the description |
+| A handler of that event | `x-triggers` of the receiving artifact; its input references the publisher's schema with `$ref` |
 | A call or a notice from one domain to another in the same service | No contract: a step of the flow; the signature stays in code |
 | Shared parts: errors, authentication | `system/openapi.yaml` |
 

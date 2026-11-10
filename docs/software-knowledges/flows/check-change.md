@@ -101,6 +101,6 @@ sequenceDiagram
 | F-CHECK-26 | Coordination rules in a valid Flow home with a missing required column, an invalid Flow-rule ID, an empty rule or dependency cell, or the same scope defined in different homes | The author runs `checkDocs` | It exits with 1 and identifies each invalid definition and its page | KN-13, SYS-3 |
 | F-CHECK-27 | A Flow rule depends on another Flow rule, a scenario or a goal; an artifact cites a Flow rule; a goal uses a Flow rule as Proven by; or an operation is named only by a Flow rule | The author runs `checkDocs` | It exits with 1 and identifies each forbidden dependency or missing scenario proof | KN-18, KN-6, SYS-3 |
 | F-CHECK-28 | A previously valid workspace with FR-shaped artifact definitions outside the Flow-rule form, including a Coordination rules heading on an artifact page | The author runs `checkDocs` and `checkTests` with its existing tests | Both retain their previous result; no definition is reclassified as a Flow rule and no migration is required | KN-2, KN-13, TST-2 |
-| F-CHECK-29 | A contract in `flows/`, such as `flows/borrow-book.openapi.yaml` | The author runs `checkDocs` | It exits with 1 and names the file as a contract that belongs to an artifact or the system | KN-19, SYS-3 |
+| F-CHECK-29 | A contract in `flows/`, with either the `.yaml` or `.yml` extension | The author runs `checkDocs` | It exits with 1 and names the file as a contract that belongs to an artifact or the system | KN-19, SYS-3 |
 
 Return to [flows](README.md).
