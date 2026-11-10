@@ -16,7 +16,7 @@ x-commands:
     caller: A person or a coding agent, before a change, in any folder of a workspace.
     description: >
       python3 scripts/impact.py <name>. Lists what a change to the units the
-      name stands for affects (KN-14, KN-8, KN-10).
+      name stands for affects (KN-17, KN-8, KN-10).
     input:
       $ref: '#/components/schemas/TraceInput'
     output:
@@ -25,7 +25,7 @@ x-commands:
     caller: A person or a coding agent, before building, in any folder of a workspace.
     description: >
       python3 scripts/impact.py --down <name>. Lists what the units the name
-      stands for rely on (KN-14, KN-9, KN-10).
+      stands for rely on (KN-17, KN-9, KN-10).
     input:
       $ref: '#/components/schemas/TraceInput'
     output:

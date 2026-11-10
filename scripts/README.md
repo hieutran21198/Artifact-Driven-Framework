@@ -122,10 +122,14 @@ python3 scripts/impact.py --stats
 python3 scripts/impact.py --stats MBR-4
 ```
 
-It follows the citations: rule IDs in tables, `operationId`s in backticks,
-`$ref`s in contracts, schema properties, and links from a goal to its flows and
-from a flow to its artifacts. `--down` lists what a goal criterion, a scenario
-or a page relies on instead.
+It follows the citations in the pages: IDs in tables and text, and
+`operationId`s in backticks. Contracts cite no knowledge ID: an operation
+belongs to a rule or a requirement through a scenario, when the scenario names
+the operation in its When and the rule in its Covers. A contract adds its
+`$ref`s and schema properties, so the schemas an affected operation uses show
+with it, except the shared components of `system/openapi.yaml`. Links from a
+goal to its flows and from a flow to its artifacts add their pages. `--down`
+lists what a goal criterion, a scenario or a page relies on instead.
 
 `--stats` counts instead of listing. With no argument it prints the size of
 each goal (criteria, flows, scenarios, rules, operations and artifacts it
@@ -158,8 +162,8 @@ python3 scripts/impact.py --questions
 ```
 
 A worker trigger under `x-triggers` and a command under `x-commands` count
-as operations. A scenario that names no
-operation, trigger, command or rule is invisible to it.
+as operations. A rule that no scenario covers reaches no operation, and a
+scenario that names no operation, trigger, command or rule is invisible to it.
 
 ## Knowledge site
 
