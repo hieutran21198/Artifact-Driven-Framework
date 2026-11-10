@@ -16,7 +16,7 @@ tag or commit. They install, clone and run nothing.
 
 | ID | Criterion | Proven by |
 | --- | --- | --- |
-| G-VIEW-1 | A reader opens a link to the project tracker and sees, first, the coverage of each goal of the workspace, then how its goals, flows and artifacts link, with nothing to install, clone or run. | F-VIEW-1, F-VIEW-2, F-VIEW-31 |
+| G-VIEW-1 | A reader opens a link to the project tracker and sees, first, the coverage of each goal of the workspace, then how its goals, flows and artifacts link, with nothing to install, clone or run. | F-VIEW-1, F-VIEW-2, F-VIEW-31, F-VIEW-32 |
 | G-VIEW-2 | A reader picks a workspace, any branch, tag or commit of it, and the ref of each part whose tests are in another repository, then loads them and sees the knowledge and coverage of those inputs. The result identifies its requested refs, full resolved commits, effective configuration and analyzer. Later choices cannot relabel that result. Loading again downloads only what changed since. | F-VIEW-3, F-VIEW-4, F-VIEW-11, F-VIEW-17, F-VIEW-18, F-VIEW-19, F-VIEW-22, F-VIEW-27, F-VIEW-28 |
 | G-VIEW-3 | The coverage a reader sees is the coverage `measureCoverage` prints for the same included knowledge and tests. The page says that it counts only the IDs a test names and gives the complete, failed or missing test-read outcome of every part, with reasons for failed or missing reads. Incomplete reads cannot appear to cover all parts. | F-VIEW-5, F-VIEW-6, F-VIEW-12, F-VIEW-20, F-VIEW-21, F-VIEW-23 |
 | G-VIEW-4 | A reader reads a private repository, of the workspace or of a part, with a read-only token they name once and pick where it is needed. A token leaves the browser only to GitHub and is gone when the tab closes. | F-VIEW-7, F-VIEW-12 |

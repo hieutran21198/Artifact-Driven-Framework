@@ -13,6 +13,7 @@ routes setting, the page leaves API coverage out.
 from datetime import datetime, timezone
 from pathlib import Path
 import argparse
+import os
 import base64
 import hashlib
 import json
@@ -70,6 +71,34 @@ def pages(folder):
             yield path, path.read_text(encoding="utf-8")
 
 
+def section(text, name):
+    """The text under a ## heading, up to the next one."""
+    part = re.split(r"^## " + re.escape(name) + r"\s*$", text, maxsplit=1, flags=re.MULTILINE)
+    return re.split(r"^#{1,2} ", part[1], maxsplit=1, flags=re.MULTILINE)[0] if len(part) > 1 else ""
+
+
+def blocks(text):
+    """The paragraphs and list items of a Markdown passage, as plain text."""
+    found, current = [], []
+    for line in text.splitlines() + [""]:
+        if line.startswith(("- ", "```")) or not line.strip() or re.match(r"^\d+\. ", line):
+            if current:
+                found.append(plain(" ".join(current)))
+            current = [line[2:]] if line.startswith("- ") else []
+        else:
+            current.append(line.strip())
+    return [b for b in found if b]
+
+
+def head_item(text, label):
+    """The text of a "- Label: value" item before the first ## heading."""
+    head = re.split(r"^## ", text, maxsplit=1, flags=re.MULTILINE)[0]
+    for item in blocks(head):
+        if item.startswith(label + ": "):
+            return item[len(label) + 2:]
+    return ""
+
+
 def read_rows(text):
     for line in text.splitlines():
         row = ROW.match(line)
@@ -90,6 +119,7 @@ def knowledge(graph):
             "page": page,
             "criteria": criteria,
             "flows": sorted(graph.links.get(page, ())),
+            "need": blocks(section(text, "Need")),
         })
     for path, text in pages("flows"):
         page = impact.rel(path)
@@ -98,7 +128,11 @@ def knowledge(graph):
             if i not in graph.flow_rules and len(c) >= 4:
                 scenarios.append({"id": i, "given": plain(c[0]), "when": plain(c[1]), "then": plain(c[2]),
                                   "covers": impact.ID.findall(c[3])})
-        flows.append({"page": page, "title": (TITLE.search(text) or [None, page])[1], "scenarios": scenarios})
+        head = re.split(r"^## ", text, maxsplit=1, flags=re.MULTILINE)[0]
+        crosses = next((line for line in re.split(r"\n(?=- )", head) if line.startswith("- Crosses:")), "")
+        flows.append({"page": page, "title": (TITLE.search(text) or [None, page])[1], "scenarios": scenarios,
+                      "trigger": head_item(text, "Trigger"), "outcome": head_item(text, "Outcome"),
+                      "crosses": list(dict.fromkeys(re.findall(r"\(\.\./artifacts/([^/)]+)/", crosses)))})
     for path, text in pages("artifacts"):
         if path.name == "specification.md":
             artifact = path.parent.name
@@ -195,6 +229,41 @@ def metrics(graph):
     return size
 
 
+def natural(unit):
+    return [int(p) if p.isdigit() else p for p in re.split(r"(\d+)", unit)]
+
+
+def stories(graph, goals, flows):
+    """For each goal: its flows, each with the rules it reaches, and the
+    artifacts that hold those rules or that the flows cross. A rule is listed
+    once, under the first flow that reaches it."""
+    crosses = {f["page"]: f["crosses"] for f in flows}
+    found = {}
+    for goal in goals:
+        start = {c["id"] for c in goal["criteria"]}
+        units, _ = impact.relies_on(graph, start)
+        rules = {u for u in units if impact.kind(u, graph) in ("Artifact rules", "Flow rules")}
+        text = (KNOWLEDGE / goal["page"]).read_text(encoding="utf-8")
+        pages = sorted((p for p in goal["flows"] if p.startswith("flows/")),
+                       key=lambda p: (text.find(p.split("/")[-1]), p))
+        story, placed, artifacts = [], set(), {}
+        for page in pages:
+            mine = {u for u in units if graph.file.get(u) == page and u.startswith("F-")}
+            reached = impact.relies_on(graph, mine)[0] & rules - placed
+            placed |= reached
+            story.append({"page": page, "rules": sorted(reached, key=natural)})
+            for name in crosses.get(page, []):
+                artifacts.setdefault(name, [])
+        if rules - placed:
+            story.append({"page": None, "rules": sorted(rules - placed, key=natural)})
+        for rule in sorted(rules, key=natural):
+            home = graph.file[rule].split("/")
+            if home[0] == "artifacts":
+                artifacts.setdefault(home[1], []).append(rule)
+        found[goal["key"]] = {"flows": story, "artifacts": artifacts}
+    return found
+
+
 def commit():
     try:
         return subprocess.run(["git", "-C", str(ROOT), "rev-parse", "--short", "HEAD"], check=True,
@@ -228,7 +297,10 @@ def main(argv):
         "commit": commit(),
         "built": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "requirements": requirements, "goals": goals, "flows": flows, "rules": rules,
-        "flowRules": [{"id": i} for i in sorted(graph.flow_rules)],
+        "flowRules": [{"id": i, "owner": r["owner"], "text": plain(r["rule"])} for i, r in sorted(graph.flow_rules.items())],
+        "stories": stories(graph, goals, flows),
+        # Story links open the source pages, relative to the written page.
+        "source": Path(os.path.relpath(KNOWLEDGE, output.resolve().parent)).as_posix() + "/",
         "operations": operations, "routes": service_routes(operations, services),
         "graph": display_graph(graph), "diagrams": diagrams(), "size": size,
     }

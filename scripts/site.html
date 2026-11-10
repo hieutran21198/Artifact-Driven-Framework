@@ -49,6 +49,21 @@ button.primary{border:1px solid var(--ink);background:var(--ink);color:var(--car
 .card div:has(> svg),.card:has(> table){overflow-x:auto;min-width:0}
 /* Goals: six to a page; the criteria and flows open in a side panel. */
 .goal-card{display:flex;flex-direction:column;gap:10px}
+/* The story of a goal: goal, flows, rules, artifacts, drawn from the knowledge. Blocks wrap; lines join them. */
+.story{margin-top:12px}.story-head{display:flex;gap:8px 18px;flex-wrap:wrap;align-items:center}.story-head h3{margin:0}
+.story .steps{display:flex;gap:4px 16px;flex-wrap:wrap}.story .steps button{font:14px var(--body);color:var(--faint);background:none;border:0;border-bottom:1px solid transparent;padding:6px 0;cursor:pointer}
+.story .steps button[aria-current="step"]{color:var(--ink);border-bottom-color:var(--ink)}
+.stage{position:relative;display:grid;gap:28px;margin-top:14px;padding:6px 0}.stage>svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.stage path{fill:none;stroke:var(--faint);stroke-width:1.2}
+.srow{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;position:relative;z-index:1}.scol{flex:1 1 220px;min-width:0;max-width:420px;display:grid;gap:8px;align-content:start;justify-items:center}
+.node{border:0;border-radius:12px;padding:7px 12px;font:13px/1.35 var(--body);text-align:left;cursor:pointer;color:var(--ink);max-width:100%;overflow-wrap:anywhere}
+.node b{display:block;font-weight:400;font-size:11px;opacity:.8}.node:hover,.node.sel{box-shadow:0 0 0 1.5px var(--muted)}
+.n-goal{background:var(--c0);color:var(--c0i)}.n-flow{background:var(--c1);color:var(--c1i)}.n-rule{background:var(--c2);color:var(--c2i);border-radius:8px;padding:3px 9px;font-size:12px}.n-art{background:transparent;color:var(--c3i);font-weight:500}
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.sart{flex:1 1 220px;min-width:0;max-width:420px;background:var(--c3);border-radius:16px;padding:8px 10px 12px;display:grid;gap:6px;justify-items:center;align-content:start}
+.stage [data-from]{display:none}.stage .on{display:revert}.stage .chips.on,.stage .srow.on{display:flex}.stage .sart.on{display:grid}
+@media (prefers-reduced-motion:no-preference){.stage .on{animation:rise .6s ease both}@keyframes rise{from{opacity:0;transform:translateY(6px)}}.stage path{transition:opacity .6s}}
+#story-cap{margin:10px 0 0;font-size:15px}.side h3{margin:20px 0 6px}.side dl{margin:0}.side dt{color:var(--muted);font-size:13px;margin-top:8px}.side dd{margin:0}
+button.pill{border:0;cursor:pointer;font-family:var(--mono)}.src{font-size:13px;margin-top:20px}
 .goal-card .open{margin-top:auto;align-self:flex-start}
 .pager{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:14px;font-size:14px;color:var(--muted)}.pager:empty{display:none}
 .side-back{position:fixed;inset:0;background:rgba(31,41,51,.28);z-index:20}
@@ -88,7 +103,10 @@ if (window.mermaidReady) mermaidReady();
 
 <section id="coverage"><h2 data-i="nav.coverage"></h2><p class="sub" data-i="coverage.sub"></p><div class="card" id="coverage-bars"></div></section>
 
-<section id="goals"><h2 data-i="nav.goals"></h2><p class="sub" data-i="goals.sub"></p><div class="two" id="goal-cards"></div><div class="pager" id="goal-pager"></div></section>
+<section id="goals"><h2 data-i="nav.goals"></h2><p class="sub" data-i="goals.sub"></p><div class="two" id="goal-cards"></div><div class="pager" id="goal-pager"></div>
+<div class="card story" id="story" hidden><div class="story-head"><h3 id="story-title"></h3><div class="steps" id="story-steps" role="group"></div><button class="plain" id="story-play" type="button"></button></div>
+<div class="stage" id="story-stage"><svg id="story-lines" aria-hidden="true"></svg><div class="srow" id="story-goal"></div><div class="srow" id="story-flows"></div><div class="srow" id="story-arts" data-from="3"></div></div>
+<p id="story-cap" aria-live="polite"></p><p class="sub" style="margin:0" data-i="story.hint"></p></div></section>
 
 <section id="diagrams"><h2 data-i="nav.diagrams"></h2><p class="sub" data-i="diagrams.sub"></p><div id="diagram-cards"></div></section>
 
@@ -118,7 +136,7 @@ en:{
 "m.goals":["Goals","business outcomes"],"m.flows":["Flows","behaviors across domains"],"m.scenarios":["Scenarios","testable cases"],"m.rules":["Rules","artifact and Flow rules"],"m.operations":["Operations","API operations with a contract"],"m.coverage":["API coverage",(c,t)=>`${c} of ${t} service routes`],
 "withKnowledge":"Routes with knowledge","withoutKnowledge":"Routes without knowledge",
 
-"flowRules":"Flow rules","flows":"Flows","scenarios":"Scenarios","operations":"Operations","criterion":"Criterion","none":"none","None":"None","details":"Criteria and flows","close":"Close","prev":"Previous","next":"Next","layer.system/":"System","layer.goals/":"Goals","layer.flows/":"Flows",
+"flowRules":"Flow rules","flows":"Flows","scenarios":"Scenarios","operations":"Operations","criterion":"Criterion","none":"none","None":"None","details":"Criteria and flows","close":"Close","story.open":"Show the story","story.hint":"Click a block to read it.","story.steps":["Goal","Flows","Rules","Artifacts"],"story.caps":[(t)=>`Goal: ${t}`,n=>`Flows: ${n}`,n=>`Rules: ${n}, by flow`,n=>`Artifacts: ${n}, each with its rules`],"play":"Play","pause":"Pause","need":"Need","trigger":"Trigger","outcome":"Outcome","given":"Given","when":"When","then":"Then","provenBy":"Proven by","artifact":"Artifact","flow":"Flow","rule":"Rule","goal":"Goal","source":"Source","otherRules":"Other rules","rulesHere":"Rules in this goal","prev":"Previous","next":"Next","layer.system/":"System","layer.goals/":"Goals","layer.flows/":"Flows",
 
 "showAll":"Show all",
 
@@ -151,7 +169,7 @@ vi:{
 "m.goals":["Goal","kết quả nghiệp vụ"],"m.flows":["Flow","hành vi qua nhiều domain"],"m.scenarios":["Scenario","ca test"],"m.rules":["Rule","rule của artifact và Flow"],"m.operations":["Operation","operation API có contract"],"m.coverage":["Độ phủ API",(c,t)=>`${c} trên ${t} route service`],
 "withKnowledge":"Route đã có knowledge","withoutKnowledge":"Route chưa có knowledge",
 
-"flows":"Flow","scenarios":"Scenario","operations":"Operation","criterion":"Criterion","none":"chưa có","None":"Không có","details":"Criterion và flow","close":"Đóng","prev":"Trước","next":"Sau","layer.system/":"System","layer.goals/":"Goal","layer.flows/":"Flow",
+"flows":"Flow","scenarios":"Scenario","operations":"Operation","criterion":"Criterion","none":"chưa có","None":"Không có","details":"Criterion và flow","close":"Đóng","story.open":"Xem story","story.hint":"Bấm vào một khối để đọc.","story.steps":["Goal","Flow","Rule","Artifact"],"story.caps":[(t)=>`Goal: ${t}`,n=>`Flow: ${n}`,n=>`Rule: ${n}, theo flow`,n=>`Artifact: ${n}, kèm rule của nó`],"play":"Chạy","pause":"Dừng","need":"Nhu cầu","trigger":"Kích hoạt","outcome":"Kết quả","given":"Given","when":"When","then":"Then","provenBy":"Chứng minh bởi","artifact":"Artifact","flow":"Flow","rule":"Rule","goal":"Goal","source":"Nguồn","otherRules":"Rule khác","rulesHere":"Rule trong goal này","prev":"Trước","next":"Sau","layer.system/":"System","layer.goals/":"Goal","layer.flows/":"Flow",
 
 "showAll":"Xem tất cả",
 
@@ -197,19 +215,88 @@ drawMap();renderPicker();drawGuideSystem();
 if(analysis)renderResults();
 }
 function metricCards(m,c,t){return m.map(([k,v])=>{const [label,note]=T(k);return `<div class="card metric"><div class="k">${label}</div><div class="v">${v}</div><div class="n">${typeof note==="function"?note(c,t):note}</div></div>`;}).join("");}
-// Goals six to a page; each card opens its criteria and flows in the side panel.
-const PER_PAGE=6;let goalList=[],goalPage=0,sideFor=null;
+// Goals six to a page; each card shows the story of its goal and opens the goal in the side panel.
+const PER_PAGE=6;let goalList=[],goalPage=0;
 const metricsOf=g=>{const z=DATA.size[g.key]||{};return `<div class="grid" style="grid-template-columns:repeat(3,minmax(0,1fr));margin:0">${[["flows",z.flows],["scenarios",z.scenarios],["operations",z.operations]].map(([k,v])=>`<div class="metric"><div class="k">${T(k)}</div><div class="v" style="font-size:20px">${v??0}</div></div>`).join("")}</div>`;};
 function drawGoals(){const pages=Math.max(1,Math.ceil(goalList.length/PER_PAGE));goalPage=Math.min(goalPage,pages-1);
- $("goal-cards").innerHTML=goalList.slice(goalPage*PER_PAGE,(goalPage+1)*PER_PAGE).map(g=>`<div class="card goal-card"><h3>${esc(g.title)} <span class="muted">${esc(g.key)}</span></h3>${metricsOf(g)}<button class="plain open" data-goal="${esc(g.key)}">${T("details")} · ${g.criteria.length}</button></div>`).join("");
+ $("goal-cards").innerHTML=goalList.slice(goalPage*PER_PAGE,(goalPage+1)*PER_PAGE).map(g=>`<div class="card goal-card"><h3>${esc(g.title)} <span class="muted">${esc(g.key)}</span></h3>${metricsOf(g)}<button class="plain open" data-goal="${esc(g.key)}">${T("story.open")}</button></div>`).join("");
  $("goal-pager").innerHTML=pages>1?`<button class="plain" data-page="-1"${goalPage?"":" disabled"}>← ${T("prev")}</button><span>${goalPage+1} / ${pages}</span><button class="plain" data-page="1"${goalPage<pages-1?"":" disabled"}>${T("next")} →</button>`:"";}
-function openSide(key){const g=DATA.goals.find(x=>x.key===key);if(!g)return;sideFor=key;
- const crit=g.criteria.map(c=>{const by=c.proven;return `<tr><td>${pill(c.id)}</td><td>${esc(c.text)}</td><td class="num">${by.length?by.length:`<span class="pill gap">${T("none")}</span>`}</td></tr>`;}).join("");
- $("side-title").innerHTML=`${esc(g.title)} <span class="muted" style="font-size:16px">${esc(g.key)}</span>`;
- $("side-close").textContent=T("close")+" ×";
- $("side-body").innerHTML=`${metricsOf(g)}<h3 style="margin:20px 0 6px">${T("criterion")}</h3><table><tr><th>${T("criterion")}</th><th></th><th class="num">${T("scenarios")}</th></tr>${crit}</table>
-  <h3 style="margin:20px 0 6px">${T("flows")}</h3><ul class="tight">${g.flows.map(p=>flowByPage[p]?`<li>${esc(flowByPage[p].title)} · ${flowByPage[p].scenarios.length} ${T("scenarios").toLowerCase()}</li>`:"").join("")}</ul>`;
- $("side").hidden=$("side-back").hidden=false;placeSide();$("side-close").focus();}
+// The story and the side panel. A node is [kind, id]: goal key, flow page, rule ID or artifact name.
+const STEPS=4,reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;let storyGoal=null,storyStep=reduce?STEPS-1:0,storyTimer=null,sideNode=null;
+const ruleText=id=>(DATA.rules.find(r=>r.id===id)||flowRules.find(r=>r.id===id)||{}).text||"";
+const isFlowRule=id=>flowRules.some(r=>r.id===id);
+const label=id=>{const w=ruleText(id).split(/\s+/).filter(Boolean);return w.length>4?w.slice(0,4).join(" ")+"…":w.join(" ");};
+const nodeBtn=(kind,id,cls,html,from)=>`<button type="button" class="node ${cls}" data-node="${kind}" data-id="${esc(id)}"${from!==undefined?` data-from="${from}"`:""}>${html}</button>`;
+const ruleChip=id=>nodeBtn("rule",id,"n-rule",`${esc(id)}${label(id)?" · "+esc(label(id)):""}`);
+const idLink=(kind,id,cls)=>`<button type="button" class="pill ${cls}" data-node="${kind}" data-id="${esc(id)}">${esc(id)}</button>`;
+const scenFlow=id=>DATA.flows.find(f=>f.scenarios.some(s=>s.id===id));
+const scenLink=id=>{const f=scenFlow(id);return f?idLink("flow",f.page,"p1").replace(`>${esc(f.page)}<`,`>${esc(id)}<`):pill(id);};
+function showStory(key){const g=DATA.goals.find(x=>x.key===key),s=DATA.stories[key];if(!g||!s)return;storyGoal=key;$("story").hidden=false;
+ $("story-title").textContent=g.title;
+ $("story-goal").innerHTML=nodeBtn("goal",key,"n-goal",`<b>${T("goal")}</b>${esc(g.title)}`);
+ $("story-flows").innerHTML=s.flows.map(f=>{const fl=flowByPage[f.page];
+  return `<div class="scol" data-flow="${esc(f.page||"")}">${f.page?nodeBtn("flow",f.page,"n-flow",`<b>${T("flow")}</b>${esc(fl?fl.title:f.page)}`,1):`<span class="muted" data-from="2">${T("otherRules")}</span>`}
+   <div class="chips" data-from="2" data-until="2">${f.rules.filter(x=>!isFlowRule(x)).map(ruleChip).join("")}</div>
+   <div class="chips" data-from="2">${f.rules.filter(isFlowRule).map(ruleChip).join("")}</div></div>`;}).join("");
+ $("story-arts").innerHTML=Object.entries(s.artifacts).map(([a,rs])=>`<div class="sart" data-art="${esc(a)}">${nodeBtn("art",a,"n-art",esc(a))}<div class="chips">${rs.map(ruleChip).join("")}</div></div>`).join("");
+ $("story-steps").innerHTML=T("story.steps").map((n,i)=>`<button type="button" data-step="${i}">${n}</button>`).join("");
+ showStep(storyStep);}
+function showStep(n){storyStep=(n+STEPS)%STEPS;const s=DATA.stories[storyGoal],g=DATA.goals.find(x=>x.key===storyGoal);
+ $("story-stage").querySelectorAll("[data-from]").forEach(e=>{const until=e.dataset.until===undefined?STEPS:+e.dataset.until;
+  const on=storyStep>=+e.dataset.from&&storyStep<=until&&!(e.classList.contains("chips")&&!e.children.length);
+  if(on!==e.classList.contains("on")){e.classList.toggle("on",on);}});
+ const rules=s.flows.flatMap(f=>f.rules),counts=[g.title,s.flows.filter(f=>f.page).length,rules.length,Object.keys(s.artifacts).length];
+ $("story-cap").textContent=T("story.caps")[storyStep](counts[storyStep]);
+ [...$("story-steps").children].forEach((b,i)=>b.setAttribute("aria-current",i===storyStep?"step":"false"));
+ $("story-play").textContent=T(storyTimer?"pause":"play");
+ drawLines();}
+function drawLines(){const stage=$("story-stage"),svg=$("story-lines");if($("story").hidden)return;const box=stage.getBoundingClientRect(),lines=[];
+ const at=(e,end)=>{const r=e.getBoundingClientRect();return [r.left-box.left+r.width/2,(end?r.bottom:r.top)-box.top];};
+ const curve=(a,b)=>{if(!a||!b||!a.offsetParent||!b.offsetParent)return;const [x1,y1]=at(a,true),[x2,y2]=at(b,false),m=(y1+y2)/2;lines.push(`<path d="M${x1} ${y1}C${x1} ${m},${x2} ${m},${x2} ${y2}"/>`);};
+ const goal=$("story-goal").firstElementChild,s=DATA.stories[storyGoal];
+ if(storyStep>=1)$("story-flows").querySelectorAll(".n-flow").forEach(f=>curve(goal,f));
+ if(storyStep>=3)s.flows.forEach(f=>{const fl=flowByPage[f.page];if(!fl)return;const from=$("story-flows").querySelector(`[data-flow="${CSS.escape(f.page)}"]`);
+  fl.crosses.forEach(a=>curve(from,$("story-arts").querySelector(`[data-art="${CSS.escape(a)}"] .n-art`)));});
+ svg.setAttribute("viewBox",`0 0 ${box.width} ${box.height}`);svg.innerHTML=lines.join("");}
+function playStory(on){clearInterval(storyTimer);storyTimer=on?setInterval(()=>showStep(storyStep+1),3500):null;$("story-play").textContent=T(on?"pause":"play");}
+new ResizeObserver(()=>drawLines()).observe($("story-stage"));
+// Diagrams in the side panel go through the same source check and SVG copy as the Diagrams section.
+const sideSvgs=Object.create(null);let sideQueue=Promise.resolve();
+const sideDiagram=i=>`<div class="diagram" data-dg="${i}"><pre>${esc(DATA.diagrams[i].code)}</pre></div>`;
+function fillSideDiagrams(){$("side-body").querySelectorAll("[data-dg]").forEach(e=>{const i=+e.dataset.dg,d=DATA.diagrams[i];
+ if(sideSvgs[i]){e.replaceChildren(sideSvgs[i].cloneNode(true));return;}
+ if(!mermaidOn||!diagramSourceAllowed(d.code))return;
+ sideQueue=sideQueue.then(()=>sideSvgs[i]?null:mermaid.render("sdsvg"+i,d.code).then(r=>{sideSvgs[i]=safeDiagram(r.svg,"sdsvg"+i);}).catch(()=>{/* The readable source remains. */}))
+  .then(()=>{const now=$("side-body").querySelector(`[data-dg="${i}"]`);if(now&&sideSvgs[i])now.replaceChildren(sideSvgs[i].cloneNode(true));scheduleSize();});});}
+const diagramsOf=(test,re)=>DATA.diagrams.map((d,i)=>[d,i]).filter(([d])=>test(d.page)&&re.test(d.code)).map(([,i])=>sideDiagram(i)).join("");
+const srcLink=page=>`<p class="src">${T("source")}: <a href="${esc(DATA.source+page)}" target="_blank" rel="noopener noreferrer">${esc(page)}</a></p>`;
+function openNode(kind,id){const s=DATA.stories[storyGoal]||{flows:[],artifacts:{}};let title="",body="";
+ if(kind==="goal"){const g=DATA.goals.find(x=>x.key===id);if(!g)return;
+  title=`${esc(g.title)} <span class="muted" style="font-size:16px">${esc(g.key)}</span>`;
+  const crit=g.criteria.map(c=>`<tr><td>${pill(c.id)}</td><td>${esc(c.text)}</td><td>${c.proven.length?c.proven.map(scenLink).join(""):`<span class="pill gap">${T("none")}</span>`}</td></tr>`).join("");
+  body=`${metricsOf(g)}${g.need.length?`<h3>${T("need")}</h3>${g.need.map(x=>`<p style="margin:0 0 6px">${esc(x)}</p>`).join("")}`:""}
+   <h3>${T("criterion")}</h3><table><tr><th>${T("criterion")}</th><th></th><th>${T("provenBy")}</th></tr>${crit}</table>
+   <h3>${T("flows")}</h3><p>${g.flows.filter(p=>flowByPage[p]).map(p=>idLink("flow",p,"p1").replace(`>${esc(p)}<`,`>${esc(flowByPage[p].title)}<`)).join("")}</p>${srcLink(g.page)}`;}
+ else if(kind==="flow"){const f=flowByPage[id];if(!f)return;title=esc(f.title);
+  const rows=f.scenarios.map(x=>`<tr><td>${pill(x.id)}</td><td>${esc(x.given)}</td><td>${esc(x.when)}</td><td>${esc(x.then)}</td><td>${x.covers.filter(c=>ruleText(c)).map(c=>idLink("rule",c,"p2")).join("")}</td></tr>`).join("");
+  body=`<dl>${f.trigger?`<dt>${T("trigger")}</dt><dd>${esc(f.trigger)}</dd>`:""}${f.outcome?`<dt>${T("outcome")}</dt><dd>${esc(f.outcome)}</dd>`:""}</dl>
+   ${diagramsOf(p=>p===f.page,/^\s*(?:%%[^\n]*\n\s*)*sequenceDiagram\b/)}
+   <h3>${T("scenarios")}</h3><div style="overflow-x:auto"><table><tr><th></th><th>${T("given")}</th><th>${T("when")}</th><th>${T("then")}</th><th>${T("rule")}</th></tr>${rows}</table></div>${srcLink(f.page)}`;}
+ else if(kind==="rule"){const text=ruleText(id);if(!text)return;const fr=flowRules.find(r=>r.id===id),art=(DATA.rules.find(r=>r.id===id)||{}).artifact;
+  title=`${esc(id)} <span class="muted" style="font-size:16px">${T("rule")}</span>`;
+  const by=scen.filter(x=>x.covers.includes(id)).map(x=>scenLink(x.id)).join("");
+  body=`<p>${esc(text)}</p><dl><dt>${T("provenBy")}</dt><dd>${by||`<span class="pill gap">${T("none")}</span>`}</dd>
+   ${art?`<dt>${T("artifact")}</dt><dd>${idLink("art",art,"p3")}</dd>`:""}${fr&&flowByPage[fr.owner]?`<dt>${T("flow")}</dt><dd>${idLink("flow",fr.owner,"p1").replace(`>${esc(fr.owner)}<`,`>${esc(flowByPage[fr.owner].title)}<`)}</dd>`:""}</dl>
+   ${srcLink(fr?fr.owner:`artifacts/${art}/specification.md`)}`;}
+ else if(kind==="art"){title=`${esc(id)} <span class="muted" style="font-size:16px">${T("artifact")}</span>`;
+  const rs=s.artifacts[id]||[];
+  body=`<h3>${T("rulesHere")}</h3><table>${rs.map(x=>`<tr><td>${idLink("rule",x,"p2")}</td><td>${esc(ruleText(x))}</td></tr>`).join("")||`<tr><td>${T("None")}</td></tr>`}</table>
+   ${diagramsOf(p=>p.startsWith(`artifacts/${id}/`),/^\s*(?:%%[^\n]*\n\s*)*(?:stateDiagram-v2|stateDiagram|classDiagram)\b/)}${srcLink(`artifacts/${id}/README.md`)}`;}
+ else return;
+ sideNode=[kind,id];$("side-title").innerHTML=title;$("side-close").textContent=T("close")+" ×";$("side-body").innerHTML=body;
+ $("story-stage").querySelectorAll(".node").forEach(e=>e.classList.toggle("sel",e.dataset.node===kind&&e.dataset.id===id));
+ const wasOpen=!$("side").hidden;$("side").hidden=$("side-back").hidden=false;placeSide();fillSideDiagrams();if(!wasOpen)$("side-close").focus();}
+function openGoal(key){showStory(key);openNode("goal",key);}
 // The opaque-origin frame exchanges dimensions only. It never reads its parent's DOM or storage.
 let frameRender=null,frameViewport=null,lastHeight=-1,sizePending=false;
 const frameNumber=n=>typeof n==="number"&&Number.isFinite(n)&&n>=0&&n<=10000000;
@@ -231,7 +318,7 @@ if(document.fonts)document.fonts.ready.then(scheduleSize);
 function placeSide(){const s=$("side"),v=frameViewport;
  if(!frameRender||!v||s.hidden){s.style.top="";s.style.height="";return;}
  s.style.top=v.top+"px";s.style.height=v.height+"px";}
-function closeSide(){sideFor=null;$("side").hidden=$("side-back").hidden=true;}
+function closeSide(){sideNode=null;$("side").hidden=$("side-back").hidden=true;}
 function renderPicker(){const all=chosen.has("*"),n=all?DATA.goals.length:chosen.size;
  $("drop-label").textContent=T("drop")(n);
  $("goal-options").innerHTML=`<label><input type="checkbox" value="*" ${all?"checked":""}> ${T("allGoals")}</label><hr>`+DATA.goals.map(g=>{const on=all||chosen.has(g.key),off=!all&&!on&&chosen.size>=3;return `<label class="${off?"off":""}"><input type="checkbox" value="${esc(g.key)}" ${on?"checked":""} ${off||all?"disabled":""}> ${esc(g.title)} <span class="muted">${esc(g.key)}</span></label>`;}).join("");
@@ -247,7 +334,7 @@ function renderResults(){
  $("coverage-bars").innerHTML=`<p class="muted" style="margin:0 0 8px;font-size:13px">${T("projectNote")}</p>`+Object.entries(spaces).sort((a,b)=>b[1].length-a[1].length).map(([s,rs])=>{const c=rs.filter(r=>r.covered).length;return `<div class="row"><code>${esc(s)}</code><div class="bar"><i style="width:${pct(c,rs.length)}%"></i></div><span class="muted">${c} / ${rs.length}</span></div>`;}).join("")
  +`<details open><summary>${T("inThis")} (${routes.length})</summary><table>${routes.map(r=>`<tr><td>${esc(r.method)}</td><td><code>${esc(r.path)}</code></td><td>${pill(r.covered)}</td></tr>`).join("")}</table></details>`
  +`<details><summary>${T("withoutKnowledge")} (${ROUTES.length-covered})</summary><table>${ROUTES.filter(r=>!r.covered).map(r=>`<tr><td>${esc(r.method)}</td><td><code>${esc(r.path)}</code></td></tr>`).join("")}</table></details>`;
- goalList=goals;goalPage=0;drawGoals();if(sideFor)openSide(sideFor);
+ goalList=goals;goalPage=0;drawGoals();showStory(goals.some(g=>g.key===storyGoal)?storyGoal:goals[0]&&goals[0].key);if(sideNode)openNode(...sideNode);
  const pages=new Set(["system/context.md",...goals.flatMap(g=>[g.page,...g.flows])]);
  drawDiagrams(DATA.diagrams.map((d,i)=>({...d,i})).filter(d=>pages.has(d.page)));
 }
@@ -367,10 +454,13 @@ function drawMap(){const svg=$("map");[...svg.querySelectorAll("g,rect,text")].f
 const NS="http://www.w3.org/2000/svg",CV=["--c0","--c1","--c2","--c3",,"--c1"],CI=["--c0i","--c1i","--c2i","--c3i",,"--c1i"];
 const chosen=new Set();let analysis=null;
 $("diagram-cards").onclick=e=>{const b=e.target.closest("[data-slide]");if(!b||b.disabled)return;const l=b.closest("[data-layer]").dataset.layer;slideAt[l]=(slideAt[l]||0)+ +b.dataset.slide;drawDiagrams(shown);};
-$("goal-cards").onclick=e=>{const b=e.target.closest("[data-goal]");if(b)openSide(b.dataset.goal);};
+$("goal-cards").onclick=e=>{const b=e.target.closest("[data-goal]");if(b)openGoal(b.dataset.goal);};
+$("story-steps").onclick=e=>{const b=e.target.closest("[data-step]");if(b){playStory(false);showStep(+b.dataset.step);}};
+$("story-play").onclick=()=>playStory(!storyTimer);
+$("story-stage").onclick=$("side-body").onclick=e=>{const b=e.target.closest("[data-node]");if(b)openNode(b.dataset.node,b.dataset.id);};
 $("goal-pager").onclick=e=>{const b=e.target.closest("[data-page]");if(!b||b.disabled)return;goalPage+=+b.dataset.page;drawGoals();$("goals").scrollIntoView({block:"start"});};
 $("side-close").onclick=$("side-back").onclick=closeSide;
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&sideFor)closeSide();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&sideNode)closeSide();});
 $("run").onclick=()=>{analysis=new Set(chosen.has("*")?DATA.goals.map(g=>g.key):[...chosen]);$("drop").open=false;$("results").hidden=false;render();$("summary").scrollIntoView({behavior:"smooth"});};
 document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>{lang=b.dataset.lang;try{localStorage.setItem("lang",lang);}catch(e){}render();});
 const walk=(s,adj)=>{const seen=new Set(s),q=[...s];while(q.length)for(const n of adj[q.pop()]||[])if(!seen.has(n)){seen.add(n);q.push(n);}return seen;};

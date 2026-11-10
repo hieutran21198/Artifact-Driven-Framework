@@ -112,6 +112,32 @@ class InstallWorkspace(unittest.TestCase):
                           if "FR-RETURN-1" in scenario["covers"]},
                          {"F-RETURN-3", "F-RETURN-8", "F-RETURN-9", "F-RETURN-10"})
 
+    def test_KN_16_F_VIEW_32_story_of_the_sample_goal(self):
+        """KN-16, F-VIEW-32: the story of G-BORROW holds its flows, rules and artifacts."""
+        ws = self.out / "ws"
+        run = install(FRAMEWORK, ws)
+        self.assertEqual(run.returncode, 0, run.stderr)
+
+        def command(script, *args):
+            result = subprocess.run([sys.executable, "scripts/" + script, *args],
+                                    cwd=ws, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            return result.stdout
+
+        command("site.py")
+        html = (ws / "build/site/index.html").read_text()
+        story = json.loads(re.search(r"<script>const DATA=(.*?);</script>", html).group(1))["stories"]["G-BORROW"]
+        self.assertEqual([f["page"] for f in story["flows"]], ["flows/borrow-book.md", "flows/return-book.md"])
+        down = command("impact.py", "--down", "G-BORROW")
+        expected = {i for line in down.splitlines() if line.startswith(("Artifact rules: ", "Flow rules: "))
+                    for i in line.split(": ", 1)[1].split(", ")}
+        listed = [i for f in story["flows"] for i in f["rules"]]
+        self.assertEqual(len(listed), len(set(listed)))
+        self.assertEqual(set(listed), expected)
+        self.assertEqual(set(story["artifacts"]), {"book", "member", "notice"})
+        held = {i for rules in story["artifacts"].values() for i in rules}
+        self.assertEqual(held, {i for i in expected if not i.startswith("FR-")})
+
     @unittest.skipUnless(shutil.which("git"), "needs git")
     def test_F_START_11_git_copy_gives_no_ignored_file(self):
         """F-START-11, WS-10: a local copy that is a Git working tree gives the

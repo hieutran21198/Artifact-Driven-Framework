@@ -148,6 +148,7 @@ sequenceDiagram
 | F-VIEW-29 | A previous build is shown, and a new load cannot read its workspace configuration or fails after reading only some knowledge files | The reader calls `openWorkspace`, then calls it again with the same inputs after the read failure is resolved | The failed load shows its reason and no new build; a retained older build keeps its original source, configuration and analyzer identities; other workspaces remain usable; the later load retries the failed read and publishes the recovered result without the previous failure warning | TRK-5, TRK-9, TRK-15, TRK-17 |
 | F-VIEW-30 | Withdrawn: moved to F-VIEW-31. | — | — | — |
 | F-VIEW-31 | A workspace has local and shared Flow rules, scenarios that cite them, an FR-shaped artifact definition outside that form, and a link to client-owned design outside the knowledge folder | The reader calls `openWorkspace` and inspects the knowledge site and coverage | The site counts the classified Flow rules apart from scenarios and artifact rules; the design link adds no dependency or execution evidence; coverage aggregates the rule types and does not count a tested rule as a tested scenario | KN-14, KN-13, TST-3, TST-4, TRK-2, TRK-3 |
+| F-VIEW-32 | The sample's Borrow a book goal | The reader calls `openWorkspace`, analyzes the goal and plays its story | The story shows the goal, its 2 flows, the rules that `traceDown` lists for G-BORROW grouped by flow, and the artifacts book, member and notice; each block opens its details with a link to its source page | KN-16 |
 
 ## Open questions
 
