@@ -28,8 +28,8 @@ hold, stop and report the gap instead of inventing it. Name each test after the
 rule or scenario ID it proves, such as `BK-5` or `F-BORROW-3`.
 
 Check how the clients and other services call the endpoint (request shape,
-response decoding, version) before changing it; the client pages of the
-artifact and the flows say where.
+response decoding, version) before changing it; the flow steps that name the
+operation say who calls it.
 
 Read the [coding standards entry point](../../../docs/coding-standards/README.md)
 and the [General](../../../docs/coding-standards/general/README.md) and
