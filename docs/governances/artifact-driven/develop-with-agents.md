@@ -27,7 +27,7 @@ flowchart LR
 | System | Rules for everything, actors, services, clients; shared in and out: errors, authentication | [system](../../software-knowledges/system/README.md) |
 | Goal | What is needed, and how you know it is done: the criteria | [goals](../../software-knowledges/goals/README.md) |
 | Flow | The interaction: who starts it, the steps in order, what happens on failure, the scenarios. In and out across domains: endpoints, payloads, triggers. Rules across domains: Flow rules | The flows the goal lists |
-| Artifact | The domain: model, rules, lifecycle. Its in and out: `openapi.yaml` | The artifacts the flow crosses |
+| Artifact | The domain spec: model, rules, lifecycle, in `specification.md`. Its in and out: `openapi.yaml` | `artifacts/<artifact>/specification.md` of each artifact the flow crosses |
 
 The knowledge site shows the layers and the system diagram, then, for the
 goals you analyze, the story of each goal (its flows, rules and artifacts) and
