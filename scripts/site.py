@@ -10,7 +10,6 @@ service's folders with one set read by the first service's pattern. With no
 routes setting, the page leaves API coverage out.
 """
 
-from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 import argparse
@@ -22,13 +21,13 @@ import subprocess
 import sys
 
 import impact
-from project import CLIENTS, KNOWLEDGE, ROOT, SERVICES, SITE
+from project import KNOWLEDGE, ROOT, SERVICES, SITE
 
 TEMPLATE = Path(__file__).with_name("site.html")
 ROW = re.compile(r"^\| (" + impact.ID.pattern + r") \|(.*)\|\s*$")
 TITLE = re.compile(r"^# (?:Goal|Flow): (.+)$", re.MULTILINE)
 MERMAID = re.compile(r"^```mermaid\n(.*?)^```", re.MULTILINE | re.DOTALL)
-COLUMN = {"Requirements": 0, "Goal criteria": 0, "Flow scenarios": 1, "Flow rules": 5, "Artifact rules": 2, "Operations": 3, "Client needs": 4}
+COLUMN = {"Requirements": 0, "Goal criteria": 0, "Flow scenarios": 1, "Flow rules": 5, "Artifact rules": 2, "Operations": 3}
 
 
 def html_data(data):
@@ -121,15 +120,7 @@ def knowledge(graph):
             m = re.match(r"^\s+summary: (.+)$", line)
             if m and operations and operations[-1]["contract"] == impact.rel(path) and "summary" not in operations[-1]:
                 operations[-1]["summary"] = m.group(1)
-    clients = defaultdict(lambda: defaultdict(list))
-    for unit, lines in graph.text.items():
-        if impact.kind(unit, graph) == "Client needs" or (unit.endswith(impact.CLIENT_PAGES)):
-            page = unit.split("#")[0]
-            section = unit.split("#")[1] if "#" in unit else "Every item"
-            needs = [plain(l[2:]) for l in lines if l.startswith("- ")]
-            if needs:
-                clients[page][section].extend(needs)
-    return requirements, goals, flows, rules, operations, {p: dict(s) for p, s in clients.items()}
+    return requirements, goals, flows, rules, operations
 
 
 def diagrams():
@@ -172,11 +163,7 @@ def service_routes(operations, services):
 
 def display_graph(graph):
     def show(unit):
-        kind = impact.kind(unit, graph)
-        if kind == "Client needs":
-            parts = unit.split("#")[0].split("/")
-            return parts[1] + "/" + parts[2].removesuffix(".md")
-        return unit if kind in COLUMN else None
+        return unit if impact.kind(unit, graph) in COLUMN else None
 
     nodes, edges = {}, set()
     for unit in graph.file:
@@ -204,12 +191,12 @@ def metrics(graph):
     for goal in goals:
         start = {u for u in graph.file if u.startswith(goal + "-") and impact.ID.fullmatch(u)}
         units, pages = impact.relies_on(graph, start)
-        size[goal] = impact.counts(graph, impact.with_client_needs(graph, units), pages)
+        size[goal] = impact.counts(graph, units, pages)
     radius = {}
     for node in graph.file:
         if impact.kind(node, graph) in ("Requirements", "Artifact rules", "Flow rules", "Operations"):
             units, pages = impact.affected(graph, {node})
-            radius[node] = impact.counts(graph, impact.with_client_needs(graph, units), pages)
+            radius[node] = impact.counts(graph, units, pages)
     return size, radius
 
 
@@ -239,15 +226,15 @@ def main(argv):
             return 2
         services = {"routes": {**first, "folders": args.routes}}
     graph = impact.build()
-    requirements, goals, flows, rules, operations, clients = knowledge(graph)
+    requirements, goals, flows, rules, operations = knowledge(graph)
     size, radius = metrics(graph)
     data = {
-        "title": SITE["title"], "clientNames": CLIENTS,
+        "title": SITE["title"],
         "commit": commit(),
         "built": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "requirements": requirements, "goals": goals, "flows": flows, "rules": rules,
         "flowRules": [{"id": i, **r, "text": plain(r["rule"])} for i, r in sorted(graph.flow_rules.items())],
-        "operations": operations, "clients": clients, "routes": service_routes(operations, services),
+        "operations": operations, "routes": service_routes(operations, services),
         "graph": display_graph(graph), "diagrams": diagrams(), "size": size, "radius": radius,
     }
     html = site_html(data)

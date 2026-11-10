@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap">
 <style>
-:root{--bg:#fbfcfd;--card:#ffffff;--panel:#f1f4f7;--ink:#1f2933;--muted:#5f6b78;--faint:#94a0ab;--line:#e3e8ed;--accent:#2f6db5;--accent-bg:#e8f0fa;--up:#b8542c;--up-bg:#fbece5;--down:#2f7d57;--down-bg:#e6f2e8;--warn:#8a5a12;--warn-bg:#fbf3e4;--c0:#ecebfb;--c0i:#3d3a8a;--c1:#e2f3ec;--c1i:#1f6a4f;--c2:#fbe9ee;--c2i:#8a3352;--c3:#f6f3ec;--c3i:#6b5d3a;--c4:#e4f0fb;--c4i:#245b8f;
+:root{--bg:#fbfcfd;--card:#ffffff;--panel:#f1f4f7;--ink:#1f2933;--muted:#5f6b78;--faint:#94a0ab;--line:#e3e8ed;--accent:#2f6db5;--accent-bg:#e8f0fa;--up:#b8542c;--up-bg:#fbece5;--down:#2f7d57;--down-bg:#e6f2e8;--warn:#8a5a12;--warn-bg:#fbf3e4;--c0:#ecebfb;--c0i:#3d3a8a;--c1:#e2f3ec;--c1i:#1f6a4f;--c2:#fbe9ee;--c2i:#8a3352;--c3:#f6f3ec;--c3i:#6b5d3a;
   --serif:"Source Serif 4",Georgia,"Times New Roman",serif;--body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;color-scheme:light}
 /* Light only, like the landing page: the page keeps its colors on a dark system theme. */
 *{box-sizing:border-box}
@@ -28,7 +28,7 @@ nav{display:flex;gap:6px 18px;flex-wrap:wrap;font-size:14px;margin:16px 0 0;padd
 table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--faint);font-weight:400;font-size:12px}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 .pill{display:inline-block;white-space:nowrap;font-size:11px;padding:1px 7px;border-radius:999px;margin:1px 2px 1px 0;font-family:var(--mono)}
-.p0{background:var(--c0);color:var(--c0i)}.p1,.p5{background:var(--c1);color:var(--c1i)}.p2{background:var(--c2);color:var(--c2i)}.p3{background:var(--c3);color:var(--c3i)}.p4{background:var(--c4);color:var(--c4i)}
+.p0{background:var(--c0);color:var(--c0i)}.p1,.p5{background:var(--c1);color:var(--c1i)}.p2{background:var(--c2);color:var(--c2i)}.p3{background:var(--c3);color:var(--c3i)}
 .gap{background:var(--warn-bg);color:var(--warn)}
 details{margin-top:8px}summary{cursor:pointer;color:var(--accent);font-size:13px}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
@@ -78,7 +78,7 @@ if (window.mermaidReady) mermaidReady();
 <main>
 <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><h1 data-i="title"></h1><div class="chips" style="margin:0" role="group" aria-label="Language"><button class="chip" data-lang="en">EN</button><button class="chip" data-lang="vi">VI</button></div></div>
 <div class="sub" id="stamp"></div>
-<nav><a href="#overview" data-i="nav.overview"></a><a href="#guide" data-i="nav.guide"></a><a href="#analyze" data-i="nav.analyze"></a><a href="#coverage" data-i="nav.coverage"></a><a href="#goals" data-i="nav.goals"></a><a href="#diagrams" data-i="nav.diagrams"></a><a href="#explorer" data-i="nav.explorer"></a><a href="#radius" data-i="nav.radius"></a><a href="#gaps" data-i="nav.gaps"></a><a href="#clients" data-i="nav.clients"></a></nav>
+<nav><a href="#overview" data-i="nav.overview"></a><a href="#guide" data-i="nav.guide"></a><a href="#analyze" data-i="nav.analyze"></a><a href="#coverage" data-i="nav.coverage"></a><a href="#goals" data-i="nav.goals"></a><a href="#diagrams" data-i="nav.diagrams"></a><a href="#explorer" data-i="nav.explorer"></a><a href="#radius" data-i="nav.radius"></a><a href="#gaps" data-i="nav.gaps"></a></nav>
 
 <section id="overview"><h2 data-i="nav.overview"></h2><p class="sub" data-i="overview.sub"></p><div class="grid" id="metrics"></div></section>
 
@@ -105,7 +105,6 @@ if (window.mermaidReady) mermaidReady();
 
 <section id="gaps"><h2 data-i="nav.gaps"></h2><p class="sub" data-i="gaps.sub"></p><div class="two" id="gap-cards"></div></section>
 
-<section id="clients"><h2 data-i="nav.clients"></h2><p class="sub" data-i="clients.sub"></p><div class="two" id="client-cards"></div></section>
 </div>
 </main>
 <div class="side-back" id="side-back" hidden></div>
@@ -116,19 +115,18 @@ const I18N={
 en:{
 "title":DATA.title,
 "stamp":(b,c)=>`Built ${b} from commit ${c}`,
-"nav.overview":"Overview","nav.diagrams":"Diagrams","diagrams.sub":"The system context, then the diagrams of the chosen goals and of their flows, drawn from the knowledge pages.","diagrams.offline":"The diagram library did not load, so the source is shown. It loads from the network.","nav.guide":"How to read this","nav.coverage":"API coverage","nav.goals":"Goals","nav.explorer":"Impact explorer","nav.radius":"Blast radius","nav.gaps":"Gaps","nav.clients":"Client needs",
+"nav.overview":"Overview","nav.diagrams":"Diagrams","diagrams.sub":"The system context, then the diagrams of the chosen goals and of their flows, drawn from the knowledge pages.","diagrams.offline":"The diagram library did not load, so the source is shown. It loads from the network.","nav.guide":"How to read this","nav.coverage":"API coverage","nav.goals":"Goals","nav.explorer":"Impact explorer","nav.radius":"Blast radius","nav.gaps":"Gaps",
 "overview.sub":"What the knowledge describes today: goals, the flows that reach them, the rules they rely on, and the API operations that serve them.",
-"guide.sub":"The knowledge is written top down, from what the business needs to what each app expects. Every part has an ID, and every part cites the parts it relies on, so a change can be traced in both directions.",
+"guide.sub":"The knowledge is written top down, from what the business needs to the API contract. Every part has an ID, and every part cites the parts it relies on, so a change can be traced in both directions.",
 "guide.parts":"The parts","guide.numbers":"The numbers",
 "guide.partsTable":`<tr><td><span class="pill p0">SYS-n</span></td><td><b>Requirement.</b> A rule for the whole system, such as "a JSON response is always a root object".</td></tr>
 <tr><td><span class="pill p0">G-…-n</span></td><td><b>Goal and its criteria.</b> A business outcome, such as "Borrow a book", and the checks that say it is reached.</td></tr>
 <tr><td><span class="pill p1">F-…-n</span></td><td><b>Flow and its scenarios.</b> How the outcome happens across apps and services. Each scenario is one testable case: given, when, then. Testers and the client test by these.</td></tr>
 <tr><td><span class="pill p2">PREFIX-n</span></td><td><b>Rule.</b> A business rule of one domain, true whatever screen uses it.</td></tr>
-<tr><td><span class="pill p3">operation</span></td><td><b>Operation.</b> One API call in the agreed contract (OpenAPI). It is written before the code.</td></tr>
-<tr><td><span class="pill p4">app/page</span></td><td><b>Client needs.</b> What one app needs the responses to keep, so that a service change does not break a released app.</td></tr>`,
+<tr><td><span class="pill p3">operation</span></td><td><b>Operation.</b> One API call in the agreed contract (OpenAPI). It is written before the code.</td></tr>`,
 "guide.numbersTable":`<tr><td><b>API coverage</b></td><td>Service routes that have a contract and scenarios behind them. A route without them is behavior nobody has written down yet.</td></tr>
-<tr><td><b>Size of a goal</b></td><td>The flows, scenarios, operations and client pages a goal relies on. A bigger goal needs more testing when it changes.</td></tr>
-<tr><td><b>Blast radius</b></td><td>How far a change to one requirement, rule or operation reaches: the scenarios to test again and the apps to tell.</td></tr>
+<tr><td><b>Size of a goal</b></td><td>The flows, scenarios and operations a goal relies on. A bigger goal needs more testing when it changes.</td></tr>
+<tr><td><b>Blast radius</b></td><td>How far a change to one requirement, rule or operation reaches: the scenarios to test again.</td></tr>
 <tr><td><b>Gaps</b></td><td>Rules or criteria that no scenario tests, operations no scenario calls, and requirements nothing cites. Each one is work left to do.</td></tr>
 <tr><td><b>Colors</b></td><td>In the explorer, <span style="color:var(--up)">orange</span> is what a change affects and <span style="color:var(--down)">green</span> is what a part relies on.</td></tr>`,
 "coverage.sub":"Service routes that have an agreed contract and flows behind them, by service and namespace. A route without knowledge is behavior nobody has written down yet.",
@@ -136,41 +134,38 @@ en:{
 "explorer.sub":"The graph of the analyzed goals. Click any node: orange is what a change to it affects, green is what it relies on.",
 "radius.sub":"How far a change to each requirement, rule or operation reaches. High numbers mark shared parts that need the widest testing.",
 "gaps.sub":"Places where the knowledge is not yet complete.",
-"clients.sub":"What each app needs the responses to keep, so that a service change does not break it. The needs are written in English, as in the source.",
 "m.goals":["Goals","business outcomes"],"m.flows":["Flows","behaviors across domains"],"m.scenarios":["Scenarios","testable cases"],"m.rules":["Rules","artifact and Flow rules"],"m.operations":["Operations","API operations with a contract"],"m.coverage":["API coverage",(c,t)=>`${c} of ${t} service routes`],
 "withKnowledge":"Routes with knowledge","withoutKnowledge":"Routes without knowledge",
-"kind":["Goal / requirement","Scenario","Rule","Operation","Client page"],
-"flowRules":"Flow rules","scope":"Scope","owner":"Owner","dependencies":"Dependencies","flows":"Flows","scenarios":"Scenarios","operations":"Operations","clientPages":"Client pages","criterion":"Criterion","none":"none","None":"None","item":"Item","details":"Criteria and flows","close":"Close","prev":"Previous","next":"Next","layer.system/":"System","layer.goals/":"Goals","layer.flows/":"Flows",
+"kind":["Goal / requirement","Scenario","Rule","Operation"],
+"flowRules":"Flow rules","scope":"Scope","owner":"Owner","dependencies":"Dependencies","flows":"Flows","scenarios":"Scenarios","operations":"Operations","criterion":"Criterion","none":"none","None":"None","item":"Item","details":"Criteria and flows","close":"Close","prev":"Previous","next":"Next","layer.system/":"System","layer.goals/":"Goals","layer.flows/":"Flows",
 "gap.rules":"Rules no scenario covers","gap.criteria":"Goal criteria no scenario proves","gap.ops":"Operations no scenario calls","gap.sys":"Requirements nothing cites",
 "affected":"Affected by a change","reliesOn":"Relies on","showAll":"Show all","selectNode":"Select a node to read it.",
-"flow":"Flow","given":"Given","when":"When","then":"Then","covers":"Covers","endpoint":"Endpoint","summary":"Summary","needs":n=>`${n} needs`,
-"changeAffects":"A change affects","itReliesOn":"It relies on","counts":(s,o,c)=>`${s} scenarios, ${o} operations${c===undefined?"":`, ${c} client pages`}`,
-"everyItem":"Every item",
-"map.title":"From the outside in","map.sub":"Each layer sits inside the one above it and cites it. The example on the right follows one real path, from a system requirement down to what an app needs. Click a layer to jump to it.",
-"layers":[["System","requirements for everything"],["Goals","business outcomes and their criteria"],["Flows","how an outcome happens, as testable scenarios"],["Artifacts","domain rules and the API contract"],["Apps","what each app needs from the responses"]],
+"flow":"Flow","given":"Given","when":"When","then":"Then","covers":"Covers","endpoint":"Endpoint","summary":"Summary",
+"changeAffects":"A change affects","itReliesOn":"It relies on","counts":(s,o)=>`${s} scenarios, ${o} operations`,
+"map.title":"From the outside in","map.sub":"Each layer sits inside the one above it and cites it. The example on the right follows one real path, from a system requirement down to an operation of the contract. Click a layer to jump to it.",
+"layers":[["System","requirements for everything"],["Goals","business outcomes and their criteria"],["Flows","how an outcome happens, as testable scenarios"],["Artifacts","domain rules and the API contract"]],
 "example":"Example",
 "nav.analyze":"Analyze","analyze.sub":"Pick the goals a sprint or a release works on, up to three, then analyze. Every section below is then counted for those goals only. Pick all goals for the whole project.",
 "drop":n=>n?`${n} goal${n>1?"s":""} picked`:"Pick goals","allGoals":"All goals (whole project)","run":"Analyze","runNote":"Pick at least one goal.","maxNote":"Up to three goals; pick all goals for the whole project.",
 "summary.title":"Analysis","summary.sub":g=>`For: ${g}`,
-"m.clientPages":["Client pages","app pages that rely on them"],"m.inAnalysis":["Routes in this analysis",(c,t)=>`of ${t} service routes in the project`],
+"m.inAnalysis":["Routes in this analysis",(c,t)=>`of ${t} service routes in the project`],
 "inThis":"Routes in this analysis","projectNote":"Coverage of the whole project; the routes this analysis covers are listed below."
 },
 vi:{
 "title":DATA.title,
 "stamp":(b,c)=>`Dựng lúc ${b} từ commit ${c}`,
-"nav.overview":"Tổng quan","nav.diagrams":"Diagram","diagrams.sub":"Context của hệ thống, rồi diagram của các goal đã chọn và của các flow của chúng, vẽ từ các trang knowledge.","diagrams.offline":"Không tải được thư viện vẽ diagram nên hiện mã nguồn. Thư viện tải từ mạng.","nav.guide":"Cách đọc","nav.coverage":"Độ phủ API","nav.goals":"Goal","nav.explorer":"Tra phạm vi ảnh hưởng","nav.radius":"Blast radius","nav.gaps":"Lỗ hổng","nav.clients":"Nhu cầu của app",
+"nav.overview":"Tổng quan","nav.diagrams":"Diagram","diagrams.sub":"Context của hệ thống, rồi diagram của các goal đã chọn và của các flow của chúng, vẽ từ các trang knowledge.","diagrams.offline":"Không tải được thư viện vẽ diagram nên hiện mã nguồn. Thư viện tải từ mạng.","nav.guide":"Cách đọc","nav.coverage":"Độ phủ API","nav.goals":"Goal","nav.explorer":"Tra phạm vi ảnh hưởng","nav.radius":"Blast radius","nav.gaps":"Lỗ hổng",
 "overview.sub":"Knowledge hiện mô tả những gì: các goal, các flow để đạt goal, các rule mà chúng dựa vào, và các operation API phục vụ chúng.",
-"guide.sub":"Knowledge được viết từ trên xuống, từ nhu cầu nghiệp vụ tới những gì từng app cần. Mỗi thành phần có một ID và trích các thành phần nó dựa vào, nên một thay đổi lần được theo cả hai chiều.",
+"guide.sub":"Knowledge được viết từ trên xuống, từ nhu cầu nghiệp vụ tới contract API. Mỗi thành phần có một ID và trích các thành phần nó dựa vào, nên một thay đổi lần được theo cả hai chiều.",
 "guide.parts":"Các thành phần","guide.numbers":"Các chỉ số",
 "guide.partsTable":`<tr><td><span class="pill p0">SYS-n</span></td><td><b>Requirement (yêu cầu hệ thống).</b> Luật áp dụng cho toàn hệ thống, ví dụ "response JSON luôn là một object gốc".</td></tr>
 <tr><td><span class="pill p0">G-…-n</span></td><td><b>Goal và criteria.</b> Một kết quả nghiệp vụ, ví dụ "Mượn sách", và các tiêu chí để biết đã đạt được.</td></tr>
 <tr><td><span class="pill p1">F-…-n</span></td><td><b>Flow và scenario.</b> Cách kết quả diễn ra qua các app và service. Mỗi scenario là một ca test: given, when, then. Tester và client test theo các scenario này.</td></tr>
 <tr><td><span class="pill p2">PREFIX-n</span></td><td><b>Rule (luật nghiệp vụ).</b> Luật của một domain, đúng bất kể màn hình nào dùng nó.</td></tr>
-<tr><td><span class="pill p3">operation</span></td><td><b>Operation.</b> Một lời gọi API trong contract đã thống nhất (OpenAPI), được viết trước khi có code.</td></tr>
-<tr><td><span class="pill p4">app/page</span></td><td><b>Nhu cầu của app.</b> Những gì một app cần response giữ nguyên, để thay đổi ở service không làm vỡ bản app đã phát hành.</td></tr>`,
+<tr><td><span class="pill p3">operation</span></td><td><b>Operation.</b> Một lời gọi API trong contract đã thống nhất (OpenAPI), được viết trước khi có code.</td></tr>`,
 "guide.numbersTable":`<tr><td><b>Độ phủ API</b></td><td>Số route của các service đã có contract và scenario đứng sau. Route chưa có nghĩa là hành vi đó chưa ai viết ra.</td></tr>
-<tr><td><b>Độ lớn của goal</b></td><td>Số flow, scenario, operation và trang app mà một goal dựa vào. Goal càng lớn thì khi thay đổi càng phải test nhiều.</td></tr>
-<tr><td><b>Blast radius</b></td><td>Một thay đổi ở requirement, rule hay operation lan tới đâu: các scenario phải test lại và các app phải báo.</td></tr>
+<tr><td><b>Độ lớn của goal</b></td><td>Số flow, scenario và operation mà một goal dựa vào. Goal càng lớn thì khi thay đổi càng phải test nhiều.</td></tr>
+<tr><td><b>Blast radius</b></td><td>Một thay đổi ở requirement, rule hay operation lan tới đâu: các scenario phải test lại.</td></tr>
 <tr><td><b>Lỗ hổng</b></td><td>Rule hay criterion chưa scenario nào test, operation chưa scenario nào gọi, và requirement chưa ai trích. Mỗi mục là việc còn phải làm.</td></tr>
 <tr><td><b>Màu sắc</b></td><td>Trong phần tra cứu, <span style="color:var(--up)">màu cam</span> là những gì bị ảnh hưởng khi đổi, <span style="color:var(--down)">màu xanh</span> là những gì thành phần đó dựa vào.</td></tr>`,
 "coverage.sub":"Các route của service đã có contract và flow đứng sau, theo service và namespace. Route chưa có knowledge là hành vi chưa ai viết ra.",
@@ -178,24 +173,22 @@ vi:{
 "explorer.sub":"Đồ thị của các goal đang phân tích. Bấm vào node bất kỳ: màu cam là những gì bị ảnh hưởng khi đổi nó, màu xanh là những gì nó dựa vào.",
 "radius.sub":"Thay đổi ở từng requirement, rule hay operation lan xa tới đâu. Số càng cao là phần dùng chung, cần test rộng nhất.",
 "gaps.sub":"Những chỗ knowledge chưa đầy đủ.",
-"clients.sub":"Những gì từng app cần response giữ nguyên, để thay đổi ở service không làm vỡ app. Nội dung nhu cầu giữ tiếng Anh như bản gốc.",
 "flowRules":"Flow rule","scope":"Phạm vi","owner":"Trang định nghĩa","dependencies":"Phụ thuộc",
 "m.goals":["Goal","kết quả nghiệp vụ"],"m.flows":["Flow","hành vi qua nhiều domain"],"m.scenarios":["Scenario","ca test"],"m.rules":["Rule","rule của artifact và Flow"],"m.operations":["Operation","operation API có contract"],"m.coverage":["Độ phủ API",(c,t)=>`${c} trên ${t} route service`],
 "withKnowledge":"Route đã có knowledge","withoutKnowledge":"Route chưa có knowledge",
-"kind":["Goal / requirement","Scenario","Rule","Operation","Trang app"],
-"flows":"Flow","scenarios":"Scenario","operations":"Operation","clientPages":"Trang app","criterion":"Criterion","none":"chưa có","None":"Không có","item":"Mục","details":"Criterion và flow","close":"Đóng","prev":"Trước","next":"Sau","layer.system/":"System","layer.goals/":"Goal","layer.flows/":"Flow",
+"kind":["Goal / requirement","Scenario","Rule","Operation"],
+"flows":"Flow","scenarios":"Scenario","operations":"Operation","criterion":"Criterion","none":"chưa có","None":"Không có","item":"Mục","details":"Criterion và flow","close":"Đóng","prev":"Trước","next":"Sau","layer.system/":"System","layer.goals/":"Goal","layer.flows/":"Flow",
 "gap.rules":"Rule chưa scenario nào phủ","gap.criteria":"Criterion chưa scenario nào chứng minh","gap.ops":"Operation chưa scenario nào gọi","gap.sys":"Requirement chưa ai trích",
 "affected":"Bị ảnh hưởng khi đổi","reliesOn":"Dựa vào","showAll":"Xem tất cả","selectNode":"Chọn một node để đọc nội dung.",
-"flow":"Flow","given":"Given","when":"When","then":"Then","covers":"Phủ","endpoint":"Endpoint","summary":"Tóm tắt","needs":n=>`${n} nhu cầu`,
-"changeAffects":"Đổi nó ảnh hưởng tới","itReliesOn":"Nó dựa vào","counts":(s,o,c)=>`${s} scenario, ${o} operation${c===undefined?"":`, ${c} trang app`}`,
-"everyItem":"Mọi item",
-"map.title":"Từ ngoài vào trong","map.sub":"Mỗi lớp nằm trong lớp bên trên và trích lớp đó. Ví dụ bên phải đi theo một đường thật, từ một requirement của hệ thống xuống tới nhu cầu của một app. Bấm vào một lớp để tới mục đó.",
-"layers":[["System","yêu cầu cho toàn hệ thống"],["Goal","kết quả nghiệp vụ và tiêu chí"],["Flow","cách kết quả diễn ra, thành các ca test"],["Artifact","luật của domain và contract API"],["App","những gì từng app cần từ response"]],
+"flow":"Flow","given":"Given","when":"When","then":"Then","covers":"Phủ","endpoint":"Endpoint","summary":"Tóm tắt",
+"changeAffects":"Đổi nó ảnh hưởng tới","itReliesOn":"Nó dựa vào","counts":(s,o)=>`${s} scenario, ${o} operation`,
+"map.title":"Từ ngoài vào trong","map.sub":"Mỗi lớp nằm trong lớp bên trên và trích lớp đó. Ví dụ bên phải đi theo một đường thật, từ một requirement của hệ thống xuống tới một operation của contract. Bấm vào một lớp để tới mục đó.",
+"layers":[["System","yêu cầu cho toàn hệ thống"],["Goal","kết quả nghiệp vụ và tiêu chí"],["Flow","cách kết quả diễn ra, thành các ca test"],["Artifact","luật của domain và contract API"]],
 "example":"Ví dụ",
 "nav.analyze":"Phân tích","analyze.sub":"Chọn các goal mà một sprint hay một release làm, tối đa ba, rồi bấm phân tích. Mọi mục bên dưới khi đó chỉ tính cho các goal đó. Chọn tất cả goal để xem toàn project.",
 "drop":n=>n?`Đã chọn ${n} goal`:"Chọn goal","allGoals":"Tất cả goal (toàn project)","run":"Phân tích","runNote":"Chọn ít nhất một goal.","maxNote":"Tối đa ba goal; chọn tất cả goal để xem toàn project.",
 "summary.title":"Kết quả phân tích","summary.sub":g=>`Cho: ${g}`,
-"m.clientPages":["Trang app","trang app dựa vào chúng"],"m.inAnalysis":["Route trong phân tích",(c,t)=>`trên ${t} route service của project`],
+"m.inAnalysis":["Route trong phân tích",(c,t)=>`trên ${t} route service của project`],
 "inThis":"Route trong phân tích này","projectNote":"Độ phủ của toàn project; các route mà phân tích này phủ được liệt kê bên dưới."
 }};
 let lang="en";try{const s=localStorage.getItem("lang");if(Object.hasOwn(I18N,s))lang=s;}catch(e){}
@@ -216,7 +209,6 @@ const bySpace=Object.create(null);ROUTES.forEach(r=>{(bySpace[r.space]??=[]).pus
 const spaces=Object.create(null);Object.entries(bySpace).forEach(([s,rs])=>{(spaces[rs.length<3&&!/^\/v\d/.test(s)?"other":s]??=[]).push(...rs);});
 const covers=new Set(scen.flatMap(s=>s.covers));
 const named=new Set(scen.flatMap(s=>DATA.operations.filter(o=>s.when.includes(o.id)).map(o=>o.id)));
-const appName=DATA.clientNames||{};
 
 function render(){
 document.documentElement.lang=lang;document.title=DATA.title;
@@ -231,14 +223,14 @@ const m=[["m.goals",DATA.goals.length],["m.flows",DATA.flows.length],["m.scenari
 if(HAS_ROUTES)m.push(["m.coverage",pct(covered,ROUTES.length)+"%"]);
 $("metrics").innerHTML=metricCards(m,covered,ROUTES.length);
 $("coverage").hidden=!HAS_ROUTES;document.querySelector('nav a[href="#coverage"]').hidden=!HAS_ROUTES;
-$("legend").innerHTML=(flowRules.length?[...T("kind"),T("flowRules")]:T("kind")).map((k,i)=>`<span style="--c:var(${CV[i]})">${k}</span>`).join("")+`<span style="--c:var(--up)">${T("affected")}</span><span style="--c:var(--down)">${T("reliesOn")}</span>`;
+$("legend").innerHTML=heads().map(([k,i])=>`<span style="--c:var(${CV[i]})">${k}</span>`).join("")+`<span style="--c:var(--up)">${T("affected")}</span><span style="--c:var(--down)">${T("reliesOn")}</span>`;
 drawMap();renderPicker();
 if(analysis)renderResults();
 }
 function metricCards(m,c,t){return m.map(([k,v])=>{const [label,note]=T(k);return `<div class="card metric"><div class="k">${label}</div><div class="v">${v}</div><div class="n">${typeof note==="function"?note(c,t):note}</div></div>`;}).join("");}
 // Goals six to a page; each card opens its criteria and flows in the side panel.
 const PER_PAGE=6;let goalList=[],goalPage=0,sideFor=null;
-const metricsOf=g=>{const z=DATA.size[g.key]||{};return `<div class="grid" style="grid-template-columns:repeat(4,minmax(0,1fr));margin:0">${[["flows",z.flows],["scenarios",z.scenarios],["operations",z.operations],["clientPages",z["client pages"]]].map(([k,v])=>`<div class="metric"><div class="k">${T(k)}</div><div class="v" style="font-size:20px">${v??0}</div></div>`).join("")}</div>`;};
+const metricsOf=g=>{const z=DATA.size[g.key]||{};return `<div class="grid" style="grid-template-columns:repeat(3,minmax(0,1fr));margin:0">${[["flows",z.flows],["scenarios",z.scenarios],["operations",z.operations]].map(([k,v])=>`<div class="metric"><div class="k">${T(k)}</div><div class="v" style="font-size:20px">${v??0}</div></div>`).join("")}</div>`;};
 function drawGoals(){const pages=Math.max(1,Math.ceil(goalList.length/PER_PAGE));goalPage=Math.min(goalPage,pages-1);
  $("goal-cards").innerHTML=goalList.slice(goalPage*PER_PAGE,(goalPage+1)*PER_PAGE).map(g=>`<div class="card goal-card"><h3>${esc(g.title)} <span class="muted">${esc(g.key)}</span></h3>${metricsOf(g)}<button class="plain open" data-goal="${esc(g.key)}">${T("details")} · ${g.criteria.length}</button></div>`).join("");
  $("goal-pager").innerHTML=pages>1?`<button class="plain" data-page="-1"${goalPage?"":" disabled"}>← ${T("prev")}</button><span>${goalPage+1} / ${pages}</span><button class="plain" data-page="1"${goalPage<pages-1?"":" disabled"}>${T("next")} →</button>`:"";}
@@ -279,25 +271,22 @@ function renderPicker(){const all=chosen.has("*"),n=all?DATA.goals.length:chosen
 function renderResults(){
  const S=slice(),goals=DATA.goals.filter(g=>analysis.has(g.key));
  const sc=scen.filter(x=>S.has(x.id)),ops=DATA.operations.filter(o=>S.has(o.id)),rules=allRules.filter(r=>S.has(r.id));
- const flows=new Set(sc.map(x=>x.flow)),apps=Object.keys(col).filter(n=>col[n]===4&&S.has(n));
+ const flows=new Set(sc.map(x=>x.flow));
  const opIds=new Set(ops.map(o=>o.id)),routes=ROUTES.filter(r=>r.covered&&opIds.has(r.covered));
  $("summary-sub").textContent=T("summary.sub")(goals.map(g=>g.title).join(", "));
- $("slice-metrics").innerHTML=metricCards([["m.goals",goals.length],["m.flows",flows.size],["m.scenarios",sc.length],["m.rules",rules.length],["m.operations",ops.length],["m.clientPages",apps.length]].concat(HAS_ROUTES?[["m.inAnalysis",routes.length]]:[]),routes.length,ROUTES.length);
+ $("slice-metrics").innerHTML=metricCards([["m.goals",goals.length],["m.flows",flows.size],["m.scenarios",sc.length],["m.rules",rules.length],["m.operations",ops.length]].concat(HAS_ROUTES?[["m.inAnalysis",routes.length]]:[]),routes.length,ROUTES.length);
  $("coverage-bars").innerHTML=`<p class="muted" style="margin:0 0 8px;font-size:13px">${T("projectNote")}</p>`+Object.entries(spaces).sort((a,b)=>b[1].length-a[1].length).map(([s,rs])=>{const c=rs.filter(r=>r.covered).length;return `<div class="row"><code>${esc(s)}</code><div class="bar"><i style="width:${pct(c,rs.length)}%"></i></div><span class="muted">${c} / ${rs.length}</span></div>`;}).join("")
  +`<details open><summary>${T("inThis")} (${routes.length})</summary><table>${routes.map(r=>`<tr><td>${esc(r.method)}</td><td><code>${esc(r.path)}</code></td><td>${pill(r.covered)}</td></tr>`).join("")}</table></details>`
  +`<details><summary>${T("withoutKnowledge")} (${ROUTES.length-covered})</summary><table>${ROUTES.filter(r=>!r.covered).map(r=>`<tr><td>${esc(r.method)}</td><td><code>${esc(r.path)}</code></td></tr>`).join("")}</table></details>`;
  goalList=goals;goalPage=0;drawGoals();if(sideFor)openSide(sideFor);
  const radius=Object.entries(DATA.radius).filter(([id])=>S.has(id)).sort((a,b)=>b[1].scenarios-a[1].scenarios||b[1].operations-a[1].operations||a[0].localeCompare(b[0]));
- $("radius-table").innerHTML=`<tr><th>${T("item")}</th><th class="num">${T("flows")}</th><th class="num">${T("scenarios")}</th><th class="num">${T("operations")}</th><th class="num">${T("clientPages")}</th></tr>`+radius.map(([id,r])=>`<tr><td>${pill(id)}</td><td class="num">${r.flows}</td><td class="num">${r.scenarios}</td><td class="num">${r.operations}</td><td class="num">${r["client pages"]}</td></tr>`).join("");
+ $("radius-table").innerHTML=`<tr><th>${T("item")}</th><th class="num">${T("flows")}</th><th class="num">${T("scenarios")}</th><th class="num">${T("operations")}</th></tr>`+radius.map(([id,r])=>`<tr><td>${pill(id)}</td><td class="num">${r.flows}</td><td class="num">${r.scenarios}</td><td class="num">${r.operations}</td></tr>`).join("");
  const gaps=[
   ["gap.rules",rules.filter(r=>!covers.has(r.id)).map(r=>r.id)],
   ["gap.criteria",goals.flatMap(g=>g.criteria).filter(c=>!c.proven.length).map(c=>c.id)],
   ["gap.ops",ops.filter(o=>!named.has(o.id)).map(o=>o.id)],
   ["gap.sys",DATA.requirements.filter(r=>S.has(r.id)&&!(DATA.radius[r.id]&&(DATA.radius[r.id].scenarios||DATA.radius[r.id].operations))).map(r=>r.id)]];
  $("gap-cards").innerHTML=gaps.map(([t,ids])=>`<div class="card"><h3>${T(t)} <span class="muted">${ids.length}</span></h3><div style="margin-top:8px">${ids.length?ids.map(pill).join(""):`<span class="muted">${T("None")}</span>`}</div></div>`).join("");
- $("client-cards").innerHTML=apps.map(n=>{const p="artifacts/"+n+".md",secs=DATA.clients[p]||{},[art,file]=n.split("/");
-  const keep=Object.entries(secs).filter(([k])=>k==="Every item"||opIds.has(k));
-  return `<div class="card"><h3>${esc(appName[file]||file)} · ${esc(art)}</h3>${keep.map(([k,needs])=>`<details${k==="Every item"?" open":""}><summary>${k==="Every item"?T("everyItem"):esc(k)}</summary><ul class="tight">${needs.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></details>`).join("")}</div>`;}).join("");
  const pages=new Set(["system/context.md",...goals.flatMap(g=>[g.page,...g.flows])]);
  drawDiagrams(DATA.diagrams.map((d,i)=>({...d,i})).filter(d=>pages.has(d.page)));
  if(selected&&S.has(selected))select(selected);else $("detail").innerHTML=`<p class="muted">${T("selectNode")}</p>`;
@@ -387,27 +376,28 @@ function focusFlow(page){const ds=shown.filter(s=>s.page.startsWith("flows/")),k
  c.classList.add("flash");setTimeout(()=>c.classList.remove("flash"),1600);}
 function examplePath(){
  const opsIn=x=>DATA.operations.filter(o=>new RegExp("\\b"+o.id+"\\b").test(x.when));
- const appOf=id=>Object.keys(col).find(n=>col[n]===4&&out[n].includes(id));
  let best=null;
- for(const x of scen){const rule=x.covers[0];const op=opsIn(x).find(o=>appOf(o.id));
+ for(const x of scen){const rule=x.covers[0];const op=opsIn(x)[0];
   const sys=rule&&(out[rule]||[]).find(c=>c.startsWith("SYS-"));const score=(rule?1:0)+(op?1:0)+(sys?1:0);
   if(!best||score>best.score)best={x,rule,op,sys,score};}
  if(!best)return null;const {x,rule,op}=best;
  const sys=best.sys||(op&&out[op.id].find(c=>c.startsWith("SYS-")))||DATA.requirements[0]?.id;
  const goal=DATA.goals.find(g=>g.criteria.some(c=>c.proven.includes(x.id)))||DATA.goals[0];
- return [sys,goal&&`${goal.title} (${goal.key})`,`${x.flow} · ${x.id}`,[rule,op&&op.id].filter(Boolean).join(" · "),op?appOf(op.id):""];}
-const HREF=["#gaps","#goals","#explorer","#radius","#clients"];
+ return [sys,goal&&`${goal.title} (${goal.key})`,`${x.flow} · ${x.id}`,[rule,op&&op.id].filter(Boolean).join(" · ")];}
+const HREF=["#gaps","#goals","#explorer","#radius"];
 function drawMap(){const svg=$("map");[...svg.querySelectorAll("g,rect,text")].forEach(e=>e.remove());
- const L=T("layers"),ex=examplePath()||[],W=1000,B=58,I=26,H=B*5+10;svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
- const nums=[DATA.requirements.length+" SYS",`${DATA.goals.length} · ${DATA.goals.flatMap(g=>g.criteria).length} criteria`,`${DATA.flows.length} · ${scen.length} scenarios${flowRules.length?` · ${flowRules.length} ${T("flowRules")}`:""}`,`${DATA.rules.length} rules · ${DATA.operations.length} operations`,`${Object.keys(DATA.clients).length} app pages`];
+ const L=T("layers"),ex=examplePath()||[],W=1000,B=58,I=26,H=B*4+10;svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+ const nums=[DATA.requirements.length+" SYS",`${DATA.goals.length} · ${DATA.goals.flatMap(g=>g.criteria).length} criteria`,`${DATA.flows.length} · ${scen.length} scenarios${flowRules.length?` · ${flowRules.length} ${T("flowRules")}`:""}`,`${DATA.rules.length} rules · ${DATA.operations.length} operations`];
  L.forEach(([name,desc],i)=>{const x=i*I,y=i*B,g=document.createElementNS(NS,"a");g.setAttribute("href",HREF[i]);
   const r=document.createElementNS(NS,"rect");r.setAttribute("x",x+1);r.setAttribute("y",y+1);r.setAttribute("width",W-2*x-2);r.setAttribute("height",H-y-2);r.setAttribute("rx",12);r.setAttribute("fill",`var(${CV[i]})`);r.setAttribute("stroke",`var(${CI[i]})`);r.setAttribute("stroke-opacity",".35");
   const t=(tx,ty,txt,size,weight,anchor)=>{const e=document.createElementNS(NS,"text");e.setAttribute("x",tx);e.setAttribute("y",ty);e.setAttribute("text-anchor",anchor||"start");e.style.cssText=`font-family:inherit;font-size:${size}px;font-weight:${weight};fill:var(${CI[i]})`;e.textContent=txt;return e;};
   g.append(r,t(x+16,y+22,`${i+1}. ${name}`,16,600),t(x+16,y+43,`${desc} — ${nums[i]}`,13,400));
   if(ex[i])g.append(t(W-x-16,y+33,`${T("example")}: ${ex[i]}`,13,500,"end"));
   svg.appendChild(g);});}
-const NS="http://www.w3.org/2000/svg",RH=22,TOP=30,COLS=[{x:4,w:84},{x:110,w:76},{x:208,w:60},{x:290,w:200},{x:512,w:150}],CV=["--c0","--c1","--c2","--c3","--c4","--c1"],CI=["--c0i","--c1i","--c2i","--c3i","--c4i","--c1i"];
-if(flowRules.length){COLS[5]={x:208,w:96};COLS[2]={x:322,w:60};COLS[3]={x:404,w:200};COLS[4]={x:626,w:150};}
+const NS="http://www.w3.org/2000/svg",RH=22,TOP=30,// Graph columns: 0 goals and requirements, 1 scenarios, 2 rules, 3 operations, 5 Flow rules. Column 4 is not used.
+COLS=[{x:4,w:84},{x:110,w:76},{x:208,w:60},{x:290,w:200}],CV=["--c0","--c1","--c2","--c3",,"--c1"],CI=["--c0i","--c1i","--c2i","--c3i",,"--c1i"];
+if(flowRules.length){COLS[5]={x:208,w:96};COLS[2]={x:322,w:60};COLS[3]={x:404,w:200};}
+const heads=()=>[...T("kind").map((k,i)=>[k,i]),...(flowRules.length?[[T("flowRules"),5]]:[])];
 const chosen=new Set();let analysis=null,selected=null;
 $("diagram-cards").onclick=e=>{const b=e.target.closest("[data-slide]");if(!b||b.disabled)return;const l=b.closest("[data-layer]").dataset.layer;slideAt[l]=(slideAt[l]||0)+ +b.dataset.slide;drawDiagrams(shown);};
 $("goal-cards").onclick=e=>{const b=e.target.closest("[data-goal]");if(b)openSide(b.dataset.goal);};
@@ -419,12 +409,12 @@ document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>{lang=b.datase
 const walk=(s,adj)=>{const seen=new Set(s),q=[...s];while(q.length)for(const n of adj[q.pop()]||[])if(!seen.has(n)){seen.add(n);q.push(n);}return seen;};
 function slice(){if(!analysis)return new Set();
  const start=new Set(Object.keys(col).filter(n=>[...analysis].some(k=>n.startsWith(k+"-"))));
- const s=walk(start,out);Object.keys(col).filter(n=>col[n]===4&&out[n].some(x=>s.has(x))).forEach(n=>s.add(n));return s;}
+ return walk(start,out);}
 let els={},edges=[];
 function draw(){const vis=slice(),svg=$("g");svg.innerHTML="";els={};edges=[];selected=null;const cnt=[0,0,0,0,0,0],pos={};
  Object.keys(col).filter(n=>vis.has(n)).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true})).forEach(n=>{pos[n]=TOP+cnt[col[n]]*RH;cnt[col[n]]++;});
- const H=TOP+Math.max(1,...cnt)*RH+8;svg.setAttribute("viewBox",`0 0 ${flowRules.length?780:666} ${H}`);svg.style.minWidth="560px";
- (flowRules.length?[...T("kind"),T("flowRules")]:T("kind")).forEach((k,i)=>{const t=document.createElementNS(NS,"text");t.setAttribute("class","head");t.setAttribute("x",COLS[i].x+2);t.setAttribute("y",12);t.textContent=k;svg.appendChild(t);});
+ const H=TOP+Math.max(1,...cnt)*RH+8;svg.setAttribute("viewBox",`0 0 ${flowRules.length?608:494} ${H}`);svg.style.minWidth="560px";
+ heads().forEach(([k,i])=>{const t=document.createElementNS(NS,"text");t.setAttribute("class","head");t.setAttribute("x",COLS[i].x+2);t.setAttribute("y",12);t.textContent=k;svg.appendChild(t);});
  const ge=document.createElementNS(NS,"g");svg.appendChild(ge);
  DATA.graph.edges.forEach(([a,b])=>{if(!(a in pos&&b in pos))return;const A=COLS[col[a]],B=COLS[col[b]],r=A.x<B.x;const x1=r?A.x+A.w:A.x,x2=r?B.x:B.x+B.w,y1=pos[a]+9,y2=pos[b]+9,mx=(x1+x2)/2;
   const p=document.createElementNS(NS,"path");p.setAttribute("d",`M${x1} ${y1}C${mx} ${y1},${mx} ${y2},${x2} ${y2}`);p.setAttribute("class","edge");ge.appendChild(p);edges.push({a,b,p});});
@@ -437,12 +427,12 @@ function info(n){const s=scen.find(x=>x.id===n);if(s)return `<dl><dt>${T("flow")
  const fr=flowRules.find(x=>x.id===n);if(fr)return `<p>${esc(fr.text)}</p><dl><dt>${T("scope")}</dt><dd>${esc(fr.scope)}</dd><dt>${T("owner")}</dt><dd>${esc(fr.owner)}</dd><dt>${T("dependencies")}</dt><dd>${fr.dependencies.length?fr.dependencies.map(pill).join(""):T("None")}</dd></dl>`;
  const r=DATA.rules.find(x=>x.id===n)||DATA.requirements.find(x=>x.id===n)||DATA.goals.flatMap(g=>g.criteria).find(x=>x.id===n);if(r)return `<p>${esc(r.text)}</p>`;
  const o=DATA.operations.find(x=>x.id===n);if(o)return `<dl><dt>${T("endpoint")}</dt><dd><code>${esc(o.method)} ${esc(o.path)}</code></dd><dt>${T("summary")}</dt><dd>${esc(o.summary||"")}</dd></dl>`;
- const c=DATA.clients["artifacts/"+n+".md"];if(c)return `<dl>${Object.entries(c).map(([k,v])=>`<dt>${k==="Every item"?T("everyItem"):esc(k)}</dt><dd>${T("needs")(v.length)}</dd>`).join("")}</dl>`;return "";}
+ return "";}
 function select(n){if(!els[n])return;selected=n;const up=walk([n],inn),down=walk([n],out);
  Object.entries(els).forEach(([k,e])=>{e.classList.toggle("dim",!(up.has(k)||down.has(k)));e.classList.toggle("sel",k===n);});
  edges.forEach(({a,b,p})=>{p.classList.remove("up","down","off");if(up.has(a)&&(up.has(b)||b===n)&&a!==n)p.classList.add("up");else if(down.has(a)&&down.has(b))p.classList.add("down");else p.classList.add("off");});
- const k=set=>({sc:[...set].filter(x=>scen.some(s=>s.id===x)).length,op:[...set].filter(x=>col[x]===3).length,cl:[...set].filter(x=>col[x]===4).length});const u=k(up),d=k(down);
- $("detail").innerHTML=`<h3>${pill(n)} <span class="muted">${nodeKind(n)}</span></h3>${info(n)}<dl><dt>${T("changeAffects")}</dt><dd>${T("counts")(u.sc,u.op,u.cl)}</dd><dt>${T("itReliesOn")}</dt><dd>${T("counts")(d.sc,d.op)}</dd></dl>`;}
+ const k=set=>({sc:[...set].filter(x=>scen.some(s=>s.id===x)).length,op:[...set].filter(x=>col[x]===3).length});const u=k(up),d=k(down);
+ $("detail").innerHTML=`<h3>${pill(n)} <span class="muted">${nodeKind(n)}</span></h3>${info(n)}<dl><dt>${T("changeAffects")}</dt><dd>${T("counts")(u.sc,u.op)}</dd><dt>${T("itReliesOn")}</dt><dd>${T("counts")(d.sc,d.op)}</dd></dl>`;}
 render();
 if(window.mermaid)mermaidReady();
 </script>

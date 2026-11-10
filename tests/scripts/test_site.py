@@ -29,7 +29,6 @@ def site_workspace():
     ws.write(base + 'goals/odd" onfocus="window.injected=2.md', "# Goal: Odd key\n")
     ws.write(base + "flows/safe.md", "# Flow: Safe flow\n\n| F-SAFE-1 | " + HOSTILE + " | `getThing` | " + HOSTILE + " | TH-1, SYS-1 |\n\n[Thing](../artifacts/thing/specification.md)\n\n```mermaid\nsequenceDiagram\n Reader->>Workspace: Read\n Workspace-->>Reader: Knowledge\n```\n")
     ws.write(base + "artifacts/thing/specification.md", "# Thing\n\n| TH-1 | " + HOSTILE + " | — |\n")
-    ws.write(base + "artifacts/thing/web.md", "# Web\n\n## `getThing`\n\n- " + HOSTILE + "\n")
     ws.write(base + "artifacts/thing/openapi.yaml", "openapi: 3.0.3\npaths:\n  /thing:\n    get:\n      operationId: getThing\n      summary: " + HOSTILE + "\n")
     ws.write("routes/routes.txt", '<img src="https://workspace.invalid/method">|/unsafe"<svg onload="window.injected=3">\nGET|/thing\n')
     return ws
@@ -79,7 +78,8 @@ class Site(unittest.TestCase):
         data = json.loads(source.removeprefix("const DATA=").removesuffix(";"))
         self.assertEqual(data["title"], HOSTILE + " & \u2028\u2029")
         self.assertEqual(data["requirements"][0]["text"], HOSTILE)
-        self.assertEqual(data["clientNames"]["web"], HOSTILE)
+        self.assertNotIn("clientNames", data)
+        self.assertNotIn("clients", data)
         self.assertIn('" onfocus="', data["goals"][0]["key"])
         for unsafe in ("<", ">", "&", "\u2028", "\u2029"):
             self.assertNotIn(unsafe, source)
