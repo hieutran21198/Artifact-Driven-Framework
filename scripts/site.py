@@ -192,13 +192,7 @@ def metrics(graph):
         start = {u for u in graph.file if u.startswith(goal + "-") and impact.ID.fullmatch(u)}
         units, pages = impact.relies_on(graph, start)
         size[goal] = impact.counts(graph, units, pages)
-    # What a change to each requirement affects: Gaps lists one that reaches no scenario or operation.
-    reach = {}
-    for node in graph.file:
-        if impact.kind(node, graph) == "Requirements":
-            units, pages = impact.affected(graph, {node})
-            reach[node] = impact.counts(graph, units, pages)
-    return size, reach
+    return size
 
 
 def commit():
@@ -228,7 +222,7 @@ def main(argv):
         services = {"routes": {**first, "folders": args.routes}}
     graph = impact.build()
     requirements, goals, flows, rules, operations = knowledge(graph)
-    size, reach = metrics(graph)
+    size = metrics(graph)
     data = {
         "title": SITE["title"],
         "commit": commit(),
@@ -236,7 +230,7 @@ def main(argv):
         "requirements": requirements, "goals": goals, "flows": flows, "rules": rules,
         "flowRules": [{"id": i} for i in sorted(graph.flow_rules)],
         "operations": operations, "routes": service_routes(operations, services),
-        "graph": display_graph(graph), "diagrams": diagrams(), "size": size, "reach": reach,
+        "graph": display_graph(graph), "diagrams": diagrams(), "size": size,
     }
     html = site_html(data)
     output.parent.mkdir(parents=True, exist_ok=True)

@@ -119,6 +119,8 @@ class SiteBrowser(BrowserTestCase):
                 self.assertEqual(self.page.locator('[data-layer="system/"] .slide pre').inner_text(), source + "\n")
                 self.assertNotIn(source + "\n", self.page.evaluate("window.diagramCalls"))
                 self.assertEqual(self.page.locator('[data-layer="system/"] .slide svg').count(), 0)
+                self.assertEqual(self.page.locator("#guide-system pre").inner_text(), source + "\n")
+                self.assertEqual(self.page.locator("#guide-system svg").count(), 0)
         self.assert_no_workspace_requests()
 
     def test_SYS_7_F_VIEW_24_rendered_svg_drops_executable_and_resource_markup(self):
@@ -141,6 +143,9 @@ class SiteBrowser(BrowserTestCase):
         self.assertIn(HOSTILE, self.page.locator('[data-layer="system/"] .slide > p').first.text_content())
         self.assertNotIn("body", self.page.locator('[data-layer="system/"] .slide style').text_content())
         self.assertTrue(self.page.evaluate("window.diagramConfig.securityLevel==='strict' && window.diagramConfig.htmlLabels===false"))
+        self.page.locator("#guide-system svg").wait_for()
+        self.assertEqual(self.page.locator("#guide-system script,#guide-system image,#guide-system a,#guide-system foreignObject,#guide-system [onclick]").count(), 0)
+        self.assertNotIn("workspace.invalid", self.page.locator("#guide-system svg").evaluate("svg => svg.outerHTML"))
         self.page.locator('[data-layer="goals/"] .to-flow').click()
         self.assertTrue(self.page.locator('[data-layer="flows/"]').is_visible())
         self.assert_no_workspace_requests()

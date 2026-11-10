@@ -41,6 +41,8 @@ ul.tight{margin:6px 0 0;padding-left:18px;font-size:13px}
 .drop{position:relative;min-width:280px;margin:0}.drop summary{list-style:none;border:1px solid var(--line);border-radius:8px;padding:8px 12px;color:var(--ink);background:var(--card);font-size:14px}.drop summary::-webkit-details-marker{display:none}.drop summary::after{content:"▾";float:right;margin-left:12px;color:var(--muted)}
 .drop-list{position:absolute;z-index:5;top:42px;left:0;right:0;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px;max-height:320px;overflow:auto}
 .drop-list label{display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:6px;font-size:14px;cursor:pointer}.drop-list label:hover{background:var(--panel)}.drop-list label.off{opacity:.45;cursor:not-allowed}.drop-list label .muted{white-space:nowrap;margin-left:auto;font-family:var(--mono);font-size:12px}.drop-list hr{border:0;border-top:1px solid var(--line);margin:4px 0}
+/* The system diagram is wide: it takes its own row and scrolls inside its card on a phone. */
+.stack{display:grid;gap:12px}.stack>.card{min-width:0}#guide-system{overflow-x:auto}#guide-system svg{min-width:640px}
 button.primary{border:1px solid var(--ink);background:var(--ink);color:var(--card);border-radius:999px;padding:8px 18px;font:500 14px var(--body);cursor:pointer}button.primary[disabled]{opacity:.45;cursor:not-allowed}
 #run-note{font-size:13px;align-self:center}
 /* Wide drawings scroll inside their card, so the page never scrolls sideways. */
@@ -70,13 +72,13 @@ if (window.mermaidReady) mermaidReady();
 <main>
 <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><h1 data-i="title"></h1><div class="chips" style="margin:0" role="group" aria-label="Language"><button class="chip" data-lang="en">EN</button><button class="chip" data-lang="vi">VI</button></div></div>
 <div class="sub" id="stamp"></div>
-<nav><a href="#overview" data-i="nav.overview"></a><a href="#guide" data-i="nav.guide"></a><a href="#analyze" data-i="nav.analyze"></a><a href="#coverage" data-i="nav.coverage"></a><a href="#goals" data-i="nav.goals"></a><a href="#diagrams" data-i="nav.diagrams"></a><a href="#gaps" data-i="nav.gaps"></a></nav>
+<nav><a href="#overview" data-i="nav.overview"></a><a href="#guide" data-i="nav.guide"></a><a href="#analyze" data-i="nav.analyze"></a><a href="#coverage" data-i="nav.coverage"></a><a href="#goals" data-i="nav.goals"></a><a href="#diagrams" data-i="nav.diagrams"></a></nav>
 
 <section id="overview"><h2 data-i="nav.overview"></h2><p class="sub" data-i="overview.sub"></p><div class="grid" id="metrics"></div></section>
 
 <section id="guide"><h2 data-i="nav.guide"></h2><p class="sub" data-i="guide.sub"></p>
 <div class="card" style="margin-bottom:12px"><h3 data-i="map.title"></h3><p class="sub" data-i="map.sub"></p><div style="overflow-x:auto"><svg id="map" width="100%" style="min-width:640px" role="img" aria-labelledby="map-title"><title id="map-title">Knowledge layers</title></svg></div></div>
-<div class="two"><div class="card"><h3 data-i="guide.parts"></h3><table data-i="guide.partsTable"></table></div><div class="card"><h3 data-i="guide.numbers"></h3><table data-i="guide.numbersTable"></table></div></div></section>
+<div class="stack"><div class="card"><h3 data-i="guide.parts"></h3><table data-i="guide.partsTable"></table></div><div class="card"><h3 data-i="guide.system"></h3><div id="guide-system"></div></div></div></section>
 
 <section id="analyze"><h2 data-i="nav.analyze"></h2><p class="sub" data-i="analyze.sub"></p>
 <div class="card picker"><details class="drop" id="drop"><summary id="drop-label"></summary><div class="drop-list" id="goal-options"></div></details><button class="primary" id="run"></button><span class="muted" id="run-note"></span></div></section>
@@ -90,8 +92,6 @@ if (window.mermaidReady) mermaidReady();
 
 <section id="diagrams"><h2 data-i="nav.diagrams"></h2><p class="sub" data-i="diagrams.sub"></p><div id="diagram-cards"></div></section>
 
-<section id="gaps"><h2 data-i="nav.gaps"></h2><p class="sub" data-i="gaps.sub"></p><div class="two" id="gap-cards"></div></section>
-
 </div>
 </main>
 <div class="side-back" id="side-back" hidden></div>
@@ -102,28 +102,24 @@ const I18N={
 en:{
 "title":DATA.title,
 "stamp":(b,c)=>`Built ${b} from commit ${c}`,
-"nav.overview":"Overview","nav.diagrams":"Diagrams","diagrams.sub":"The system context, then the diagrams of the chosen goals and of their flows, drawn from the knowledge pages.","diagrams.offline":"The diagram library did not load, so the source is shown. It loads from the network.","nav.guide":"How to read this","nav.coverage":"API coverage","nav.goals":"Goals","nav.gaps":"Gaps",
+"nav.overview":"Overview","nav.diagrams":"Diagrams","diagrams.sub":"The system context, then the diagrams of the chosen goals and of their flows, drawn from the knowledge pages.","diagrams.offline":"The diagram library did not load, so the source is shown. It loads from the network.","nav.guide":"How to read this","nav.coverage":"API coverage","nav.goals":"Goals",
 "overview.sub":"What the knowledge describes today: goals, the flows that reach them, the rules they rely on, and the API operations that serve them.",
 "guide.sub":"The knowledge is written top down, from what the business needs to the API contract. Every part has an ID, and every part cites the parts it relies on, so a change can be traced in both directions.",
-"guide.parts":"The parts","guide.numbers":"The numbers",
+"guide.parts":"The parts","guide.system":"The system",
 "guide.partsTable":`<tr><td><span class="pill p0">SYS-n</span></td><td><b>Requirement.</b> A rule for the whole system, such as "a JSON response is always a root object".</td></tr>
 <tr><td><span class="pill p0">G-…-n</span></td><td><b>Goal and its criteria.</b> A business outcome, such as "Borrow a book", and the checks that say it is reached.</td></tr>
 <tr><td><span class="pill p1">F-…-n</span></td><td><b>Flow and its scenarios.</b> How the outcome happens across apps and services. Each scenario is one testable case: given, when, then. Testers and the client test by these.</td></tr>
 <tr><td><span class="pill p2">PREFIX-n</span></td><td><b>Rule.</b> A business rule of one domain, true whatever screen uses it.</td></tr>
 <tr><td><span class="pill p3">operation</span></td><td><b>Operation.</b> One API call in the agreed contract (OpenAPI). It is written before the code.</td></tr>`,
-"guide.numbersTable":`<tr><td><b>API coverage</b></td><td>Service routes that have a contract and scenarios behind them. A route without them is behavior nobody has written down yet.</td></tr>
-<tr><td><b>Size of a goal</b></td><td>The flows, scenarios and operations a goal relies on. A bigger goal needs more testing when it changes.</td></tr>
-<tr><td><b>Gaps</b></td><td>Rules or criteria that no scenario tests, operations no scenario calls, and requirements nothing cites. Each one is work left to do.</td></tr>`,
 "coverage.sub":"Service routes that have an agreed contract and flows behind them, by service and namespace. A route without knowledge is behavior nobody has written down yet.",
 "goals.sub":"Each goal is a business outcome. Size counts what the goal relies on: the bigger it is, the more there is to test when it changes.",
 
 
-"gaps.sub":"Places where the knowledge is not yet complete.",
 "m.goals":["Goals","business outcomes"],"m.flows":["Flows","behaviors across domains"],"m.scenarios":["Scenarios","testable cases"],"m.rules":["Rules","artifact and Flow rules"],"m.operations":["Operations","API operations with a contract"],"m.coverage":["API coverage",(c,t)=>`${c} of ${t} service routes`],
 "withKnowledge":"Routes with knowledge","withoutKnowledge":"Routes without knowledge",
 
 "flowRules":"Flow rules","flows":"Flows","scenarios":"Scenarios","operations":"Operations","criterion":"Criterion","none":"none","None":"None","details":"Criteria and flows","close":"Close","prev":"Previous","next":"Next","layer.system/":"System","layer.goals/":"Goals","layer.flows/":"Flows",
-"gap.rules":"Rules no scenario covers","gap.criteria":"Goal criteria no scenario proves","gap.ops":"Operations no scenario calls","gap.sys":"Requirements nothing cites",
+
 "showAll":"Show all",
 
 "map.title":"From the outside in","map.sub":"Each layer sits inside the one above it and cites it. The example on the right follows one real path, from a system requirement down to an operation of the contract. Click a layer to jump to it.",
@@ -138,29 +134,25 @@ en:{
 vi:{
 "title":DATA.title,
 "stamp":(b,c)=>`Dựng lúc ${b} từ commit ${c}`,
-"nav.overview":"Tổng quan","nav.diagrams":"Diagram","diagrams.sub":"Context của hệ thống, rồi diagram của các goal đã chọn và của các flow của chúng, vẽ từ các trang knowledge.","diagrams.offline":"Không tải được thư viện vẽ diagram nên hiện mã nguồn. Thư viện tải từ mạng.","nav.guide":"Cách đọc","nav.coverage":"Độ phủ API","nav.goals":"Goal","nav.gaps":"Lỗ hổng",
+"nav.overview":"Tổng quan","nav.diagrams":"Diagram","diagrams.sub":"Context của hệ thống, rồi diagram của các goal đã chọn và của các flow của chúng, vẽ từ các trang knowledge.","diagrams.offline":"Không tải được thư viện vẽ diagram nên hiện mã nguồn. Thư viện tải từ mạng.","nav.guide":"Cách đọc","nav.coverage":"Độ phủ API","nav.goals":"Goal",
 "overview.sub":"Knowledge hiện mô tả những gì: các goal, các flow để đạt goal, các rule mà chúng dựa vào, và các operation API phục vụ chúng.",
 "guide.sub":"Knowledge được viết từ trên xuống, từ nhu cầu nghiệp vụ tới contract API. Mỗi thành phần có một ID và trích các thành phần nó dựa vào, nên một thay đổi lần được theo cả hai chiều.",
-"guide.parts":"Các thành phần","guide.numbers":"Các chỉ số",
+"guide.parts":"Các thành phần","guide.system":"Hệ thống",
 "guide.partsTable":`<tr><td><span class="pill p0">SYS-n</span></td><td><b>Requirement (yêu cầu hệ thống).</b> Luật áp dụng cho toàn hệ thống, ví dụ "response JSON luôn là một object gốc".</td></tr>
 <tr><td><span class="pill p0">G-…-n</span></td><td><b>Goal và criteria.</b> Một kết quả nghiệp vụ, ví dụ "Mượn sách", và các tiêu chí để biết đã đạt được.</td></tr>
 <tr><td><span class="pill p1">F-…-n</span></td><td><b>Flow và scenario.</b> Cách kết quả diễn ra qua các app và service. Mỗi scenario là một ca test: given, when, then. Tester và client test theo các scenario này.</td></tr>
 <tr><td><span class="pill p2">PREFIX-n</span></td><td><b>Rule (luật nghiệp vụ).</b> Luật của một domain, đúng bất kể màn hình nào dùng nó.</td></tr>
 <tr><td><span class="pill p3">operation</span></td><td><b>Operation.</b> Một lời gọi API trong contract đã thống nhất (OpenAPI), được viết trước khi có code.</td></tr>`,
-"guide.numbersTable":`<tr><td><b>Độ phủ API</b></td><td>Số route của các service đã có contract và scenario đứng sau. Route chưa có nghĩa là hành vi đó chưa ai viết ra.</td></tr>
-<tr><td><b>Độ lớn của goal</b></td><td>Số flow, scenario và operation mà một goal dựa vào. Goal càng lớn thì khi thay đổi càng phải test nhiều.</td></tr>
-<tr><td><b>Lỗ hổng</b></td><td>Rule hay criterion chưa scenario nào test, operation chưa scenario nào gọi, và requirement chưa ai trích. Mỗi mục là việc còn phải làm.</td></tr>`,
 "coverage.sub":"Các route của service đã có contract và flow đứng sau, theo service và namespace. Route chưa có knowledge là hành vi chưa ai viết ra.",
 "goals.sub":"Mỗi goal là một kết quả nghiệp vụ. Độ lớn đếm những gì goal dựa vào: càng lớn thì khi thay đổi càng phải test nhiều.",
 
 
-"gaps.sub":"Những chỗ knowledge chưa đầy đủ.",
 "flowRules":"Flow rule",
 "m.goals":["Goal","kết quả nghiệp vụ"],"m.flows":["Flow","hành vi qua nhiều domain"],"m.scenarios":["Scenario","ca test"],"m.rules":["Rule","rule của artifact và Flow"],"m.operations":["Operation","operation API có contract"],"m.coverage":["Độ phủ API",(c,t)=>`${c} trên ${t} route service`],
 "withKnowledge":"Route đã có knowledge","withoutKnowledge":"Route chưa có knowledge",
 
 "flows":"Flow","scenarios":"Scenario","operations":"Operation","criterion":"Criterion","none":"chưa có","None":"Không có","details":"Criterion và flow","close":"Đóng","prev":"Trước","next":"Sau","layer.system/":"System","layer.goals/":"Goal","layer.flows/":"Flow",
-"gap.rules":"Rule chưa scenario nào phủ","gap.criteria":"Criterion chưa scenario nào chứng minh","gap.ops":"Operation chưa scenario nào gọi","gap.sys":"Requirement chưa ai trích",
+
 "showAll":"Xem tất cả",
 
 "map.title":"Từ ngoài vào trong","map.sub":"Mỗi lớp nằm trong lớp bên trên và trích lớp đó. Ví dụ bên phải đi theo một đường thật, từ một requirement của hệ thống xuống tới một operation của contract. Bấm vào một lớp để tới mục đó.",
@@ -187,14 +179,12 @@ const covered=ROUTES.filter(r=>r.covered).length;
 const flowByPage=Object.fromEntries(DATA.flows.map(f=>[f.page,f]));
 const bySpace=Object.create(null);ROUTES.forEach(r=>{(bySpace[r.space]??=[]).push(r);});
 const spaces=Object.create(null);Object.entries(bySpace).forEach(([s,rs])=>{(spaces[rs.length<3&&!/^\/v\d/.test(s)?"other":s]??=[]).push(...rs);});
-const covers=new Set(scen.flatMap(s=>s.covers));
-const named=new Set(scen.flatMap(s=>DATA.operations.filter(o=>s.when.includes(o.id)).map(o=>o.id)));
 
 function render(){
 document.documentElement.lang=lang;document.title=DATA.title;
 document.querySelectorAll("[data-i]").forEach(e=>{
- // Only these two template-owned translations contain markup. Workspace titles are text.
- if(["guide.partsTable","guide.numbersTable"].includes(e.dataset.i))e.innerHTML=T(e.dataset.i);
+ // Only this template-owned translation contains markup. Workspace titles are text.
+ if(e.dataset.i==="guide.partsTable")e.innerHTML=T(e.dataset.i);
  else e.textContent=T(e.dataset.i);
 });
 document.querySelectorAll("[data-lang]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===lang));
@@ -203,7 +193,7 @@ const m=[["m.goals",DATA.goals.length],["m.flows",DATA.flows.length],["m.scenari
 if(HAS_ROUTES)m.push(["m.coverage",pct(covered,ROUTES.length)+"%"]);
 $("metrics").innerHTML=metricCards(m,covered,ROUTES.length);
 $("coverage").hidden=!HAS_ROUTES;document.querySelector('nav a[href="#coverage"]').hidden=!HAS_ROUTES;
-drawMap();renderPicker();
+drawMap();renderPicker();drawGuideSystem();
 if(analysis)renderResults();
 }
 function metricCards(m,c,t){return m.map(([k,v])=>{const [label,note]=T(k);return `<div class="card metric"><div class="k">${label}</div><div class="v">${v}</div><div class="n">${typeof note==="function"?note(c,t):note}</div></div>`;}).join("");}
@@ -258,12 +248,6 @@ function renderResults(){
  +`<details open><summary>${T("inThis")} (${routes.length})</summary><table>${routes.map(r=>`<tr><td>${esc(r.method)}</td><td><code>${esc(r.path)}</code></td><td>${pill(r.covered)}</td></tr>`).join("")}</table></details>`
  +`<details><summary>${T("withoutKnowledge")} (${ROUTES.length-covered})</summary><table>${ROUTES.filter(r=>!r.covered).map(r=>`<tr><td>${esc(r.method)}</td><td><code>${esc(r.path)}</code></td></tr>`).join("")}</table></details>`;
  goalList=goals;goalPage=0;drawGoals();if(sideFor)openSide(sideFor);
- const gaps=[
-  ["gap.rules",rules.filter(r=>!covers.has(r.id)).map(r=>r.id)],
-  ["gap.criteria",goals.flatMap(g=>g.criteria).filter(c=>!c.proven.length).map(c=>c.id)],
-  ["gap.ops",ops.filter(o=>!named.has(o.id)).map(o=>o.id)],
-  ["gap.sys",DATA.requirements.filter(r=>S.has(r.id)&&!(DATA.reach[r.id]&&(DATA.reach[r.id].scenarios||DATA.reach[r.id].operations))).map(r=>r.id)]];
- $("gap-cards").innerHTML=gaps.map(([t,ids])=>`<div class="card"><h3>${T(t)} <span class="muted">${ids.length}</span></h3><div style="margin-top:8px">${ids.length?ids.map(pill).join(""):`<span class="muted">${T("None")}</span>`}</div></div>`).join("");
  const pages=new Set(["system/context.md",...goals.flatMap(g=>[g.page,...g.flows])]);
  drawDiagrams(DATA.diagrams.map((d,i)=>({...d,i})).filter(d=>pages.has(d.page)));
 }
@@ -279,7 +263,7 @@ function mermaidTheme(){const c=getComputedStyle(document.documentElement),v=n=>
   themeCSS:".node rect,.node polygon,.node circle,.node path,.cluster rect,.actor,rect.note,.labelBox{stroke-width:1px!important}.node rect,.cluster rect{rx:8px;ry:8px}.edgePath .path,.flowchart-link,.messageLine0,.messageLine1,.transition{stroke-width:1.25px!important}.cluster-label,.cluster .nodeLabel{font-weight:600}",
   htmlLabels:false,flowchart:{curve:"linear",padding:12,htmlLabels:false},sequence:{actorMargin:48,boxMargin:8,mirrorActors:false}}}
 function mermaidReady(){mermaid.initialize({...mermaidTheme(),startOnLoad:false,securityLevel:"strict",suppressErrorRendering:true,
- secure:["secure","securityLevel","startOnLoad","suppressErrorRendering","maxTextSize","maxEdges","htmlLabels","flowchart","theme","themeCSS","fontFamily","layout","elk"]});mermaidOn=true;if(analysis)drawDiagrams(shown);}
+ secure:["secure","securityLevel","startOnLoad","suppressErrorRendering","maxTextSize","maxEdges","htmlLabels","flowchart","theme","themeCSS","fontFamily","layout","elk"]});mermaidOn=true;drawGuideSystem();if(analysis)drawDiagrams(shown);}
 
 function diagramSourceAllowed(code){
  // Mermaid applies directives and builds temporary DOM before returning SVG. Keep configuration
@@ -341,6 +325,15 @@ function drawDiagrams(list){shown=list.sort((a,b)=>LAYER.findIndex(l=>a.page.sta
  if(mermaidOn)shown.filter(d=>!svgs[d.i]&&!rendering.has(d.i)&&diagramSourceAllowed(d.code)).forEach(d=>{
   rendering.add(d.i);mermaid.render("mmsvg"+d.i,d.code).then(r=>{svgs[d.i]=safeDiagram(r.svg,"mmsvg"+d.i);const e=$("mm"+d.i);if(e){e.replaceChildren(svgs[d.i].cloneNode(true));linkFlows(d);}})
    .catch(()=>{/* The readable source remains when parsing or sanitizing fails. */}).finally(()=>{rendering.delete(d.i);scheduleSize();});});}
+// The guide shows the first system diagram, such as the context, rendered once.
+let guideSvg=null,guideRendering=false;
+function drawGuideSystem(){const d=DATA.diagrams.find(x=>x.page.startsWith("system/")),e=$("guide-system");
+ if(!d){e.closest(".card").hidden=true;return;}
+ if(guideSvg){e.replaceChildren(guideSvg.cloneNode(true));return;}
+ e.innerHTML=`<p class="sub" style="margin:2px 0 8px"><code>${esc(d.page)}</code></p><pre>${esc(d.code)}</pre>`;
+ if(!mermaidOn||guideRendering||!diagramSourceAllowed(d.code))return;guideRendering=true;
+ mermaid.render("guidesvg",d.code).then(r=>{guideSvg=safeDiagram(r.svg,"guidesvg");e.replaceChildren(guideSvg.cloneNode(true));})
+  .catch(()=>{/* The readable source remains when parsing or sanitizing fails. */}).finally(()=>{guideRendering=false;scheduleSize();});}
 // In a goal's diagram, each node named after a flow shows that flow's slide in the Flows card.
 function linkFlows(d){if(!d.page.startsWith("goals/"))return;const e=$("mm"+d.i);if(!e)return;
  e.querySelectorAll(".node").forEach(n=>{const f=DATA.flows.find(x=>x.title===n.textContent.trim());if(!f||!shown.some(s=>s.page===f.page))return;
@@ -360,7 +353,7 @@ function examplePath(){
  const sys=best.sys||(op&&out[op.id].find(c=>c.startsWith("SYS-")))||DATA.requirements[0]?.id;
  const goal=DATA.goals.find(g=>g.criteria.some(c=>c.proven.includes(x.id)))||DATA.goals[0];
  return [sys,goal&&`${goal.title} (${goal.key})`,`${x.flow} · ${x.id}`,[rule,op&&op.id].filter(Boolean).join(" · ")];}
-const HREF=["#gaps","#goals","#diagrams","#summary"];
+const HREF=["#guide-system","#goals","#diagrams","#summary"];
 function drawMap(){const svg=$("map");[...svg.querySelectorAll("g,rect,text")].forEach(e=>e.remove());
  const L=T("layers"),ex=examplePath()||[],W=1000,B=58,I=26,H=B*4+10;svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
  const nums=[DATA.requirements.length+" SYS",`${DATA.goals.length} · ${DATA.goals.flatMap(g=>g.criteria).length} criteria`,`${DATA.flows.length} · ${scen.length} scenarios${flowRules.length?` · ${flowRules.length} ${T("flowRules")}`:""}`,`${DATA.rules.length} rules · ${DATA.operations.length} operations`];
