@@ -11,7 +11,7 @@ flowchart LR
 
 | Step | Does |
 | --- | --- |
-| Brainstorm | Gathers the new need and the existing flows and rules it touches, lays out the options, and asks about the one chosen. Everything goes on the issue; the knowledge does not change ([shape](runbooks/shape.md)). |
+| Brainstorm | Gathers the new need and the existing flows and rules it touches, lays out the options, and asks about the one chosen. |
 | Knowledge update | Writes the chosen option into the knowledge, and runs the checks ([workflow](workflow.md)): the goal and its `flowchart`; the flows, their scenarios and `sequenceDiagram`; each artifact's specification, its rules, `classDiagram` and `stateDiagram-v2`; the OpenAPI contracts. |
 | Implement | Changes the code of each part from the updated knowledge; its tests name the IDs they prove ([Done](done.md)). |
 
