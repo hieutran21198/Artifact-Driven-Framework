@@ -325,13 +325,16 @@ that implements it.
 ## Diagrams
 
 Draw diagrams as the [diagrams standard](../../coding-standards/diagrams/README.md) says. A layer
-never draws the inside of a lower layer.
+never draws the inside of a lower layer. A required diagram changes in the same
+change as its text; an optional one is drawn when a reviewer asks for it, and
+then kept up to date.
 
-| Layer | Diagram |
-| --- | --- |
-| System | Context: actors, clients, services, gateway, external systems. Nobody draws how goals, flows and artifacts link: the [knowledge site](../../../scripts/README.md#knowledge-site) shows it from the links. |
-| Goal | The flows that reach the goal, as a `flowchart`. |
-| Flow | A `sequenceDiagram` with each service it crosses as a participant, `rect` for each transaction inside one service, and `alt` for failures. A `flowchart` when it branches a lot. |
-| Artifact | A `classDiagram` of entities and their behavior methods, without fields. A `stateDiagram-v2` when an entity has a lifecycle. |
+| Layer | Diagram | Required |
+| --- | --- | --- |
+| System | Context: actors, clients, services, gateway, external systems. Nobody draws how goals, flows and artifacts link: the [knowledge site](../../../scripts/README.md#knowledge-site) shows it from the links. | Yes |
+| Goal | The flows that reach the goal, as a `flowchart`. | No |
+| Flow | A `sequenceDiagram` with each service it crosses as a participant, `rect` for each transaction inside one service, and `alt` for failures. A `flowchart` when it branches a lot. | Yes, the `sequenceDiagram` |
+| Artifact | A `stateDiagram-v2` when an entity has a lifecycle. | Yes, when an entity has a lifecycle |
+| Artifact | A `classDiagram` of entities and their behavior methods, without fields. | No |
 
 Return to [Artifact Driven](README.md).

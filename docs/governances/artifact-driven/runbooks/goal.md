@@ -24,8 +24,9 @@ Sample: [Borrow a book](https://github.com/hieutran21198/Artifact-Driven-Framewo
    changing a goal, add new IDs and keep old ones; mark a dropped criterion as withdrawn instead of deleting it
    ([the life of an ID](../knowledge.md#the-life-of-an-id)). The goal key
    follows the same page.
-5. List the flows that reach the goal and draw them as a `flowchart`. A flow
-   that does not exist yet is the next runbook: [flow](flow.md).
+5. List the flows that reach the goal. A flow that does not exist yet is the
+   next runbook: [flow](flow.md). A `flowchart` of them is optional
+   ([diagrams](../knowledge.md#diagrams)).
 
 Then [check the docs](check.md).
 

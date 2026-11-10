@@ -19,8 +19,9 @@ Sample: [book specification](https://github.com/hieutran21198/Artifact-Driven-Fr
    on, a table of regions when it differs by region, and whether a change
    applies to existing records
    ([rules with values](../knowledge.md#rules-with-values)).
-3. Update the `classDiagram` when a behavior is added or removed, and the
-   `stateDiagram-v2` when the lifecycle changes.
+3. Update the `stateDiagram-v2` when the lifecycle changes, and the
+   `classDiagram`, if the page has one, when a behavior is added or removed
+   ([diagrams](../knowledge.md#diagrams)).
 4. Keep the page free of services, clients and flows: no screens, no endpoints, no
    "during checkout".
 5. Run [impact](../../../../scripts/README.md#impact) on the rule's ID (`python3 scripts/impact.py <ID>`) and update
