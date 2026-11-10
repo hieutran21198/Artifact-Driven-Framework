@@ -54,7 +54,7 @@ done
 
 # The sample replaces what belongs to the framework itself.
 rm -rf "$build/docs/software-knowledges"
-for path in README.md artifact-driven.json docs/software-knowledges docs/architecture/domain-map.md \
+for path in README.md artifact-driven.json docs/software-knowledges docs/architecture/decisions.md docs/architecture/domain-map.md \
   services/README.md apps/README.md; do
   rm -rf "${build:?}/$path"
   copy "template/$path" "$path"

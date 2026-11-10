@@ -42,9 +42,23 @@ class InstallWorkspace(unittest.TestCase):
         self.assertNotEqual(run.returncode, 0)
         self.assertEqual(list(self.out.iterdir()), [])
 
+    def test_F_START_5_project_decisions_come_from_the_sample(self):
+        """F-START-5, WS-11: the architecture decisions of a new workspace are the
+        sample's, not the framework project's."""
+        source = self.tmp / "source"
+        shutil.copytree(FRAMEWORK, source, ignore=shutil.ignore_patterns(".git", "build"))
+        (source / "docs/architecture/decisions.md").write_text("# Decisions\n\n## A framework project choice\n")
+        run = install(source, self.out / "ws")
+        self.assertEqual(run.returncode, 0, run.stderr)
+        ws = self.out / "ws"
+        self.assertEqual((ws / "docs/architecture/decisions.md").read_bytes(),
+                         (FRAMEWORK / "template/docs/architecture/decisions.md").read_bytes())
+        self.assertEqual((ws / "docs/governances/artifact-driven/decisions.md").read_bytes(),
+                         (FRAMEWORK / "docs/governances/artifact-driven/decisions.md").read_bytes())
+
     @unittest.skipUnless(shutil.which("git"), "needs git")
     def test_F_START_6_flow_rule_sample_runs_with_installed_tools(self):
-        """F-START-6, WS-3, WS-4, KN-13: installed tools read the sample rule."""
+        """F-START-6, WS-3, WS-11, KN-13: installed tools read the sample rule."""
         ws = self.out / "ws"
         run = install(FRAMEWORK, ws)
         self.assertEqual(run.returncode, 0, run.stderr)
