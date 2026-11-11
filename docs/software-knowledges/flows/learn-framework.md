@@ -8,8 +8,9 @@ next.
   [guide](../artifacts/guide/README.md),
   [method](../artifacts/method/README.md) and
   [agents](../artifacts/agents/README.md), served by the `landing` service,
-  and [workspace](../artifacts/workspace/README.md), served by the `install`
-  service.
+  [workspace](../artifacts/workspace/README.md), served by the `install`
+  service, and [knowledge](../artifacts/knowledge/README.md), served by the
+  `scripts` service.
 - Contract: `playStory`, `showStep`, `explainBlock`, `openFramework`,
   `openMethod`, `openAgents`, `copyInstall` and `openTracker` in the
   [introduction contract](../artifacts/introduction/openapi.yaml),

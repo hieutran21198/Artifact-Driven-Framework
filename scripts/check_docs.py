@@ -137,6 +137,25 @@ def check_direction():
     return problems
 
 
+def check_crosses():
+    """A flow with a Crosses line names there the artifact of each artifact rule it cites (KN-20)."""
+    defined, _ = knowledge_ids()
+    folder = KNOWLEDGE.relative_to(ROOT)
+    problems = []
+    for path in sorted((KNOWLEDGE / "flows").glob("*.md")):
+        text = path.read_text(encoding="utf-8")
+        head = re.split(r"^## ", text, maxsplit=1, flags=re.MULTILINE)[0]
+        line = next((line for line in re.split(r"\n(?=- )", head) if line.startswith("- Crosses:")), None)
+        if line is None:
+            continue
+        crosses = set(re.findall(r"\(\.\./artifacts/([^/)]+)/", line))
+        for name in sorted(set(ID.findall(text))):
+            parts = defined[name].relative_to(folder).parts if name in defined else ()
+            if parts[:1] == ("artifacts",) and parts[1] not in crosses:
+                problems.append(f"{path.relative_to(ROOT)}: cites {name} of the artifact {parts[1]}, which its Crosses line does not name")
+    return problems
+
+
 def check_flow_rules():
     """Validate explicit Flow definitions and their lower-layer citations."""
     rules, problems, scopes = {}, [], {}
@@ -183,12 +202,12 @@ def check_flow_rules():
 
 
 def main():
-    problems = check_links() + check_ids() + check_contracts() + check_scenarios() + check_direction() + check_flow_rules()
+    problems = check_links() + check_ids() + check_contracts() + check_scenarios() + check_direction() + check_crosses() + check_flow_rules()
     for problem in problems:
         print(problem, file=sys.stderr)
     if problems:
         return 1
-    print("Docs check passed: links, anchors, knowledge IDs, citation direction, contract homes, and scenarios and the operations, triggers or commands they name.")
+    print("Docs check passed: links, anchors, knowledge IDs, citation direction, contract homes, the artifacts each flow crosses, and scenarios and the operations, triggers or commands they name.")
     return 0
 
 
