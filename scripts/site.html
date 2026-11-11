@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap">
 <style>
 :root{--bg:#fbfcfd;--card:#ffffff;--panel:#f1f4f7;--ink:#1f2933;--muted:#5f6b78;--faint:#94a0ab;--line:#e3e8ed;--accent:#2f6db5;--accent-bg:#e8f0fa;--up:#b8542c;--up-bg:#fbece5;--down:#2f7d57;--down-bg:#e6f2e8;--warn:#8a5a12;--warn-bg:#fbf3e4;--c0:#ecebfb;--c0i:#3d3a8a;--c1:#e2f3ec;--c1i:#1f6a4f;--c2:#fbe9ee;--c2i:#8a3352;--c3:#f6f3ec;--c3i:#6b5d3a;
+  --f0:var(--accent);--f1:var(--up);--f2:var(--down);--f3:var(--c2i);--f4:var(--c0i);--f5:var(--warn);
   --serif:"Source Serif 4",Georgia,"Times New Roman",serif;--body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;color-scheme:light}
 /* Light only, like the landing page: the page keeps its colors on a dark system theme. */
 *{box-sizing:border-box}
@@ -53,9 +54,14 @@ button.primary{border:1px solid var(--ink);background:var(--ink);color:var(--car
 .story{margin-top:12px}.story-head{display:flex;gap:8px 18px;flex-wrap:wrap;align-items:center}.story-head h3{margin:0}
 .story .steps{display:flex;gap:4px 16px;flex-wrap:wrap}.story .steps button{font:14px var(--body);color:var(--faint);background:none;border:0;border-bottom:1px solid transparent;padding:6px 0;cursor:pointer}
 .story .steps button[aria-current="step"]{color:var(--ink);border-bottom-color:var(--ink)}
-.stage{position:relative;display:grid;gap:28px;margin-top:14px;padding:6px 0}.stage>svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
-.stage path{fill:none;stroke:var(--faint);stroke-width:1.2}
-.srow{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;position:relative;z-index:1}.scol{flex:1 1 220px;min-width:0;max-width:420px;display:grid;gap:8px;align-content:start;justify-items:center}
+/* Each flow has a colour and its own lane in every gap, so the gaps grow with the number of flows (--lanes). */
+.stage{--lanes:2;position:relative;display:grid;gap:calc(16px + var(--lanes)*8px);margin-top:14px;padding:6px calc(8px + var(--lanes)*3px)}.stage>svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.stage path{fill:none;stroke:var(--fc,var(--faint));stroke-width:1.4;stroke-linejoin:round;transition:opacity .2s}.stage[data-hot] path:not(.hot){opacity:.12}.stage[data-hot] path.hot{stroke-width:2.2}
+.fl0{--fc:var(--f0)}.fl1{--fc:var(--f1)}.fl2{--fc:var(--f2)}.fl3{--fc:var(--f3)}.fl4{--fc:var(--f4)}.fl5{--fc:var(--f5)}
+.n-rule[data-fl]:not([data-fl=""])::before,.n-flow b::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--fc);margin-right:5px;vertical-align:1px}
+.stage[data-hot] .n-flow:not(.hot),.stage[data-hot] .n-rule:not(.hot){opacity:.4}
+/* Flows keep one line while each has 110px; lines between wrapped lines run down the gutters. */
+.srow{display:flex;flex-wrap:wrap;gap:calc(8px + var(--lanes)*5px);justify-content:center;position:relative;z-index:1}.scol{flex:1 1 0;min-width:110px;max-width:420px;display:grid;gap:8px;align-content:start;justify-items:center}
 .node{border:0;border-radius:12px;padding:7px 12px;font:13px/1.35 var(--body);text-align:left;cursor:pointer;color:var(--ink);max-width:100%;overflow-wrap:anywhere}
 .node b{display:block;font-weight:400;font-size:11px;opacity:.8}.node:hover,.node.sel{box-shadow:0 0 0 1.5px var(--muted)}
 .n-goal{background:var(--c0);color:var(--c0i)}.n-flow{background:var(--c1);color:var(--c1i)}.n-rule{background:var(--c2);color:var(--c2i);border-radius:8px;padding:3px 9px;font-size:12px}.n-art{background:transparent;color:var(--c3i);font-weight:500}
@@ -271,6 +277,13 @@ function showStory(key){const g=DATA.goals.find(x=>x.key===key),s=DATA.stories[k
    <div class="chips" data-from="2">${f.rules.filter(isFlowRule).map(ruleChip).join("")}</div></div>`;}).join("");
  $("story-arts").innerHTML=Object.entries(s.artifacts).map(([a,rs])=>`<div class="sart" data-art="${esc(a)}">${nodeBtn("art",a,"n-art",esc(a))}<div class="chips">${rs.map(ruleChip).join("")}</div></div>`).join("");
  $("story-steps").innerHTML=T("story.steps").map((n,i)=>`<button type="button" data-step="${i}">${n}</button>`).join("");
+ // Each flow has a colour; a rule shows the colour of each flow that relies on it.
+ const pages=s.flows.filter(f=>flowByPage[f.page]).map(f=>f.page),byRule=Object.create(null);
+ s.flows.forEach(f=>pages.includes(f.page)&&f.rules.forEach(r=>(byRule[r]=byRule[r]||[]).push(f.page)));
+ $("story-stage").style.setProperty("--lanes",Math.max(2,pages.length));
+ $("story-stage").querySelectorAll(".n-flow").forEach(b=>b.classList.add("fl"+pages.indexOf(b.dataset.id)%6));
+ $("story-stage").querySelectorAll(".n-rule").forEach(b=>{const fs=byRule[b.dataset.id]||[],c=fs.map(p=>`var(--f${pages.indexOf(p)%6})`);b.dataset.fl=fs.join(" ");
+  if(c.length===1)b.style.setProperty("--fc",c[0]);else if(c.length)b.style.setProperty("--fc",`linear-gradient(90deg,${c.map((x,i)=>`${x} ${i*100/c.length}% ${(i+1)*100/c.length}%`).join(",")})`);});
  showStep(storyStep);}
 function showStep(n){storyStep=(n+STEPS)%STEPS;const s=DATA.stories[storyGoal],g=DATA.goals.find(x=>x.key===storyGoal);
  $("story-stage").querySelectorAll("[data-from]").forEach(e=>{const until=e.dataset.until===undefined?STEPS:+e.dataset.until;
@@ -281,14 +294,52 @@ function showStep(n){storyStep=(n+STEPS)%STEPS;const s=DATA.stories[storyGoal],g
  [...$("story-steps").children].forEach((b,i)=>b.setAttribute("aria-current",i===storyStep?"step":"false"));
  $("story-play").textContent=T(storyTimer?"pause":"play");
  drawLines();}
-function drawLines(){const stage=$("story-stage"),svg=$("story-lines");if($("story").hidden)return;const box=stage.getBoundingClientRect(),lines=[];
- const at=(e,end)=>{const r=e.getBoundingClientRect();return [r.left-box.left+r.width/2,(end?r.bottom:r.top)-box.top];};
- const curve=(a,b)=>{if(!a||!b||!a.offsetParent||!b.offsetParent)return;const [x1,y1]=at(a,true),[x2,y2]=at(b,false),m=(y1+y2)/2;lines.push(`<path d="M${x1} ${y1}C${x1} ${m},${x2} ${m},${x2} ${y2}"/>`);};
- const goal=$("story-goal").firstElementChild,s=DATA.stories[storyGoal];
- if(storyStep>=1)$("story-flows").querySelectorAll(".n-flow").forEach(f=>curve(goal,f));
- if(storyStep>=3)s.flows.forEach(f=>{const fl=flowByPage[f.page];if(!fl)return;const from=$("story-flows").querySelector(`[data-flow="${CSS.escape(f.page)}"]`);
-  fl.crosses.forEach(a=>curve(from,$("story-arts").querySelector(`[data-art="${CSS.escape(a)}"] .n-art`)));});
+// Lines run at right angles. Flow k has lane k in every gap and its own port on each block it reaches.
+// A line to a lower line of blocks goes down the gutter between the blocks it passes, never behind one.
+function drawLines(){const stage=$("story-stage"),svg=$("story-lines");if($("story").hidden)return;const box=stage.getBoundingClientRect(),lines=[],s=DATA.stories[storyGoal];
+ const flows=s.flows.filter(f=>flowByPage[f.page]),n=flows.length,rects=new Map(),rows=[];
+ const rect=e=>{if(!rects.has(e)){const r=e.getBoundingClientRect();rects.set(e,{l:r.left-box.left,r:r.right-box.left,t:r.top-box.top,b:r.bottom-box.top,x:r.left-box.left+r.width/2});}return rects.get(e);};
+ // Lines of blocks from top to bottom: the goal, the flow columns and the artifacts, each wrapped line on its own.
+ [$("story-goal").firstElementChild,...$("story-flows").children,...$("story-arts").children].filter(e=>e&&e.offsetParent).forEach(e=>{const r=rect(e),w=rows.find(w=>Math.abs(w.t-r.t)<2);
+  if(w){w.items.push(r);w.b=Math.max(w.b,r.b);}else rows.push({t:r.t,b:r.b,items:[r]});});
+ rows.sort((a,b)=>a.t-b.t).forEach((w,i)=>{w.items.sort((a,b)=>a.l-b.l);w.items.forEach(r=>r.row=i);});
+ const spread=(x,m,step)=>Array.from({length:m},(_,i)=>x+(i-(m-1)/2)*step);
+ const lane=(i,k)=>rows[i].b+(rows[i+1].t-rows[i].b)*(k+1)/(n+1);
+ const gutter=(w,x,k)=>{const it=w.items,xs=[it[0].l/2,...it.slice(1).map((r,i)=>(it[i].r+r.l)/2),(it[it.length-1].r+box.width)/2];
+  return xs.reduce((a,b)=>Math.abs(b-x)<Math.abs(a-x)?b:a)+(k-(n-1)/2)*3;};
+ const draw=(k,page,to,x,y,from,end,px)=>{const pts=[[x,y]];
+  for(let i=from.row;i<end.row;i++){const ly=lane(i,k);if(i+1===end.row)pts.push([x,ly],[px,ly],[px,end.t]);else{const g=gutter(rows[i+1],px,k);pts.push([x,ly],[g,ly]);x=g;}}
+  if(pts.length<2)return;let d=`M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
+  for(let i=1;i<pts.length;i++){const [a,b]=pts[i-1],[p,q]=pts[i],next=pts[i+1];if(!next){d+=`L${p.toFixed(1)} ${q.toFixed(1)}`;break;}
+   const r=Math.min(6,Math.hypot(p-a,q-b)/2,Math.hypot(next[0]-p,next[1]-q)/2);
+   d+=`L${(p-Math.sign(p-a)*r).toFixed(1)} ${(q-Math.sign(q-b)*r).toFixed(1)}Q${p.toFixed(1)} ${q.toFixed(1)} ${(p+Math.sign(next[0]-p)*r).toFixed(1)} ${(q+Math.sign(next[1]-q)*r).toFixed(1)}`;}
+  lines.push(`<path class="fl${k%6}" data-fl="${esc(page)}" data-to="${esc(to)}" d="${d}"/>`);};
+ const col=f=>$("story-flows").querySelector(`[data-flow="${CSS.escape(f.page)}"]`);
+ const goal=$("story-goal").firstElementChild;
+ if(storyStep>=1&&goal&&goal.offsetParent){const g=rect(goal),xs=spread(g.x,n,10);
+  flows.forEach((f,k)=>{const c=col(f),node=c.querySelector(".n-flow");if(node.offsetParent)draw(k,f.page,"",xs[k],g.b,g,{...rect(node),row:rect(c).row},rect(node).x);});}
+ if(storyStep>=3){const arts=new Map([...$("story-arts").children].filter(e=>e.offsetParent).map(e=>[e.dataset.art,rect(e)])),ports=new Map();
+  // Ports on an artifact go left to right in flow order, so lines do not cross where they arrive.
+  flows.forEach((f,k)=>flowByPage[f.page].crosses.forEach(a=>{if(arts.has(a))(ports.get(a)||ports.set(a,[]).get(a)).push(k);}));
+  ports.forEach((ks,a)=>{const xs=spread(arts.get(a).x,ks.length,12);ports.set(a,new Map(ks.map((k,i)=>[k,xs[i]])));});
+  flows.forEach((f,k)=>{const c=col(f),last=[...c.children].filter(e=>e.offsetParent).pop(),from=rect(c);
+   const to=flowByPage[f.page].crosses.filter(a=>arts.has(a)).sort((a,b)=>ports.get(a).get(k)-ports.get(b).get(k)),xs=spread(from.x,to.length,8);
+   to.forEach((a,j)=>draw(k,f.page,a,xs[j],last?rect(last).b:from.b,from,arts.get(a),ports.get(a).get(k)));});}
  svg.setAttribute("viewBox",`0 0 ${box.width} ${box.height}`);svg.innerHTML=lines.join("");}
+// Pointing at a flow, a rule or an artifact lights its lines and blocks and dims the rest.
+function lightStory(n){const stage=$("story-stage"),s=DATA.stories[storyGoal];stage.querySelectorAll(".hot").forEach(e=>e.classList.remove("hot"));
+ const kind=n?n.dataset.node:"",id=n?n.dataset.id:"",inArt=n&&n.closest(".sart"),art=kind==="art"?id:kind==="rule"&&inArt?inArt.dataset.art:"";
+ const pages=kind==="flow"?[id]:kind==="rule"?(n.dataset.fl||"").split(" ").filter(Boolean):kind==="art"?s.flows.filter(f=>flowByPage[f.page]&&flowByPage[f.page].crosses.includes(id)).map(f=>f.page):[];
+ if(!pages.length){delete stage.dataset.hot;return;}stage.dataset.hot="";
+ stage.querySelectorAll("path").forEach(p=>{if(pages.includes(p.dataset.fl)&&(!art||!p.dataset.to||p.dataset.to===art))p.classList.add("hot");});
+ stage.querySelectorAll(".n-flow").forEach(b=>{if(pages.includes(b.dataset.id))b.classList.add("hot");});
+ stage.querySelectorAll(".n-rule").forEach(b=>{const fs=(b.dataset.fl||"").split(" "),box=b.closest(".sart");
+  if(b===n||kind==="flow"&&fs.includes(id)||kind==="art"&&box&&box.dataset.art===id)b.classList.add("hot");});}
+{const stage=$("story-stage");let redraw=0;
+ stage.addEventListener("mouseover",e=>lightStory(e.target.closest(".node")));stage.addEventListener("focusin",e=>lightStory(e.target.closest(".node")));
+ stage.addEventListener("mouseleave",()=>lightStory(null));stage.addEventListener("focusout",e=>{if(!stage.contains(e.relatedTarget))lightStory(null);});
+ // Blocks rise into place, so measure again when they stop moving.
+ stage.addEventListener("animationend",()=>{cancelAnimationFrame(redraw);redraw=requestAnimationFrame(drawLines);});}
 function playStory(on){clearInterval(storyTimer);storyTimer=on?setInterval(()=>showStep(storyStep+1),3500):null;$("story-play").textContent=T(on?"pause":"play");}
 new ResizeObserver(()=>drawLines()).observe($("story-stage"));
 // Diagrams in the side panel go through the same source check and SVG copy as the Diagrams section.
