@@ -185,7 +185,10 @@ only, the counts, the API coverage of each service (when it has `routes`),
 each goal with its criteria and scenarios, the story of one goal, and the
 diagrams of those goals and their flows. The story
 plays in four steps - goal, flows, rules, artifacts - from the goal page, the
-`Crosses` line of each flow and the rules the goal relies on. A block opens its source page in the side panel: the page of a goal or a
+`Crosses` line of each flow and the rules the goal relies on. Each flow has a
+colour, and each rule shows the colour of the flows that rely on it. Lines run
+at right angles, each flow in its own lane, and go around blocks, not behind
+them. Pointing at a flow, rule or artifact lights its lines. A block opens its source page in the side panel: the page of a goal or a
 flow, the specification of an artifact, or the page that defines a rule, with
 the rule's row marked. The page is rendered as text (headings, paragraphs,
 lists, tables, code, emphasis and links; no HTML), its diagrams go through the
