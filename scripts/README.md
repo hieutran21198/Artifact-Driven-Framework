@@ -187,7 +187,7 @@ diagrams of those goals and their flows. The story
 plays in four steps - goal, flows, rules, artifacts - from the goal page, the
 `Crosses` line of each flow and the rules the goal relies on. A rule shows
 once, under the first flow that reaches it and crosses its artifact, else
-under other rules. An artifact shows when the story holds one of its rules.
+under other rules, and the build prints a warning for it. An artifact shows when the story holds one of its rules.
 Each flow has a colour, and each rule shows the colour of its flow. Lines run
 at right angles, each flow in its own lane, and go around blocks, not behind
 them. Pointing at a flow, rule or artifact lights its lines. A block opens its source page in the side panel: the page of a goal or a

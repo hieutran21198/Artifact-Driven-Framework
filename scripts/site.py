@@ -236,12 +236,13 @@ def natural(unit):
 def stories(graph, goals, flows):
     """For each goal: its flows, each with the rules it reaches, and the
     artifacts that hold those rules. A rule is listed once, under the first
-    flow that reaches it and crosses its artifact, else under no flow."""
+    flow that reaches it and crosses its artifact, else under no flow with a
+    warning (KN-16). A flow without a Crosses line crosses every artifact."""
     crosses = {f["page"]: f["crosses"] for f in flows}
 
     def crossed(rule, page):
         home = graph.file[rule].split("/")
-        return home[0] != "artifacts" or home[1] in crosses.get(page, [])
+        return home[0] != "artifacts" or not crosses.get(page) or home[1] in crosses[page]
 
     found = {}
     for goal in goals:
@@ -259,6 +260,9 @@ def stories(graph, goals, flows):
             story.append({"page": page, "rules": sorted(reached, key=natural)})
         if rules - placed:
             story.append({"page": None, "rules": sorted(rules - placed, key=natural)})
+            for rule in sorted(rules - placed, key=natural):
+                print(f"Warning: {goal['key']}: {rule} is under no flow; no flow of the goal both reaches it "
+                      f"and crosses its artifact", file=sys.stderr)
         for rule in sorted(rules, key=natural):
             home = graph.file[rule].split("/")
             if home[0] == "artifacts":
