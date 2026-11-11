@@ -83,7 +83,8 @@ not withdrawn names an `operationId`, a trigger under `x-triggers` or a
 command under `x-commands`; and that every one of them is named by a
 scenario. It also checks the
 citation direction: a flow names no goal criterion, and an artifact names no
-goal criterion or flow scenario. It lists the problems and exits with status 1
+goal criterion or flow scenario. A flow page with a `Crosses` line names there
+the artifact of each artifact rule it cites. It lists the problems and exits with status 1
 when it finds any.
 
 Flow rules are explicit rows under `## Coordination rules` in

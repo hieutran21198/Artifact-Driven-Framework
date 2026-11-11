@@ -102,5 +102,6 @@ sequenceDiagram
 | F-CHECK-27 | A Flow rule depends on another Flow rule, a scenario or a goal; an artifact cites a Flow rule; a goal uses a Flow rule as Proven by; or an operation is named only by a Flow rule | The author runs `checkDocs` | It exits with 1 and identifies each forbidden dependency or missing scenario proof | KN-18, KN-6, SYS-3 |
 | F-CHECK-28 | A previously valid workspace with FR-shaped artifact definitions outside the Flow-rule form, including a Coordination rules heading on an artifact page | The author runs `checkDocs` and `checkTests` with its existing tests | Both retain their previous result; no definition is reclassified as a Flow rule and no migration is required | KN-2, KN-13, TST-2 |
 | F-CHECK-29 | A contract in `flows/`, with either the `.yaml` or `.yml` extension | The author runs `checkDocs` | It exits with 1 and names the file as a contract that belongs to an artifact or the system | KN-19, SYS-3 |
+| F-CHECK-30 | A flow whose `Crosses` line names the artifact book, and that cites a rule of the artifact member | The author runs `checkDocs` | It exits with 1 and names the flow, the rule and the artifact member | KN-20 |
 
 Return to [flows](README.md).

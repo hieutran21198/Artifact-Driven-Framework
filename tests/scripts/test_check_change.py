@@ -103,6 +103,26 @@ class CheckChange(unittest.TestCase):
                 (ws.root / k / name).unlink()
                 self.assertEqual(ws.run("check_docs.py").returncode, 0)
 
+    def test_F_CHECK_30_a_flow_names_the_artifacts_of_the_rules_it_cites(self):
+        """F-CHECK-30, KN-20: a flow that cites a rule of an artifact its
+        Crosses line does not name fails the check."""
+        ws = Workspace({})
+        self.addCleanup(ws.close)
+        k = "docs/software-knowledges/"
+        ws.write(k + "artifacts/book/openapi.yaml", "x-commands:\n  lend:\n    description: Lend\n")
+        ws.write(k + "artifacts/book/specification.md", "| BK-1 | Lend. | — |\n")
+        ws.write(k + "artifacts/member/specification.md", "| MB-1 | A member borrows. | — |\n")
+        for name in ("book", "member"):
+            ws.write(k + f"artifacts/{name}/README.md", f"# {name}\n")
+        flow = "# Flow: Lend\n\n- Crosses: [book](../artifacts/book/README.md){more}.\n\n| F-LEND-1 | A book | `lend` | Lent | BK-1, MB-1 |\n"
+        ws.write(k + "flows/lend.md", flow.format(more=""))
+        run = ws.run("check_docs.py")
+        self.assertEqual(run.returncode, 1)
+        self.assertEqual(run.stderr.strip().splitlines(), [
+            k + "flows/lend.md: cites MB-1 of the artifact member, which its Crosses line does not name"])
+        ws.write(k + "flows/lend.md", flow.format(more=" and\n  [member](../artifacts/member/README.md)"))
+        self.assertEqual(ws.run("check_docs.py").returncode, 0, ws.run("check_docs.py").stderr)
+
     def test_CFG_9_standards_must_be_a_list(self):
         """CFG-9, CFG-7: standards that is not a list of prefixes stops the
         check with status 2."""

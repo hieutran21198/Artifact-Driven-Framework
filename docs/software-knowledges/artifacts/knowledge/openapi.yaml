@@ -16,7 +16,8 @@ x-commands:
     caller: A person or CI, at the root of a workspace or in any folder under it.
     description: >
       python3 scripts/check_docs.py. Checks links, anchors, knowledge IDs,
-      citation direction, and scenarios and their operations. Validates explicitly declared local and shared
+      citation direction, the artifacts a flow crosses, and scenarios and
+      their operations. Validates explicitly declared local and shared
       Flow rules and their citations while preserving existing artifact ID
       forms.
     input:
