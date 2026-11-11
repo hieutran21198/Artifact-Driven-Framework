@@ -235,9 +235,14 @@ def natural(unit):
 
 def stories(graph, goals, flows):
     """For each goal: its flows, each with the rules it reaches, and the
-    artifacts that hold those rules or that the flows cross. A rule is listed
-    once, under the first flow that reaches it."""
+    artifacts that hold those rules. A rule is listed once, under the first
+    flow that reaches it and crosses its artifact, else under no flow."""
     crosses = {f["page"]: f["crosses"] for f in flows}
+
+    def crossed(rule, page):
+        home = graph.file[rule].split("/")
+        return home[0] != "artifacts" or home[1] in crosses.get(page, [])
+
     found = {}
     for goal in goals:
         start = {c["id"] for c in goal["criteria"]}
@@ -249,17 +254,18 @@ def stories(graph, goals, flows):
         story, placed, artifacts = [], set(), {}
         for page in pages:
             mine = {u for u in units if graph.file.get(u) == page and u.startswith("F-")}
-            reached = impact.relies_on(graph, mine)[0] & rules - placed
+            reached = {r for r in impact.relies_on(graph, mine)[0] & rules - placed if crossed(r, page)}
             placed |= reached
             story.append({"page": page, "rules": sorted(reached, key=natural)})
-            for name in crosses.get(page, []):
-                artifacts.setdefault(name, [])
         if rules - placed:
             story.append({"page": None, "rules": sorted(rules - placed, key=natural)})
         for rule in sorted(rules, key=natural):
             home = graph.file[rule].split("/")
             if home[0] == "artifacts":
                 artifacts.setdefault(home[1], []).append(rule)
+        # Artifacts in the order the flows cross them, then the others.
+        order = list(dict.fromkeys(a for page in pages for a in crosses.get(page, []))) + sorted(artifacts)
+        artifacts = {a: artifacts[a] for a in dict.fromkeys(order) if a in artifacts}
         found[goal["key"]] = {"flows": story, "artifacts": artifacts}
     return found
 
