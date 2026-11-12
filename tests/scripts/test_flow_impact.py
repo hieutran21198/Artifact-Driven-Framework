@@ -51,9 +51,8 @@ class FlowImpact(unittest.TestCase):
         path.write_text(path.read_text() + '[Empty](../artifacts/empty/specification.md)\n')
         self.assertIn('artifacts/empty/specification.md', self.run_impact('--down', 'G-RUN-1'))
 
-    def test_F_COVER_12_rules_aggregate_and_withdrawn_excluded(self):
+    def test_F_COVER_12_rules_aggregate(self):
         """F-COVER-12, TST-4: one tested Flow rule is 20%, not a scenario."""
-        self.ws.write(K + 'flows/old.md', HEADER + '| FR-OLD-1 | Withdrawn. | None |\n')
         self.ws.write('checks/rule_test.py', '# FR-RUN-1\n')
         out = self.run_impact('--coverage', 'checks')
         self.assertIn('20%  criteria 0/1  scenarios 0/1  rules 1/3', out)
@@ -61,3 +60,14 @@ class FlowImpact(unittest.TestCase):
         self.assertNotIn('FR-OLD-1', out)
         self.assertIn('FR-RUN-1', self.run_impact('--fragile', 'checks'))
         self.assertIn('FR-SHARED-1', self.run_impact('--stats'))
+
+    def test_KN_3_stale_rows_block_impact_and_coverage(self):
+        """KN-3, TST-4: stale rows fail rather than silently reducing counts."""
+        self.ws.write(K + 'flows/old.md', HEADER + '| FR-OLD-1 | Withdrawn. | None |\n')
+        self.ws.write('checks/rule_test.py', '# FR-RUN-1\n')
+        for args in [('FR-RUN-1',), ('--coverage', 'checks'), ('--stats',), ('--fragile', 'checks')]:
+            with self.subTest(args=args):
+                run = self.ws.run('impact.py', *args)
+                self.assertEqual(run.returncode, 1)
+                self.assertIn('FR-OLD-1 is withdrawn', run.stderr)
+                self.assertEqual(run.stdout, '')

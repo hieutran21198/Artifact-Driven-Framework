@@ -25,7 +25,7 @@ with broken knowledge or broken tests fails them.
    configuration (CFG-2, CFG-3) and:
    1. checks the links and the anchors of every page (REPO-2, REPO-3);
    2. in the knowledge folder, reads the knowledge IDs (KN-1) and checks that
-      each one is defined once (KN-2), not withdrawn where it is cited
+      each one is defined once (KN-2), not defined by a Withdrawn row
       (KN-3), and defined where it is named (KN-4);
    3. classifies Flow-rule definitions and checks their scope, owner and
       required content (KN-13), then checks citation direction (KN-18);
@@ -81,7 +81,7 @@ sequenceDiagram
 | F-CHECK-6 | A link to a heading that the page it points to does not have | The author runs `checkDocs` | It exits with 1 and names the page and the anchor | REPO-3 |
 | F-CHECK-7 | A page in the knowledge folder that names an ID no row defines, including a Flow-rule reference with a known or unknown scope | The author runs `checkDocs` | It exits with 1 and names the page and the ID | KN-1, KN-4 |
 | F-CHECK-8 | One ID defined by rows on two pages, including duplicate local or shared Flow-rule definitions | The author runs `checkDocs` | It exits with 1 and names both pages | KN-2 |
-| F-CHECK-9 | A withdrawn ID that another row names, including a withdrawn Flow rule | The author runs `checkDocs` | It exits with 1 and names the page and the ID | KN-3 |
+| F-CHECK-9 | A Withdrawn row in any knowledge layer, including an uncited row or a Flow rule | The author runs `checkDocs` | It exits with 1 and names the page and the ID | KN-3 |
 | F-CHECK-10 | A flow that names a goal criterion, and an artifact that names a flow scenario | The author runs `checkDocs` | It exits with 1 and names each page and what it cites | KN-18 |
 | F-CHECK-11 | A scenario that names no operation, and a command under `x-commands` that no scenario names | The author runs `checkDocs` | It exits with 1 and names the scenario and the command | KN-6 |
 | F-CHECK-12 | A broken link in a page under a folder that the configuration skips | The author runs `checkDocs` | It exits with 0 | REPO-2, CFG-3 |
@@ -100,7 +100,7 @@ sequenceDiagram
 | F-CHECK-25 | Valid local and shared Flow-rule sections with distinct scopes, owners and explicit dependencies on artifact rules and system requirements; scenarios cite their local or shared rules and name operations | The author runs `checkDocs`, then `checkTests` on tests that name the defined rules | Both checks pass without a new configuration setting; the rules need no operation of their own | KN-2, KN-6, KN-13, KN-18, TST-2 |
 | F-CHECK-26 | Coordination rules in a valid Flow home with a missing required column, an invalid Flow-rule ID, an empty rule or dependency cell, or the same scope defined in different homes | The author runs `checkDocs` | It exits with 1 and identifies each invalid definition and its page | KN-13, SYS-3 |
 | F-CHECK-27 | A Flow rule depends on another Flow rule, a scenario or a goal; an artifact cites a Flow rule; a goal uses a Flow rule as Proven by; or an operation is named only by a Flow rule | The author runs `checkDocs` | It exits with 1 and identifies each forbidden dependency or missing scenario proof | KN-18, KN-6, SYS-3 |
-| F-CHECK-28 | A previously valid workspace with FR-shaped artifact definitions outside the Flow-rule form, including a Coordination rules heading on an artifact page | The author runs `checkDocs` and `checkTests` with its existing tests | Both retain their previous result; no definition is reclassified as a Flow rule and no migration is required | KN-2, KN-13, TST-2 |
+| F-CHECK-28 | A workspace with FR-shaped artifact definitions outside the Flow-rule form, including a Coordination rules heading on an artifact page | The author runs `checkDocs` and `checkTests` with tests that name these definitions | Both pass; these definitions are artifact rules, not Flow rules | KN-2, KN-13, TST-2 |
 | F-CHECK-29 | A contract in `flows/`, with either the `.yaml` or `.yml` extension | The author runs `checkDocs` | It exits with 1 and names the file as a contract that belongs to an artifact or the system | KN-19, SYS-3 |
 | F-CHECK-30 | A flow whose `Crosses` line names the artifact book, and that cites a rule of the artifact member | The author runs `checkDocs` | It exits with 1 and names the flow, the rule and the artifact member | KN-20 |
 

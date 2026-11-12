@@ -17,5 +17,7 @@ permissions. The [team](../agents/README.md) says which agent uses which skill.
   first, then results; cuts by example.
 
 Each directory contains a canonical `SKILL.md` and a navigation README.
+For changes to skill triggers or procedures, follow
+[Check agent guidance](../../docs/governances/artifact-driven/runbooks/check-agent-guidance.md).
 
 Return to [agent resources](../README.md).

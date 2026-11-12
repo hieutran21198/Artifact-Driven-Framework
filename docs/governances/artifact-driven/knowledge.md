@@ -15,11 +15,24 @@ keeps the same requirements under its own IDs.
 | Flow | Behavior that crosses artifacts, services or clients: trigger, steps, failure branches, each transaction, the outcome | Application commands and queries, in each service the flow crosses | Command and unit of work tests in each service |
 | Artifact | An agreed knowledge ownership boundary: model, rules, lifecycle and public operation contract | The domain package of the service that serves it | Domain unit tests |
 
-| Language | Answers | Home |
+### Content by type
+
+| Type | Allowed content | Keep elsewhere |
 | --- | --- | --- |
-| Domain rules | When is the domain right? | `specification.md` of the artifact |
-| In and out | What does the outside send and get back? | The owning artifact's `openapi.yaml`; shared parts in `system/openapi.yaml` |
-| Domain to domain | Which domain calls or tells which, and why? | The steps of the flow; the signatures stay in code |
+| System | Purpose, actors, service/client responsibilities, external systems, glossary and requirements that apply system-wide | Domain rules in their Artifact; interaction steps in Flow; health-check details in the owning API or operational docs |
+| Goal | Business outcome, actor, success criteria, constraints and links to the scenarios that prove them | Delivery tasks on issues; step-by-step behavior in Flow |
+| Flow | Trigger, participating actors/artifacts, interaction steps, transaction boundaries, failure outcomes, scenarios and owned coordination rules | Domain policy in Artifact; API signatures and payloads in the receiving Artifact's contract |
+| Artifact specification | Domain model, invariants, business rules and lifecycle | Service deployment/layout in architecture or infrastructure; cross-domain orchestration in Flow |
+| Artifact contract | Public operations received, schemas published, inputs, outputs, errors and owned triggers | Narrative coordination in Flow; implementation signatures in code |
+| System contract | Shared schema components, such as authentication and error shapes | Domain operations and payloads in their Artifact contracts |
+| Design | Screens, copy, layout and UI states in the client-owned design; Flow may link for navigation | Do not copy visual details into knowledge rules |
+| Architecture | Domain/service mapping, structural choices and their rationale | Product behavior in knowledge; delivery progress on issues |
+| Governance and runbooks | Reusable development, review and operational procedures | Do not place these procedures in product knowledge |
+| Issue or pull request | Change plan, questions, owner review/approval, evidence, blockers and results | Current rules stay in knowledge; history stays in Git |
+
+The restrictions in [Knowledge, not evidence](#knowledge-not-evidence) apply
+to every knowledge type. Tables and diagrams follow the same ownership as
+text; a link does not make forbidden content appropriate for a knowledge page.
 
 - Artifacts are the nodes and flows the edges between them. Knowledge that
   coordinates artifacts belongs to a flow. Choose a business policy owner by
@@ -101,9 +114,8 @@ names its ID.
 - Git history keeps prior definitions and decisions. Do not add tombstone
   rows, aliases or migration ledgers. Check history before allocating an ID;
   a deleted ID is never free for reuse.
-- Previously accepted installed-workspace knowledge may still contain
-  `Withdrawn` rows. The scripts continue to read that form and reject its
-  citations; this compatibility does not prescribe it for new authoring.
+- `check_docs.py` and impact CLI reports reject withdrawn tombstone rows,
+  whether cited or not. Complete the cleanup before merging.
 
 ### Before adding a fact
 
@@ -216,18 +228,29 @@ citation direction those pages must follow ([Citations](#citations)).
 
 ## Knowledge, not evidence
 
-Knowledge says what must hold. It stays true when the code changes and can be
-written before the code exists.
+Knowledge holds the current agreed behavior, model and public interfaces.
+It can be agreed before implementation, but it is not a record of delivery.
 
-- Never write evidence into knowledge: no client code locations (files, lines,
-  classes, functions), no observed data (counts, samples, logs), no dates or
-  names of an investigation. A target that must hold is knowledge; a number
-  measured once is evidence.
-- Never write status or plans into knowledge: no "for now", "not implemented
-  yet", "later" or "when the app ships". Those belong on the issue.
-- Evidence goes to the issue or the pull request that the change belongs to.
-  Evidence never holds personal data: mask names, emails, phone numbers,
-  addresses and user IDs before writing it there.
+- Do not store or link historical versions, superseded facts, withdrawn/moved
+  markers, change logs, investigation evidence, or owner review/approval
+  records in knowledge. History is in Git; discussion, evidence and approvals
+  belong on the issue or pull request. Link from those records to knowledge,
+  not from knowledge to those records.
+- Do not put any migration or cutover procedure, compatibility-transition
+  plan, temporary bridge, delivery task or progress status in knowledge.
+  Reusable procedures belong in governance or operational runbooks;
+  change-specific execution belongs on the issue. This does not remove
+  executable database migrations needed to build or upgrade a database.
+- Remove stale content when replacing it and update direct references in the
+  same change. Do not retain a second source of truth or a chain of redirects.
+- Product rules that still apply, such as a supported API version or whether
+  a new limit applies to existing records, remain knowledge. State the current
+  promise, not the history or steps of reaching it.
+- Implementation file/line locations, logs, measured counts and investigation
+  dates are evidence, not knowledge. A target that must hold is knowledge;
+  a value measured once is evidence.
+- Mask personal data in issue/PR evidence: names, emails, phone numbers,
+  addresses and user IDs. Never include secret values.
 
 ## Knowledge and running code
 

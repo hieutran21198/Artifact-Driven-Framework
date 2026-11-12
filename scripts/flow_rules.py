@@ -65,10 +65,9 @@ def read_flow_rules(path, text):
         remainder = ID.sub('', dependencies)
         if dependencies != 'None' and (not names or remainder.strip(' ,')):
             problems.append(f'{where}: Dependencies must contain IDs or None')
-        if not re.match(r'Withdrawn\b', statement):
-            missing = set(ID.findall(line)) - {cells[0]} - set(names)
-            if missing:
-                problems.append(f'{where}: row citations missing from Dependencies: {", ".join(sorted(missing))}')
+        missing = set(ID.findall(line)) - {cells[0]} - set(names)
+        if missing:
+            problems.append(f'{where}: row citations missing from Dependencies: {", ".join(sorted(missing))}')
         if match:
             rules[cells[0]] = {'scope': match.group(1), 'owner': path.as_posix(),
                               'rule': statement, 'dependencies': names}

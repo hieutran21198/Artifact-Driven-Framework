@@ -105,7 +105,7 @@ class FlowRules(unittest.TestCase):
                       + '## Other\n| FR-LEGACY-1 | Old row. |\n')
         self.check()
 
-    def test_KN_5_legacy_artifact_id_is_valid_dependency(self):
+    def test_KN_18_artifact_id_is_valid_dependency(self):
         """KN-18, KN-13: dependencies use actual homes, not an FR prefix ban."""
         self.ws.write(K + 'artifacts/legacy/specification.md', HEADER + '| FR-RETRY-1 | Legacy. | None |\n')
         self.ws.write(K + 'flows/more.md', HEADER + '| FR-MORE-1 | Coordinate. | FR-RETRY-1 |\n')
@@ -118,7 +118,7 @@ class FlowRules(unittest.TestCase):
         self.ws.write(K + 'flows/more.md', HEADER + '| FR-MORE-1 | Applies BK-1. | BK-1 |\n')
         self.check()
         self.ws.write(K + 'flows/more.md', HEADER + '| FR-MORE-1 | Withdrawn: moved to FR-RUN-1. | None |\n')
-        self.check()
+        self.assertIn('withdrawn', self.check(1))
 
     def test_KN_13_extra_cells_cannot_hide_dependencies(self):
         """KN-13, KN-18, KN-17: all row citations must be explicit and permitted."""
@@ -144,7 +144,7 @@ class FlowRules(unittest.TestCase):
                                   capture_output=True, text=True, check=True)
         self.assertEqual(json.loads(metadata.stdout), [['BK-1'], ['BK-1']])
         self.ws.write(K + 'flows/extra.md', header + '| FR-EXTRA-1 | Withdrawn. | None | Moved to FR-SHARED-1. |\n')
-        self.check()
+        self.assertIn('withdrawn', self.check(1))
 
     def test_KN_13_escaped_pipe_keeps_rule_and_dependencies(self):
         """KN-13: Markdown escaped pipes are content, not cell separators."""
@@ -158,7 +158,7 @@ class FlowRules(unittest.TestCase):
     def test_F_CHECK_13_14_15_complete_prefix_and_withdrawal(self):
         """TST-2, F-CHECK-13, F-CHECK-14, F-CHECK-15: full scope filtering."""
         self.ws.write(K + 'flows/old.md', HEADER + '| FR-OLD-1 | Withdrawn: moved to FR-RUN-1. | None |\n')
-        self.check()
+        self.assertIn('withdrawn', self.check(1))
         for names, status in [('FR-UNKNOWN-1', 0), ('FR-RUN-99', 1), ('FR-OLD-1', 1)]:
             self.ws.write('checks/rule_test.py', '# ' + names)
             run = self.ws.run('check_tests.py', 'checks')

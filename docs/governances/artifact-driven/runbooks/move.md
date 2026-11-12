@@ -26,7 +26,9 @@ or when a page changes path without changing ownership.
    with a new ID and remove the old definition. Never reuse an old ID
    ([the life of an ID](../knowledge.md#the-life-of-an-id)).
 4. Update all active references to the destination: pages, links, flows,
-   contracts, diagrams, tooling and tests. Remove obsolete material; keep no tombstones, aliases or ledgers.
+   contracts, diagrams, tooling and tests. Remove obsolete material; keep no
+   tombstones, aliases or ledgers. If a consumer cannot be updated, report
+   the blocker on the issue rather than leaving stale knowledge behind.
 5. Record any dependent implementation needed on the issue. Implement it
    after knowledge approval and merge; keep existing supported behavior.
 6. The reviewer checks that the destination carries each moved fact's meaning

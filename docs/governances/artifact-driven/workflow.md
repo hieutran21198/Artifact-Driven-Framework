@@ -8,8 +8,8 @@ does each step.
 1. **Issue.** An issue states the need: a new goal, a change to one, a
    defect, a change the owner of a part reports, a change an external system forces,
    a production incident, a data fix, or a change that keeps behavior. It
-   links the knowledge it touches. The coordinator asks the person who
-   raised it before any knowledge is written ([questions](#questions)).
+   links the knowledge it touches. The coordinator reads the request and
+   existing decisions, then resolves material gaps ([questions](#questions)).
    Status: Todo. The last four follow their own sections below.
 2. **Knowledge.** On a branch of the knowledge repository, write the change
    from the top down: goal criteria, then flows, then artifact rules and
@@ -30,21 +30,39 @@ does each step.
 5. **Close.** When the change meets [Done](done.md), close the issue. Status:
    Done.
 
+## Handoffs
+
+Give the next role the scope, relevant knowledge and decisions, expected
+output and checks. Reuse the request and existing issue or pull request;
+no separate brief or progress entry is needed for each step. For steps that
+share a file or contract, resolve incompatible inputs before execution.
+
+Record material decisions, blockers and final results on the issue or pull
+request. After a handoff or context loss, compare that record with Git and the
+current diff before resuming. Do not repeat completed work or treat a status
+alone as evidence. Do not add a plan or task ledger to the repository.
+
 ## Questions
 
 Ideas, options and questions stay on the issue. The knowledge takes only what
 is settled. For a need that is still vague, [shape](runbooks/shape.md) gives
 the steps.
 
-1. **Ask first.** Before any knowledge is written, the coordinator asks the
-   person who raised the need, one question at a time, starting from one
-   concrete situation. An answer becomes a draft criterion, scenario or rule,
-   not a question.
-2. **Then list what is left.** What that person cannot settle now, or what
+1. **Read and reuse decisions.** Read the request, the issue, linked knowledge
+   and relevant project conventions before asking. Use answers and approvals
+   already supplied within their scope; do not reopen them merely because a
+   new step starts.
+2. **Ask about material gaps.** Group independent questions into one request
+   when their answers change behavior, scope, ownership, a contract or how
+   success is checked. Ask in sequence only when a question depends on a
+   previous answer. Use concrete situations and say what the answers change.
+   A deterministic change within the approved scope proceeds without a new
+   design conversation. An answer becomes a draft criterion, scenario or rule.
+3. **List what is left.** What that person cannot settle now, or what
    another owner must decide, goes on the issue as a checklist item: the
    question, the IDs it touches and who answers it. When it is answered, tick
    it, write the answer under it, and change the knowledge.
-3. **At the merge.** An item still open that names a criterion of a goal, or
+4. **At the merge.** An item still open that names a criterion of a goal, or
    an ID or operation the goal relies on, holds that goal: the branch is not
    merged until it is answered. Every other open item moves to
    `## Open questions` of the page it touches ([open questions](knowledge.md#open-questions)).

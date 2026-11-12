@@ -80,7 +80,7 @@ def check_ids():
                 defined.setdefault(row.group(1), where)
                 if row.group(2):
                     withdrawn.add(row.group(1))
-                    continue
+                    problems.append(f"{where}: {row.group(1)} is withdrawn; remove the stale row")
             own = row.group(1) if row else None
             cited.extend((found, where) for found in ID.findall(line) if found != own)
     for found, where in cited:
@@ -114,8 +114,6 @@ def check_scenarios():
     problems, used = [], set()
     for path in sorted((KNOWLEDGE / "flows").glob("*.md")):
         for row in re.findall(r"^\| (F-[A-Z]+-\d+) \|(.*)$", path.read_text(encoding="utf-8"), re.MULTILINE):
-            if row[1].lstrip().startswith("Withdrawn"):
-                continue
             named = set(re.findall(r"`(\w+)`", row[1])) & operations
             used |= named
             if not named:
@@ -171,8 +169,6 @@ def check_flow_rules():
         rules.update(found)
     defined, _ = knowledge_ids()
     for name, rule in rules.items():
-        if re.match(r"Withdrawn\b", rule["rule"]):
-            continue
         for dependency in set(rule["dependencies"]) | set(ID.findall(rule["rule"])):
             if dependency not in defined:
                 continue  # KN-4 reports undefined citations.

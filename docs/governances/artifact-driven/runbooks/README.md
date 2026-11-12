@@ -1,9 +1,8 @@
 # Runbooks
 
-Step-by-step ways to change [software knowledge](../../../software-knowledges/README.md).
-The rules they follow are in [Knowledge](../knowledge.md); a runbook never
-restates them. Each one points at the reference pass (the `book` and `member`
-artifacts) as a sample.
+Procedures for changing [software knowledge](../../../software-knowledges/README.md)
+and checking agent guidance. Each runbook links its governing sources.
+Knowledge examples use the reference pass (the `book` and `member` artifacts).
 
 | Runbook | Use it when |
 | --- | --- |
@@ -20,8 +19,9 @@ artifacts) as a sample.
 | [Handle a reported defect](defect.md) | Someone reports wrong behavior, or knowledge work finds code that breaks an approved ID. |
 | [Fix stored data](data-fix.md) | Stored data breaks a rule and the code does not change. |
 | [Check the docs](check.md) | Before a docs branch goes to review. |
+| [Check agent guidance](check-agent-guidance.md) | Instructions, a role or a skill change how an agent should act. |
 
-Work top down: system, goal, then flow, then artifact and contract. Every runbook ends
-with [Check the docs](check.md).
+For knowledge changes, work top down: system, goal, then flow, then artifact
+and contract. Before review, run [Check the docs](check.md).
 
 Return to [Artifact Driven](../README.md).

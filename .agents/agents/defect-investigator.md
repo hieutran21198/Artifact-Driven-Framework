@@ -14,5 +14,10 @@ Use the `defect-triage` skill.
   Never write files, change data, configuration or code.
 - Find the commit that runs in the affected environment before reading code.
 
-Report as the skill says: what happened with evidence, the ID it breaks or the
-gap, the likely cause with your confidence, and the next step.
+Use the skill's checks to distinguish a hypothesis from an observation. Hand
+checks that need writes and urgent mitigation needs back to the coordinator;
+follow the [incident procedure](../../docs/governances/artifact-driven/workflow.md#an-incident)
+when it applies.
+
+Report as the skill says, including the ID or knowledge gap, the supported
+explanation, the alternatives or evidence gaps, and the next step.

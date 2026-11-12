@@ -76,10 +76,9 @@ python3 scripts/check_docs.py
 
 It checks every Markdown file outside the `skip` folders for broken relative
 links and missing heading anchors. In the knowledge folder it checks that
-every cited ID is defined, once, and not withdrawn; that every YAML file is
+every cited ID is defined, once, and no Withdrawn definition rows remain; that every YAML file is
 `system/openapi.yaml` or `artifacts/<artifact>/openapi.yaml`, so a flow has no
-contract; that every scenario that is
-not withdrawn names an `operationId`, a trigger under `x-triggers` or a
+contract; that every scenario names an `operationId`, a trigger under `x-triggers` or a
 command under `x-commands`; and that every one of them is named by a
 scenario. It also checks the
 citation direction: a flow names no goal criterion, and an artifact names no

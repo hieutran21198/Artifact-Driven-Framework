@@ -13,6 +13,7 @@ from collections import defaultdict
 import re
 import sys
 
+from check_docs import knowledge_ids
 from flow_rules import read_flow_rules
 from project import ID, KNOWLEDGE, ROOT, TEST_GLOB, TESTS, contracts
 
@@ -311,10 +312,6 @@ def goal_units(graph, goal):
     return start | units
 
 
-def withdrawn(graph, unit):
-    return any(re.match(r"^\| \S+ \| *Withdrawn\b", line) for line in graph.text.get(unit, ()))
-
-
 def natural(unit):
     return [int(p) if p.isdigit() else p for p in re.split(r"(\d+)", unit)]
 
@@ -334,7 +331,7 @@ def coverage(graph, folders):
     print("Test coverage by ID: the criteria, scenarios and rules of each goal that a test names.")
     total = defaultdict(lambda: [0, 0])
     for goal in goal_keys(graph):
-        ids = {u for u in goal_units(graph, goal) if coverage_kind(u) in kinds and not withdrawn(graph, u)}
+        ids = {u for u in goal_units(graph, goal) if coverage_kind(u) in kinds}
         parts, missing = [], []
         for k in kinds:
             mine = sorted((u for u in ids if coverage_kind(u) == k), key=natural)
@@ -346,13 +343,13 @@ def coverage(graph, folders):
         print(f"  {goal:12} {percent:3}%  " + "  ".join(parts))
         if missing:
             print(f"               untested: {', '.join(missing)}")
-    every = {u for u in graph.file if coverage_kind(u) in kinds and not withdrawn(graph, u)}
+    every = {u for u in graph.file if coverage_kind(u) in kinds}
     for u in every:
         total[coverage_kind(u)][0] += 1 if tests.get(u) else 0
         total[coverage_kind(u)][1] += 1
     print("  all          " + "  ".join(f"{k.split()[1]} {total[k][0]}/{total[k][1]}" for k in kinds))
     # System requirements are not in any goal's share; they get a line of their own (TST-4).
-    reqs = sorted((u for u in graph.file if coverage_kind(u) == "Requirements" and not withdrawn(graph, u)), key=natural)
+    reqs = sorted((u for u in graph.file if coverage_kind(u) == "Requirements"), key=natural)
     if reqs:
         print(f"  system       requirements {sum(1 for u in reqs if tests.get(u))}/{len(reqs)}")
         untested = [u for u in reqs if not tests.get(u)]
@@ -396,6 +393,11 @@ def questions(graph):
 
 
 def main(argv):
+    defined, stale = knowledge_ids()
+    if stale:
+        for name in sorted(stale):
+            print(f"{defined[name]}: {name} is withdrawn; remove the stale row", file=sys.stderr)
+        return 1
     name = argv[1] if len(argv) > 1 and argv[:1] in (["--coverage"], ["--fragile"]) else None
     if name and not (ROOT / name).is_dir():
         print(f"Not a folder: {ROOT / name}", file=sys.stderr)
