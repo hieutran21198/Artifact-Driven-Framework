@@ -32,9 +32,10 @@ does each step.
 
 ## Ground the plan in the running system
 
-For a change to request handling or integration, trace the affected request from
-its caller through the actual deployed path to the handler and downstream calls,
-then trace the response and error path.
+For a change to request handling or integration, start with the relevant existing
+System → Flow → Artifact knowledge and its contracts. Use that context to trace
+the affected request from its caller through the actual deployed path to the
+handler and downstream calls, then trace the response and error path.
 Read relevant deployment configuration, runtime adapters, local entry points and
 existing code, including shared implementations. Compare local and deployed
 paths where they differ; do not infer behavior from a product name or diagram.
@@ -47,8 +48,8 @@ boundaries; avoid reimplementing work already guaranteed by the actual path.
 
 Use this understanding in the plan and independent review. State material
 assumptions or unverified configuration briefly on the issue or pull request.
-Inspect only the affected path; no new report, inventory or approval phase is
-required.
+Inspect only the affected path. Do not duplicate that knowledge in a new context
+document or diagram; no new report, inventory or approval phase is required.
 
 ## Handoffs
 
