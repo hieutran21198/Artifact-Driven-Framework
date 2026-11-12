@@ -40,7 +40,7 @@ decides. The decision and its reasons go on the issue.
 | Contract designer | OpenAPI contracts, before the code | `software-knowledge` | Contracts |
 | Implementer | Code and tests of one part from approved knowledge | The skill of the part's stack, such as `backend-service` | The part's code, on its own branch |
 | Defect investigator | Evidence for a reported defect and the ID it breaks | `defect-triage` | Nothing; reports |
-| Reviewer | Knowledge, contract, code and tests agree; [Done](done.md) holds | `software-knowledge` | Nothing; reports |
+| Reviewer | The result meets the requested outcome; design, knowledge and implementation are coherent for the requested gate under [Done](done.md) | `software-knowledge` | Nothing; reports |
 | Approvers | The owner of each part the change touches: approves knowledge by merging its branch, and code by approving its pull request | — | Merges and approvals |
 
 ## Flow
@@ -94,15 +94,27 @@ flowchart TB
 
 ## Independent review
 
-Assign the existing reviewer separately from the author. The reviewer actively
-looks for defects and unnecessary complexity; do not wait for the owner to
-identify each problem. Inspect the complete candidate diff, including new files,
-and relevant existing implementations and callers, not just the author's summary
-or latest fix. Apply the adopted standards and [principles](../../principles/README.md)
-to the actual design and code. Passing tests do not establish good design.
+Assign the existing reviewer separately from the author. Review the result
+against the user's actual outcome, decisions and scope, including whether its
+intended reader can understand and use it. Inspect the complete candidate diff,
+including new files, and the affected existing knowledge, implementations and
+consumers. Do not limit review to the author's summary, latest fix or problems
+already reported by the owner. Scale depth to the change and its risks.
 
-Use that review for both correctness and maintainability. Do not add a second
-reviewer role, report or approval phase solely for DRY or YAGNI.
+Assess System, Flow and Artifact together under the
+[content boundaries](knowledge.md#content-by-type): responsibilities and rules
+must agree across them, with one home for each rule. Distinguish intended
+product responsibilities from infrastructure choices and implementation
+coverage. Neither existing prose nor current code automatically settles a
+contradiction. Use the request and agreed decisions to assess it; bring
+unresolved authority to the owner through [Questions](workflow.md#questions).
+
+Apply the adopted standards and [principles](../../principles/README.md) to
+correctness, readability and maintainability. Passing checks alone do not
+establish that the result meets the goal. Respect explicitly deferred work;
+identify its impact and evidence limits without expanding the requested gate
+or calling deferred delivery complete. Use one review, with no separate
+checklist or approval phase for each concern.
 
 ## Review feedback
 

@@ -32,26 +32,46 @@ does each step.
 5. **Close.** When the change meets [Done](done.md), close the issue. Status:
    Done.
 
-## Ground the plan in the running system
+## Plan from the outcome and current system
 
-For a change to request handling or integration, start with the relevant existing
-System → Flow → Artifact knowledge and its contracts. Use that context to trace
-the affected request from its caller through the actual deployed path to the
-handler and downstream calls, then trace the response and error path.
-Read relevant deployment configuration, runtime adapters, local entry points and
-existing code, including shared implementations. Compare local and deployed
-paths where they differ; do not infer behavior from a product name or diagram.
+Start with the user's outcome, intended users or readers, supplied decisions
+and explicit scope limits. Read the relevant System → Goal → Flow → Artifact
+knowledge, architecture and contracts before choosing files to change. For a
+rewrite, design the explanation from the system's purpose and responsibilities;
+the old file layout and validation bindings do not determine that design.
 
-Identify what each existing layer already handles and what the change still
-needs. For example, an API Gateway → Lambda → Go handler path does not prove
-that the gateway handles every validation, error mapping or timeout, or that
-local requests pass through it. Preserve required checks at their owning
-boundaries; avoid reimplementing work already guaranteed by the actual path.
+Compare that intent with the implementation and affected consumers. Trace
+requests, responses and failures through callers, handlers and downstream
+operations. Inspect relevant runtime and deployment configuration, local entry
+points and shared implementations. Source shows what is implemented; it does
+not prove what is deployed or decide what the product ought to do. Separate
+agreed responsibility, current behavior, proposals and unresolved decisions.
+A partial implementation neither narrows a component's purpose nor proves
+that its planned capabilities exist.
 
-Use this understanding in the plan and independent review. State material
-assumptions or unverified configuration briefly on the issue or pull request.
-Inspect only the affected path. Do not duplicate that knowledge in a new context
-document or diagram; no new report, inventory or approval phase is required.
+Use the comparison to identify the owning boundaries, dependencies and
+contradictions. Check who relies on a changed operation, rule, field or page,
+including consumers outside the edited files. Explain consequences for their
+behavior, compatibility and error handling. Impact scripts help find these
+consumers; they do not replace reading them. Inspect enough of the affected
+system to support the decision, without expanding into an unrelated audit.
+
+Recommend the smallest change that meets the outcome. Compare materially
+different alternatives and their consequences when a choice remains; reuse
+settled decisions. Apply [KISS](../../principles/kiss/README.md),
+[DRY](../../principles/dry/README.md) and
+[YAGNI](../../principles/yagni/README.md) before adding a mechanism. For example,
+a missing responsibility in the docs alone does not justify a new service or
+registry. Use [Questions](#questions) for uncertainty that changes the design.
+Continue independent work while the affected decision stays open.
+
+Keep the plan and source differences on the existing issue or pull request.
+Respect work the user explicitly deferred: record its consequences and the
+needed follow-up, without performing it or claiming completion. In the scoped
+change, repair contradictions and references the change creates or leaves in
+its governing explanation. Do not preserve stale wording merely to satisfy an
+existing check; a deferred or failed check remains visible under
+[Done](done.md#evidence).
 
 ## Handoffs
 
@@ -89,8 +109,10 @@ the steps.
    when their answers change behavior, scope, ownership, a contract or how
    success is checked. Ask in sequence only when a question depends on a
    previous answer. Use concrete situations and say what the answers change.
-   A deterministic change within the approved scope proceeds without a new
-   design conversation. An answer becomes a draft criterion, scenario or rule.
+   State what is unknown, what was checked, the viable options and your
+   recommendation. Do not turn an assumption into an agreed rule or ask again
+   for a documented fact. A deterministic change within the approved scope
+   proceeds without a new design conversation. An answer becomes a draft criterion, scenario or rule.
 3. **List what is left.** What that person cannot settle now, or what
    another owner must decide, goes on the issue as a checklist item: the
    question, the IDs it touches and who answers it. When it is answered, tick

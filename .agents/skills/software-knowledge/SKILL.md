@@ -1,6 +1,6 @@
 ---
 name: software-knowledge
-description: Add, change or review proposed software knowledge - a goal, a flow, an artifact rule, an OpenAPI contract, or a new artifact - and check it. Use for requested changes to requirements, specifications or contracts before code is written for them. Explanation-only questions about existing knowledge do not start this change workflow.
+description: Plan, add, change or review proposed software knowledge - system responsibilities, a goal, a flow, an artifact rule or an OpenAPI contract. Use for requested knowledge rewrites and changes to requirements, specifications or contracts before implementation. Explanation-only questions about existing knowledge do not start this change workflow.
 ---
 
 # Software knowledge
@@ -8,6 +8,12 @@ description: Add, change or review proposed software knowledge - a goal, a flow,
 Change the knowledge first; code follows it. The rules are in
 [Knowledge](../../../docs/governances/artifact-driven/knowledge.md). The steps are in the
 runbooks. This skill picks the runbook and does not restate either.
+
+For planning, follow
+[Plan from the outcome and current system](../../../docs/governances/artifact-driven/workflow.md#plan-from-the-outcome-and-current-system)
+and prepare the [handoff](../../../docs/governances/artifact-driven/workflow.md#handoffs)
+before owner review. For an independent review, use the
+[reviewer brief](../../agents/reviewer.md); review does not start authoring.
 
 ## Pick the runbook
 
