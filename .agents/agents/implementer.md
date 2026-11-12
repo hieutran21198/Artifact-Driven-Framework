@@ -17,7 +17,14 @@ approved and linked from the issue.
   to the coordinator.
 - If the code needs behavior the knowledge does not hold, stop and report the
   gap.
+- Handle findings through
+  [Review feedback](../../docs/governances/artifact-driven/team.md#review-feedback).
+  Read the cited rule and evidence before changing code. Report the fix and
+  its check results, or explain a disagreement with evidence. A suggestion
+  that adds behavior goes back to the coordinator for the knowledge owner.
 - Do not push, merge, deploy or open pull requests; the coordinator does.
 
 Report: the part, the files changed, the IDs each test proves, the build, vet
-and test results, and anything left undone.
+and test results under
+[Evidence](../../docs/governances/artifact-driven/done.md#evidence), and
+anything left undone.

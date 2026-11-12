@@ -35,7 +35,7 @@ decides. The decision and its reasons go on the issue.
 
 | Role | Does | Skill | Writes |
 | --- | --- | --- | --- |
-| Coordinator | Takes the issue, asks the person who raised the need first ([questions](workflow.md#questions)), hands each step to its role, gathers results, asks the owners for decisions, commits and opens pull requests when asked | — | Commits and pull requests |
+| Coordinator | Takes the issue, resolves material gaps ([questions](workflow.md#questions)), hands each step to its role, gathers results, asks the owners for decisions, commits and opens pull requests when asked | — | Commits and pull requests |
 | Knowledge writer | Goals, flows and artifact rules | `software-knowledge` | Knowledge pages, not contracts |
 | Contract designer | OpenAPI contracts, before the code | `software-knowledge` | Contracts |
 | Implementer | Code and tests of one part from approved knowledge | The skill of the part's stack, such as `backend-service` | The part's code, on its own branch |
@@ -84,10 +84,39 @@ flowchart TB
 - Each role reports to the coordinator: what changed, the IDs, the check
   results and the open questions. The next role starts from that report and
   the merged or proposed pages, not from memory.
+- Use the issue's [work brief](workflow.md#work-brief) for scope and inputs,
+  and record results as [evidence](done.md#evidence).
 - A role that hits something outside its scope or tools hands it back to the
   coordinator instead of working around it.
 - A knowledge gap found during code goes back to the knowledge writer; no
   implementer invents behavior.
+
+## Review feedback
+
+The independent reviewer checks both agreement with the approved knowledge
+and the quality of the implementation and tests. Each finding names the
+affected ID or file and revision, the observed problem, its effect, and the
+evidence. Separate blockers from suggestions: a blocker prevents an item of
+[Done](done.md) from holding; a suggestion proposes optional work.
+
+The author checks a finding against the source and evidence before changing
+anything. A disputed finding gets a reasoned response, not automatic
+acceptance or dismissal. A proposal that changes approved behavior, a
+contract or scope goes to the affected owner. A review does not grant that
+approval.
+
+Record each finding on the issue or pull request: unresolved while evidence
+or an owner decision is missing, fixed, rejected with evidence, or deferred
+with its reason and responsible owner. Keep unresolved blockers visible.
+Neither a lower severity label nor exhausted review effort makes a failed
+gate pass.
+
+Re-review the findings, the fix and its affected dependencies. Reuse evidence
+when it remains applicable under [Done](done.md#evidence). When the same unresolved
+dispute returns after a correction and re-review without new evidence, stop
+repeating the loop. The coordinator brings the evidence and both positions to
+the relevant owner, using the [owner rules](#parts-and-owners) if they
+disagree. Independent work may continue; the blocked gate stays open.
 
 ## Limits
 

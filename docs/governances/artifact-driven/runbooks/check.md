@@ -2,7 +2,8 @@
 
 Use before a docs branch goes to review, and again on the merge result before
 the owners merge it. Run from the repository root. Post the results on the
-issue.
+issue with the revision, method and limits required by
+[Evidence](../done.md#evidence).
 
 ```sh
 python3 scripts/check_structure.py
@@ -29,6 +30,11 @@ git -c core.whitespace=-blank-at-eof diff --cached --check
 These commands apply the [file conventions](../../../coding-standards/README.md#files-and-prose).
 The `-c` option applies to one command; it does not save Git configuration.
 Read new, untracked files during review because `git diff` does not include them.
+
+When a change alters how an agent should act, also use
+[Check agent guidance](check-agent-guidance.md). Static docs checks do not
+show whether an agent follows the guidance. A prose correction that preserves
+behavior needs the docs checks and review, not a new behavior evaluation.
 
 Before a code change is merged, check the IDs its tests name. With no folder
 the check reads the tests of every cloned part; pass the folder of the

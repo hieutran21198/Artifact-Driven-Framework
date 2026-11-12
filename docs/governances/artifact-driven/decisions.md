@@ -79,10 +79,13 @@ together.
 
 ## Test styles are suggested, not required
 
-**Decision.** The rules ask for two things only: each test names the ID it
-proves, and each layer is proved by its kind of test (end-to-end for a goal,
-service tests for a flow, unit tests for a rule). BDD, TDD and contract tests
-are suggestions, and the how-we-work page marks them so.
+**Decision.** Each test names the ID it proves, and each layer is proved by its
+kind of test (end-to-end for a goal, service tests for a flow, unit tests for a
+rule). The [evidence rules](done.md#evidence) apply to the result. BDD, TDD and
+contract tests remain suggested methods; a project chooses the method that
+fits its part. A defect still needs a test that fails before its fix, under
+the [defect rules](workflow.md#a-defect), with the
+[incident exception](workflow.md#an-incident).
 
 **Context.** Each part has its own stack and its own habits. The scan needs only
 the ID in the test.
@@ -91,11 +94,11 @@ the ID in the test.
 
 | Option | For | Against |
 | --- | --- | --- |
-| Require only the ID and the kind of test (chosen) | Works with any test framework and any habit | How good the tests are depends on the team |
+| Require behavior evidence, IDs and the kind of test (chosen) | Works with any test framework and any habit | How good the tests are depends on the team |
 | Require one style, such as BDD everywhere | Every part looks the same | A tool for every stack; a team that tests well another way breaks the rule |
 
-**Costs.** A test that names an ID but checks little still counts. The reviewer
-reads the tests, not only the count.
+**Costs.** The coverage scan counts named IDs, not whether a test proves them.
+The reviewer reads the assertions and their evidence, not only the count.
 
 **Revisit when** reviews keep finding tests that name an ID and do not check it.
 
@@ -234,12 +237,14 @@ one file of its own.
 **Revisit when** two artifacts both claim the handler of one operation. Then
 the domain map decides, as an architecture change.
 
-## Ask first, and write only what is settled
+## Reuse settled decisions, ask about material gaps
 
 **Decision.** Ideas, options and questions stay on the issue. The coordinator
-asks the person who raised the need before anything is written; only what that
-person cannot settle becomes a checklist item on the issue. A new ID passes the
-four questions of [before adding a fact](knowledge.md#before-adding-a-fact).
+reads the request and existing knowledge, reuses supplied decisions and asks
+only about material gaps ([questions](workflow.md#questions)). A complete
+request within the approved scope needs no new design conversation. An
+unsettled answer stays on the issue with its owner. A new ID passes the four
+questions of [before adding a fact](knowledge.md#before-adding-a-fact).
 
 **Context.** Agents write most knowledge, and an agent writes fast. Left to
 itself it writes a guess as a rule, a question it could have asked as an open
@@ -250,14 +255,48 @@ more ID to cite, test and keep.
 
 | Option | For | Against |
 | --- | --- | --- |
-| Ask first, settle on the issue, filter each new ID (chosen) | Fewer IDs, each one settled and owned once | The coordinator waits for a person; the filter needs judgment, so the reviewer checks it, not a script |
+| Read, reuse decisions and ask about material gaps (chosen) | Settled behavior is written once; supplied answers and approvals remain usable | The coordinator must judge whether a gap changes the result |
+| Ask before every knowledge change | Every change starts with a conversation | Complete requests wait for repeated answers and approvals |
 | Write questions into the pages as they come up | Questions are next to the facts they touch | Pages fill with questions a person could answer in a minute |
 | Write everything, clean up later | Fast to write | Every ID is cited and tested at once, so a later cleanup moves and withdraws many IDs |
 
-**Costs.** A change waits for answers before its knowledge is written. The four
-questions are not a script check; a reviewer can miss a fact that fails them.
+**Costs.** Work affected by an unresolved material decision waits for its
+owner. The four questions are not a script check; a reviewer can miss a fact
+that fails them.
 
 **Revisit when** a check can find a restated fact by itself, such as two IDs
 with the same text. Then that part moves to `check_docs.py`.
+
+## Adapt agent practices within the existing workflow
+
+**Decision.** Adapt selected practices from
+[Superpowers v7.0.2](https://github.com/obra/superpowers/tree/22f0b463e7a5e579904dd6211a520321035526f7):
+evidence tied to the checked revision, scoped review feedback, work briefs on
+issues, diagnosis based on a hypothesis and behavior evaluations for changed
+agent guidance.
+The source reviewed is commit `22f0b463e7a5e579904dd6211a520321035526f7`.
+The rules live in [Done](done.md#evidence), [Team](team.md#review-feedback),
+[Workflow](workflow.md#work-brief) and the
+[agent-guidance check](runbooks/check-agent-guidance.md).
+
+**Context.** Artifact Driven already owns knowledge approval, roles, work
+tracking and completion. Agent instructions need checks that show whether the
+agent applies them, as well as checks that the documents are valid.
+
+**Options.**
+
+| Option | For | Against |
+| --- | --- | --- |
+| Adapt selected practices (chosen) | One workflow, one evidence record and the existing owners | Each adaptation needs review and evaluation in the project's agent environment |
+| Install the complete workflow as framework policy | Uses the upstream workflow directly | Adds another set of approvals, plan files, task state and execution choices |
+| Keep only static checks of guidance | Uses existing docs checks | Does not show how an agent behaves under the changed guidance |
+
+**Costs.** Behavior evaluations consume time and model usage, so they apply
+to behavior changes and keep their scope explicit. Evidence stays on the
+issue or pull request. No upstream plugin, bootstrap, model choice or
+universal TDD rule becomes a framework dependency.
+
+**Revisit when** evaluation finds a recurring failure that the adapted rule
+does not prevent, or a rule adds work without improving its target behavior.
 
 Return to [Artifact Driven](README.md).

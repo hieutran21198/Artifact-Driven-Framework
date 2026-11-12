@@ -21,4 +21,30 @@ release, or the client's release gets its own issue that links this one.
 An item that does not apply says why on the pull request or the issue. A
 failed or skipped check stays visible; do not mark it done.
 
+## Evidence
+
+Keep the evidence on the issue or pull request, following the
+[masking rules](knowledge.md#knowledge-not-evidence). Each result identifies:
+
+| Field | Record |
+| --- | --- |
+| Claim and scope | The IDs, behavior and parts checked, and the criterion the result supports. |
+| Revision | The code commit of each checked part and the knowledge commit. For each repository with uncommitted work, also retain the exact diff and new file contents against its commit. |
+| Context | When the check ran, the environment, and the configuration, dependency versions, data or load that affect the result. Record secret names, never values. |
+| Method | The exact command or observation procedure and the expected result. |
+| Result and limits | The actual result, exit status where applicable, a link to the output, and what was skipped or not covered. Keep static checks, runtime observations and owner approval distinct. |
+
+Make only claims that the evidence supports. A passing test does not prove
+every requirement, and a review report does not replace a required runtime
+check. For a [defect](workflow.md#a-defect), retain the failing result before
+the fix and the passing result after it. The
+[incident procedure](workflow.md#an-incident) still applies.
+
+Reuse evidence while its checked code, knowledge, dependencies and relevant
+environment remain valid. After a change that affects a result, rerun the
+affected checks and the mandatory gates for the candidate being reviewed or
+merged. Do not rerun an unchanged check only because another agent or message
+now reports its result. State which earlier evidence still applies and why;
+an uncertain or missing result stays a gap.
+
 Return to [Artifact Driven](README.md).

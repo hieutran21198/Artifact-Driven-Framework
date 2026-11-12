@@ -1,6 +1,6 @@
 ---
 name: software-knowledge
-description: Add or change software knowledge - a goal, a flow, an artifact rule, an OpenAPI contract, or a new artifact - and check it. Use whenever a change touches requirements, specifications or contracts, before any code is written for it.
+description: Add, change or review proposed software knowledge - a goal, a flow, an artifact rule, an OpenAPI contract, or a new artifact - and check it. Use for requested changes to requirements, specifications or contracts before code is written for them. Explanation-only questions about existing knowledge do not start this change workflow.
 ---
 
 # Software knowledge
@@ -27,11 +27,12 @@ contract.
 
 ## Always
 
-1. Read the issue and the pages it links. Read the sample the runbook names.
+1. Read the request, the issue and the pages it links. Read the sample the
+   runbook names.
    Before changing an existing ID, operation or field, run
    `python3 scripts/impact.py <it>` to see what depends on it.
-2. Ask the person who raised the need before writing; what they cannot settle
-   goes on the issue ([questions](../../../docs/governances/artifact-driven/workflow.md#questions)).
+2. Use [Questions](../../../docs/governances/artifact-driven/workflow.md#questions)
+   to resolve material gaps before writing. Reuse supplied decisions.
 3. For cross-boundary rules, follow
    [Flow rules](../../../docs/governances/artifact-driven/knowledge.md#flow-rules)
    to settle ownership and check adoption before allocating a Flow-rule ID.
