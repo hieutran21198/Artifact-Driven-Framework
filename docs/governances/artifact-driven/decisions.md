@@ -271,12 +271,11 @@ with the same text. Then that part moves to `check_docs.py`.
 
 **Decision.** Adapt selected practices from
 [Superpowers v7.0.2](https://github.com/obra/superpowers/tree/22f0b463e7a5e579904dd6211a520321035526f7):
-evidence tied to the checked revision, scoped review feedback, work briefs on
-issues, diagnosis based on a hypothesis and behavior evaluations for changed
-agent guidance.
+evidence tied to the checked revision, scoped review feedback, concise handoffs,
+diagnosis based on a hypothesis and risk-based checks of agent guidance.
 The source reviewed is commit `22f0b463e7a5e579904dd6211a520321035526f7`.
 The rules live in [Done](done.md#evidence), [Team](team.md#review-feedback),
-[Workflow](workflow.md#work-brief) and the
+[Workflow](workflow.md#handoffs) and the
 [agent-guidance check](runbooks/check-agent-guidance.md).
 
 **Context.** Artifact Driven already owns knowledge approval, roles, work
@@ -287,14 +286,15 @@ agent applies them, as well as checks that the documents are valid.
 
 | Option | For | Against |
 | --- | --- | --- |
-| Adapt selected practices (chosen) | One workflow, one evidence record and the existing owners | Each adaptation needs review and evaluation in the project's agent environment |
+| Adapt selected practices (chosen) | One workflow, one evidence record and the existing owners | Review must choose checks appropriate to the change |
 | Install the complete workflow as framework policy | Uses the upstream workflow directly | Adds another set of approvals, plan files, task state and execution choices |
 | Keep only static checks of guidance | Uses existing docs checks | Does not show how an agent behaves under the changed guidance |
 
-**Costs.** Behavior evaluations consume time and model usage, so they apply
-to behavior changes and keep their scope explicit. Evidence stays on the
-issue or pull request. No upstream plugin, bootstrap, model choice or
-universal TDD rule becomes a framework dependency.
+**Costs.** Behavior evaluations consume time and model usage. Use them for
+a concrete behavioral risk, not every instruction edit; compare a baseline
+only when testing an improvement or regression. Routine edits use docs checks
+and review. Evidence stays on the issue or pull request. No upstream plugin,
+bootstrap, model choice or universal TDD rule becomes a framework dependency.
 
 **Revisit when** evaluation finds a recurring failure that the adapted rule
 does not prevent, or a rule adds work without improving its target behavior.

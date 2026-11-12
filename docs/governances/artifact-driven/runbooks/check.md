@@ -31,10 +31,10 @@ These commands apply the [file conventions](../../../coding-standards/README.md#
 The `-c` option applies to one command; it does not save Git configuration.
 Read new, untracked files during review because `git diff` does not include them.
 
-When a change alters how an agent should act, also use
-[Check agent guidance](check-agent-guidance.md). Static docs checks do not
-show whether an agent follows the guidance. A prose correction that preserves
-behavior needs the docs checks and review, not a new behavior evaluation.
+For agent guidance, select checks by risk under
+[Check agent guidance](check-agent-guidance.md). Not every instruction change
+needs a behavior run or baseline comparison. Static checks establish document
+consistency, not observed agent behavior.
 
 Before a code change is merged, check the IDs its tests name. With no folder
 the check reads the tests of every cloned part; pass the folder of the

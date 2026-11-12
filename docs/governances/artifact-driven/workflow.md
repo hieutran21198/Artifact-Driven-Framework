@@ -30,28 +30,17 @@ does each step.
 5. **Close.** When the change meets [Done](done.md), close the issue. Status:
    Done.
 
-## Work brief
+## Handoffs
 
-Before handing a step to a role, put its brief on the existing issue. Reuse
-the information already there and add only what is missing:
+Give the next role the scope, relevant knowledge and decisions, expected
+output and checks. Reuse the request and existing issue or pull request;
+no separate brief or progress entry is needed for each step. For steps that
+share a file or contract, resolve incompatible inputs before execution.
 
-| Field | Record |
-| --- | --- |
-| Scope | The need, affected IDs, part and repository, and the limits of the task. Name files when they are known. |
-| Inputs | Links to the approved or proposed knowledge revision, required contracts and decisions, and the dependency outputs this step consumes. Make missing approval or inputs explicit. |
-| Output | One result that can be checked on its own, and the role or part that uses it next. |
-| Checks | The command or method, expected outcome and required gates that prove the result. |
-
-Before execution, compare the inputs and outputs of steps that share a file
-or contract. Resolve a mismatch against the approved knowledge; a change to
-that knowledge needs its owner's decision. Do not duplicate contract text or
-write implementation bodies into the brief.
-
-Keep progress, commits, check results, decisions and the next unfinished step
-on the issue. On a handoff or after context loss, reconcile that record with
-Git history and the current diff before resuming. Do not repeat completed
-work or treat a status alone as evidence. No separate plan or task ledger is
-needed in the repository.
+Record material decisions, blockers and final results on the issue or pull
+request. After a handoff or context loss, compare that record with Git and the
+current diff before resuming. Do not repeat completed work or treat a status
+alone as evidence. Do not add a plan or task ledger to the repository.
 
 ## Questions
 
@@ -63,9 +52,10 @@ the steps.
    and relevant project conventions before asking. Use answers and approvals
    already supplied within their scope; do not reopen them merely because a
    new step starts.
-2. **Ask about a material gap.** Ask one question at a time when an unresolved
-   answer changes behavior, scope, ownership, a contract or how success is
-   checked. Start from a concrete situation and say what the answer changes.
+2. **Ask about material gaps.** Group independent questions into one request
+   when their answers change behavior, scope, ownership, a contract or how
+   success is checked. Ask in sequence only when a question depends on a
+   previous answer. Use concrete situations and say what the answers change.
    A deterministic change within the approved scope proceeds without a new
    design conversation. An answer becomes a draft criterion, scenario or rule.
 3. **List what is left.** What that person cannot settle now, or what

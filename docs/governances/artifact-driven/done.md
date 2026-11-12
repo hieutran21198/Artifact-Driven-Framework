@@ -23,16 +23,17 @@ failed or skipped check stays visible; do not mark it done.
 
 ## Evidence
 
-Keep the evidence on the issue or pull request, following the
-[masking rules](knowledge.md#knowledge-not-evidence). Each result identifies:
+Record the checked revision, command or method, actual result and remaining
+limits on the issue or pull request, following the
+[masking rules](knowledge.md#knowledge-not-evidence). Include environment,
+dependency or data details when they affect the result. Record secret names,
+never values. Link existing check output instead of copying it.
 
-| Field | Record |
-| --- | --- |
-| Claim and scope | The IDs, behavior and parts checked, and the criterion the result supports. |
-| Revision | The code commit of each checked part and the knowledge commit. For each repository with uncommitted work, also retain the exact diff and new file contents against its commit. |
-| Context | When the check ran, the environment, and the configuration, dependency versions, data or load that affect the result. Record secret names, never values. |
-| Method | The exact command or observation procedure and the expected result. |
-| Result and limits | The actual result, exit status where applicable, a link to the output, and what was skipped or not covered. Keep static checks, runtime observations and owner approval distinct. |
+Several checks can share one revision or tested snapshot. For uncommitted
+work, keep one identifiable snapshot with its base commit, diff and new files
+for the reported batch, not a copy for each result. Before publishing the
+result against a commit, verify that its tested contents match that commit.
+Do not retain every intermediate check or snapshot as a progress history.
 
 Make only claims that the evidence supports. A passing test does not prove
 every requirement, and a review report does not replace a required runtime

@@ -84,8 +84,9 @@ flowchart TB
 - Each role reports to the coordinator: what changed, the IDs, the check
   results and the open questions. The next role starts from that report and
   the merged or proposed pages, not from memory.
-- Use the issue's [work brief](workflow.md#work-brief) for scope and inputs,
-  and record results as [evidence](done.md#evidence).
+- Keep [handoffs](workflow.md#handoffs) and [evidence](done.md#evidence)
+  proportional to the work. A small change does not need a separate agent
+  for every role; keep the reviewer independent.
 - A role that hits something outside its scope or tools hands it back to the
   coordinator instead of working around it.
 - A knowledge gap found during code goes back to the knowledge writer; no
@@ -105,11 +106,10 @@ acceptance or dismissal. A proposal that changes approved behavior, a
 contract or scope goes to the affected owner. A review does not grant that
 approval.
 
-Record each finding on the issue or pull request: unresolved while evidence
-or an owner decision is missing, fixed, rejected with evidence, or deferred
-with its reason and responsible owner. Keep unresolved blockers visible.
-Neither a lower severity label nor exhausted review effort makes a failed
-gate pass.
+Keep blockers and their resolution on the issue or pull request. Record a
+rejected finding's evidence or a deferred finding's reason and responsible
+owner. Do not add a separate finding-status ledger. Neither a lower severity
+label nor exhausted review effort makes a failed gate pass.
 
 Re-review the findings, the fix and its affected dependencies. Reuse evidence
 when it remains applicable under [Done](done.md#evidence). When the same unresolved
