@@ -30,6 +30,26 @@ does each step.
 5. **Close.** When the change meets [Done](done.md), close the issue. Status:
    Done.
 
+## Ground the plan in the running system
+
+For a change to request handling or integration, trace the affected request from
+its caller through the actual deployed path to the handler and downstream calls,
+then trace the response and error path.
+Read relevant deployment configuration, runtime adapters, local entry points and
+existing code, including shared implementations. Compare local and deployed
+paths where they differ; do not infer behavior from a product name or diagram.
+
+Identify what each existing layer already handles and what the change still
+needs. For example, an API Gateway → Lambda → Go handler path does not prove
+that the gateway handles every validation, error mapping or timeout, or that
+local requests pass through it. Preserve required checks at their owning
+boundaries; avoid reimplementing work already guaranteed by the actual path.
+
+Use this understanding in the plan and independent review. State material
+assumptions or unverified configuration briefly on the issue or pull request.
+Inspect only the affected path; no new report, inventory or approval phase is
+required.
+
 ## Handoffs
 
 Give the next role the scope, relevant knowledge and decisions, expected

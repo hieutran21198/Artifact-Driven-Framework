@@ -27,6 +27,10 @@ issue.
   no open item on the issue holds a goal
   ([questions](../../docs/governances/artifact-driven/workflow.md#questions));
   D1 to D8.
+- Check the design against the [actual request path](../../docs/governances/artifact-driven/workflow.md#ground-the-plan-in-the-running-system),
+  including relevant deployment/runtime configuration and local differences.
+  Verify claimed layer responsibilities against code and configuration, not
+  assumptions about the gateway or framework.
 - Apply the adopted [principles](../../docs/principles/README.md) and standards
   to concrete code: look for duplicated helpers or policies, missed existing
   reuse, speculative machinery and wrappers or dependencies that add more work
