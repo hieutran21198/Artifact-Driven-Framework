@@ -78,13 +78,16 @@ to a code convention cannot override a governing security or product contract.
 | GEN-104 | MUST | Minimize shared mutable state. |
 | GEN-105 | MUST | A constructor or a factory returns a valid object and validates its input. |
 | GEN-106 | MUST NOT | Add an abstraction without a present need. |
-| GEN-107 | MUST | Move code that a second consumer needs to one package that both import. Do not copy it. |
+| GEN-107 | MUST | Reuse one implementation when consumers need the same behavior and constraints. Do not copy it; do not merge different contracts merely because their code looks similar. |
 | GEN-108 | MUST | The default path completes the common task with no setup. |
 | GEN-109 | MUST NOT | Remove a capability to simplify the default. Expose it through a documented opt-in. |
 
 GEN-102 states the dependency direction; it does not install an architecture
 pattern. GEN-106 agrees with the
-[KISS principle](../../principles/kiss/README.md). GEN-108 and GEN-109 define default behavior and opt-in capability.
+[KISS](../../principles/kiss/README.md) and
+[YAGNI](../../principles/yagni/README.md) principles. GEN-107 applies
+[DRY](../../principles/dry/README.md); choose the narrowest suitable reuse scope
+without breaking domain boundaries. GEN-108 and GEN-109 define default behavior and opt-in capability.
 
 ## Naming and documentation (GEN-2xx)
 

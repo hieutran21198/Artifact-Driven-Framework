@@ -15,8 +15,10 @@ does each step.
    from the top down: goal criteria, then flows, then artifact rules and
    contracts. When the area has no goal or flow yet, write a minimal goal and
    flow first, because clients and testers check behavior by flow. The
-   reviewer reports on the issue and the owners of the parts it touches
-   approve ([approval of knowledge](README.md#approval-of-knowledge)).
+   coordinator prepares any needed implementation plan with that knowledge before
+   requesting owner review, using the existing issue or pull request. Follow
+   [Handoffs](#handoffs) for its scope. The reviewer reports there and the owners
+   of the parts it touches approve ([approval of knowledge](README.md#approval-of-knowledge)).
    Status: In Progress.
 3. **Code.** In the repository of each part the change touches, implement the
    approved knowledge: each service its contract, the rules of the artifacts
@@ -30,7 +32,38 @@ does each step.
 5. **Close.** When the change meets [Done](done.md), close the issue. Status:
    Done.
 
+## Ground the plan in the running system
+
+For a change to request handling or integration, start with the relevant existing
+System → Flow → Artifact knowledge and its contracts. Use that context to trace
+the affected request from its caller through the actual deployed path to the
+handler and downstream calls, then trace the response and error path.
+Read relevant deployment configuration, runtime adapters, local entry points and
+existing code, including shared implementations. Compare local and deployed
+paths where they differ; do not infer behavior from a product name or diagram.
+
+Identify what each existing layer already handles and what the change still
+needs. For example, an API Gateway → Lambda → Go handler path does not prove
+that the gateway handles every validation, error mapping or timeout, or that
+local requests pass through it. Preserve required checks at their owning
+boundaries; avoid reimplementing work already guaranteed by the actual path.
+
+Use this understanding in the plan and independent review. State material
+assumptions or unverified configuration briefly on the issue or pull request.
+Inspect only the affected path. Do not duplicate that knowledge in a new context
+document or diagram; no new report, inventory or approval phase is required.
+
 ## Handoffs
+
+For a knowledge change that requires implementation, include a concise plan in
+the existing issue or pull request before requesting owner review. Derive it from
+the relevant System → Flow → Artifact knowledge: affected parts and contracts,
+integration work, dependency order and checks that will verify the change.
+State unresolved decisions rather than treating them as approved. The plan
+prepares implementation; it does not authorize unapproved behavior.
+
+Reuse that plan for the implementation handoff. Do not create a new issue, pull
+request, repository file, ledger or approval gate solely to hold it.
 
 Give the next role the scope, relevant knowledge and decisions, expected
 output and checks. Reuse the request and existing issue or pull request;

@@ -40,6 +40,11 @@ rule catalog. Read infrastructure rules only when infrastructure is in scope.
 Report missing or conflicting authority before affected implementation rather
 than inventing conventions.
 
+Trace the [actual request path](../../../docs/governances/artifact-driven/workflow.md#ground-the-plan-in-the-running-system)
+before assigning new work to a layer. Reuse behavior already provided by the
+configured runtime and existing code without assuming local and deployed paths
+provide the same guarantees.
+
 Map the change to the responsibilities present in the affected service:
 
 | Boundary | Responsibility |

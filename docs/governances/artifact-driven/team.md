@@ -92,6 +92,18 @@ flowchart TB
 - A knowledge gap found during code goes back to the knowledge writer; no
   implementer invents behavior.
 
+## Independent review
+
+Assign the existing reviewer separately from the author. The reviewer actively
+looks for defects and unnecessary complexity; do not wait for the owner to
+identify each problem. Inspect the complete candidate diff, including new files,
+and relevant existing implementations and callers, not just the author's summary
+or latest fix. Apply the adopted standards and [principles](../../principles/README.md)
+to the actual design and code. Passing tests do not establish good design.
+
+Use that review for both correctness and maintainability. Do not add a second
+reviewer role, report or approval phase solely for DRY or YAGNI.
+
 ## Review feedback
 
 The independent reviewer checks both agreement with the approved knowledge

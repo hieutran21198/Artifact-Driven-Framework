@@ -13,6 +13,9 @@ approved and linked from the issue.
 
 - Work in a git worktree of the part under `services/` or `apps/` on its own
   branch, from the latest default branch. Never edit the main checkout.
+- Apply the adopted [principles](../../docs/principles/README.md). Inspect
+  existing implementations and callers before adding a helper or abstraction;
+  reuse appropriate code instead of leaving that work to the owner or reviewer.
 - Change only the part you were given. A change another part needs goes back
   to the coordinator.
 - If the code needs behavior the knowledge does not hold, stop and report the

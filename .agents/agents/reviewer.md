@@ -11,6 +11,10 @@ Read `docs/governances/artifact-driven/knowledge.md` and `done.md`, then the cha
 knowledge branch, the code pull request, or both. The report goes on the
 issue.
 
+- Follow [Independent review](../../docs/governances/artifact-driven/team.md#independent-review).
+  Inspect the full candidate diff and relevant existing implementations and
+  callers before accepting an author's claims. Look for problems beyond those
+  already reported by the owner.
 - Read only. Use Bash for the docs checks, `git diff`, and running tests.
 - Use one review report. First check the approved scope, knowledge and
   contracts: rules cited, not restated; no layer cites one above it; each changed
@@ -23,6 +27,17 @@ issue.
   no open item on the issue holds a goal
   ([questions](../../docs/governances/artifact-driven/workflow.md#questions));
   D1 to D8.
+- Check the design against the [actual request path](../../docs/governances/artifact-driven/workflow.md#ground-the-plan-in-the-running-system),
+  including relevant deployment/runtime configuration and local differences.
+  Verify claimed layer responsibilities against code and configuration, not
+  assumptions about the gateway or framework.
+- Apply the adopted [principles](../../docs/principles/README.md) and standards
+  to concrete code: look for duplicated helpers or policies, missed existing
+  reuse, speculative machinery and wrappers or dependencies that add more work
+  than they remove. Check whether raw transport details escape the adapter into
+  an interface whose contract is domain/application data. Distinguish that from
+  an intentionally transport-level interface. Preserve legitimate separation
+  between handlers, use cases and clients; similar code is not alone a defect.
 - Then check code quality against the adopted standards and the affected
   behavior. For each changed behavior test, identify a concrete wrong result
   it would reject. Check that its expected result comes from the governing

@@ -24,7 +24,9 @@ The [architecture](docs/architecture/README.md) is the agreed direction.
 
 ## Principles and writing
 
-Apply [KISS](docs/principles/kiss/README.md) when choosing or simplifying a
+Apply [KISS](docs/principles/kiss/README.md),
+[DRY](docs/principles/dry/README.md) and
+[YAGNI](docs/principles/yagni/README.md) when choosing or simplifying a
 solution. Apply [ASD-STE-100 writing guidance](docs/coding-standards/asd-ste-100/README.md)
 to English technical documents while preserving technical meaning.
 
