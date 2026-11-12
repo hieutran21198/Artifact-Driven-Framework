@@ -15,7 +15,9 @@ step 4 ([questions](../workflow.md#questions)).
    the issue. Find the goals, flows and rules the need touches: search the
    knowledge, and run `python3 scripts/impact.py <ID>` on each one. Write the
    IDs on the issue. When the area has no knowledge yet, write that no ID
-   holds it.
+   holds it. Follow
+   [Plan from the outcome and current system](../workflow.md#plan-from-the-outcome-and-current-system)
+   to compare the relevant implementation and consumers before choosing changes.
 2. **Lay out the options.** Write each way to meet the need, and for each one
    the IDs it keeps, changes or adds, with what `impact.py` lists for the IDs
    it changes. When the need asks for it, include an option that changes or
