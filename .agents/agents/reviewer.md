@@ -43,7 +43,9 @@ identify which claim is unsupported and whether the requested change repairs
 the design, the implementation or only its description.
 
 Apply adopted standards and principles to concrete problems. Look for repeated
-policy, missed reuse and mechanisms without a present need. Preserve useful
+policy, missed reuse and mechanisms without a present need. Check whether raw
+transport details escape into an interface that promises domain/application
+data; distinguish an intentionally transport-level interface. Preserve useful
 domain and adapter boundaries; similar syntax alone is not a defect. When code
 or tests change, check that each behavior test rejects a concrete wrong result
 and derives its expectation from the governing rule, not the implementation's

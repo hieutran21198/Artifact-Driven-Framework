@@ -43,7 +43,9 @@ the old file layout and validation bindings do not determine that design.
 Compare that intent with the implementation and affected consumers. Trace
 requests, responses and failures through callers, handlers and downstream
 operations. Inspect relevant runtime and deployment configuration, local entry
-points and shared implementations. Source shows what is implemented; it does
+points and shared implementations. Compare local and deployed paths where they
+differ; do not assume that they provide the same guarantees.
+Source shows what is implemented; it does
 not prove what is deployed or decide what the product ought to do. Separate
 agreed responsibility, current behavior, proposals and unresolved decisions.
 A partial implementation neither narrows a component's purpose nor proves
