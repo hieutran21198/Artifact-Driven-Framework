@@ -12,6 +12,6 @@ written from system down to contracts, in
   system-wide requirements and glossary.
 - [Goals](goals/README.md): outcomes and their success criteria.
 - [Flows](flows/README.md): knowledge that crosses artifacts, the edges.
-- [Artifacts](artifacts/README.md): one artifact per domain; the nodes.
+- [Artifacts](artifacts/README.md): agreed knowledge ownership boundaries; the nodes.
 
 Return to [documentation](../README.md).

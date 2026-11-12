@@ -13,8 +13,8 @@ Sample: [book specification](https://github.com/hieutran21198/Artifact-Driven-Fr
 ## Steps
 
 1. Add the rule to the rules table with the next free ID, using the prefix in
-   the artifact's README. Never reuse or renumber an ID; remove a dropped rule and update
-   its references ([the life of an ID](../knowledge.md#the-life-of-an-id)).
+   the artifact's README. Never reuse or renumber an ID; delete a dropped rule
+   and update its active references ([the life of an ID](../knowledge.md#the-life-of-an-id)).
 2. Name the error the rule returns, if any. Write a value the rule depends
    on, a table of regions when it differs by region, and whether a change
    applies to existing records

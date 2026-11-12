@@ -55,6 +55,11 @@ A command runs its writes, across any number of domains, in one transaction:
   and the repository in `adapter/db/repo`.
 - A command gets its writers only from `TransactionalUnitOfWork`, never by
   building a repository itself.
+- Validate input-only conditions before `Exec`. Load and validate mutable
+  state used to authorize or decide a write inside the transaction that
+  protects the write. Use the locking, isolation or atomic conditional write
+  needed to keep that decision valid under concurrent changes; a transaction
+  alone does not prevent every race.
 - Provider calls stay outside `Exec`.
 
 How a command reaches the database in one transaction:

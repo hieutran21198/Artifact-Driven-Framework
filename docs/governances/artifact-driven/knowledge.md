@@ -13,7 +13,7 @@ keeps the same requirements under its own IDs.
 | System | Purpose, actors, services, clients, external systems, system-wide requirements, glossary, shared contract components | — | — |
 | Goal | A business outcome: the need, the actor, success criteria and constraints. No behavior. | The product | End-to-end tests, starting at the trigger: a request, a webhook or a worker run |
 | Flow | Behavior that crosses artifacts, services or clients: trigger, steps, failure branches, each transaction, the outcome | Application commands and queries, in each service the flow crosses | Command and unit of work tests in each service |
-| Artifact | One domain: model, rules, lifecycle and contract | The domain package of the service that serves it | Domain unit tests |
+| Artifact | An agreed knowledge ownership boundary: model, rules, lifecycle and public operation contract | The domain package of the service that serves it | Domain unit tests |
 
 ### Content by type
 
@@ -42,9 +42,15 @@ text; a link does not make forbidden content appropriate for a knowledge page.
   affected owners when that boundary is unresolved.
 - A goal is a set of flows that reach one outcome. "Goal" means a product goal;
   delivery goals stay on issues.
-- An artifact is one business domain from the
-  [domain map](../../architecture/domain-map.md). It is a unit of knowledge
-  ownership, not a module wall in the code.
+- A domain is a problem area. A bounded context is the scope in which a model
+  and its language have a consistent meaning. An Artifact is an agreed
+  knowledge ownership boundary. A service is a deployable part.
+- The project explicitly selects the mapping between its domains, bounded
+  contexts, Artifacts and services in the
+  [domain map](../../architecture/domain-map.md). An Artifact may represent a
+  bounded context when that model and language boundary is established; its
+  folder or page alone does not establish one. This mapping requires no new
+  service or module wall.
 
 ## Services
 
@@ -101,13 +107,15 @@ names its ID.
   is a proposal: when two branches take the same ID, the branch that merges
   second takes the next free ID and renames its citations and tests.
 - A goal key is one word of up to eight capital letters, such as `BORROW`.
-- Remove a dropped fact and its current citations. For a moved fact, put it
-  in its new owner and update all current references directly
-  ([move or split knowledge](runbooks/move.md)). Do not leave a withdrawn row
-  or redirect. Use Git history to check retired IDs before allocating a new
-  one; never reuse an ID.
-- `check_docs.py` reports duplicate IDs, missing references and withdrawn
-  tombstone rows. Complete the reference update before merging.
+- Delete a dropped fact and update all active references. A path-only move
+  keeps its ID when ownership and meaning stay the same. An ownership move
+  gives the fact a new ID at its destination; remove the old definition and
+  update all active references ([move or split knowledge](runbooks/move.md)).
+- Git history keeps prior definitions and decisions. Do not add tombstone
+  rows, aliases or migration ledgers. Check history before allocating an ID;
+  a deleted ID is never free for reuse.
+- `check_docs.py` and impact CLI reports reject withdrawn tombstone rows,
+  whether cited or not. Complete the cleanup before merging.
 
 ### Before adding a fact
 
@@ -123,8 +131,8 @@ out, or change the ID that already holds it.
 3. **Does it have no owner yet?** When another page owns it, cite that ID. A
    fact that holds for every service, client or page is a system requirement.
 4. **Can no ID be widened to hold it?** Widen an existing ID when the change
-   keeps its meaning. When the meaning changes, add a new ID, remove the old fact and update
-   its current references under [the life of an ID](#the-life-of-an-id).
+   keeps its meaning. When the meaning changes, add the new ID, remove the
+   old definition and update every active reference.
 
 The report of the change names, for each new ID, the IDs it was checked
 against.
@@ -301,9 +309,10 @@ that implements it.
 - `system/openapi.yaml` holds the shared components: the error shape and
   authentication.
 - Every operation belongs to the `openapi.yaml` of the artifact whose code
-  receives the call; the service that serves the artifact serves it. A flow
-  has no OpenAPI transport contract; its coordination specification follows
-  [Flow rules](#flow-rules). An endpoint only other services may call carries
+  receives the call; the service that serves the artifact serves it. Flow
+  owns coordination specifications, including reusable Markdown under
+  `flows/contracts/`; it owns no OpenAPI operation contract. An endpoint only
+  other services may call carries
   `x-internal: true`.
 - An endpoint whose use case crosses domains, such as a checkout, belongs to
   the artifact that owns its handler and use case, and reuses the schemas of

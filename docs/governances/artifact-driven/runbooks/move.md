@@ -1,7 +1,8 @@
 # Move or split knowledge
 
 Use when a fact moves to another owner, such as rules moving from one
-artifact to a new one, or when a goal, a flow or an artifact splits in two.
+artifact to a new one, when a goal, a flow or an artifact splits in two,
+or when a page changes path without changing ownership.
 
 ## Files
 
@@ -12,24 +13,28 @@ artifact to a new one, or when a goal, a flow or an artifact splits in two.
 ## Steps
 
 1. A move changes no behavior. If the meaning changes too, make the move first
-   and the change after it, on its own branch.
-2. Put each fact in its new owner. Keep its ID when its namespace still fits;
-   otherwise allocate a new ID. Follow
-   [the life of an ID](../knowledge.md#the-life-of-an-id).
-3. Check each moved rule against [the layers](../knowledge.md#layers) and
+   and the change after it, on its own branch. Before editing, run impact on
+   each moved ID.
+2. Check each moved rule against [the layers](../knowledge.md#layers) and
    [Flow rules](../knowledge.md#flow-rules). Choose ownership by business
    responsibility and decision authority, not by where inputs come from.
    Settle unclear boundaries with the owners before moving a fact. Keep
    domain policy separate from coordination, and do not allocate a Flow-rule
    ID until its adoption checks pass.
-4. Run impact on each old ID and point every citation at the new ID: flows,
-   contracts and diagrams.
-5. Update tests and other active consumers that name an old ID, then remove
-   the old row or page. If a consumer cannot be updated, report the blocker
-   on the issue instead of leaving stale knowledge behind.
-6. The reviewer compares the diff to verify that each moved fact keeps its
-   meaning and that no current reference points to the removed location.
-   Apply [Done](../done.md) to the affected parts.
+3. For a path-only move with unchanged ownership and meaning, keep the ID.
+   For an ownership move, define the fact at its authoritative destination
+   with a new ID and remove the old definition. Never reuse an old ID
+   ([the life of an ID](../knowledge.md#the-life-of-an-id)).
+4. Update all active references to the destination: pages, links, flows,
+   contracts, diagrams, tooling and tests. Remove obsolete material; keep no
+   tombstones, aliases or ledgers. If a consumer cannot be updated, report
+   the blocker on the issue rather than leaving stale knowledge behind.
+5. Record any dependent implementation needed on the issue. Implement it
+   after knowledge approval and merge; keep existing supported behavior.
+6. The reviewer checks that the destination carries each moved fact's meaning
+   unchanged and that no active reference needs the old location or ID.
+   Apply [Done](../done.md) to each affected part. Git history preserves the
+   earlier definitions.
 
 Past issues, pull requests and release reports keep the old IDs. A release
 report is read at its knowledge tag.
