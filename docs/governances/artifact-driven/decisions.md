@@ -229,7 +229,9 @@ places.
 | A contract for each call between domains, such as `x-events` | The checks see every call | A second contract for what the code already states |
 
 **Costs.** A flow page lists the contracts of the artifacts it calls instead of
-one file of its own.
+one OpenAPI file of its own. Flow retains ownership of coordination
+specifications, including reusable Markdown under `flows/contracts/`. Those
+specifications do not own public operations.
 
 **Revisit when** two artifacts both claim the handler of one operation. Then
 the domain map decides, as an architecture change.

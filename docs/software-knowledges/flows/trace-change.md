@@ -50,7 +50,6 @@ sequenceDiagram
 | ID | Given | When | Then | Covers |
 | --- | --- | --- | --- | --- |
 | F-TRACE-1 | A rule that two scenarios cite, and a criterion that cites one of them | The person runs `traceImpact` with the rule | It lists the rule, both scenarios, the criterion and their pages, by kind | KN-17, KN-8 |
-| F-TRACE-2 | Withdrawn: moved to F-TRACE-13. | — | — | — |
 | F-TRACE-3 | A schema property that one schema holds and one page names in backticks | The person runs `traceImpact` with the property | It lists what a change to that schema and to that page affects | KN-10, KN-8 |
 | F-TRACE-4 | A goal key with three criteria | The person runs `traceImpact` with the key | It lists what a change to each of the three criteria affects | KN-10 |
 | F-TRACE-5 | A criterion proven by two scenarios that cite rules of two artifacts | The person runs `traceDown` with the criterion | It lists the scenarios, the rules, the operations they name, and the pages of the flow and of both artifacts | KN-17, KN-9 |
