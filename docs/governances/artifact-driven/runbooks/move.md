@@ -13,9 +13,9 @@ artifact to a new one, or when a goal, a flow or an artifact splits in two.
 
 1. A move changes no behavior. If the meaning changes too, make the move first
    and the change after it, on its own branch.
-2. For each fact, add it to its new owner with a new ID, and turn the old row
-   into `Withdrawn: moved to <new ID>.`
-   ([the life of an ID](../knowledge.md#the-life-of-an-id)).
+2. Put each fact in its new owner. Keep its ID when its namespace still fits;
+   otherwise allocate a new ID. Follow
+   [the life of an ID](../knowledge.md#the-life-of-an-id).
 3. Check each moved rule against [the layers](../knowledge.md#layers) and
    [Flow rules](../knowledge.md#flow-rules). Choose ownership by business
    responsibility and decision authority, not by where inputs come from.
@@ -24,11 +24,12 @@ artifact to a new one, or when a goal, a flow or an artifact splits in two.
    ID until its adoption checks pass.
 4. Run impact on each old ID and point every citation at the new ID: flows,
    contracts and diagrams.
-5. Open an issue for the tests that name an old ID. They are renamed in the
-   same release as the move.
-6. The reviewer checks that each withdrawn ID's meaning is carried, unchanged,
-   by its new ID. D3 to D8 of [Done](../done.md) do not apply unless tests are
-   renamed.
+5. Update tests and other active consumers that name an old ID, then remove
+   the old row or page. If a consumer cannot be updated, report the blocker
+   on the issue instead of leaving stale knowledge behind.
+6. The reviewer compares the diff to verify that each moved fact keeps its
+   meaning and that no current reference points to the removed location.
+   Apply [Done](../done.md) to the affected parts.
 
 Past issues, pull requests and release reports keep the old IDs. A release
 report is read at its knowledge tag.

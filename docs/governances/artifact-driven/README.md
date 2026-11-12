@@ -4,8 +4,8 @@ Artifact Driven is how a team builds software from knowledge: write and agree
 the knowledge first, then build the code that implements it, and keep the code
 traceable to the knowledge it implements.
 
-- [Knowledge](knowledge.md): the layers of software knowledge, what each one
-  holds, how they cite each other, and the diagrams and contracts they carry.
+- [Knowledge](knowledge.md): the [content allowed by type](knowledge.md#content-by-type),
+  ownership, citations, diagrams and contracts.
 - [Workflow](workflow.md): from an issue to merged knowledge and code.
 - [Team](team.md): the parts the team builds and their owners, the roles that
   do each step, and how work passes between them.

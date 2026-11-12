@@ -8,6 +8,20 @@ INVALID = '{\n  "knowledge": "docs/software-knowledges",\n  "skip": [,]\n}\n'
 
 
 class CheckChange(unittest.TestCase):
+    def test_F_CHECK_9_uncited_tombstones_fail_in_each_layer(self):
+        """KN-3, F-CHECK-9: even an uncited stale row is invalid knowledge."""
+        for page, name in [('system/requirements.md', 'SYS-1'),
+                           ('goals/run.md', 'G-RUN-1'),
+                           ('flows/run.md', 'F-RUN-1'),
+                           ('artifacts/book/specification.md', 'BK-1')]:
+            with self.subTest(page=page):
+                ws = Workspace({})
+                self.addCleanup(ws.close)
+                ws.write('docs/software-knowledges/' + page, f'| {name} | Withdrawn. | None |\n')
+                run = ws.run('check_docs.py')
+                self.assertEqual(run.returncode, 1)
+                self.assertIn(f'{name} is withdrawn; remove the stale row', run.stderr)
+
     def test_F_CHECK_21_invalid_configuration_stops_each_check_with_one_line(self):
         """F-CHECK-21, CFG-7, SYS-3: each check exits with 2 and one line that
         names artifact-driven.json, its line and its column."""

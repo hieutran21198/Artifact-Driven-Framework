@@ -15,11 +15,24 @@ keeps the same requirements under its own IDs.
 | Flow | Behavior that crosses artifacts, services or clients: trigger, steps, failure branches, each transaction, the outcome | Application commands and queries, in each service the flow crosses | Command and unit of work tests in each service |
 | Artifact | One domain: model, rules, lifecycle and contract | The domain package of the service that serves it | Domain unit tests |
 
-| Language | Answers | Home |
+### Content by type
+
+| Type | Allowed content | Keep elsewhere |
 | --- | --- | --- |
-| Domain rules | When is the domain right? | `specification.md` of the artifact |
-| In and out | What does the outside send and get back? | The owning artifact's `openapi.yaml`; shared parts in `system/openapi.yaml` |
-| Domain to domain | Which domain calls or tells which, and why? | The steps of the flow; the signatures stay in code |
+| System | Purpose, actors, service/client responsibilities, external systems, glossary and requirements that apply system-wide | Domain rules in their Artifact; interaction steps in Flow; health-check details in the owning API or operational docs |
+| Goal | Business outcome, actor, success criteria, constraints and links to the scenarios that prove them | Delivery tasks on issues; step-by-step behavior in Flow |
+| Flow | Trigger, participating actors/artifacts, interaction steps, transaction boundaries, failure outcomes, scenarios and owned coordination rules | Domain policy in Artifact; API signatures and payloads in the receiving Artifact's contract |
+| Artifact specification | Domain model, invariants, business rules and lifecycle | Service deployment/layout in architecture or infrastructure; cross-domain orchestration in Flow |
+| Artifact contract | Public operations received, schemas published, inputs, outputs, errors and owned triggers | Narrative coordination in Flow; implementation signatures in code |
+| System contract | Shared schema components, such as authentication and error shapes | Domain operations and payloads in their Artifact contracts |
+| Design | Screens, copy, layout and UI states in the client-owned design; Flow may link for navigation | Do not copy visual details into knowledge rules |
+| Architecture | Domain/service mapping, structural choices and their rationale | Product behavior in knowledge; delivery progress on issues |
+| Governance and runbooks | Reusable development, review and operational procedures | Do not place these procedures in product knowledge |
+| Issue or pull request | Change plan, questions, owner review/approval, evidence, blockers and results | Current rules stay in knowledge; history stays in Git |
+
+The restrictions in [Knowledge, not evidence](#knowledge-not-evidence) apply
+to every knowledge type. Tables and diagrams follow the same ownership as
+text; a link does not make forbidden content appropriate for a knowledge page.
 
 - Artifacts are the nodes and flows the edges between them. Knowledge that
   coordinates artifacts belongs to a flow. Choose a business policy owner by
@@ -88,11 +101,13 @@ names its ID.
   is a proposal: when two branches take the same ID, the branch that merges
   second takes the next free ID and renames its citations and tests.
 - A goal key is one word of up to eight capital letters, such as `BORROW`.
-- A dropped fact keeps its row, with the text replaced by `Withdrawn.` and the
-  reason. A moved fact keeps its row as `Withdrawn: moved to MBR-7.` and gets
-  a new ID in its new owner ([move or split knowledge](runbooks/move.md)).
-- Nothing cites a withdrawn ID except the row that withdraws it.
-  `check_docs.py` reports an ID defined twice and a withdrawn ID still cited.
+- Remove a dropped fact and its current citations. For a moved fact, put it
+  in its new owner and update all current references directly
+  ([move or split knowledge](runbooks/move.md)). Do not leave a withdrawn row
+  or redirect. Use Git history to check retired IDs before allocating a new
+  one; never reuse an ID.
+- `check_docs.py` reports duplicate IDs, missing references and withdrawn
+  tombstone rows. Complete the reference update before merging.
 
 ### Before adding a fact
 
@@ -108,8 +123,8 @@ out, or change the ID that already holds it.
 3. **Does it have no owner yet?** When another page owns it, cite that ID. A
    fact that holds for every service, client or page is a system requirement.
 4. **Can no ID be widened to hold it?** Widen an existing ID when the change
-   keeps its meaning. When the meaning changes, add the new ID and withdraw the
-   old one.
+   keeps its meaning. When the meaning changes, add a new ID, remove the old fact and update
+   its current references under [the life of an ID](#the-life-of-an-id).
 
 The report of the change names, for each new ID, the IDs it was checked
 against.
@@ -205,18 +220,29 @@ citation direction those pages must follow ([Citations](#citations)).
 
 ## Knowledge, not evidence
 
-Knowledge says what must hold. It stays true when the code changes and can be
-written before the code exists.
+Knowledge holds the current agreed behavior, model and public interfaces.
+It can be agreed before implementation, but it is not a record of delivery.
 
-- Never write evidence into knowledge: no client code locations (files, lines,
-  classes, functions), no observed data (counts, samples, logs), no dates or
-  names of an investigation. A target that must hold is knowledge; a number
-  measured once is evidence.
-- Never write status or plans into knowledge: no "for now", "not implemented
-  yet", "later" or "when the app ships". Those belong on the issue.
-- Evidence goes to the issue or the pull request that the change belongs to.
-  Evidence never holds personal data: mask names, emails, phone numbers,
-  addresses and user IDs before writing it there.
+- Do not store or link historical versions, superseded facts, withdrawn/moved
+  markers, change logs, investigation evidence, or owner review/approval
+  records in knowledge. History is in Git; discussion, evidence and approvals
+  belong on the issue or pull request. Link from those records to knowledge,
+  not from knowledge to those records.
+- Do not put any migration or cutover procedure, compatibility-transition
+  plan, temporary bridge, delivery task or progress status in knowledge.
+  Reusable procedures belong in governance or operational runbooks;
+  change-specific execution belongs on the issue. This does not remove
+  executable database migrations needed to build or upgrade a database.
+- Remove stale content when replacing it and update direct references in the
+  same change. Do not retain a second source of truth or a chain of redirects.
+- Product rules that still apply, such as a supported API version or whether
+  a new limit applies to existing records, remain knowledge. State the current
+  promise, not the history or steps of reaching it.
+- Implementation file/line locations, logs, measured counts and investigation
+  dates are evidence, not knowledge. A target that must hold is knowledge;
+  a value measured once is evidence.
+- Mask personal data in issue/PR evidence: names, emails, phone numbers,
+  addresses and user IDs. Never include secret values.
 
 ## Knowledge and running code
 
@@ -276,7 +302,8 @@ that implements it.
   authentication.
 - Every operation belongs to the `openapi.yaml` of the artifact whose code
   receives the call; the service that serves the artifact serves it. A flow
-  has no contract. An endpoint only other services may call carries
+  has no OpenAPI transport contract; its coordination specification follows
+  [Flow rules](#flow-rules). An endpoint only other services may call carries
   `x-internal: true`.
 - An endpoint whose use case crosses domains, such as a checkout, belongs to
   the artifact that owns its handler and use case, and reuses the schemas of

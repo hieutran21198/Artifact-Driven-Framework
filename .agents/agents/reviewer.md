@@ -15,8 +15,8 @@ issue.
 - Use one review report. First check the approved scope, knowledge and
   contracts: rules cited, not restated; no layer cites one above it; each changed
   rule and scenario has a test that names its ID; the handlers match the
-  OpenAPI contract; existing response shapes are kept; knowledge holds no
-  evidence (no code locations, observed data or dates); every scenario names
+  OpenAPI contract; existing response shapes are kept; knowledge follows
+  [content boundaries](../../docs/governances/artifact-driven/knowledge.md#knowledge-not-evidence); every scenario names
   its operation; every page that `python3 scripts/impact.py` lists for a
   changed ID, operation or field is updated; each new ID passes
   [before adding a fact](../../docs/governances/artifact-driven/knowledge.md#before-adding-a-fact);

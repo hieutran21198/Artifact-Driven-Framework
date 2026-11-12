@@ -22,7 +22,8 @@ Removing an operation is breaking (SYS-6 in the reference pass).
    and the logs show no call for the last 30 days.
 4. Remove it from the contract. Run [impact](../../../../scripts/README.md#impact)
    on it, and update every scenario it lists: a scenario left
-   with no operation is withdrawn.
+   with no operation is removed, with its current references updated under
+   [the life of an ID](../knowledge.md#the-life-of-an-id).
 5. After the deploy, watch the responses for the removed path, and record on
    the issue that nothing still calls it.
 

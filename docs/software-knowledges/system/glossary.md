@@ -13,7 +13,6 @@ Each term is defined once, here. Other pages use it without restating it.
 | Root | The folder of a workspace that holds its configuration. |
 | Knowledge ID | The ID of a system requirement, a goal criterion, a flow scenario or an artifact rule. |
 | Prefix | The part of a knowledge ID before its number, such as `KN` or `G-GATE`. |
-| Withdrawn ID | A knowledge ID whose row says `Withdrawn` in place of its text. |
 | Operation | An `operationId` of a contract, a trigger under `x-triggers` or a command under `x-commands`. |
 | Unit | One thing in the knowledge that cites or is cited: a row with a knowledge ID, an operation, a contract schema, or a page. |
 | Citation | A unit that names another unit: a knowledge ID, an operation in backticks, a schema by `$ref`, or a link from a page to a page of a lower layer. |

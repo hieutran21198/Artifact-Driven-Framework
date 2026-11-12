@@ -19,7 +19,7 @@ step 4 ([questions](../workflow.md#questions)).
 2. **Lay out the options.** Write each way to meet the need, and for each one
    the IDs it keeps, changes or adds, with what `impact.py` lists for the IDs
    it changes. When the need asks for it, include an option that changes or
-   withdraws an existing rule. When only one option fits, write it and say
+   removes an existing rule. When only one option fits, write it and say
    why and proceed. Reuse a choice already supplied. When materially different
    options remain, recommend one with its trade-offs and ask the responsible
    owner to choose. The options dropped and the reasons stay on the issue.

@@ -52,10 +52,10 @@ each call ([contract](contract.md)).
    [impact](../../../../scripts/README.md#impact) can trace it. Every goal
    criterion the flow serves needs at least one scenario: add the scenario's
    ID to the Proven by column of that criterion on the goal page. When
-   changing a flow, add new IDs and keep old ones; mark a dropped scenario as withdrawn
-   instead of deleting it ([the life of an ID](../knowledge.md#the-life-of-an-id)).
+   changing a flow, preserve unchanged IDs. Remove dropped scenarios and update
+   their current references ([the life of an ID](../knowledge.md#the-life-of-an-id)).
    Removing one operation from a scenario that names others keeps the ID; a
-   scenario left with no operation is withdrawn.
+   scenario left with no operation is removed and its references updated.
 6. Ask about behavior the flow does not define yet
    ([questions](../workflow.md#questions)). What is still open when the branch
    merges goes under `## Open questions`

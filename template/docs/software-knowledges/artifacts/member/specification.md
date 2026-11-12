@@ -32,7 +32,6 @@ above. A member's loans are the books on loan to them.
 | MBR-3 | A suspended member cannot borrow. | `ErrSuspended` |
 | MBR-4 | A member with an overdue book cannot borrow until they return it. | `ErrHasOverdue` |
 | MBR-5 | Looking up a member that does not exist fails. | `ErrNotFound` |
-| MBR-6 | Withdrawn. MBR-2 holds the loan limit for every region. | — |
 
 ## Values
 

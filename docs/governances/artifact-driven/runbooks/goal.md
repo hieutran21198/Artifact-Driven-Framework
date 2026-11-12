@@ -21,7 +21,8 @@ Sample: [Borrow a book](https://github.com/hieutran21198/Artifact-Driven-Framewo
    something a person can check is true. A criterion that is not clear is a
    question, not a guess ([questions](../workflow.md#questions)). Its Proven by column names the flow
    scenarios that prove it; it stays empty until the flow is written. When
-   changing a goal, add new IDs and keep old ones; mark a dropped criterion as withdrawn instead of deleting it
+   changing a goal, preserve unchanged IDs. Remove dropped criteria and update
+   their current references
    ([the life of an ID](../knowledge.md#the-life-of-an-id)). The goal key
    follows the same page.
 5. List the flows that reach the goal and draw them as a `flowchart`. A flow

@@ -258,7 +258,7 @@ more ID to cite, test and keep.
 | Read, reuse decisions and ask about material gaps (chosen) | Settled behavior is written once; supplied answers and approvals remain usable | The coordinator must judge whether a gap changes the result |
 | Ask before every knowledge change | Every change starts with a conversation | Complete requests wait for repeated answers and approvals |
 | Write questions into the pages as they come up | Questions are next to the facts they touch | Pages fill with questions a person could answer in a minute |
-| Write everything, clean up later | Fast to write | Every ID is cited and tested at once, so a later cleanup moves and withdraws many IDs |
+| Write everything, clean up later | Fast to write | Every ID is cited and tested at once, so a later cleanup moves or removes many IDs |
 
 **Costs.** Work affected by an unresolved material decision waits for its
 owner. The four questions are not a script check; a reviewer can miss a fact

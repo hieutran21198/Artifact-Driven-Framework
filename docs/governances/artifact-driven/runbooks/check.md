@@ -53,13 +53,16 @@ npx @redocly/cli lint <knowledge folder>/<path>.yaml
 | Check | Finds |
 | --- | --- |
 | `check_structure.py` | A directory without a README |
-| `check_docs.py` | A broken link, a missing heading anchor, a knowledge ID that is cited but not defined, defined twice, or withdrawn and still cited; a YAML file in the knowledge folder that is not the contract of an artifact or of the system; a scenario that names no operation, trigger or command, and one that no scenario names; a flow that cites a rule of an artifact its `Crosses` line does not name |
+| `check_docs.py` | A broken link, a missing heading anchor, a knowledge ID that is cited but not defined, defined twice, or retained as a withdrawn tombstone; a YAML file in the knowledge folder that is not the contract of an artifact or of the system; a scenario that names no operation, trigger or command, and one that no scenario names; a flow that cites a rule of an artifact its `Crosses` line does not name |
 | `check_tests.py` | A test that names an ID the knowledge does not define, or a withdrawn ID |
 | Git whitespace check above | Trailing whitespace, spaces before tabs in indentation and conflict markers |
 | Redocly lint | An invalid contract or a broken `$ref` |
 
 Then read the changed pages once more for what the scripts cannot see:
 
+- content placed outside its allowed [type](../knowledge.md#content-by-type),
+  including history, evidence, owner-review records or migration procedures
+  prohibited by [Knowledge, not evidence](../knowledge.md#knowledge-not-evidence);
 - a rule restated instead of cited, or an invalid dependency under
   [Citations](../knowledge.md#citations), including Flow-rule chains or goals
   and scenarios used as reusable rules;
