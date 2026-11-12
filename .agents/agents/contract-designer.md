@@ -11,7 +11,8 @@ artifact pages the contract serves before you write it.
 
 - Write only OpenAPI files in the knowledge folder: `openapi.yaml` of the
   owning artifact and `system/openapi.yaml`, following the ownership rules in
-  the contract runbook. A flow has no contract.
+  the contract runbook. Flow owns coordination specifications, including
+  shared Markdown under `flows/contracts/`, and no OpenAPI operation contract.
 - Keep the response shape of an existing endpoint unless the issue asks for a
   new path or version.
 - Use Bash only for `npx @redocly/cli lint`, `scripts/impact.py` and the docs

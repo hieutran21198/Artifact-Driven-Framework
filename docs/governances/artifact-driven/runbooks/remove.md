@@ -20,9 +20,10 @@ Removing an operation is breaking (SYS-6 in the reference pass).
    calls it
    ([supported client versions](../../../software-knowledges/system/context.md#supported-client-versions))
    and the logs show no call for the last 30 days.
-4. Remove it from the contract. Run [impact](../../../../scripts/README.md#impact)
-   on it, and update every scenario it lists: a scenario left
-   with no operation is withdrawn.
+4. Before removing it, run [impact](../../../../scripts/README.md#impact)
+   on it. Remove it from the contract and update all active references,
+   including scenarios, diagrams and tests. Delete a scenario left with no
+   operation and update the criteria that cite it. Never reuse its ID.
 5. After the deploy, watch the responses for the removed path, and record on
    the issue that nothing still calls it.
 

@@ -14,7 +14,6 @@ change is made blind.
 
 | ID | Criterion | Proven by |
 | --- | --- | --- |
-| G-TRACE-1 | Withdrawn: moved to G-TRACE-6. | — |
 | G-TRACE-2 | Before building a criterion, a scenario or a page, a person sees every scenario, rule, operation and page it relies on. | F-TRACE-5, F-TRACE-12 |
 | G-TRACE-3 | A person sees the size of each goal, and which requirements, rules and operations a change would affect most. | F-TRACE-7, F-TRACE-8, F-TRACE-9, F-TRACE-12 |
 | G-TRACE-4 | A person sees which open questions hold a goal. | F-TRACE-10 |

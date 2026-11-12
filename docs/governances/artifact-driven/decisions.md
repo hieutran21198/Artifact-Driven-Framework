@@ -12,7 +12,10 @@ architecture decisions go in
 
 **Decision.** The knowledge is split into artifacts, one for each business
 domain in the [domain map](../../architecture/domain-map.md). Each artifact is served by one
-service. Inside a service, the domains have no module walls between them.
+service. This is the project's selected knowledge mapping; a domain is a
+problem area, not automatically a DDD bounded context. Model and language
+boundaries determine that distinction under [Knowledge](knowledge.md#layers).
+Inside a service, the domains have no module walls between them.
 
 **Context.** A rule needs one owner who approves a change to it, and a reader
 needs one place to find it. When the knowledge is split by screen or by
@@ -25,7 +28,7 @@ service, a rule shows up wherever it is used.
 | One artifact for each domain (chosen) | Each rule has one home and one owner; the code is split the same way | The team agrees on the domain boundaries first; a wrong boundary moves IDs later |
 | One page for each feature or screen | Matches how a product owner talks about the product | A rule that two features use is written twice |
 | One page for each service | Matches what is deployed | A domain that moves to another service moves its knowledge; a service with many domains becomes one long page |
-| Full tactical Domain-Driven Design: aggregates, domain events, modules | A rich model of each domain | Walls and events inside one service add code that a service of this size does not need ([architecture](../../architecture/README.md#direction)) |
+| Require every tactical DDD pattern in each domain | Uniform use of aggregates, domain events and modules | Patterns need a concrete invariant or coordination need; DDD does not require module walls or events for every domain ([architecture](../../architecture/README.md#direction)) |
 
 **Costs.** The domain map must be kept. A boundary that changes follows the
 [move runbook](runbooks/move.md).
@@ -202,8 +205,8 @@ standard, and the scripts learn to read it.
 ## Each operation in the contract of the artifact that receives it
 
 **Decision.** An operation, a trigger or a command belongs to the
-`openapi.yaml` of the artifact whose code receives the call. A flow has no
-contract. A public event schema belongs to the publishing artifact; each
+`openapi.yaml` of the artifact whose code receives the call. A Flow has no
+OpenAPI operation contract. A public event schema belongs to the publishing artifact; each
 receiver owns its handling operation and references that schema as input.
 A command sent to a specific receiver belongs to that receiver. A call or a
 notice from one domain to another in the same service is a step of the flow;
@@ -229,7 +232,9 @@ places.
 | A contract for each call between domains, such as `x-events` | The checks see every call | A second contract for what the code already states |
 
 **Costs.** A flow page lists the contracts of the artifacts it calls instead of
-one file of its own.
+one OpenAPI file of its own. Flow retains ownership of coordination
+specifications, including reusable Markdown under `flows/contracts/`. Those
+specifications do not own public operations.
 
 **Revisit when** two artifacts both claim the handler of one operation. Then
 the domain map decides, as an architecture change.

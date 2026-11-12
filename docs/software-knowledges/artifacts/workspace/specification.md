@@ -29,7 +29,6 @@ this artifact changes it again.
 | WS-1 | A workspace is created only in a folder that does not exist. When the folder exists, nothing is created or changed. | `ErrFolderExists` |
 | WS-2 | The source is the framework at one ref on GitHub: a branch, a tag or a commit, `main` when none is given. When the setting `AD_SOURCE` names a local copy of the framework, that copy is the source and nothing is downloaded. | — |
 | WS-3 | A workspace holds the shared files of its source as the source has them: `.agents`, `.claude`, `.editorconfig`, `.gitignore`, `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `docs`, `scripts`, and the README of `services`, `apps` and `e2e`. | — |
-| WS-4 | Withdrawn: moved to WS-11. | — |
 | WS-5 | A workspace holds nothing else of its source: not the framework's tests, the folder the sample comes from, `install.sh` or the landing page. | — |
 | WS-6 | When the source cannot be read, such as a ref that does not exist or no network, no folder is created. | `ErrNoSource` |
 | WS-7 | Creating a workspace leaves nothing outside its folder: a downloaded copy of the source is removed when the creation ends (SYS-4). | — |

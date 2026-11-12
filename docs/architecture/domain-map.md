@@ -8,6 +8,10 @@ service. The [services](../../services/README.md) page names each service and
 its code. A new domain, or a domain that moves to another service, is an
 architecture change first.
 
+The rows select this project's domain-to-Artifact and service mapping. They do
+not by themselves establish DDD bounded contexts; use the model and language
+boundaries described in [Knowledge](../governances/artifact-driven/knowledge.md#layers).
+
 | Domain | Service | Holds | Existing code that moves into it |
 | --- | --- | --- | --- |
 | `workspace` | `install` | What a new workspace holds, and where install takes it from | — |
