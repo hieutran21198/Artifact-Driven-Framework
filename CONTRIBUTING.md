@@ -37,6 +37,34 @@ sets its own commit and release-branch conventions here.
 Change only the parts the issue and their owners give you. For a part you
 cannot access, write a handoff to its owner on the issue.
 
+## Pull request descriptions
+
+Write in English for the person deciding whether the change is right. Lead
+with the problem and resulting behavior, then explain how to read the change.
+Use this outline where it helps; a small PR can cover it in one paragraph.
+Omit empty sections.
+
+- **Purpose and outcome.** Explain what changes and why. Link the owning
+  knowledge, existing issue and knowledge approval when applicable.
+- **Organization and reading order.** Explain how the changed parts fit
+  together and where their responsibilities meet. Give a short ordered path
+  through the key files, from intent and contracts to implementation and
+  relevant tests. At each stop, link the file or section and say what to
+  examine. Group supporting files by responsibility; do not list every file.
+- **Decisions and limits.** Explain consequential choices, tradeoffs and
+  unresolved questions. Keep material risks, untested behavior and release
+  dependencies visible, including what CI cannot establish.
+
+Use GitHub file URLs at the reviewed commit, with a heading or line anchor
+when useful; repository-relative links in a PR body may resolve incorrectly.
+Check that the links open the intended files and update the path when the
+scope changes. Read the rendered description from top to bottom before handoff.
+
+Follow [Done](docs/governances/artifact-driven/done.md#evidence) when recording
+validation. CI already records its results. Add a brief note for checks outside CI and
+material gaps; link detailed output when needed. Do not turn the description
+into a green-check inventory, test count, evidence dump or confidence score.
+
 ## Owners
 
 The owners of the parts that no service or client README lists

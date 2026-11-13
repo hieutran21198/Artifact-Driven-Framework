@@ -29,6 +29,12 @@ limits on the issue or pull request, following the
 dependency or data details when they affect the result. Record secret names,
 never values. Link existing check output instead of copying it.
 
+CI checks attached to the reviewed commit are already a record; do not repeat
+their pass/fail list in the description. Record checks outside CI and material
+limits on the pull request or issue. Keep the description focused on the
+[reviewer's reading path](../../../CONTRIBUTING.md#pull-request-descriptions).
+This changes presentation, not the checks or approvals required above.
+
 Several checks can share one revision or tested snapshot. For uncommitted
 work, keep one identifiable snapshot with its base commit, diff and new files
 for the reported batch, not a copy for each result. Before publishing the
