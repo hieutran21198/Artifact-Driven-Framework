@@ -11,6 +11,11 @@ description: >-
 
 # Plain writing
 
+For pull request descriptions, follow
+[Contributing](../../../CONTRIBUTING.md#pull-request-descriptions) instead of
+the page form and cuts below. Preserve the purpose, responsibility boundaries,
+reading order, decision rationale and material limitations.
+
 For landing-page work, use [landing-page](../landing-page/SKILL.md) instead
 of the form and cuts below.
 
