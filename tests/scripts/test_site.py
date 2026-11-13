@@ -218,5 +218,45 @@ class FlowRuleSite(unittest.TestCase):
         self.assertFalse([tag for tag, _ in page.tags if tag == "img"])
 
 
+def story_workspace():
+    """Two flows of one goal: the first reaches MB-1 and NT-1 only through BK-1."""
+    ws = Workspace({"site": {"title": "Story", "output": "build/site.html"}})
+    base = "docs/software-knowledges/"
+    ws.write(base + "system/requirements.md", "# Requirements\n\n| SYS-1 | Read. |\n")
+    ws.write(base + "goals/lend.md", "# Goal: Lend\n\n| G-LEND-1 | Lend | F-ONE-1, F-TWO-1 |\n\n"
+             "[One](../flows/one.md)\n[Two](../flows/two.md)\n")
+    ws.write(base + "flows/one.md", "# Flow: One\n\n- Crosses: [book](../artifacts/book/README.md).\n\n"
+             "| F-ONE-1 | A book | `lend` | Lent | BK-1 |\n")
+    ws.write(base + "flows/two.md", "# Flow: Two\n\n- Crosses: [member](../artifacts/member/README.md) and\n"
+             "  [shelf](../artifacts/shelf/README.md).\n\n| F-TWO-1 | A member | `join` | Joined | MB-1 |\n")
+    ws.write(base + "artifacts/book/specification.md", "| BK-1 | Lend as MB-1 and NT-1 allow. | — |\n")
+    ws.write(base + "artifacts/member/specification.md", "| MB-1 | Join. | — |\n")
+    ws.write(base + "artifacts/notice/specification.md", "| NT-1 | Notify. | — |\n")
+    ws.write(base + "artifacts/book/openapi.yaml", "x-commands:\n  lend:\n    description: Lend\n")
+    ws.write(base + "artifacts/member/openapi.yaml", "x-commands:\n  join:\n    description: Join\n")
+    return ws
+
+
+class StorySite(unittest.TestCase):
+    def test_KN_16_rule_goes_under_a_flow_that_crosses_its_artifact(self):
+        """KN-16: a rule goes under the first flow that reaches it and crosses
+        its artifact, else under no flow with a warning; an artifact shows only
+        with a rule."""
+        ws = story_workspace()
+        self.addCleanup(ws.close)
+        run = ws.run("site.py")
+        self.assertEqual(run.returncode, 0, run.stderr)
+        page = Page((ws.root / "build/site.html").read_text())
+        source = next(s for s in page.scripts if s.startswith("const DATA="))
+        story = json.loads(source.removeprefix("const DATA=").removesuffix(";"))["stories"]["G-LEND"]
+        self.assertEqual(story["flows"], [
+            {"page": "flows/one.md", "rules": ["BK-1"]},
+            {"page": "flows/two.md", "rules": ["MB-1"]},
+            {"page": None, "rules": ["NT-1"]}])
+        self.assertEqual(list(story["artifacts"]), ["book", "member", "notice"])
+        self.assertIn("Warning: G-LEND: NT-1 is under no flow", run.stderr)
+        self.assertNotIn("MB-1 is under no flow", run.stderr)
+
+
 if __name__ == "__main__":
     unittest.main()
